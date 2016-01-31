@@ -28,18 +28,18 @@ public class InventoryApiTest {
     public void testCreateAndRead() throws Exception {
 
         ManagedObject mo = new ManagedObject();
-        mo.setName("MyTest");
+        mo.setName("MyTest-testCreateAndRead");
 
         CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
         ManagedObject createdMo = inventoryApi.create(mo);
 
-        Assert.assertNotNull("Should now have an Id", mo.getId());
+        Assert.assertNotNull("Should now have an Id", createdMo.getId());
 
         ManagedObject retrievedMo = inventoryApi.get(createdMo.getId());
 
         Assert.assertEquals("Should have the same Id", createdMo.getId(), retrievedMo.getId());
-        Assert.assertEquals("Should have the same Name", "MyTest", retrievedMo.getName());
+        Assert.assertEquals("Should have the same Name", "MyTest-testCreateAndRead", retrievedMo.getName());
     }
 
     @Test

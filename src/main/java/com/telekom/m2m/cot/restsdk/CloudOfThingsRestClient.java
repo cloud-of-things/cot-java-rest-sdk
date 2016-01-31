@@ -63,7 +63,7 @@ public class CloudOfThingsRestClient {
 
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url("https://testing.test-ram.m2m.telekom.com/" + api + s)
+                .url("https://testing.test-ram.m2m.telekom.com/" + api + "/" + s)
                 .build();
 
         Response response = client.newCall(request).execute();

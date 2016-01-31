@@ -7,7 +7,7 @@ import java.util.Map;
  * Created by breucking on 31.01.16.
  */
 public abstract class ExtensibleObject {
-    protected static final Map<String, Object> anyObject = new HashMap<String, Object>();
+    protected final Map<String, Object> anyObject = new HashMap<String, Object>();
 
     public void set(String property, Object object) {
         anyObject.put(property, object);
