@@ -24,8 +24,8 @@ public class CotDeviceRegisterTest {
         CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
-        CloudOfThingsPlatform platformForUnregisteresDevices = new CloudOfThingsPlatform(TestHelper.REGISTERDEVICE_TENANT, TestHelper.REGISTERDEVICE_USERNAME, TestHelper.REGISTERDEVICE_PASSWORD);
-        DeviceCredentialsApi unregDevCred = platformForUnregisteresDevices.getDeviceCredentialsApi();
+
+        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice().getDeviceCredentialsApi();
 
 
         // Step 1: (devicemanager) Register Device
