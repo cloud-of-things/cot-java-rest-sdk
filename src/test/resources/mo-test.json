@@ -1,0 +1,7 @@
+{
+  "id": "1",
+  "name": "Foo",
+  "test_element": "foo",
+  "nested": {"foo": "bar"},
+  "nested_empty": {}
+}

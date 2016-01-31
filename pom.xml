@@ -12,7 +12,7 @@
         <developer>
             <id>marquies</id>
             <name>Patrick Breucking</name>
-            <email>Patrick.Breucking@t-systems.com<email>
+            <email>Patrick.Breucking@t-systems.com</email>
             <url>http://www.patrickbreucking.de</url>
             <organization>Deutsche Telekom AG</organization>
             <organizationUrl>http://m2m.telekom.com</organizationUrl>
@@ -21,5 +21,24 @@
             </roles>
         </developer>
     </developers>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>mockwebserver</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.5</version>
+        </dependency>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>6.1.1</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
 </project>
