@@ -84,4 +84,14 @@ public class CloudOfThingsRestClient {
                 .build();
         Response response = client.newCall(request).execute();
     }
+
+    public void delete(String id, String api) throws IOException {
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url("https://testing.test-ram.m2m.telekom.com/" + api + "/" + id)
+                .delete()
+                .build();
+
+        Response response = client.newCall(request).execute();
+    }
 }

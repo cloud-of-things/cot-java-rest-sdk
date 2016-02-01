@@ -38,7 +38,7 @@ public class CotDeviceRegisterTest {
         // Step 3: (devicemanager) Accept request
         deviceControlApi.acceptDevice(deviceId);
 
-        // Step 4: (device) Create MO, create ...
+        // Step 4: (device) Create MO
         DeviceCredentials devCred = unregDevCred.getCredentials(deviceId);
 
         Assert.assertNotNull(devCred);
@@ -62,7 +62,34 @@ public class CotDeviceRegisterTest {
 
         Assert.assertNotNull(newMo.getId());
 
+        // Step 5: (device) Register the device
+//        IdentityApi devIdentityApi = platformForDevice.getIdentityApi();
+//        ExternalId externalId = new ExternalId();
+//        externalId.setExternalId()
+//
+//        externalId.setManagedObject(newMo);
+//        devIdentityApi.create(externalId);
 
+        // Step 6: (device) Delete Device
+        inventory.delete(newMo.getId());
+
+        ManagedObject object = inventory.get(newMo.getId());
+        Assert.assertNull(object);
+
+
+
+        /*
+         public void iHaveManagedObject(long globalId, String extId, String type) {
+        ExternalIDRepresentation rep = new ExternalIDRepresentation();
+        rep.setExternalId(extId);
+        rep.setType(type);
+        ManagedObjectRepresentation mo = new ManagedObjectRepresentation();
+        GId gId = new GId();
+        gId.setValue(Long.toString(globalId));
+        mo.setId(gId);
+        rep.setManagedObject(mo);
+    }
+         */
     }
 
 }

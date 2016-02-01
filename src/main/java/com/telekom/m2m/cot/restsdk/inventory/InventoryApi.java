@@ -38,4 +38,7 @@ public class InventoryApi {
         return mo;
     }
 
+    public void delete(String id) throws IOException {
+        cloudOfThingsRestClient.delete(id, "inventory/managedObjects");
+    }
 }
