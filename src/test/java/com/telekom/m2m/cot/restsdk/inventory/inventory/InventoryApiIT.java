@@ -10,7 +10,7 @@ import org.testng.annotations.Test;
 /**
  * Created by breucking on 30.01.16.
  */
-public class InventoryApiTest {
+public class InventoryApiIT {
 
     @Test
     public void testCreateManagedObject() throws Exception {

@@ -14,7 +14,7 @@ import org.testng.annotations.Test;
 /**
  * Created by breucking on 31.01.16.
  */
-public class CotDeviceRegisterTest {
+public class CotDeviceRegisterIT {
 
 
     @Test
