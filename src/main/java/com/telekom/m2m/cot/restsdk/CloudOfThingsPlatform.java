@@ -80,5 +80,6 @@ public class CloudOfThingsPlatform {
     }
 
     public void getManagementApi() {
+
     }
 }
