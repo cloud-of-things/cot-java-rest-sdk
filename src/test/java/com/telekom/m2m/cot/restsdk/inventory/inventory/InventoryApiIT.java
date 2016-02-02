@@ -1,11 +1,16 @@
 package com.telekom.m2m.cot.restsdk.inventory.inventory;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.inventory.util.TestHelper;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import org.junit.Assert;
+import org.mockito.Mockito;
 import org.testng.annotations.Test;
+
+import static org.mockito.Matchers.any;
 
 /**
  * Created by breucking on 30.01.16.
@@ -42,7 +47,15 @@ public class InventoryApiIT {
         Assert.assertEquals("Should have the same Name", "MyTest-testCreateAndRead", retrievedMo.getName());
     }
 
-    @Test
+    @Test(expectedExceptions = CotSdkException.class)
     public void testGetManagedObjects() throws Exception {
+        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
+        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
+        Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));
+        Mockito.when(rc.getResponse(any(String.class), any(String.class), any(String.class))).thenThrow(CotSdkException.class);
+
+        InventoryApi inventoryApi = platform.getInventoryApi();
+        inventoryApi.get("foo");
+
     }
 }

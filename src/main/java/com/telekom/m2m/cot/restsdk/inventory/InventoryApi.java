@@ -30,10 +30,8 @@ public class InventoryApi {
         return managedObject;
     }
 
-    public ManagedObject get(String s) throws IOException {
-
+    public ManagedObject get(String s) {
         String response = cloudOfThingsRestClient.getResponse(s, "inventory/managedObjects", CONTENT_TYPE);
-
         ManagedObject mo = gson.fromJson(response, ManagedObject.class);
         return mo;
     }
