@@ -47,15 +47,5 @@ public class InventoryApiIT {
         Assert.assertEquals("Should have the same Name", "MyTest-testCreateAndRead", retrievedMo.getName());
     }
 
-    @Test(expectedExceptions = CotSdkException.class)
-    public void testGetManagedObjects() throws Exception {
-        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
-        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
-        Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));
-        Mockito.when(rc.getResponse(any(String.class), any(String.class), any(String.class))).thenThrow(CotSdkException.class);
 
-        InventoryApi inventoryApi = platform.getInventoryApi();
-        inventoryApi.get("foo");
-
-    }
 }
