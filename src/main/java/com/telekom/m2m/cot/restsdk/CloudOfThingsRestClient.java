@@ -75,7 +75,7 @@ public class CloudOfThingsRestClient {
      * @return the received JSON response body.
      * @throws IOException if the communication went wrong.
      */
-    public String doPostRequest(String json, String api, String contentType) throws IOException {
+    public String doPostRequest(String json, String api, String contentType) {
 
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
         Request request = new Request.Builder()
@@ -85,7 +85,12 @@ public class CloudOfThingsRestClient {
                 .url("https://" + tenant + ".test-ram.m2m.telekom.com/" + api)
                 .post(body)
                 .build();
-        return client.newCall(request).execute().body().string();
+
+        try {
+            return client.newCall(request).execute().body().string();
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        }
     }
 
     public String getResponse(String json, String api, String contentType) {
