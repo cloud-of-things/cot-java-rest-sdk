@@ -21,7 +21,7 @@ public class InventoryApi {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
-    public ManagedObject create(ManagedObject managedObject) throws IOException {
+    public ManagedObject create(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
 
         String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "inventory/managedObjects", CONTENT_TYPE);
@@ -36,7 +36,7 @@ public class InventoryApi {
         return mo;
     }
 
-    public void delete(String id) throws IOException {
+    public void delete(String id) {
         cloudOfThingsRestClient.delete(id, "inventory/managedObjects");
     }
 }

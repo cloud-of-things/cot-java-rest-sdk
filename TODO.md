@@ -1,7 +1,6 @@
 # Todos
 
 * Refactor the basics, Clean Code
-* Implement removal of devices and its belongings
 * Implement Geo Features
 * Make available different environments (base URL)
 * Implement Mass Retrieval of Measurements 
@@ -10,3 +9,4 @@
 # Done
 
 * Complete Device registration process
+* Implement removal of devices and its belongings

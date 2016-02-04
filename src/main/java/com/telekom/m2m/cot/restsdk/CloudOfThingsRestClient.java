@@ -44,7 +44,6 @@ public class CloudOfThingsRestClient {
      */
     public String doRequestWithIdResponse(String json, String api, String contentType) {
         try {
-
             RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
             Request request = new Request.Builder()
                     .addHeader("Authorization", "Basic " + encodedAuthString)
@@ -54,6 +53,9 @@ public class CloudOfThingsRestClient {
                     .post(body)
                     .build();
             Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "POST request failed.");
+            }
             String location = response.header("Location");
             String result = null;
             if (location != null) {
@@ -61,6 +63,8 @@ public class CloudOfThingsRestClient {
                 result = pathParts[pathParts.length - 1];
             }
             return result;
+        } catch (CotSdkException e) {
+            throw e;
         } catch (Exception e) {
             throw new CotSdkException("Problem", e);
         }

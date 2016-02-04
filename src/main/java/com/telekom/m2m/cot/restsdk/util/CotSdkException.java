@@ -18,7 +18,7 @@ public class CotSdkException extends RuntimeException {
     }
 
     public CotSdkException(int httpStatusCode, String string) {
-        super(string);
+        super(string + " HTTP status code:'" + httpStatusCode + "'");
         this.httpStatusCode = httpStatusCode;
     }
 

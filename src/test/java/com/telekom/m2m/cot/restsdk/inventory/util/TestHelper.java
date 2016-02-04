@@ -1,5 +1,8 @@
 package com.telekom.m2m.cot.restsdk.inventory.util;
 
+import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 
@@ -15,5 +18,19 @@ public class TestHelper {
 
     public static String getRandom(int length) {
         return new BigInteger(length*10, random).toString(length);
+    }
+
+    public static ManagedObject createManagedObject(String name) {
+        ManagedObject mo = new ManagedObject();
+        mo.setName(name);
+        return mo;
+    }
+
+    public static ManagedObject createRandomManagedObjectInPlatform(CloudOfThingsPlatform cloudOfThingsPlatform, String name) {
+        return cloudOfThingsPlatform.getInventoryApi().create(createManagedObject(name));
+    }
+
+    public static void deleteManagedObjectInPlatform(CloudOfThingsPlatform cloudOfThingsPlatform, ManagedObject managedObject) {
+        cloudOfThingsPlatform.getInventoryApi().delete(managedObject.getId());
     }
 }

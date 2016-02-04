@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk;
 
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
+import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
@@ -86,5 +87,9 @@ public class CloudOfThingsPlatform {
 
     public void getManagementApi() {
 
+    }
+
+    public EventApi getEventApi() {
+        return new EventApi(cloudOfThingsRestClient);
     }
 }

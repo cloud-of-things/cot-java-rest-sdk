@@ -11,6 +11,7 @@ public class GsonUtils {
     public static Gson createGson() {
         return new GsonBuilder()
                 .registerTypeAdapter(ManagedObject.class, new ExtensibleObjectSerializer())
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX")
                 .create();
     }
 }
