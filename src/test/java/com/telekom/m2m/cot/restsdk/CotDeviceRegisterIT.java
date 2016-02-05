@@ -1,12 +1,13 @@
-package com.telekom.m2m.cot.restsdk.inventory;
+package com.telekom.m2m.cot.restsdk;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentials;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
 import com.telekom.m2m.cot.restsdk.identity.ExternalId;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
-import com.telekom.m2m.cot.restsdk.inventory.util.TestHelper;
+import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import com.telekom.m2m.cot.restsdk.operation.Operation;
 import org.testng.Assert;
 import org.testng.annotations.Test;

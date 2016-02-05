@@ -1,10 +1,8 @@
-package com.telekom.m2m.cot.restsdk.inventory.event;
+package com.telekom.m2m.cot.restsdk.event;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.event.Event;
-import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.inventory.util.TestHelper;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.junit.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -39,6 +37,7 @@ public class EventApiIT {
         event.setType("com_telekom_TestType");
         event.setTime(new Date());
         event.setSource(testManagedObject);
+        event.set("foo", "{ \"alt\": 99.9, \"lng\": 8.55436, \"lat\": 50.02868 }");
 
         EventApi eventApi = cotPlat.getEventApi();
 

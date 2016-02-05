@@ -1,7 +1,7 @@
-package com.telekom.m2m.cot.restsdk.inventory;
+package com.telekom.m2m.cot.restsdk;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.inventory.util.TestHelper;
+import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

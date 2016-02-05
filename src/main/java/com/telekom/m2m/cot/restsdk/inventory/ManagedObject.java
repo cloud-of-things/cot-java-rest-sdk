@@ -7,6 +7,14 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class ManagedObject extends ExtensibleObject {
 
+    public ManagedObject() {
+        super();
+    }
+
+    public ManagedObject(ExtensibleObject extensibleObject) {
+        super(extensibleObject);
+    }
+
     public String getId() {
         return (String) anyObject.get("id");
     }

@@ -1,13 +1,8 @@
-package com.telekom.m2m.cot.restsdk.inventory.inventory;
+package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.inventory.util.TestHelper;
-import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.junit.Assert;
-import org.mockito.Mockito;
 import org.testng.annotations.Test;
 
 import static org.mockito.Matchers.any;

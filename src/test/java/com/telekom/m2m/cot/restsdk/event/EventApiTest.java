@@ -1,10 +1,8 @@
-package com.telekom.m2m.cot.restsdk.inventory.event;
+package com.telekom.m2m.cot.restsdk.event;
 
+import com.telekom.m2m.cot.restsdk.util.Position;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
-import com.telekom.m2m.cot.restsdk.event.Event;
-import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import org.mockito.Mockito;
 import org.testng.Assert;
@@ -39,7 +37,8 @@ public class EventApiTest {
                 "  \"creationTime\" : \"2011-09-06T12:03:27.000+02:00\",\n" +
                 "  \"type\" : \"com_telekom_DoorSensorEvent\",\n" +
                 "  \"text\" : \"Door sensor was triggered.\",\n" +
-                "  \"source\" : { \"id\":\"12345\", \"self \": \"...\" }\n" +
+                "  \"source\" : { \"id\":\"12345\", \"name \": \"test\" },\n" +
+                "  \"com_telekom_m2m_cot_restsdk_util_Position\" : { \"alt\": 0.0, \"lon\": 1.0, \"lat\": 2.0}\n" +
                 "}";
 
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
@@ -56,6 +55,8 @@ public class EventApiTest {
         Assert.assertEquals(event.getCreationTime().compareTo(new Date(1315303407000L)), 0);
         Assert.assertEquals(event.getTime().compareTo(new Date(1315303407000L)), 0);
 
+        Assert.assertEquals(((Position) event.get("com_telekom_m2m_cot_restsdk_util_Position")).getLat(), 2.0);
+        //Assert.assertEquals(event.getSource().getId(), "12345");
 
     }
 }

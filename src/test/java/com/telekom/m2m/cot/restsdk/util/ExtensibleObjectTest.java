@@ -1,16 +1,11 @@
-package com.telekom.m2m.cot.restsdk.inventory.util;
+package com.telekom.m2m.cot.restsdk.util;
 
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObjectSerializer;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
@@ -88,7 +83,7 @@ public class ExtensibleObjectTest {
         InputStreamReader br = new InputStreamReader(in);
 
         Gson gson = GsonUtils.createGson();
-        ManagedObject mo = gson.fromJson(br, ManagedObject.class);
+        ManagedObject mo = new ManagedObject(gson.fromJson(br, ExtensibleObject.class));
 
         Assert.assertEquals(mo.get("test_element"), "foo");
         Assert.assertEquals(mo.get("id"), "1");
@@ -103,7 +98,7 @@ public class ExtensibleObjectTest {
         InputStreamReader br = new InputStreamReader(in);
 
         Gson gson = GsonUtils.createGson();
-        ManagedObject mo = gson.fromJson(br, ManagedObject.class);
+        ManagedObject mo = new ManagedObject(gson.fromJson(br, ExtensibleObject.class));
 
         Assert.assertTrue(mo.has("nested"));
 
@@ -125,7 +120,7 @@ public class ExtensibleObjectTest {
         InputStreamReader br = new InputStreamReader(in);
 
         Gson gson = GsonUtils.createGson();
-        ManagedObject mo = gson.fromJson(br, ManagedObject.class);
+        ManagedObject mo = new ManagedObject(gson.fromJson(br, ExtensibleObject.class));
 
         Assert.assertTrue(mo.has("nested_empty"));
 

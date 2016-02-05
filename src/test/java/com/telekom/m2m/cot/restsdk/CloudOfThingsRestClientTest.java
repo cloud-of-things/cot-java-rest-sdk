@@ -1,8 +1,7 @@
-package com.telekom.m2m.cot.restsdk.inventory;
+package com.telekom.m2m.cot.restsdk;
 
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.inventory.util.TestHelper;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import okhttp3.*;
 import org.powermock.api.mockito.PowerMockito;

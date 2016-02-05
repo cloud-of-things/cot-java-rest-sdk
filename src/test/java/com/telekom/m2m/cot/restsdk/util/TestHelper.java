@@ -1,4 +1,4 @@
-package com.telekom.m2m.cot.restsdk.inventory.util;
+package com.telekom.m2m.cot.restsdk.util;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;

@@ -6,8 +6,17 @@ import java.util.Map;
 /**
  * Created by breucking on 31.01.16.
  */
-public abstract class ExtensibleObject {
+public class ExtensibleObject {
     protected final Map<String, Object> anyObject = new HashMap<String, Object>();
+
+    public ExtensibleObject(ExtensibleObject extensibleObject) {
+        if (extensibleObject != null)
+            anyObject.putAll(extensibleObject.anyObject);
+    }
+
+    public ExtensibleObject() {
+
+    }
 
     public void set(String property, Object object) {
         anyObject.put(property, object);

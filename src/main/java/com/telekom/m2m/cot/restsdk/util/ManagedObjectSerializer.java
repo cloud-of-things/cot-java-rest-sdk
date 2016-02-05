@@ -13,7 +13,7 @@ import java.util.Set;
 /**
  * Created by breucking on 31.01.16.
  */
-public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObject>, JsonDeserializer<ExtensibleObject> {
+public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>, JsonDeserializer<ExtensibleObject> {
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 
@@ -35,20 +35,11 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
     public ExtensibleObject deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 
         JsonObject object = jsonElement.getAsJsonObject();
-        ExtensibleObject mo = new ExtensibleObject();
+        ManagedObject mo = new ManagedObject();
 
         Iterator<Map.Entry<String, JsonElement>> objectElementIterator = object.entrySet().iterator();
         while (objectElementIterator.hasNext()) {
             Map.Entry<String, JsonElement> element = objectElementIterator.next();
-
-            try {
-                Class foundClass = Class.forName(element.getKey().replace('_', '.'));
-                if (foundClass != null) {
-                    mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), foundClass));
-                    continue;
-                }
-            } catch (ClassNotFoundException e) {
-            }
 
             JsonPrimitive tmp;
             if (element.getValue().isJsonPrimitive()) {

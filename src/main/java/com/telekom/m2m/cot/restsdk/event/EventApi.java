@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.event;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
@@ -19,7 +20,7 @@ public class EventApi {
 
     public Event getEvent(String eventId) {
         String response = cloudOfThingsRestClient.getResponse(eventId, "event/events/", CONTENT_TYPE);
-        Event event = gson.fromJson(response, Event.class);
+        Event event = new Event(gson.fromJson(response, ExtensibleObject.class));
         return event;
     }
 

@@ -1,65 +1,70 @@
 package com.telekom.m2m.cot.restsdk.event;
 
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 import java.util.Date;
 
 /**
  * Created by breucking on 04.02.16.
  */
-public class Event {
-    private String id;
-    private String type;
-    private String text;
-    private Date creationTime;
-    private Date time;
-    private ManagedObject source;
+public class Event extends ExtensibleObject {
+
+    public Event() {
+        super();
+    }
+
+    public Event(ExtensibleObject extensibleObject) {
+        super (extensibleObject);
+    }
 
     public String getId() {
-        return id;
+        return (String) anyObject.get("id");
     }
 
     public void setId(String id) {
-        this.id = id;
+        anyObject.put("id", id);
     }
 
     public String getType() {
-        return type;
+        return (String) anyObject.get("type");
     }
 
     public void setType(String type) {
-        this.type = type;
+        anyObject.put("type", type);
     }
 
     public String getText() {
-        return text;
+        return (String) anyObject.get("text");
     }
 
     public void setText(String text) {
-        this.text = text;
+        anyObject.put("text", text);
     }
 
     public Date getCreationTime() {
-        return creationTime;
+        return (Date) anyObject.get("creationTime");
     }
 
     public void setCreationTime(Date creationTime) {
-        this.creationTime = creationTime;
+        anyObject.put("creationTime", creationTime);
     }
 
     public Date getTime() {
-        return time;
+        return (Date) anyObject.get("time");
     }
 
     public void setTime(Date time) {
-        this.time = time;
+        anyObject.put("time", time);
     }
 
     public void setSource(ManagedObject source) {
-        this.source = source;
+        anyObject.put("source", source);
     }
 
     public ManagedObject getSource() {
-        return source;
+        return (ManagedObject) anyObject.get("source");
     }
+
+
 }

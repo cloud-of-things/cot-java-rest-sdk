@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import okhttp3.OkHttpClient;
 
@@ -32,8 +33,13 @@ public class InventoryApi {
 
     public ManagedObject get(String s) {
         String response = cloudOfThingsRestClient.getResponse(s, "inventory/managedObjects", CONTENT_TYPE);
-        ManagedObject mo = gson.fromJson(response, ManagedObject.class);
-        return mo;
+        ExtensibleObject extensibleObject = gson.fromJson(response, ExtensibleObject.class);
+        if (extensibleObject != null) {
+            ManagedObject mo = new ManagedObject(extensibleObject);
+            return mo;
+        }else {
+            return null;
+        }
     }
 
     public void delete(String id) {
