@@ -1,0 +1,40 @@
+package com.telekom.m2m.cot.restsdk.measurement;
+
+/**
+ * Created by breucking on 07.02.16.
+ */
+public class MeasurementReading {
+    private float value;
+
+    public MeasurementReading() {
+    }
+
+    public MeasurementReading(float value, String unit) {
+
+        this.value = value;
+        this.unit = unit;
+    }
+
+    private String unit;
+
+    public MeasurementReading(String unit) {
+        this.unit = unit;
+    }
+
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+
+    public float getValue() {
+        return value;
+    }
+
+    public void setValue(float value) {
+        this.value = value;
+    }
+
+}

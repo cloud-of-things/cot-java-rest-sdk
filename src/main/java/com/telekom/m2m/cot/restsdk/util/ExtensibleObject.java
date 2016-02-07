@@ -33,4 +33,8 @@ public class ExtensibleObject {
     public boolean has(String property) {
         return anyObject.containsKey(property);
     }
+
+    public void set(Object object) {
+        anyObject.put(object.getClass().getCanonicalName().replace('.', '_'), object );
+    }
 }
