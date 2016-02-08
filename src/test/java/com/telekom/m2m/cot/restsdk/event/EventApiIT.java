@@ -58,7 +58,7 @@ public class EventApiIT {
         EventApi eventApi = cotPlat.getEventApi();
 
         Event createdEvent = eventApi.create(event);
-        Assert.assertNotNull("Should now have an Id", event.getId());
+        Assert.assertNotNull("Should now have an Id", createdEvent.getId());
 
         Event retrievedEvent = eventApi.getEvent(createdEvent.getId());
         Assert.assertEquals(retrievedEvent.getId(), createdEvent.getId());
