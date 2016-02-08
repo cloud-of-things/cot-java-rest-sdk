@@ -1,11 +1,10 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.event.Event;
-import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -33,8 +32,6 @@ public class MeasurementApiIT {
 
     @Test
     public void testCreateEvent() throws Exception {
-
-
         Measurement measurement = new Measurement();
         measurement.setTime(new Date());
         measurement.setType("com_telekom_TestType");
@@ -67,5 +64,26 @@ public class MeasurementApiIT {
         Assert.assertEquals(retrievedMeasurement.getTime().compareTo(timeOfEventHappening), 0);
     }
 
+    @Test(expectedExceptions = {CotSdkException.class})
+    public void testCreateAndReadAndDelete() throws Exception {
+        Date timeOfEventHappening = new Date();
+
+        Measurement measurement = new Measurement();
+        measurement.setTime(timeOfEventHappening);
+        measurement.setType("com_telekom_TestType");
+        measurement.setSource(testManagedObject);
+
+        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+
+        Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
+
+        Measurement retrievedMeasurement = measurementApi.getMeasurement(createdMeasurements.getId());
+
+        Assert.assertEquals(retrievedMeasurement.getId(), createdMeasurements.getId());
+
+        measurementApi.delete(retrievedMeasurement);
+
+        Measurement deletedMeasurement = measurementApi.getMeasurement(createdMeasurements.getId());
+    }
 
 }

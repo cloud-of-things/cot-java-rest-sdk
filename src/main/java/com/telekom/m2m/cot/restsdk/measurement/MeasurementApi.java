@@ -2,8 +2,7 @@ package com.telekom.m2m.cot.restsdk.measurement;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.event.Event;
-import com.telekom.m2m.cot.restsdk.event.EventApi;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
@@ -23,6 +22,9 @@ public class MeasurementApi {
 
     public Measurement getMeasurement(String id) {
         String response = cloudOfThingsRestClient.getResponse(id, "measurement/measurements/", CONTENT_TYPE);
+        if (response == null) {
+            throw new CotSdkException("Measurement not found (id='" + id + "')");
+        }
         Measurement measurement = new Measurement(gson.fromJson(response, ExtensibleObject.class));
         return measurement;
     }
@@ -32,5 +34,9 @@ public class MeasurementApi {
         String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "measurement/measurements/", CONTENT_TYPE);
         measurement.setId(id);
         return measurement;
+    }
+
+    public void delete(Measurement measurement) {
+        cloudOfThingsRestClient.delete(measurement.getId(), "measurement/measurements/");
     }
 }

@@ -7,7 +7,7 @@ THis is an SDK to interfere with the Cloud of Things by Deutsche Telekom
 * **SmartREST**: Not implemented
 * **Inventory**: **Partly implemented**
 * **Events**: **Partly implemented**
-* **Measurements**: Not implemented
+* **Measurements**: **Partly implemented**
 * **Device control**: **Partly implemented**
 * **Alarms**: Not implemented
 * **Device credentials**: **Partly implemented**
