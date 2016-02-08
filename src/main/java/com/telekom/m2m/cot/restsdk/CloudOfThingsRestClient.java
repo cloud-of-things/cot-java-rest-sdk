@@ -97,12 +97,12 @@ public class CloudOfThingsRestClient {
         }
     }
 
-    public String getResponse(String json, String api, String contentType) {
+    public String getResponse(String id, String api, String contentType) {
 
 
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url("https://testing.test-ram.m2m.telekom.com/" + api + "/" + json)
+                .url("https://testing.test-ram.m2m.telekom.com/" + api + "/" + id)
                 .build();
 
         Response response = null;

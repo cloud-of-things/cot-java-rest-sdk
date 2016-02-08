@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 import java.util.Date;
@@ -42,4 +43,7 @@ public class Measurement extends ExtensibleObject {
     }
 
 
+    public void setSource(ManagedObject managedObject) {
+        anyObject.put("source", managedObject);
+    }
 }
