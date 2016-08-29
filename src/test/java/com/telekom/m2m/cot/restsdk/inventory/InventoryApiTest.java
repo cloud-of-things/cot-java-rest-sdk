@@ -22,4 +22,6 @@ public class InventoryApiTest {
         InventoryApi inventoryApi = platform.getInventoryApi();
         inventoryApi.get("foo");
     }
+
+
 }
