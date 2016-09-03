@@ -6,8 +6,6 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import okhttp3.OkHttpClient;
 
-import java.io.IOException;
-
 /**
  * Created by breucking on 30.01.16.
  */
@@ -33,7 +31,7 @@ public class InventoryApi {
 
     public ManagedObject get(String s) {
         String response = cloudOfThingsRestClient.getResponse(s, "inventory/managedObjects", CONTENT_TYPE);
-        ExtensibleObject extensibleObject = gson.fromJson(response, ExtensibleObject.class);
+        ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
             ManagedObject mo = new ManagedObject(extensibleObject);
             return mo;

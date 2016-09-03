@@ -86,4 +86,30 @@ public class MeasurementApiIT {
         Measurement deletedMeasurement = measurementApi.getMeasurement(createdMeasurements.getId());
     }
 
+    @Test
+    public void testMultipleMeasurements() throws Exception {
+        // Expects a tenant with already multiple measurements
+
+        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+
+        MeasurementCollection measurementCollection = measurementApi.getMeasurements();
+
+
+        Measurement[] measurements = measurementCollection.getMeasurements();
+
+        Assert.assertTrue(measurements.length > 0);
+
+        Measurement measurement = measurements[0];
+
+        Assert.assertTrue(measurement.getId() != null);
+        Assert.assertTrue(measurement.getId().length() > 0);
+
+        Assert.assertTrue(measurement.getTime() != null);
+        Assert.assertTrue(measurement.getTime().compareTo(new Date()) < 0);
+
+        Assert.assertTrue(measurement.getType() != null);
+        Assert.assertTrue(measurement.getType().length() > 0);
+
+
+    }
 }

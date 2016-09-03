@@ -39,4 +39,8 @@ public class MeasurementApi {
     public void delete(Measurement measurement) {
         cloudOfThingsRestClient.delete(measurement.getId(), "measurement/measurements/");
     }
+
+    public MeasurementCollection getMeasurements() {
+        return new MeasurementCollection(cloudOfThingsRestClient);
+    }
 }

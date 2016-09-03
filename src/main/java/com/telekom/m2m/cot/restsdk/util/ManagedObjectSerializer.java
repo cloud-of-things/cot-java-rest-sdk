@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.util;
 
 import com.google.gson.*;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReferenceCollection;
 
 import java.lang.reflect.Type;
 import java.text.ParseException;
@@ -49,7 +50,7 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
                     converted = tmp.getAsBoolean();
                 } else if (tmp.isString()) {
                     try {
-                       converted = sdf.parse(tmp.getAsString());
+                        converted = sdf.parse(tmp.getAsString());
                     } catch (ParseException e) {
                         converted = tmp.getAsString();
                     }
@@ -58,8 +59,16 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
                     converted = tmp.getAsNumber();
                 }
                 mo.set(element.getKey(), converted);
-            } else if (element.getValue().isJsonObject())
-                mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
+            } else if (element.getValue().isJsonObject()) {
+                if (element.getKey().toString().equals("childDevices")) {
+                    ManagedObjectReferenceCollection morc = jsonDeserializationContext.deserialize(element.getValue(),
+                            ManagedObjectReferenceCollection.class);
+                    mo.set("childDevices", morc);
+                } else {
+                    mo.set(element.getKey(),
+                            jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
+                }
+            }
 
         }
 

@@ -7,6 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Date;
+import java.util.Iterator;
 
 import static org.mockito.Matchers.any;
 
@@ -54,13 +55,10 @@ public class ManagedObjectTest {
         Assert.assertEquals(mo.getType(), "com_nsn_cumulocity_example_Clazz");
         Assert.assertEquals(mo.getLastUpdated(), new Date(1335980920006L));
 
-        Assert.assertEquals(mo.getChildDevices().size(), 1);
-
-
     }
 
     @Test
-    public void testChildDevices() throws Exception {
+    public void testEmptyChildDevices() throws Exception {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -81,9 +79,55 @@ public class ManagedObjectTest {
         InventoryApi inventoryApi = platform.getInventoryApi();
         ManagedObject mo = inventoryApi.get("abc");
 
-        Assert.assertEquals(mo.getChildDevices().size(), 0);
 
+        ManagedObjectReferenceCollection morc = mo.getChildDevices();
+        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Assert.assertEquals(cMOs.iterator().hasNext(), false);
+    }
+
+    @Test
+    public void testChildDevices() throws Exception {
+
+        String inventoryJsonExample = "{\n" +
+                "  \"id\" : \"42\",\n" +
+                "  \"name\" : \"SomeName\",\n" +
+                "  \"self\" : \"<<This ManagedObject URL>>\",\n" +
+                "  \"type\" :\"com_nsn_cumulocity_example_Clazz\",\n" +
+                "  \"lastUpdated\": \"2012-05-02T19:48:40.006+02:00\",\n" +
+                "  \"com_othercompany_StrongTypedClass\" : { \"id\": 1},\n" +
+                "  \"childDevices\": {\n" +
+                "    \"self\" : \"<<ManagedObjectReferenceCollection URL>>\",\n" +
+                "    \"references\" : [\n" +
+                "      {\n" +
+                "        \"self\" : \"<<ManagedObjectReference URL>>\",\n" +
+                "        \"managedObject\": {\n" +
+                "          \"id\": \"1\",\n" +
+                "          \"self\" : \"<<ManagedObject URL>>\",\n" +
+                "          \"name\": \"Some Child\"\n" +
+                "        }\n" +
+                "      }\n" +
+                "    ]    \n" +
+                "  }\n" +
+                "}";
+
+        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
+        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
+        Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));
+        Mockito.when(rc.getResponse(any(String.class), any(String.class), any(String.class))).thenReturn(
+                inventoryJsonExample);
+
+        InventoryApi inventoryApi = platform.getInventoryApi();
+        ManagedObject mo = inventoryApi.get("abc");
+
+        ManagedObjectReferenceCollection morc = mo.getChildDevices();
+        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterator<ManagedObjectReference> iter = cMOs.iterator();
+        Assert.assertEquals(iter.hasNext(), true);
+        ManagedObjectReference mor = iter.next();
+        ManagedObject cMo = mor.getManagedObject();
+        Assert.assertEquals(cMo.getId(), "1");
 
     }
+
 
 }

@@ -2,7 +2,6 @@ package com.telekom.m2m.cot.restsdk.measurement;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import org.mockito.Mockito;
 import org.testng.annotations.Test;
@@ -23,7 +22,5 @@ public class MeasurementApiTest {
 
         MeasurementApi measurementApi = platform.getMeasurementApi();
         measurementApi.getMeasurement("1234");
-
-
     }
 }
