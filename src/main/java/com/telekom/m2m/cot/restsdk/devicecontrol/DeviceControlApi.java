@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.operation.Operation;
 import com.telekom.m2m.cot.restsdk.operation.OperationStatus;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.io.IOException;
@@ -30,5 +31,9 @@ public class DeviceControlApi {
         operation.setStatus(OperationStatus.ACCEPTED);
 
         cloudOfThingsRestClient.doPutRequest(gson.toJson(operation), "devicecontrol/newDeviceRequests/" + deviceId, CONTENT_TYPE);
+    }
+
+    public void getOperation(String operationId) {
+        throw new CotSdkException("Not implemented yet");
     }
 }

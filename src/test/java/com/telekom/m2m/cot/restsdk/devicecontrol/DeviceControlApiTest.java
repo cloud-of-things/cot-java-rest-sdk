@@ -13,7 +13,7 @@ import static org.mockito.Matchers.any;
  */
 public class DeviceControlApiTest {
     @Test(expectedExceptions = CotSdkException.class)
-    public void testGetManagedObjects() throws Exception {
+    public void testAcceptDevice() throws Exception {
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
         Mockito.when(platform.getDeviceControlApi()).thenReturn(new DeviceControlApi(rc));
@@ -22,4 +22,17 @@ public class DeviceControlApiTest {
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
         deviceControlApi.acceptDevice("foo");
     }
+
+    @Test(expectedExceptions = CotSdkException.class)
+    public void testGetOperationWithFailure() throws Exception {
+        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
+        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
+        Mockito.when(platform.getDeviceControlApi()).thenReturn(new DeviceControlApi(rc));
+        Mockito.doThrow(CotSdkException.class).when(rc).getResponse(any(String.class), any(String.class), any(String.class));
+
+        DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
+        deviceControlApi.getOperation("foo");
+    }
+
+
 }
