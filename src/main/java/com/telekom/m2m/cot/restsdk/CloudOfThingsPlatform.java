@@ -6,10 +6,8 @@ import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
-import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import okhttp3.OkHttpClient;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 /**
@@ -32,8 +30,9 @@ public class CloudOfThingsPlatform {
      *
      * @return a CloudOfThingsPlatform object with special connection properties.
      */
-    public static CloudOfThingsPlatform getPlatformToRegisterDevice() {
-        return new CloudOfThingsPlatform(new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)),
+    public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host) {
+        return new CloudOfThingsPlatform(host,
+                new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)));
     }
@@ -46,8 +45,8 @@ public class CloudOfThingsPlatform {
      * @param password the username of the platform user.
      * @throws Exception if initialization failed
      */
-    public CloudOfThingsPlatform(String tenant, String username, String password) {
-        cloudOfThingsRestClient = new CloudOfThingsRestClient(new OkHttpClient(), tenant, username, password);
+    public CloudOfThingsPlatform(String host, String tenant, String username, String password) {
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(new OkHttpClient(), host, tenant, username, password);
     }
 
     /**

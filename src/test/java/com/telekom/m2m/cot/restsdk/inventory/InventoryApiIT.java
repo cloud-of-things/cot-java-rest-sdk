@@ -17,7 +17,7 @@ public class InventoryApiIT {
         ManagedObject mo = new ManagedObject();
         mo.setName("Hello!");
 
-        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
         ManagedObject createdMo = inventoryApi.create(mo);
@@ -26,7 +26,7 @@ public class InventoryApiIT {
 
     @Test
     public void testGetDevice() throws Exception {
-        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
         ManagedObject mo = inventoryApi.get("142300");
@@ -43,7 +43,7 @@ public class InventoryApiIT {
         ManagedObject mo = new ManagedObject();
         mo.setName("MyTest-testCreateAndRead");
 
-        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
         ManagedObject createdMo = inventoryApi.create(mo);
 

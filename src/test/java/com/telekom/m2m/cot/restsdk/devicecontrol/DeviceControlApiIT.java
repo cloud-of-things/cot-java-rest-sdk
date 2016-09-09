@@ -16,7 +16,7 @@ import org.testng.annotations.Test;
  */
 public class DeviceControlApiIT {
 
-    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeClass
@@ -30,7 +30,7 @@ public class DeviceControlApiIT {
     }
 
     @Test
-    public void testGetOperation() throws Exception {
+    public void testCreateAndGetOperation() throws Exception {
         DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
 
         JsonObject parameters = new JsonObject();
@@ -52,8 +52,31 @@ public class DeviceControlApiIT {
 
         Assert.assertEquals(retrievedOperation.getDeviceId(), "162261952");
         Assert.assertNotNull(retrievedOperation.get("com_telekom_m2m_cotcommand"));
-
     }
 
+    @Test
+    public void testCreateAndUpdateOperation() throws Exception {
+//        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+//
+//        JsonObject parameters = new JsonObject();
+//        parameters.add("param1", new JsonPrimitive("1"));
+//
+//        JsonObject jsonObject = new JsonObject();
+//        jsonObject.add("name", new JsonPrimitive("example"));
+//        jsonObject.add("parameters", parameters);
+//
+//        Operation operation = new Operation();
+//        operation.setDeviceId(testManagedObject.getId());
+//        operation.set("com_telekom_m2m_cotcommand", jsonObject);
+//
+//        Operation createdOperation = deviceControlApi.create(operation);
+//
+//        Assert.assertNotNull("Should now have an Id", createdOperation.getId());
+//
+//        createdOperation.setStatus(OperationStatus.EXECUTING);
+//
+//        Operation updatedOperation = deviceControlApi.update(createdOperation);
+
+    }
 
 }

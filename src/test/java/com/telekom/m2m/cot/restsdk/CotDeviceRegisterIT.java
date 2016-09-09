@@ -7,8 +7,8 @@ import com.telekom.m2m.cot.restsdk.identity.ExternalId;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import com.telekom.m2m.cot.restsdk.operation.Operation;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -22,11 +22,11 @@ public class CotDeviceRegisterIT {
     public void testDeviceRegister() throws Exception {
         String deviceId = "mydevice-name";
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
 
-        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice().getDeviceCredentialsApi();
+        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("management.test-ram.m2m.telekom.com").getDeviceCredentialsApi();
 
 
         // Step 1: (devicemanager) Register Device
@@ -48,7 +48,7 @@ public class CotDeviceRegisterIT {
         Assert.assertNotNull(devCred.getTenantId());
         Assert.assertNotNull(devCred.getUsername());
 
-        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(devCred.getTenantId(), devCred.getUsername(), devCred.getPassword());
+        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getTenantId(), devCred.getUsername(), devCred.getPassword());
 
         //IdentityApi identityApi = platform.getIdentityApi();
         //ExternalId identity = identityApi.getExternalId("");
@@ -79,11 +79,11 @@ public class CotDeviceRegisterIT {
     public void testDeviceRegisterWithIdentity() throws Exception {
         String deviceId = "mydevice-name";
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
 
-        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice().getDeviceCredentialsApi();
+        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("management.test-ram.m2m.telekom.com").getDeviceCredentialsApi();
 
 
         // Step 1: (devicemanager) Register Device
@@ -105,7 +105,7 @@ public class CotDeviceRegisterIT {
         Assert.assertNotNull(devCred.getTenantId());
         Assert.assertNotNull(devCred.getUsername());
 
-        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(devCred.getTenantId(), devCred.getUsername(), devCred.getPassword());
+        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getTenantId(), devCred.getUsername(), devCred.getPassword());
 
         InventoryApi inventory = platformForDevice.getInventoryApi();
 

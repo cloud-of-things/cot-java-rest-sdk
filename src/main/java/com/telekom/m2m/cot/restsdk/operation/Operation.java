@@ -9,9 +9,6 @@ import java.util.Date;
  */
 public class Operation extends ExtensibleObject {
 
-    private String id;
-    private OperationStatus status;
-
     public Operation() {
         super();
     }
@@ -27,7 +24,7 @@ public class Operation extends ExtensibleObject {
 
 
     public void setStatus(OperationStatus status) {
-        this.status = status;
+        anyObject.put("status", status);
     }
 
     public String getId() {

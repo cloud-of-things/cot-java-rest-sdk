@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.util;
 
+import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 
@@ -10,6 +11,7 @@ import java.security.SecureRandom;
  * Created by breucking on 31.01.16.
  */
 public class TestHelper {
+    public static final String TEST_HOST = "testing.test-ram.m2m.telekom.com";
     public static final String TEST_USERNAME = "patrick-restplay";
     public static final String TEST_PASSWORD = "Test1234";
     public static final String TEST_TENANT = "testing";
@@ -23,6 +25,7 @@ public class TestHelper {
     public static ManagedObject createManagedObject(String name) {
         ManagedObject mo = new ManagedObject();
         mo.setName(name);
+        mo.set("c8y_IsDevice", new JsonObject());
         return mo;
     }
 

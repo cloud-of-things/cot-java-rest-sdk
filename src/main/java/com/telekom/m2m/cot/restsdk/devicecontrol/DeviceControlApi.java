@@ -48,4 +48,11 @@ public class DeviceControlApi {
 
         return operation;
     }
+
+    public Operation update(Operation operation) {
+        String json = "{\"status\" : \"" + operation.getStatus() + "\"}";
+
+        cloudOfThingsRestClient.doPutRequest(json, "devicecontrol/operations/" + operation.getId(), CONTENT_TYPE_OPERATION);
+        return operation;
+    }
 }
