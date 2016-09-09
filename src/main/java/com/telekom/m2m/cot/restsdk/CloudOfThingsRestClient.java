@@ -51,8 +51,8 @@ public class CloudOfThingsRestClient {
                     .addHeader("Authorization", "Basic " + encodedAuthString)
                     .addHeader("Content-Type", contentType)
                     .addHeader("Accept", contentType)
-                    //.url("https://" + tenant + ".test-ram.m2m.telekom.com/" + api)
-                    .url("https://" + host + "/" + api)
+                    //.url(tenant + ".test-ram.m2m.telekom.com/" + api)
+                    .url(host + "/" + api)
                     .post(body)
                     .build();
             Response response = client.newCall(request).execute();
@@ -89,8 +89,8 @@ public class CloudOfThingsRestClient {
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
                 .addHeader("Accept", contentType)
-                //.url("https://" + tenant + ".test-ram.m2m.telekom.com/" + api)
-                .url("https://" + host + "/" + api)
+                //.url(tenant + ".test-ram.m2m.telekom.com/" + api)
+                .url(host + "/" + api)
                 .post(body)
                 .build();
 
@@ -104,8 +104,8 @@ public class CloudOfThingsRestClient {
     public String getResponse(String id, String api, String contentType) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                //.url("https://testing.test-ram.m2m.telekom.com/" + api + "/" + id)
-                .url("https://" + host + "/" + api + "/" + id)
+                //.url("http://testing.test-ram.m2m.telekom.com/" + api + "/" + id)
+                .url(host + "/" + api + "/" + id)
                 .build();
 
         Response response = null;
@@ -126,8 +126,8 @@ public class CloudOfThingsRestClient {
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
                 .addHeader("Accept", contentType)
-                //.url("https://" + tenant + ".test-ram.m2m.telekom.com/" + api)
-                .url("https://" + host + "/" + api)
+                //.url(tenant + ".test-ram.m2m.telekom.com/" + api)
+                .url(host + "/" + api)
                 .put(body)
                 .build();
 
@@ -141,8 +141,8 @@ public class CloudOfThingsRestClient {
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                //.url("https://testing.test-ram.m2m.telekom.com/" + api + "/" + id)
-                .url("https://" + host + "/" + api + "/" + id)
+                //.url("http://testing.test-ram.m2m.telekom.com/" + api + "/" + id)
+                .url(host + "/" + api + "/" + id)
                 .delete()
                 .build();
 
