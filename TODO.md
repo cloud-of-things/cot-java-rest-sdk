@@ -7,6 +7,11 @@
 * Implement Mass Retrieval of Measurements 
 * Make it available on Maven
 
+## Compatibility to internal MQTT project
+* CloudOfThingsPlatform.proxy-Stuff
+* External ID
+* platform.close()
+
 # Done
 
 * Complete Device registration process

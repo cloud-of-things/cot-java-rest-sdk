@@ -34,6 +34,9 @@ public class ManagedObject extends ExtensibleObject {
         anyObject.put("id", id);
     }
 
+    public void setType(String type) {
+        anyObject.get("type");
+    }
 
     public String getType() {
         return (String) anyObject.get("type");

@@ -26,7 +26,7 @@ public class CotDeviceRegisterIT {
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
 
-        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("https://management.test-ram.m2m.telekom.com").getDeviceCredentialsApi();
+        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice(TestHelper.TEST_HOST).getDeviceCredentialsApi();
 
 
         // Step 1: (devicemanager) Register Device
@@ -44,6 +44,7 @@ public class CotDeviceRegisterIT {
 
         Assert.assertNotNull(devCred);
         Assert.assertNotNull(devCred.getId());
+        Assert.assertEquals(devCred.getId(), deviceId);
         Assert.assertNotNull(devCred.getPassword());
         Assert.assertNotNull(devCred.getTenantId());
         Assert.assertNotNull(devCred.getUsername());
@@ -83,7 +84,7 @@ public class CotDeviceRegisterIT {
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
 
-        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("https://management.test-ram.m2m.telekom.com").getDeviceCredentialsApi();
+        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("https://management.int2-ram.m2m.telekom.com").getDeviceCredentialsApi();
 
 
         // Step 1: (devicemanager) Register Device
