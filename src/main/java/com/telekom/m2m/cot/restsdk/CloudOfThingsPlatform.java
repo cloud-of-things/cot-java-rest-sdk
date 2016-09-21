@@ -8,6 +8,8 @@ import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import okhttp3.OkHttpClient;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
 import java.util.Base64;
 
 /**
@@ -47,6 +49,11 @@ public class CloudOfThingsPlatform {
      */
     public CloudOfThingsPlatform(String host, String tenant, String username, String password) {
         cloudOfThingsRestClient = new CloudOfThingsRestClient(new OkHttpClient(), host, tenant, username, password);
+    }
+
+    public CloudOfThingsPlatform(String host, String tenant, String username, String password, String proxyHost, int proxyPort) {
+        OkHttpClient client = new OkHttpClient.Builder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort))).build();
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, tenant, username, password);
     }
 
     /**

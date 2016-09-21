@@ -22,4 +22,5 @@ public class CloudOfThingsPlatformTest {
         InventoryApi inventoryApi = cotPlatform.getInventoryApi();
         Assert.assertNotNull(inventoryApi);
     }
+
 }
