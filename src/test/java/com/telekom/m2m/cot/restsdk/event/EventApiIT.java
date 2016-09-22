@@ -3,7 +3,7 @@ package com.telekom.m2m.cot.restsdk.event;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -57,8 +57,11 @@ public class EventApiIT {
 
         EventApi eventApi = cotPlat.getEventApi();
 
+        Thread.sleep(1000);
+
         Event createdEvent = eventApi.create(event);
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());
+
 
         Event retrievedEvent = eventApi.getEvent(createdEvent.getId());
         Assert.assertEquals(retrievedEvent.getId(), createdEvent.getId());
@@ -67,6 +70,7 @@ public class EventApiIT {
         Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening), 0);
         Assert.assertNotNull(retrievedEvent.getCreationTime());
         Assert.assertEquals(retrievedEvent.getCreationTime().compareTo(timeOfEventHappening), 1);
+
     }
 
 

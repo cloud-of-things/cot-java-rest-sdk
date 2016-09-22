@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReferenceCollection;
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -17,6 +18,15 @@ import java.util.Set;
 public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>, JsonDeserializer<ExtensibleObject> {
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    private static ArrayList<String> blacklist = new ArrayList<String>() {{
+        add("id");
+        add("self");
+        add("lastUpdated");
+        add("childDevices");
+        add("childAssets");
+        add("deviceParents");
+        add("assetParents");
+    }};
 
     public JsonElement serialize(ExtensibleObject src, Type typeOfSrc,
                                  JsonSerializationContext context) {
@@ -27,6 +37,9 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
             Map<String, Object> attributes = src.getAttributes();
             Set<String> keys = attributes.keySet();
             for (String key : keys) {
+                // Omit keys
+                if (blacklist.contains(key)) continue;
+
                 object.add(key, context.serialize(attributes.get(key)));
             }
             return object;

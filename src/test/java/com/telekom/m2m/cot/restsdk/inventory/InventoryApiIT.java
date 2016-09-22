@@ -1,8 +1,10 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.junit.Assert;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Iterator;
@@ -51,9 +53,51 @@ public class InventoryApiIT {
 
         ManagedObject retrievedMo = inventoryApi.get(createdMo.getId());
 
-        Assert.assertEquals("Should have the same Id", createdMo.getId(), retrievedMo.getId());
-        Assert.assertEquals("Should have the same Name", "MyTest-testCreateAndRead", retrievedMo.getName());
+        Assert.assertEquals(retrievedMo.getId(), createdMo.getId(), "Should have the same Id");
+        Assert.assertEquals(retrievedMo.getName(), "MyTest-testCreateAndRead", "Should have the same Name");
     }
 
+    @Test
+    public void testCreateReadUpdateDelete() throws Exception {
+
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
+
+        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        ManagedObject createdMo = inventoryApi.create(mo);
+
+        Assert.assertNotNull("Should now have an Id", createdMo.getId());
+
+        ManagedObject retrievedMo = inventoryApi.get(createdMo.getId());
+
+        Assert.assertEquals(retrievedMo.getId(), createdMo.getId(), "Should have the same Id");
+        Assert.assertEquals(retrievedMo.getName(), "MyTest-testCreateAndRead", "Should have the same Name");
+
+        JsonObject obj = new JsonObject();
+        obj.add("foo", new JsonPrimitive("bar"));
+
+        retrievedMo.setName("NewName");
+        retrievedMo.set("play", obj);
+
+        inventoryApi.update(retrievedMo);
+
+        retrievedMo = inventoryApi.get(createdMo.getId());
+
+        Assert.assertEquals(retrievedMo.getId(), createdMo.getId(), "Should have the same Id");
+        Assert.assertEquals(retrievedMo.getName(), "NewName", "Should have the same Name");
+
+        Object play = retrievedMo.get("play");
+        Assert.assertNotNull(play);
+        Assert.assertTrue(play instanceof JsonObject);
+        JsonObject playObj = (JsonObject) play;
+        Assert.assertTrue(playObj.has("foo"));
+        Assert.assertEquals(playObj.get("foo").getAsString(), "bar");
+
+        inventoryApi.delete(retrievedMo.getId());
+        retrievedMo = inventoryApi.get(createdMo.getId());
+        Assert.assertNull(retrievedMo);
+
+    }
 
 }

@@ -40,6 +40,11 @@ public class ManagedObjectReferenceCollectionSerializer implements
     }
 
     public JsonElement serialize(ManagedObjectReferenceCollection src, Type typeOfSrc, JsonSerializationContext context) {
-        throw new UnsupportedOperationException();
+        if (src == null)
+            return null;
+        else {
+            // TODO: This needs more work!
+            return null;
+        }
     }
 }

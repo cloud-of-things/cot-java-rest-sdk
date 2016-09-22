@@ -35,12 +35,17 @@ public class InventoryApi {
         if (extensibleObject != null) {
             ManagedObject mo = new ManagedObject(extensibleObject);
             return mo;
-        }else {
+        } else {
             return null;
         }
     }
 
     public void delete(String id) {
         cloudOfThingsRestClient.delete(id, "inventory/managedObjects");
+    }
+
+    public void update(ManagedObject managedObject) {
+        String json = gson.toJson(managedObject);
+        cloudOfThingsRestClient.doPutRequest(json, managedObject.getId(), "inventory/managedObjects", CONTENT_TYPE);
     }
 }

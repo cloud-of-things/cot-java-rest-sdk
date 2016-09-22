@@ -26,6 +26,16 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
             Map<String, Object> attributes = src.getAttributes();
             Set<String> keys = attributes.keySet();
             for (String key : keys) {
+                if (key.equals("source")) {
+                    Object source = attributes.get(key);
+                    if (source instanceof ManagedObject) {
+                        JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) source).getId());
+                        JsonObject sourceObject = new JsonObject();
+                        sourceObject.add("id", primitive);
+                        object.add(key, sourceObject);
+                        continue;
+                    }
+                }
                 object.add(key, context.serialize(attributes.get(key)));
             }
             return object;
@@ -58,7 +68,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                     converted = tmp.getAsBoolean();
                 } else if (tmp.isString()) {
                     try {
-                       converted = sdf.parse(tmp.getAsString());
+                        converted = sdf.parse(tmp.getAsString());
                     } catch (ParseException e) {
                         converted = tmp.getAsString();
                     }

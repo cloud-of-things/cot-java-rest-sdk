@@ -8,9 +8,9 @@
 * Make it available on Maven
 
 ## Compatibility to internal MQTT project
-* CloudOfThingsPlatform.proxy-Stuff
-* External ID
-* platform.close()
+* measurementsApi.create(..)
+* inventoryApi.update(..)
+* alarmApi
 
 # Done
 

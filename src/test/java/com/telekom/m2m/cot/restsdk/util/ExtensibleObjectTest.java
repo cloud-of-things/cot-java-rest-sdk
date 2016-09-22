@@ -27,7 +27,13 @@ public class ExtensibleObjectTest {
         JsonObject deserialzed = gson.fromJson(moJson, JsonObject.class);
 
         Assert.assertEquals(deserialzed.get("test_element").getAsString(), "foo");
-        Assert.assertEquals(deserialzed.get("id").getAsString(), "1");
+
+        //First it was suggested, that it deserializes the id, but this is not
+        // wanted, b/c PUT/POST requests don't allow IDs
+        // (PUT -> part of URL, POST -> will be generated).
+        //Assert.assertEquals(deserialzed.get("id").getAsString(), "1");
+        Assert.assertNull(deserialzed.get("id"));
+
         Assert.assertEquals(deserialzed.get("name").getAsString(), "Foo");
 
     }
