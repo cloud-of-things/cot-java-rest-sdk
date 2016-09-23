@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk;
 
+import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
@@ -102,5 +103,9 @@ public class CloudOfThingsPlatform {
 
     public MeasurementApi getMeasurementApi() {
         return new MeasurementApi(cloudOfThingsRestClient);
+    }
+
+    public AlarmApi getAlarmApi() {
+        return new AlarmApi(cloudOfThingsRestClient);
     }
 }
