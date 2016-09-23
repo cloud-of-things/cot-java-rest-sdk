@@ -47,33 +47,33 @@ public class AlarmApiIT {
         Assert.assertNotNull("Should now have an Id", createdAlarm.getId());
     }
 
-//    @Test
-//    public void testCreateAndRead() throws Exception {
-//        Date timeOfEventHappening = new Date();
-//
-//        Event event = new Event();
-//        event.setText("Sample Text");
-//        event.setType("com_telekom_TestType");
-//        event.setTime(timeOfEventHappening);
-//        event.setSource(testManagedObject);
-//
-//        EventApi eventApi = cotPlat.getEventApi();
-//
-//        Thread.sleep(1000);
-//
-//        Event createdEvent = eventApi.create(event);
-//        Assert.assertNotNull("Should now have an Id", createdEvent.getId());
-//
-//
-//        Event retrievedEvent = eventApi.getEvent(createdEvent.getId());
-//        Assert.assertEquals(retrievedEvent.getId(), createdEvent.getId());
-//        Assert.assertEquals(retrievedEvent.getType(), "com_telekom_TestType");
-//        Assert.assertEquals(retrievedEvent.getText(), "Sample Text");
-//        Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening), 0);
-//        Assert.assertNotNull(retrievedEvent.getCreationTime());
-//        Assert.assertEquals(retrievedEvent.getCreationTime().compareTo(timeOfEventHappening), 1);
-//
-//    }
+    @Test
+    public void testCreateAndRead() throws Exception {
+        Date timeOfEventHappening = new Date();
+
+        Alarm alarm = new Alarm();
+        alarm.setText("Strange thing happend!");
+        alarm.setType("com_telekom_TestType");
+        alarm.setTime(new Date());
+        alarm.setSource(testManagedObject);
+        alarm.set("foo", "{ \"alt\": 99.9, \"lng\": 8.55436, \"lat\": 50.02868 }");
+        alarm.setStatus(Alarm.STATE_ACTIVE);
+        alarm.setSeverity(Alarm.SEVERITY_MAJOR);
+
+        AlarmApi alarmApi = cotPlat.getAlarmApi();
+
+        Alarm createdAlarm = alarmApi.create(alarm);
+        Assert.assertNotNull("Should now have an Id", createdAlarm.getId());
+
+        Alarm retrievedAlarm = alarmApi.getAlarm(createdAlarm.getId());
+        Assert.assertEquals(retrievedAlarm.getId(), createdAlarm.getId());
+        Assert.assertEquals(retrievedAlarm.getType(), "com_telekom_TestType");
+        Assert.assertEquals(retrievedAlarm.getText(), "Strange thing happend!");
+        Assert.assertEquals(retrievedAlarm.getTime().compareTo(timeOfEventHappening), 0);
+        Assert.assertNotNull(retrievedAlarm.getCreationTime());
+        Assert.assertEquals(retrievedAlarm.getCreationTime().compareTo(new Date()), -1);
+
+    }
 
 
 }
