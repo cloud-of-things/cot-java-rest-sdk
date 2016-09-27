@@ -9,7 +9,7 @@ This is an SDK to interfere with the Cloud of Things by Deutsche Telekom AG
 * **Events**: **Partly implemented**
 * **Measurements**: **Partly implemented**
 * **Device control**: **Partly implemented**
-* **Alarms**: Not implemented
+* **Alarms**: **Partly implemented**
 * **Device credentials**: **Partly implemented**
 * **Identity**: **Partly implemented**
 * **Users**: Not implemented
