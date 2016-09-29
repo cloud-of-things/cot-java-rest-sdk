@@ -15,7 +15,7 @@ import java.util.Base64;
 
 /**
  * The CloudOfThingsPlatform is the starting point to interfere the Cloud of Things.
- * <p/>
+ *
  * Created by breucking on 30.01.16.
  *
  * @since 1.4
@@ -31,6 +31,7 @@ public class CloudOfThingsPlatform {
     /**
      * Get a platform object to register new devices. This should be used for retrieving the credentials.
      *
+     * @param host URL to the host to connect to.
      * @return a CloudOfThingsPlatform object with special connection properties.
      */
     public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host) {
@@ -43,10 +44,10 @@ public class CloudOfThingsPlatform {
     /**
      * Creates a CloudOfThingsPlatform object, the start point to interfere with the CoT.
      *
+     * @param host     URL to the host to connect to.
      * @param tenant   the tenant of the platform.
      * @param username the username of the platform user.
      * @param password the username of the platform user.
-     * @throws Exception if initialization failed
      */
     public CloudOfThingsPlatform(String host, String tenant, String username, String password) {
         cloudOfThingsRestClient = new CloudOfThingsRestClient(new OkHttpClient(), host, tenant, username, password);

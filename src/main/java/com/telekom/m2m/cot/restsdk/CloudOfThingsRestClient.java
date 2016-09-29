@@ -42,7 +42,6 @@ public class CloudOfThingsRestClient {
      * @param api         the REST API string.
      * @param contentType the Content-Type of the JSON Object.
      * @return the id of the Object.
-     * @throws IOException if the communication went wrong.
      */
     public String doRequestWithIdResponse(String json, String api, String contentType) {
         try {
@@ -80,7 +79,6 @@ public class CloudOfThingsRestClient {
      * @param api         the REST API string.
      * @param contentType the Content-Type of the JSON Object.
      * @return the received JSON response body.
-     * @throws IOException if the communication went wrong.
      */
     public String doPostRequest(String json, String api, String contentType) {
 
