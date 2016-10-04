@@ -2,6 +2,17 @@
 
 This is an SDK to interfere with the Cloud of Things by Deutsche Telekom AG
 
+## Usage
+
+Add this to your `pom.xml` to include the SDK in your Maven Repo
+```xml
+<dependency>
+    <groupId>com.telekom.m2m.cot</groupId>
+    <artifactId>java-rest-client</artifactId>
+    <version>0.1.0</version>
+</dependency>
+```
+
 ## Completenes of API
 
 * **SmartREST**: Not implemented
