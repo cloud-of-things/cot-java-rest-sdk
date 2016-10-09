@@ -15,7 +15,7 @@ import java.util.Base64;
 
 /**
  * The CloudOfThingsPlatform is the starting point to interfere the Cloud of Things.
- *
+ * <p>
  * Created by breucking on 30.01.16.
  *
  * @since 0.1.0
@@ -53,6 +53,17 @@ public class CloudOfThingsPlatform {
         cloudOfThingsRestClient = new CloudOfThingsRestClient(new OkHttpClient(), host, tenant, username, password);
     }
 
+    /**
+     * Creates a CloudOfThingsPlatform object, the start point to interfere
+     * with the CoT over HTTP proxy server.
+     *
+     * @param host      URL to the host to connect to.
+     * @param tenant    the tenant of the platform.
+     * @param username  the username of the platform user.
+     * @param password  the username of the platform user.
+     * @param proxyHost hostname of the HTTP proxy server
+     * @param proxyPort port of the HTTP proxy server.
+     */
     public CloudOfThingsPlatform(String host, String tenant, String username, String password, String proxyHost, int proxyPort) {
         OkHttpClient client = new OkHttpClient.Builder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort))).build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, tenant, username, password);
@@ -111,6 +122,11 @@ public class CloudOfThingsPlatform {
         return new MeasurementApi(cloudOfThingsRestClient);
     }
 
+    /**
+     * Returns the object to work with the alarm API.
+     *
+     * @return ready to use AlarmApi object.
+     */
     public AlarmApi getAlarmApi() {
         return new AlarmApi(cloudOfThingsRestClient);
     }
