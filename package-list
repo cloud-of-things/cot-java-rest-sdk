@@ -1,0 +1,10 @@
+com.telekom.m2m.cot.restsdk
+com.telekom.m2m.cot.restsdk.alarm
+com.telekom.m2m.cot.restsdk.devicecontrol
+com.telekom.m2m.cot.restsdk.event
+com.telekom.m2m.cot.restsdk.identity
+com.telekom.m2m.cot.restsdk.inventory
+com.telekom.m2m.cot.restsdk.measurement
+com.telekom.m2m.cot.restsdk.measurement.convinience
+com.telekom.m2m.cot.restsdk.operation
+com.telekom.m2m.cot.restsdk.util
