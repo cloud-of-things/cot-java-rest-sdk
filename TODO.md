@@ -1,5 +1,10 @@
 # Todos
 
+* Complete MeasurementsAPI
+* * Refactor from single methods to Query objects. 
+* * Filter Date
+* * Filter FragmentType
+* * ... and combinations
 * Write children
 * Refactor the basics, Clean Code
 * Implement Geo Features
@@ -7,10 +12,6 @@
 * Implement Mass Retrieval of Measurements 
 * Make it available on Maven
 
-## Compatibility to internal MQTT project
-* measurementsApi.create(..)
-* inventoryApi.update(..)
-* alarmApi
 
 # Done
 
