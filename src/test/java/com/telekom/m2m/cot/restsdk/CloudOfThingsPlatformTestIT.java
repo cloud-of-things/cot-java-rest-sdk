@@ -12,9 +12,7 @@ public class CloudOfThingsPlatformTestIT {
 
     @Test(enabled = false) // Enable if you have a proxy to test with
     public void testProxyConnection() throws Exception {
-        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD, "localhost", 8888);
-        InventoryApi inventoryApi = cotPlatform.getInventoryApi();
-        inventoryApi.get("test");
+
     }
 
     @Test(expectedExceptions = CotSdkException.class)

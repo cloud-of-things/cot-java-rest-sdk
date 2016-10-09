@@ -19,6 +19,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class MeasurementCollection /*implements Iterable<Measurement>*/ {
 
+    private String type = null;
     private String id = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
     private int pageCursor = 1;
@@ -34,8 +35,9 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
-    MeasurementCollection(String id, CloudOfThingsRestClient cloudOfThingsRestClient) {
+    MeasurementCollection(String id, String type, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.id = id;
+        this.type = type;
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
 
     }
@@ -70,10 +72,12 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
                 "currentPage=" + page +
                 "&pageSize=" + pageSize;
         if (id != null) {
-            response = cloudOfThingsRestClient.getResponse(url + "&source=" + id, CONTENT_TYPE);
-        } else {
-            response = cloudOfThingsRestClient.getResponse(url, CONTENT_TYPE);
+            url += "&source=" + id;
         }
+        if (type != null) {
+            url += "&type=" + type;
+        }
+        response = cloudOfThingsRestClient.getResponse(url, CONTENT_TYPE);
 
         return gson.fromJson(response, JsonObject.class);
     }
@@ -84,7 +88,6 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
      * @since 0.2.0
      */
     public void next() {
-
         pageCursor += 1;
     }
 

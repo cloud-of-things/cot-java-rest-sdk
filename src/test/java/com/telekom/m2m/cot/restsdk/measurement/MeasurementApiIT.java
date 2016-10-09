@@ -177,7 +177,7 @@ public class MeasurementApiIT {
         Assert.assertTrue(ms.length > 0);
         boolean allMeasuremntsFromSource = true;
         for (Measurement m : ms) {
-            if (m.getId() != testManagedObject.getId()) {
+            if (!m.getId().equals(testManagedObject.getId())) {
                 allMeasuremntsFromSource = false;
             }
         }
@@ -193,6 +193,39 @@ public class MeasurementApiIT {
             }
         }
         Assert.assertTrue(allMeasuremntsFromSource);
+    }
+
+    @Test
+    public void testMultipleMeasurementsByType() throws Exception {
+        MeasurementApi mApi = cotPlat.getMeasurementApi();
+
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date());
+        testMeasurement.setType("mysuperspecialtype");
+        mApi.createMeasurement(testMeasurement);
+
+        MeasurementCollection measurements = mApi.getMeasurements();
+        Measurement[] ms = measurements.getMeasurements();
+        Assert.assertTrue(ms.length > 0);
+        boolean allMeasuremntsFromSameType = true;
+        for (Measurement m : ms) {
+            if (!m.getType().equals(testManagedObject.getType())) {
+                allMeasuremntsFromSameType = false;
+            }
+        }
+        Assert.assertFalse(allMeasuremntsFromSameType);
+
+        measurements = mApi.getMeasurementsByType(testMeasurement.getType());
+        ms = measurements.getMeasurements();
+        allMeasuremntsFromSameType = true;
+        Assert.assertTrue(ms.length > 0);
+        for (Measurement m : ms) {
+            if (!m.getType().equals(testMeasurement.getType())) {
+                allMeasuremntsFromSameType = false;
+            }
+        }
+        Assert.assertTrue(allMeasuremntsFromSameType);
     }
 
 }

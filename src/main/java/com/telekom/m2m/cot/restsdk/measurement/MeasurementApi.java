@@ -76,10 +76,21 @@ public class MeasurementApi {
      * Retrieves Measurements of a specific source (ManagedObject).
      *
      * @param id identifier of the ManagedObject.
-     * @return the found Measurements.
+     * @return the MeasurementsCollections to naviagte through the results.
      * @since 0.2.0
      */
     public MeasurementCollection getMeasurementsBySource(String id) {
-        return new MeasurementCollection(id, cloudOfThingsRestClient);
+        return new MeasurementCollection(id, null, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Retrieves Measurements of a specific type.
+     *
+     * @param type type of Measurements.
+     * @return the MeasurementsCollections to naviagte through the results.
+     * @since 0.2.0
+     */
+    public MeasurementCollection getMeasurementsByType(String type) {
+        return new MeasurementCollection(null, type, cloudOfThingsRestClient);
     }
 }
