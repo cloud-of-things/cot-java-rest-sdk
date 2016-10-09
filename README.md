@@ -13,6 +13,17 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 </dependency>
 ```
 
+Exampe of a basic connect to the platform:
+```java
+CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform("hostname", "tenant", "username", "password");
+InventoryApi inventoryApi = cotPlatform.getInventoryApi();
+inventoryApi.get("idOfManagedObject");
+```
+
+## Java Doc
+
+You can find the Java Doc of the latest release here: http://marquies.github.io/cot-java-rest-sdk/
+
 ## Completenes of API
 
 * **SmartREST**: Not implemented
