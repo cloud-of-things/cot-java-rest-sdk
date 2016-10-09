@@ -116,6 +116,24 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    public String getResponse(String api, String contentType) {
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api)
+                .build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            String result = null;
+            if (response.isSuccessful())
+                result = response.body().string();
+            return result;
+        } catch (Exception e) {
+            throw new CotSdkException("Error in requets", e);
+        }
+    }
+
     public void doPutRequest(String json, String api, String contentType) {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
         Request request = new Request.Builder()

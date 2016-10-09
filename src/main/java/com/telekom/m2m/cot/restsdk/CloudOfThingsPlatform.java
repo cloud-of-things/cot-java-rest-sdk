@@ -18,7 +18,7 @@ import java.util.Base64;
  *
  * Created by breucking on 30.01.16.
  *
- * @since 1.4
+ * @since 0.1.0
  */
 public class CloudOfThingsPlatform {
 
@@ -102,6 +102,11 @@ public class CloudOfThingsPlatform {
         return new EventApi(cloudOfThingsRestClient);
     }
 
+    /**
+     * Returns the object to work with the measurements API.
+     *
+     * @return ready to use MeasurementApi object.
+     */
     public MeasurementApi getMeasurementApi() {
         return new MeasurementApi(cloudOfThingsRestClient);
     }

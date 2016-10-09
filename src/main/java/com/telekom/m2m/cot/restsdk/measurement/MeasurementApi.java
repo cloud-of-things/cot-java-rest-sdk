@@ -7,7 +7,10 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
+ * The API object to operate with Measrements in the platform.
+ *
  * Created by breucking on 07.02.16.
+ * @since 0.1.0
  */
 public class MeasurementApi {
 
@@ -16,10 +19,21 @@ public class MeasurementApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private Gson gson = GsonUtils.createGson();
 
+    /**
+     * Internal Constructor.
+     *
+     * @param cloudOfThingsRestClient the configured rest client.
+     */
     public MeasurementApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
+
+    /**
+     * Retrives a specific Measurement.
+     * @param id of the desired Measurement.
+     * @return the Measurement (or null if not found).
+     */
     public Measurement getMeasurement(String id) {
         String response = cloudOfThingsRestClient.getResponse(id, "measurement/measurements/", CONTENT_TYPE);
         if (response == null) {
@@ -29,6 +43,11 @@ public class MeasurementApi {
         return measurement;
     }
 
+    /**
+     * Stores a Measurement.
+     * @param measurement the measurement to create.
+     * @return the created measurement with the ID.
+     */
     public Measurement createMeasurement(Measurement measurement) {
         String json = gson.toJson(measurement);
         String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "measurement/measurements/", CONTENT_TYPE);
@@ -36,11 +55,31 @@ public class MeasurementApi {
         return measurement;
     }
 
+    /**
+     * Deletes a Measurement.
+     * @param measurement the Measurement to delete
+     */
     public void delete(Measurement measurement) {
         cloudOfThingsRestClient.delete(measurement.getId(), "measurement/measurements/");
     }
 
+    /**
+     * Retrieves Measurements.
+     *
+     * @return the found Measurements.
+     */
     public MeasurementCollection getMeasurements() {
         return new MeasurementCollection(cloudOfThingsRestClient);
+    }
+
+    /**
+     * Retrieves Measurements of a specific source (ManagedObject).
+     *
+     * @param id identifier of the ManagedObject.
+     * @return the found Measurements.
+     * @since 0.2.0
+     */
+    public MeasurementCollection getMeasurementsBySource(String id) {
+        return new MeasurementCollection(id, cloudOfThingsRestClient);
     }
 }

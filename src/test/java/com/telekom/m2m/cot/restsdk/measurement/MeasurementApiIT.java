@@ -109,7 +109,90 @@ public class MeasurementApiIT {
 
         Assert.assertTrue(measurement.getType() != null);
         Assert.assertTrue(measurement.getType().length() > 0);
+    }
 
+    @Test
+    public void testMultipleMeasurementsWithPaging() throws Exception {
+        // Expects a tenant with already multiple measurements
+
+        // !!! Important !!!
+        // Test assumes pageSize default is 5.
+
+        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+
+        for (int i = 0; i < 6; i++) {
+            Measurement testMeasurement = new Measurement();
+            testMeasurement.setSource(testManagedObject);
+            testMeasurement.setTime(new Date(new Date().getTime() - (i * 5000)));
+            testMeasurement.setType("mytype-" + i);
+            measurementApi.createMeasurement(testMeasurement);
+        }
+
+        MeasurementCollection measurementCollection = measurementApi.getMeasurementsBySource(testManagedObject.getId());
+
+
+        Measurement[] measurements = measurementCollection.getMeasurements();
+
+        Assert.assertEquals(measurements.length, 5);
+        Assert.assertTrue(measurementCollection.hasNext());
+        Assert.assertFalse(measurementCollection.hasPrevious());
+
+        measurementCollection.next();
+
+        measurements = measurementCollection.getMeasurements();
+        Assert.assertEquals(measurements.length, 1);
+
+        Assert.assertFalse(measurementCollection.hasNext());
+        Assert.assertTrue(measurementCollection.hasPrevious());
+
+        measurementCollection.previous();
+        measurements = measurementCollection.getMeasurements();
+
+        Assert.assertEquals(measurements.length, 5);
+
+        Assert.assertTrue(measurementCollection.hasNext());
+        Assert.assertFalse(measurementCollection.hasPrevious());
+
+        measurementCollection.setPageSize(10);
+        measurements = measurementCollection.getMeasurements();
+
+        Assert.assertEquals(measurements.length, 6);
+        Assert.assertFalse(measurementCollection.hasNext());
+        Assert.assertFalse(measurementCollection.hasPrevious());
 
     }
+
+    @Test
+    public void testMultipleMeasurementsBySource() throws Exception {
+        MeasurementApi mApi = cotPlat.getMeasurementApi();
+
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date());
+        testMeasurement.setType("mytype");
+        mApi.createMeasurement(testMeasurement);
+
+        MeasurementCollection measurements = mApi.getMeasurements();
+        Measurement[] ms = measurements.getMeasurements();
+        Assert.assertTrue(ms.length > 0);
+        boolean allMeasuremntsFromSource = true;
+        for (Measurement m : ms) {
+            if (m.getId() != testManagedObject.getId()) {
+                allMeasuremntsFromSource = false;
+            }
+        }
+        Assert.assertFalse(allMeasuremntsFromSource);
+
+        measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
+        ms = measurements.getMeasurements();
+        allMeasuremntsFromSource = true;
+        Assert.assertTrue(ms.length > 0);
+        for (Measurement m : ms) {
+            if (m.getId().equals(testManagedObject.getId())) {
+                allMeasuremntsFromSource = false;
+            }
+        }
+        Assert.assertTrue(allMeasuremntsFromSource);
+    }
+
 }
