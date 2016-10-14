@@ -40,8 +40,7 @@ public class MeasurementApi {
         if (response == null) {
             throw new CotSdkException("Measurement not found (id='" + id + "')");
         }
-        Measurement measurement = new Measurement(gson.fromJson(response, ExtensibleObject.class));
-        return measurement;
+        return new Measurement(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
@@ -76,11 +75,20 @@ public class MeasurementApi {
     /**
      * Retrieves Measurements filtered by criteria.
      *
-     * @param filters build of Measurements.
+     * @param filters filters of measurement attributes.
      * @return the MeasurementsCollections to naviagte through the results.
      * @since 0.2.0
      */
     public MeasurementCollection getMeasurements(Filter.FilterBuilder filters) {
         return new MeasurementCollection(filters, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Deletes a collection of Measurements by criteria.
+     *
+     * @param filters filters of measurement attributes.
+     */
+    public void deleteMeasurements(Filter.FilterBuilder filters) {
+        cloudOfThingsRestClient.delete("", "measurement/measurements?" + filters.buildFilter() + "&x=");
     }
 }

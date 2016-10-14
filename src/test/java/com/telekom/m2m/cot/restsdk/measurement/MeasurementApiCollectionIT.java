@@ -18,7 +18,7 @@ import java.util.Date;
  * @author Patrick Steinert
  */
 public class MeasurementApiCollectionIT {
-    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeMethod
@@ -30,6 +30,7 @@ public class MeasurementApiCollectionIT {
     public void tearDown() {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
+
 
     @Test
     public void testMultipleMeasurements() throws Exception {
@@ -107,6 +108,28 @@ public class MeasurementApiCollectionIT {
 
     }
 
+    @Test
+    public void testDeleteMultipleMeasurementsBySource() throws Exception {
+        MeasurementApi mApi = cotPlat.getMeasurementApi();
+
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date());
+        testMeasurement.setType("mytype");
+
+        mApi.createMeasurement(testMeasurement);
+
+
+        //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
+        MeasurementCollection measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        Measurement[] ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 1);
+
+        mApi.deleteMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 0);
+    }
 
     @Test
     public void testMultipleMeasurementsBySource() throws Exception {

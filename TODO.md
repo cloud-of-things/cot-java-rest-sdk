@@ -1,15 +1,13 @@
 # Todos
 
-* Complete MeasurementsAPI
-* * Notifications
-* * DELETE - delete a measurement collection
 * Write children
 * Refactor the basics, Clean Code
 * Implement Geo Features
 * Make available different environments (base URL)
 * Implement Mass Retrieval of Measurements 
 * Make it available on Maven
-
+* Notifications
+* * MeasurementsAPI
 
 # Done
 
@@ -20,3 +18,5 @@
 * * Filter Date
 * * Filter FragmentType
 * * ... and combinations
+* * DELETE - delete a measurement collection
+
