@@ -6,8 +6,8 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import com.telekom.m2m.cot.restsdk.util.IFilter;
 
 /**
  * Represents a pageable Measurement collection.
@@ -20,7 +20,7 @@ import com.telekom.m2m.cot.restsdk.util.IFilter;
  */
 public class MeasurementCollection /*implements Iterable<Measurement>*/ {
 
-    private IFilter criteria = null;
+    private Filter.FilterBuilder criteria = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
     private int pageCursor = 1;
 
@@ -45,11 +45,11 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
      * Creates a MeasurementCollection with filters.
      * Use {@link MeasurementApi} to get MeasurementCollections.
      *
-     * @param criteria                the filter criteria.
+     * @param filterBuilder                the build criteria.
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      */
-    MeasurementCollection(IFilter criteria, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.criteria = criteria;
+    MeasurementCollection(Filter.FilterBuilder filterBuilder, CloudOfThingsRestClient cloudOfThingsRestClient) {
+        this.criteria = filterBuilder;
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 

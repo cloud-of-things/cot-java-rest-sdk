@@ -59,7 +59,13 @@ public class CloudOfThingsRestClient {
                     .build();
             Response response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "POST request failed.");
+                Gson gson = GsonUtils.createGson();
+                JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
+                response.body().close();
+                String err = "Request failed.";
+                if (o.has("error"))
+                    err += " Platform provided details: '" + o.get("error") + "'";
+                throw new CotSdkException(response.code(), err);
             }
             String location = response.header("Location");
             String result = null;

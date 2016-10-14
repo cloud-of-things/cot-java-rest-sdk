@@ -1,10 +1,8 @@
 # Todos
 
 * Complete MeasurementsAPI
-* * Refactor from single methods to Query objects. 
-* * Filter Date
-* * Filter FragmentType
-* * ... and combinations
+* * Notifications
+* * DELETE - delete a measurement collection
 * Write children
 * Refactor the basics, Clean Code
 * Implement Geo Features
@@ -17,3 +15,8 @@
 
 * Complete Device registration process
 * Implement removal of devices and its belongings
+* Complete MeasurementsAPI
+* * Refactor from single methods to Query objects. 
+* * Filter Date
+* * Filter FragmentType
+* * ... and combinations

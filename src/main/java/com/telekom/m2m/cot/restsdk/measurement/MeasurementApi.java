@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import com.telekom.m2m.cot.restsdk.util.IFilter;
 
 /**
  * The API object to operate with Measrements in the platform.
@@ -76,11 +76,11 @@ public class MeasurementApi {
     /**
      * Retrieves Measurements filtered by criteria.
      *
-     * @param criteria filter of Measurements.
+     * @param filters build of Measurements.
      * @return the MeasurementsCollections to naviagte through the results.
      * @since 0.2.0
      */
-    public MeasurementCollection getMeasurements(IFilter criteria) {
-        return new MeasurementCollection(criteria, cloudOfThingsRestClient);
+    public MeasurementCollection getMeasurements(Filter.FilterBuilder filters) {
+        return new MeasurementCollection(filters, cloudOfThingsRestClient);
     }
 }
