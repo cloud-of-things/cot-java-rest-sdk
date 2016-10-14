@@ -5,6 +5,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.IFilter;
 
 /**
  * The API object to operate with Measrements in the platform.
@@ -73,24 +74,13 @@ public class MeasurementApi {
     }
 
     /**
-     * Retrieves Measurements of a specific source (ManagedObject).
+     * Retrieves Measurements filtered by criteria.
      *
-     * @param id identifier of the ManagedObject.
+     * @param criteria filter of Measurements.
      * @return the MeasurementsCollections to naviagte through the results.
      * @since 0.2.0
      */
-    public MeasurementCollection getMeasurementsBySource(String id) {
-        return new MeasurementCollection(id, null, cloudOfThingsRestClient);
-    }
-
-    /**
-     * Retrieves Measurements of a specific type.
-     *
-     * @param type type of Measurements.
-     * @return the MeasurementsCollections to naviagte through the results.
-     * @since 0.2.0
-     */
-    public MeasurementCollection getMeasurementsByType(String type) {
-        return new MeasurementCollection(null, type, cloudOfThingsRestClient);
+    public MeasurementCollection getMeasurements(IFilter criteria) {
+        return new MeasurementCollection(criteria, cloudOfThingsRestClient);
     }
 }

@@ -64,6 +64,7 @@ public class CloudOfThingsRestClient {
                 String[] pathParts = location.split("\\/");
                 result = pathParts[pathParts.length - 1];
             }
+            response.body().close();
             return result;
         } catch (CotSdkException e) {
             throw e;
@@ -92,7 +93,10 @@ public class CloudOfThingsRestClient {
                 .build();
 
         try {
-            return client.newCall(request).execute().body().string();
+            Response r = client.newCall(request).execute();
+            String result = r.body().string();
+            r.body().close();
+            return result;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         }
@@ -110,6 +114,7 @@ public class CloudOfThingsRestClient {
             String result = null;
             if (response.isSuccessful())
                 result = response.body().string();
+            response.body().close();
             return result;
         } catch (Exception e) {
             throw new CotSdkException("Error in requets", e);
@@ -128,6 +133,7 @@ public class CloudOfThingsRestClient {
             String result = null;
             if (response.isSuccessful())
                 result = response.body().string();
+            response.body().close();
             return result;
         } catch (Exception e) {
             throw new CotSdkException("Error in requets", e);
@@ -151,6 +157,7 @@ public class CloudOfThingsRestClient {
             } else {
                 int i = 2;
             }
+            response.body().close();
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         }
@@ -173,6 +180,8 @@ public class CloudOfThingsRestClient {
             } else {
                 int i = 2;
             }
+            response.body().close();
+
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         }
@@ -190,6 +199,8 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Error in delete with ID '" + id + "'");
             }
+            response.body().close();
+
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         }

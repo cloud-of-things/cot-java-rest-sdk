@@ -7,6 +7,7 @@ import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.IFilter;
 
 /**
  * Represents a pageable Measurement collection.
@@ -19,8 +20,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class MeasurementCollection /*implements Iterable<Measurement>*/ {
 
-    private String type = null;
-    private String id = null;
+    private IFilter criteria = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
     private int pageCursor = 1;
 
@@ -31,19 +31,30 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
     private boolean previousAvailable = false;
     private int pageSize = 5;
 
+    /**
+     * Creates a MeasurementCollection.
+     * Use {@link MeasurementApi} to get MeasurementCollections.
+     *
+     * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     */
     MeasurementCollection(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
-    MeasurementCollection(String id, String type, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.id = id;
-        this.type = type;
+    /**
+     * Creates a MeasurementCollection with filters.
+     * Use {@link MeasurementApi} to get MeasurementCollections.
+     *
+     * @param criteria                the filter criteria.
+     * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     */
+    MeasurementCollection(IFilter criteria, CloudOfThingsRestClient cloudOfThingsRestClient) {
+        this.criteria = criteria;
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-
     }
 
     /**
-     * Retrives the current page.
+     * Retrieves the current page.
      *
      * @return array of found Measurements.
      * @since 0.1.0
@@ -71,11 +82,8 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
         String url = "/measurement/measurements?" +
                 "currentPage=" + page +
                 "&pageSize=" + pageSize;
-        if (id != null) {
-            url += "&source=" + id;
-        }
-        if (type != null) {
-            url += "&type=" + type;
+        if (criteria != null) {
+            url += "&" + criteria.buildFilter();
         }
         response = cloudOfThingsRestClient.getResponse(url, CONTENT_TYPE);
 
