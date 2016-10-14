@@ -26,14 +26,19 @@ You can find the Java Doc of the latest release here: http://marquies.github.io/
 
 ## Completenes of API
 
-* **SmartREST**: Not implemented
+**Completed Implemented**
+* **Measurements**: Complete implemented
+
+**Partly Implemented**
 * **Inventory**: **Partly implemented**
 * **Events**: **Partly implemented**
-* **Measurements**: **Partly implemented**
 * **Device control**: **Partly implemented**
 * **Alarms**: **Partly implemented**
 * **Device credentials**: **Partly implemented**
 * **Identity**: **Partly implemented**
+
+**Not Implemented**
+* **SmartREST**: Not implemented
 * **Users**: Not implemented
 * **Auditing**: Not implemented
 * **Device management library**: Not implemented
