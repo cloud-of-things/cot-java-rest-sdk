@@ -12,6 +12,7 @@ import okhttp3.OkHttpClient;
 import java.net.InetSocketAddress;
 import java.net.Proxy;
 import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The CloudOfThingsPlatform is the starting point to interfere the Cloud of Things.
@@ -50,7 +51,10 @@ public class CloudOfThingsPlatform {
      * @param password the username of the platform user.
      */
     public CloudOfThingsPlatform(String host, String tenant, String username, String password) {
-        cloudOfThingsRestClient = new CloudOfThingsRestClient(new OkHttpClient(), host, tenant, username, password);
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(1, TimeUnit.MINUTES)
+                .build();
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, tenant, username, password);
     }
 
     /**
@@ -65,7 +69,10 @@ public class CloudOfThingsPlatform {
      * @param proxyPort port of the HTTP proxy server.
      */
     public CloudOfThingsPlatform(String host, String tenant, String username, String password, String proxyHost, int proxyPort) {
-        OkHttpClient client = new OkHttpClient.Builder().proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort))).build();
+        OkHttpClient client = new OkHttpClient.Builder()
+                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
+                .readTimeout(1, TimeUnit.MINUTES)
+                .build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, tenant, username, password);
     }
 

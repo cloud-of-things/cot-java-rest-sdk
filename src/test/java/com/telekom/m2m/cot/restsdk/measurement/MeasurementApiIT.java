@@ -4,6 +4,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.SampleTemperatureSensor;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -163,6 +164,7 @@ public class MeasurementApiIT {
 
     }
 
+
     @Test
     public void testMultipleMeasurementsBySource() throws Exception {
         MeasurementApi mApi = cotPlat.getMeasurementApi();
@@ -230,4 +232,122 @@ public class MeasurementApiIT {
         Assert.assertTrue(allMeasuremntsFromSameType);
     }
 
+    @Test
+    public void testMultipleMeasurementsByDate() throws Exception {
+        MeasurementApi mApi = cotPlat.getMeasurementApi();
+
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
+        testMeasurement.setType("mysuperspecialtype");
+        mApi.createMeasurement(testMeasurement);
+
+        Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
+        MeasurementCollection measurements = mApi.getMeasurements(Filter.filter().byDate(yesterday, new Date()));
+
+
+        Measurement[] ms = measurements.getMeasurements();
+        Assert.assertTrue(ms.length > 0);
+
+        Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
+
+        measurements = mApi.getMeasurements(Filter.filter().byDate(beforeYesterday, yesterday));
+        ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 0);
+    }
+
+
+    @Test
+    public void testMultipleMeasurementsByDateAndBySource() throws Exception {
+        MeasurementApi mApi = cotPlat.getMeasurementApi();
+
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
+        testMeasurement.setType("mysuperspecialtype");
+        mApi.createMeasurement(testMeasurement);
+
+        Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
+        MeasurementCollection measurements = mApi.getMeasurements(
+                Filter.filter()
+                        .byDate(yesterday, new Date())
+                        .bySource(testManagedObject.getId()));
+
+
+        Measurement[] ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 1);
+
+        Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
+
+        measurements = mApi.getMeasurements(
+                Filter.filter()
+                        .byDate(beforeYesterday, yesterday)
+                        .bySource(testManagedObject.getId()));
+        ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 0);
+    }
+
+
+    @Test
+    public void testMultipleMeasurementsByTypeAndBySource() throws Exception {
+        MeasurementApi mApi = cotPlat.getMeasurementApi();
+
+        SampleTemperatureSensor sts = new SampleTemperatureSensor();
+        sts.setTemperature(100);
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
+        testMeasurement.setType("mysuperspecialtype");
+        testMeasurement.set(sts);
+        mApi.createMeasurement(testMeasurement);
+
+        MeasurementCollection measurements = mApi.getMeasurements(
+                Filter.filter()
+                        .byFragmentType("mysuperspecialtype")
+                        .bySource(testManagedObject.getId()));
+
+
+        Measurement[] ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 1);
+
+
+        measurements = mApi.getMeasurements(
+                Filter.filter()
+                        .byType("NOT_USED")
+                        .bySource(testManagedObject.getId()));
+        ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 0);
+    }
+
+
+    @Test
+    public void testMultipleMeasurementsByFragmentTypeAndBySource() throws Exception {
+        MeasurementApi mApi = cotPlat.getMeasurementApi();
+
+        SampleTemperatureSensor sts = new SampleTemperatureSensor();
+        sts.setTemperature(100);
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
+        testMeasurement.setType("mysuperspecialtype");
+        testMeasurement.set(sts);
+        mApi.createMeasurement(testMeasurement);
+
+        MeasurementCollection measurements = mApi.getMeasurements(
+                Filter.filter()
+                        .byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor")
+                        .bySource(testManagedObject.getId()));
+
+
+        Measurement[] ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 1);
+
+
+        measurements = mApi.getMeasurements(
+                Filter.filter()
+                        .byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor_not")
+                        .bySource(testManagedObject.getId()));
+        ms = measurements.getMeasurements();
+        Assert.assertEquals(ms.length, 0);
+    }
 }

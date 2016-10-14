@@ -1,6 +1,9 @@
 package com.telekom.m2m.cot.restsdk;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -131,13 +134,23 @@ public class CloudOfThingsRestClient {
         try {
             response = client.newCall(request).execute();
             String result = null;
-            if (response.isSuccessful())
+            if (response.isSuccessful()) {
                 result = response.body().string();
-            response.body().close();
+                response.body().close();
+            } else {
+                Gson gson = GsonUtils.createGson();
+                JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
+                response.body().close();
+                String err = "Request failed.";
+                if (o.has("error"))
+                    err += " Platform provided details: '" + o.get("error") + "'";
+                throw new CotSdkException(response.code(), err);
+            }
             return result;
         } catch (Exception e) {
-            throw new CotSdkException("Error in requets", e);
+            throw new CotSdkException("Error in request", e);
         }
+
     }
 
     public void doPutRequest(String json, String api, String contentType) {
@@ -197,7 +210,7 @@ public class CloudOfThingsRestClient {
         try {
             Response response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Error in delete with ID '" + id + "'");
+                throw new CotSdkException(response.code(), "Error in delete with ID '" + id + "' (see https://http.cat/" + response.code() + ")");
             }
             response.body().close();
 
