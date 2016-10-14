@@ -3,10 +3,11 @@ package com.telekom.m2m.cot.restsdk.measurement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.Date;
@@ -19,12 +20,12 @@ public class MeasurementApiIT {
     CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
-    @BeforeClass
+    @BeforeMethod
     public void setUp() {
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
     }
 
-    @AfterClass
+    @AfterMethod
     public void tearDown() {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
@@ -128,7 +129,7 @@ public class MeasurementApiIT {
             measurementApi.createMeasurement(testMeasurement);
         }
 
-        MeasurementCollection measurementCollection = measurementApi.getMeasurementsBySource(testManagedObject.getId());
+        MeasurementCollection measurementCollection = measurementApi.getMeasurements(Filter.filter().bySource(testManagedObject.getId()));
 
 
         Measurement[] measurements = measurementCollection.getMeasurements();
@@ -183,7 +184,8 @@ public class MeasurementApiIT {
         }
         Assert.assertFalse(allMeasuremntsFromSource);
 
-        measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
+        //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
+        measurements = mApi.getMeasurements(Filter.filter().bySource(testManagedObject.getId()));
         ms = measurements.getMeasurements();
         allMeasuremntsFromSource = true;
         Assert.assertTrue(ms.length > 0);
@@ -216,7 +218,7 @@ public class MeasurementApiIT {
         }
         Assert.assertFalse(allMeasuremntsFromSameType);
 
-        measurements = mApi.getMeasurementsByType(testMeasurement.getType());
+        measurements = mApi.getMeasurements(Filter.filter().byType(testMeasurement.getType()));
         ms = measurements.getMeasurements();
         allMeasuremntsFromSameType = true;
         Assert.assertTrue(ms.length > 0);
