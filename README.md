@@ -49,3 +49,7 @@ You can find the Java Doc of the latest release here: http://marquies.github.io/
 * **Tenants**: Not implemented
 * **Applications**: Not implemented
 * **Binaries**: Not implemented
+
+## Examples
+
+See examples folder. (Needs improvements ;) )
