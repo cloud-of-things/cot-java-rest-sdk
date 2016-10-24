@@ -50,8 +50,12 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("childDevices")) {
             return (ManagedObjectReferenceCollection) anyObject.get("childDevices");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>());
+            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
         }
-
     }
+
+    public void setChildDevices(ManagedObjectReferenceCollection children) {
+        anyObject.put("childDevices", children);
+    }
+
 }

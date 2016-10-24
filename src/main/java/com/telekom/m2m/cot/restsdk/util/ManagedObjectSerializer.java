@@ -22,7 +22,7 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
         add("id");
         add("self");
         add("lastUpdated");
-        add("childDevices");
+        //add("childDevices");
         add("childAssets");
         add("deviceParents");
         add("assetParents");

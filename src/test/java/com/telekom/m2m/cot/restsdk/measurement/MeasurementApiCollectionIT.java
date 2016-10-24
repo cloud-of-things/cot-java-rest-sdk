@@ -38,7 +38,7 @@ public class MeasurementApiCollectionIT {
 
         MeasurementApi measurementApi = cotPlat.getMeasurementApi();
 
-        MeasurementCollection measurementCollection = measurementApi.getMeasurements();
+        MeasurementCollection measurementCollection = measurementApi.getMeasurements(5);
 
 
         Measurement[] measurements = measurementCollection.getMeasurements();
@@ -74,7 +74,7 @@ public class MeasurementApiCollectionIT {
             measurementApi.createMeasurement(testMeasurement);
         }
 
-        MeasurementCollection measurementCollection = measurementApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        MeasurementCollection measurementCollection = measurementApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
 
 
         Measurement[] measurements = measurementCollection.getMeasurements();
@@ -121,12 +121,12 @@ public class MeasurementApiCollectionIT {
 
 
         //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
-        MeasurementCollection measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        MeasurementCollection measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
         Measurement[] ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 1);
 
         mApi.deleteMeasurements(Filter.build().bySource(testManagedObject.getId()));
-        measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
         ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 0);
     }
@@ -141,7 +141,7 @@ public class MeasurementApiCollectionIT {
         testMeasurement.setType("mytype");
         mApi.createMeasurement(testMeasurement);
 
-        MeasurementCollection measurements = mApi.getMeasurements();
+        MeasurementCollection measurements = mApi.getMeasurements(5);
         Measurement[] ms = measurements.getMeasurements();
         Assert.assertTrue(ms.length > 0);
         boolean allMeasuremntsFromSource = true;
@@ -153,7 +153,7 @@ public class MeasurementApiCollectionIT {
         Assert.assertFalse(allMeasuremntsFromSource);
 
         //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
-        measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
         ms = measurements.getMeasurements();
         allMeasuremntsFromSource = true;
         Assert.assertTrue(ms.length > 0);
@@ -175,7 +175,7 @@ public class MeasurementApiCollectionIT {
         testMeasurement.setType("mysuperspecialtype");
         mApi.createMeasurement(testMeasurement);
 
-        MeasurementCollection measurements = mApi.getMeasurements();
+        MeasurementCollection measurements = mApi.getMeasurements(5);
         Measurement[] ms = measurements.getMeasurements();
         Assert.assertTrue(ms.length > 0);
         boolean allMeasuremntsFromSameType = true;
@@ -186,7 +186,7 @@ public class MeasurementApiCollectionIT {
         }
         Assert.assertFalse(allMeasuremntsFromSameType);
 
-        measurements = mApi.getMeasurements(Filter.build().byType(testMeasurement.getType()));
+        measurements = mApi.getMeasurements(Filter.build().byType(testMeasurement.getType()), 5);
         ms = measurements.getMeasurements();
         allMeasuremntsFromSameType = true;
         Assert.assertTrue(ms.length > 0);
@@ -209,7 +209,7 @@ public class MeasurementApiCollectionIT {
         mApi.createMeasurement(testMeasurement);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-        MeasurementCollection measurements = mApi.getMeasurements(Filter.build().byDate(yesterday, new Date()));
+        MeasurementCollection measurements = mApi.getMeasurements(Filter.build().byDate(yesterday, new Date()), 5);
 
 
         Measurement[] ms = measurements.getMeasurements();
@@ -217,7 +217,7 @@ public class MeasurementApiCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        measurements = mApi.getMeasurements(Filter.build().byDate(beforeYesterday, yesterday));
+        measurements = mApi.getMeasurements(Filter.build().byDate(beforeYesterday, yesterday), 5);
         ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 0);
     }
@@ -237,7 +237,7 @@ public class MeasurementApiCollectionIT {
         MeasurementCollection measurements = mApi.getMeasurements(
                 Filter.build()
                         .byDate(yesterday, new Date())
-                        .bySource(testManagedObject.getId()));
+                        .bySource(testManagedObject.getId()), 5);
 
 
         Measurement[] ms = measurements.getMeasurements();
@@ -248,7 +248,7 @@ public class MeasurementApiCollectionIT {
         measurements = mApi.getMeasurements(
                 Filter.build()
                         .byDate(beforeYesterday, yesterday)
-                        .bySource(testManagedObject.getId()));
+                        .bySource(testManagedObject.getId()), 5);
         ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 0);
     }
@@ -270,7 +270,7 @@ public class MeasurementApiCollectionIT {
         MeasurementCollection measurements = mApi.getMeasurements(
                 Filter.build()
                         .byType("mysuperspecialtype")
-                        .bySource(testManagedObject.getId()));
+                        .bySource(testManagedObject.getId()), 5);
 
 
         Measurement[] ms = measurements.getMeasurements();
@@ -280,7 +280,7 @@ public class MeasurementApiCollectionIT {
         measurements = mApi.getMeasurements(
                 Filter.build()
                         .byType("NOT_USED")
-                        .bySource(testManagedObject.getId()));
+                        .bySource(testManagedObject.getId()), 5);
         ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 0);
     }
@@ -302,7 +302,7 @@ public class MeasurementApiCollectionIT {
         MeasurementCollection measurements = mApi.getMeasurements(
                 Filter.build()
                         .byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor")
-                        .bySource(testManagedObject.getId()));
+                        .bySource(testManagedObject.getId()), 5);
 
 
         Measurement[] ms = measurements.getMeasurements();
@@ -312,7 +312,7 @@ public class MeasurementApiCollectionIT {
         measurements = mApi.getMeasurements(
                 Filter.build()
                         .byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor_not")
-                        .bySource(testManagedObject.getId()));
+                        .bySource(testManagedObject.getId()), 5);
         ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 0);
     }
