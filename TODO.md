@@ -1,7 +1,7 @@
 # Todos
 
 * Complete Inventory 
-* * Write children
+* * Write children (implemented, needs refactoring)
 * * Get ManagedObjectCollection
 * * Query Language
 * * GET supported measurements of a managed object
