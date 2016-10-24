@@ -35,22 +35,26 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
      * Creates a MeasurementCollection.
      * Use {@link MeasurementApi} to get MeasurementCollections.
      *
+     * @param resultSize              size of the results (Max. 2000)
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      */
-    MeasurementCollection(CloudOfThingsRestClient cloudOfThingsRestClient) {
+    MeasurementCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        this.pageSize = resultSize;
     }
 
     /**
      * Creates a MeasurementCollection with filters.
      * Use {@link MeasurementApi} to get MeasurementCollections.
      *
-     * @param filterBuilder                the build criteria.
+     * @param filterBuilder           the build criteria.
+     * @param resultSize              size of the results (Max. 2000)
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      */
-    MeasurementCollection(Filter.FilterBuilder filterBuilder, CloudOfThingsRestClient cloudOfThingsRestClient) {
+    MeasurementCollection(Filter.FilterBuilder filterBuilder, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.criteria = filterBuilder;
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        this.pageSize = resultSize;
     }
 
     /**

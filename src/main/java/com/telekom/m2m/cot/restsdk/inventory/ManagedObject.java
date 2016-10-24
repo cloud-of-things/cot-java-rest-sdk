@@ -54,8 +54,11 @@ public class ManagedObject extends ExtensibleObject {
         }
     }
 
-    public void setChildDevices(ManagedObjectReferenceCollection children) {
-        anyObject.put("childDevices", children);
-    }
-
+//    public void setChildDevices(ManagedObjectReferenceCollection children) {
+//        anyObject.put("childDevices", children);
+//    }
+//
+//    public void addChildDevice(ManagedObjectReference managedObjectReference) {
+//
+//    }
 }

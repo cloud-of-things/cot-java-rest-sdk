@@ -23,6 +23,10 @@ public class ManagedObjectReferenceSerializer implements
     }
 
     public JsonElement serialize(ManagedObjectReference src, Type typeOfSrc, JsonSerializationContext context) {
-        throw new UnsupportedOperationException();
+        JsonObject reducedMo = new JsonObject();
+        reducedMo.add("id", new JsonPrimitive(src.getManagedObject().getId()));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("managedObject", reducedMo);
+        return jsonObject;
     }
 }
