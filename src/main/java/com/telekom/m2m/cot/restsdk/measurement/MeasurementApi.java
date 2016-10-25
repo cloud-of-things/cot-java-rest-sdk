@@ -9,8 +9,9 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
  * The API object to operate with Measrements in the platform.
- *
+ * <p>
  * Created by breucking on 07.02.16.
+ *
  * @since 0.1.0
  */
 public class MeasurementApi {
@@ -32,6 +33,7 @@ public class MeasurementApi {
 
     /**
      * Retrives a specific Measurement.
+     *
      * @param id of the desired Measurement.
      * @return the Measurement (or null if not found).
      */
@@ -45,6 +47,7 @@ public class MeasurementApi {
 
     /**
      * Stores a Measurement.
+     *
      * @param measurement the measurement to create.
      * @return the created measurement with the ID.
      */
@@ -57,6 +60,7 @@ public class MeasurementApi {
 
     /**
      * Deletes a Measurement.
+     *
      * @param measurement the Measurement to delete
      */
     public void delete(Measurement measurement) {
@@ -66,21 +70,23 @@ public class MeasurementApi {
     /**
      * Retrieves Measurements.
      *
+     * @param resultSize size of the results (Max. 2000)
      * @return the found Measurements.
      */
-    public MeasurementCollection getMeasurements() {
-        return new MeasurementCollection(cloudOfThingsRestClient);
+    public MeasurementCollection getMeasurements(int resultSize) {
+        return new MeasurementCollection(5, cloudOfThingsRestClient);
     }
 
     /**
      * Retrieves Measurements filtered by criteria.
      *
-     * @param filters filters of measurement attributes.
+     * @param filters    filters of measurement attributes.
+     * @param resultSize size of the results (Max. 2000)
      * @return the MeasurementsCollections to naviagte through the results.
      * @since 0.2.0
      */
-    public MeasurementCollection getMeasurements(Filter.FilterBuilder filters) {
-        return new MeasurementCollection(filters, cloudOfThingsRestClient);
+    public MeasurementCollection getMeasurements(Filter.FilterBuilder filters, int resultSize) {
+        return new MeasurementCollection(filters, resultSize, cloudOfThingsRestClient);
     }
 
     /**

@@ -16,6 +16,7 @@ public class ManagedObjectReferenceCollectionSerializer implements
 
     public ManagedObjectReferenceCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         ArrayList<ManagedObjectReference> mos = new ArrayList<ManagedObjectReference>();
+        String selfRef = null;
         /*
          * To Check:
          * 1. Is Object?
@@ -30,11 +31,13 @@ public class ManagedObjectReferenceCollectionSerializer implements
                     mos.add(exO);
                 }
             }
+            if (jObject.has("self") && jObject.get("self").isJsonPrimitive()) {
+                JsonPrimitive jsonSelf = jObject.get("self").getAsJsonPrimitive();
+                selfRef = jsonSelf.getAsString();
+            }
         }
 
-
-        ManagedObjectReferenceCollection morc = new ManagedObjectReferenceCollection(mos);
-
+        ManagedObjectReferenceCollection morc = new ManagedObjectReferenceCollection(mos, selfRef);
 
         return morc;
     }
@@ -44,7 +47,13 @@ public class ManagedObjectReferenceCollectionSerializer implements
             return null;
         else {
             // TODO: This needs more work!
-            return null;
+            JsonArray references = new JsonArray();
+
+            Iterable<ManagedObjectReference> mors = src.get(1);
+            for (ManagedObjectReference mor : mors) {
+                references.add(context.serialize(mor));
+            }
+            return references;
         }
     }
 }
