@@ -41,7 +41,7 @@ public class EventApiIT {
 
         EventApi eventApi = cotPlat.getEventApi();
 
-        Event createdEvent = eventApi.create(event);
+        Event createdEvent = eventApi.createEvent(event);
         Assert.assertNotNull("Should now have an Id", event.getId());
     }
 
@@ -59,7 +59,7 @@ public class EventApiIT {
 
         Thread.sleep(1000);
 
-        Event createdEvent = eventApi.create(event);
+        Event createdEvent = eventApi.createEvent(event);
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());
 
 
