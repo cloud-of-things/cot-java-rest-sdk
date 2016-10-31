@@ -3,21 +3,17 @@
  */
 package com.telekom.m2m.cot.restsdk.event;
 
-import java.util.Date;
-
+import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.Position;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.event.Event;
-import com.telekom.m2m.cot.restsdk.event.EventApi;
-import com.telekom.m2m.cot.restsdk.event.EventCollection;
-import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.Position;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import java.util.Date;
 
 /**
  * @author chuhlich
@@ -78,6 +74,8 @@ public class EventApiCollectionIT {
             testEvent.setSource(testManagedObject);
             testEvent.setTime(new Date(new Date().getTime() - (i * 5000)));
             testEvent.setType("mytype-" + i);
+            testEvent.setText("Test" + i);
+
             eventApi.createEvent(testEvent);
         }
 
@@ -123,11 +121,10 @@ public class EventApiCollectionIT {
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
         testEvent.setType("mytype");
+        testEvent.setText("Test");
 
         eApi.createEvent(testEvent);
 
-
-        //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
         EventCollection events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
         Event[] es = events.getEvents();
         Assert.assertEquals(es.length, 1);
@@ -146,6 +143,7 @@ public class EventApiCollectionIT {
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
         testEvent.setType("mytype");
+        testEvent.setText("Test");
         eApi.createEvent(testEvent);
 
         EventCollection events = eApi.getEvents();
@@ -180,6 +178,8 @@ public class EventApiCollectionIT {
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
         testEvent.setType("mysuperspecialtype");
+        testEvent.setText("Test");
+
         eApi.createEvent(testEvent);
 
         EventCollection events = eApi.getEvents();
@@ -213,6 +213,8 @@ public class EventApiCollectionIT {
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
+        testEvent.setText("Test");
+
         eApi.createEvent(testEvent);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
@@ -238,6 +240,8 @@ public class EventApiCollectionIT {
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
+        testEvent.setText("Test");
+
         eApi.createEvent(testEvent);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
@@ -274,6 +278,8 @@ public class EventApiCollectionIT {
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
+        testEvent.setText("Test");
+
         testEvent.set(sts);
         eApi.createEvent(testEvent);
 
@@ -309,6 +315,7 @@ public class EventApiCollectionIT {
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
+        testEvent.setText("Test");
         testEvent.set(sts);
         eApi.createEvent(testEvent);
 
