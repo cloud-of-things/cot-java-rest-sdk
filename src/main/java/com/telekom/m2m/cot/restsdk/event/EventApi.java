@@ -2,8 +2,6 @@ package com.telekom.m2m.cot.restsdk.event;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.measurement.Measurement;
-import com.telekom.m2m.cot.restsdk.measurement.MeasurementCollection;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
@@ -27,7 +25,7 @@ public class EventApi {
 
     /**
      * Retrives a specific Event.
-     * @param id of the desired Event.
+     * @param eventId of the desired Event.
      * @return the Event (or null if not found).
      */
     public Event getEvent(String eventId) {
@@ -52,7 +50,7 @@ public class EventApi {
 
     /**
      * Deletes a Event.
-     * @param measurement the Measurement to delete
+     * @param event the Event to delete
      */
     public void deleteEvent(Event event) {
         cloudOfThingsRestClient.delete(event.getId(), "event/events/");
@@ -79,9 +77,9 @@ public class EventApi {
     }
 
     /**
-     * Deletes a collection of Measurements by criteria.
+     * Deletes a collection of Events by criteria.
      *
-     * @param filters filters of measurement attributes.
+     * @param filters filters of Event attributes.
      */
     public void deleteEvents(Filter.FilterBuilder filters) {
         cloudOfThingsRestClient.delete("", "event/events?" + filters.buildFilter() + "&x=");
