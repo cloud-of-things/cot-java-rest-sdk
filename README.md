@@ -1,6 +1,6 @@
 # Cloud of Things Java Rest SDK
 
-This is an SDK to interfere with the Cloud of Things by Deutsche Telekom AG
+This is an SDK to interfere with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
 ## Usage
 
