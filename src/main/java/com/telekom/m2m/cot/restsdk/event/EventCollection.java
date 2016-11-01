@@ -8,8 +8,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.event.Event;
-import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
@@ -53,9 +51,19 @@ public class EventCollection {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
+    /**
+     * Retrieves the current page.
+     * <p>
+     * Retrieves the Events influenced by filters setted in construction.
+     *
+     * @return array of found Events
+     * @since 0.2.0
+     */
     public Event[] getEvents() {
-        String response = cloudOfThingsRestClient.getResponse("", "/event/events", CONTENT_TYPE);
-        JsonObject object = gson.fromJson(response, JsonObject.class);
+        JsonObject object = getJsonObject(pageCursor);
+
+        previousAvailable = object.has("prev");
+
         if (object.has("events")) {
             JsonArray jsonEvents= object.get("events").getAsJsonArray();
             Event[] arrayOfEvents = new Event[jsonEvents.size()];
