@@ -44,7 +44,7 @@ public class InventoryApi {
      * @return the found {@link ManagedObject} (or null if not found)
      */
     public ManagedObject get(String id) {
-        String response = cloudOfThingsRestClient.getResponse(id, "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+        String response = cloudOfThingsRestClient.getResponse(id + "?withParents=true", "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
             ManagedObject mo = new ManagedObject(extensibleObject);

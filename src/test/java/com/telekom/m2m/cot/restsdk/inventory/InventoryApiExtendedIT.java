@@ -67,6 +67,49 @@ public class InventoryApiExtendedIT {
     }
 
     @Test
+    public void testAddAndRemoveParents() throws Exception {
+
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
+
+
+        ManagedObject createdParentMo = inventoryApi.create(mo);
+        Assert.assertNotNull("Should now have an Id", createdParentMo.getId());
+        createdParentMo = inventoryApi.get(createdParentMo.getId());
+
+        ManagedObject moFromPlatform = inventoryApi.get(testManagedObject.getId());
+        ManagedObjectReference managedObjectReference = new ManagedObjectReference(moFromPlatform);
+
+
+        inventoryApi.addChildDeviceToManagedObject(createdParentMo, managedObjectReference);
+
+        //Reload objects
+        ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
+        createdParentMo = inventoryApi.get(createdParentMo.getId());
+
+        Iterator<ManagedObjectReference> iter = reloadedMo.getParentDevices().get(1).iterator();
+        Assert.assertTrue(iter.hasNext());
+        ManagedObjectReference next = iter.next();
+        Assert.assertEquals(next.getManagedObject().getId(), createdParentMo.getId());
+        Assert.assertTrue(next.getSelf().startsWith("http"));
+
+        ManagedObjectReference del = createdParentMo.getChildDevices().get(1).iterator().next();
+        inventoryApi.removeManagedObjectReference(del);
+
+        reloadedMo = inventoryApi.get(reloadedMo.getId());
+        iter = reloadedMo.getParentDevices().get(1).iterator();
+        Assert.assertFalse(iter.hasNext());
+        try {
+            next = iter.next();
+            Assert.fail("Needs to throw an NSEE b/c no ref anymore.");
+        } catch (NoSuchElementException e) {
+
+        }
+    }
+
+    @Test
     public void testAddAndRemoveAssets() throws Exception {
 
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
