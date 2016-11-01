@@ -53,7 +53,7 @@ public class InventoryApiExtendedIT {
         Assert.assertEquals(next.getManagedObject().getId(), createdChildMo.getId());
         Assert.assertTrue(next.getSelf().startsWith("http"));
 
-        inventoryApi.removeChildFromManagedObject(next);
+        inventoryApi.removeManagedObjectReference(next);
 
         reloadedMo = inventoryApi.get(testManagedObject.getId());
         iter = reloadedMo.getChildDevices().get(1).iterator();

@@ -20,7 +20,8 @@ public class ManagedObjectReferenceSerializer implements
             ManagedObject mo = jsonDeserializationContext.deserialize(jMO, ManagedObject.class);
             return new ManagedObjectReference(mo, selfString.getAsString());
         }
-        return new ManagedObjectReference();
+        // Undeviced to return null or Exception.
+        return null;
     }
 
     public JsonElement serialize(ManagedObjectReference src, Type typeOfSrc, JsonSerializationContext context) {

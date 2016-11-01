@@ -31,13 +31,6 @@ public class ManagedObjectReference {
     }
 
     /**
-     * Remove me.
-     */
-    @Deprecated
-    public ManagedObjectReference() {
-    }
-
-    /**
      * Used via serialization.
      *
      * @param managedObject the referred ManagedObject

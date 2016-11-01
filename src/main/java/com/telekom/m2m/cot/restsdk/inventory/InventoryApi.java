@@ -4,15 +4,15 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import okhttp3.OkHttpClient;
 
 /**
+ * Represents the API to retrieve and manipulate ManagedObjects.
+ *
  * Created by breucking on 30.01.16.
  */
 public class InventoryApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     protected Gson gson = GsonUtils.createGson();
-    protected OkHttpClient client = new OkHttpClient();
 
     private static final String CONTENT_TYPE_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
@@ -21,6 +21,13 @@ public class InventoryApi {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
+    /**
+     * Stores a ManagedObject in the platform.
+     * ID should be empty, will be ignored if present.
+     *
+     * @param managedObject the managedObject to create.
+     * @return the {@link ManagedObject} stored in the platform with the generated ID.
+     */
     public ManagedObject create(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
 
@@ -30,8 +37,14 @@ public class InventoryApi {
         return managedObject;
     }
 
-    public ManagedObject get(String s) {
-        String response = cloudOfThingsRestClient.getResponse(s, "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+    /**
+     * Retrieves a ManagedObject identified by ID from the platform.
+     *
+     * @param id the identifier of the desired {@link ManagedObject}
+     * @return the found {@link ManagedObject} (or null if not found)
+     */
+    public ManagedObject get(String id) {
+        String response = cloudOfThingsRestClient.getResponse(id, "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
             ManagedObject mo = new ManagedObject(extensibleObject);
@@ -41,25 +54,56 @@ public class InventoryApi {
         }
     }
 
+    /**
+     * Deletes the ManagedObject.
+     *
+     * @param id the identifier of the {@link ManagedObject} to delete.
+     */
     public void delete(String id) {
         cloudOfThingsRestClient.delete(id, "inventory/managedObjects");
     }
 
+    /**
+     * Updates the ManagedObject in the platform.
+     *
+     * @param managedObject object to update.
+     */
     public void update(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
         cloudOfThingsRestClient.doPutRequest(json, managedObject.getId(), "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
     }
 
-    public void addChildToManagedObject(ManagedObject managedObject, ManagedObjectReference managedObjectReference) {
-        String json = gson.toJson(managedObjectReference);
-        String selfRef = managedObject.getChildDevices().getSelf();
+    /**
+     * Add a new child {@link ManagedObject} to the {@link ManagedObject}.
+     *
+     * @param parentManagedObject           the parent ManagedObject, gets child.
+     * @param managedObjectReferenceToChild the reference to the new child ManagedObject
+     * @since 0.2.0
+     */
+    public void addChildToManagedObject(ManagedObject parentManagedObject, ManagedObjectReference managedObjectReferenceToChild) {
+        String json = gson.toJson(managedObjectReferenceToChild);
+        String selfRef = parentManagedObject.getChildDevices().getSelf();
         int idx = selfRef.lastIndexOf("inventory");
 
         cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
     }
 
 
-    public void removeChildFromManagedObject(ManagedObjectReference managedObjectReference) {
+    /**
+     * Deletes ManagedObjectReferences.
+     * <p>
+     * This method can be used to any of this reference collections:
+     * <ul>
+     * <li>childAssets</li>
+     * <li>childDevices</li>
+     * <li>parentAssets</li>
+     * <li>parentDevices</li>
+     * </ul>
+     *
+     * @param managedObjectReference the object to delete
+     * @since 0.2.0
+     */
+    public void removeManagedObjectReference(ManagedObjectReference managedObjectReference) {
         cloudOfThingsRestClient.delete(managedObjectReference.getSelf());
     }
 }
