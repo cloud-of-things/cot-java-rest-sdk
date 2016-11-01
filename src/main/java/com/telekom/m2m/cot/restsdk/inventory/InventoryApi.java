@@ -74,13 +74,13 @@ public class InventoryApi {
     }
 
     /**
-     * Add a new child {@link ManagedObject} to the {@link ManagedObject}.
+     * Add a new child device {@link ManagedObject} to the {@link ManagedObject}.
      *
      * @param parentManagedObject           the parent ManagedObject, gets child.
      * @param managedObjectReferenceToChild the reference to the new child ManagedObject
      * @since 0.2.0
      */
-    public void addChildToManagedObject(ManagedObject parentManagedObject, ManagedObjectReference managedObjectReferenceToChild) {
+    public void addChildDeviceToManagedObject(ManagedObject parentManagedObject, ManagedObjectReference managedObjectReferenceToChild) {
         String json = gson.toJson(managedObjectReferenceToChild);
         String selfRef = parentManagedObject.getChildDevices().getSelf();
         int idx = selfRef.lastIndexOf("inventory");
@@ -105,5 +105,20 @@ public class InventoryApi {
      */
     public void removeManagedObjectReference(ManagedObjectReference managedObjectReference) {
         cloudOfThingsRestClient.delete(managedObjectReference.getSelf());
+    }
+
+    /**
+     * Add a new child asset {@link ManagedObject} to the {@link ManagedObject}.
+     *
+     * @param parentManagedObject           the parent ManagedObject, gets child.
+     * @param managedObjectReferenceToChild the reference to the new child ManagedObject
+     * @since 0.2.0
+     */
+    public void addChildAssetToManagedObject(ManagedObject parentManagedObject, ManagedObjectReference managedObjectReferenceToChild) {
+        String json = gson.toJson(managedObjectReferenceToChild);
+        String selfRef = parentManagedObject.getChildAssets().getSelf();
+        int idx = selfRef.lastIndexOf("inventory");
+
+        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
     }
 }

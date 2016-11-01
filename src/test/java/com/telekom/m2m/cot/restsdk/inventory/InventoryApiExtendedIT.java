@@ -44,7 +44,7 @@ public class InventoryApiExtendedIT {
 
         Assert.assertNotNull("Should now have an Id", createdChildMo.getId());
 
-        inventoryApi.addChildToManagedObject(moFromPlatform, managedObjectReference);
+        inventoryApi.addChildDeviceToManagedObject(moFromPlatform, managedObjectReference);
 
         ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
         Iterator<ManagedObjectReference> iter = reloadedMo.getChildDevices().get(1).iterator();
@@ -57,6 +57,43 @@ public class InventoryApiExtendedIT {
 
         reloadedMo = inventoryApi.get(testManagedObject.getId());
         iter = reloadedMo.getChildDevices().get(1).iterator();
+        Assert.assertFalse(iter.hasNext());
+        try {
+            next = iter.next();
+            Assert.fail("Needs to throw an NSEE b/c no ref anymore.");
+        } catch (NoSuchElementException e) {
+
+        }
+    }
+
+    @Test
+    public void testAddAndRemoveAssets() throws Exception {
+
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
+
+
+        ManagedObject createdChildMo = inventoryApi.create(mo);
+        ManagedObject moFromPlatform = inventoryApi.get(testManagedObject.getId());
+        ManagedObjectReference managedObjectReference = new ManagedObjectReference(createdChildMo);
+
+        Assert.assertNotNull("Should now have an Id", createdChildMo.getId());
+
+        inventoryApi.addChildAssetToManagedObject(moFromPlatform, managedObjectReference);
+
+        ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
+        Iterator<ManagedObjectReference> iter = reloadedMo.getChildAssets().get(1).iterator();
+        Assert.assertTrue(iter.hasNext());
+        ManagedObjectReference next = iter.next();
+        Assert.assertEquals(next.getManagedObject().getId(), createdChildMo.getId());
+        Assert.assertTrue(next.getSelf().startsWith("http"));
+
+        inventoryApi.removeManagedObjectReference(next);
+
+        reloadedMo = inventoryApi.get(testManagedObject.getId());
+        iter = reloadedMo.getChildAssets().get(1).iterator();
         Assert.assertFalse(iter.hasNext());
         try {
             next = iter.next();
