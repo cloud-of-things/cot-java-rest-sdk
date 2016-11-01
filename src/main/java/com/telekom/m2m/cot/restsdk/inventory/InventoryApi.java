@@ -7,7 +7,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
  * Represents the API to retrieve and manipulate ManagedObjects.
- *
+ * <p>
  * Created by breucking on 30.01.16.
  */
 public class InventoryApi {
@@ -39,12 +39,32 @@ public class InventoryApi {
 
     /**
      * Retrieves a ManagedObject identified by ID from the platform.
+     * <p>
+     * Does not set withParents, so no parents will be loaded.
      *
      * @param id the identifier of the desired {@link ManagedObject}
      * @return the found {@link ManagedObject} (or null if not found)
      */
     public ManagedObject get(String id) {
-        String response = cloudOfThingsRestClient.getResponse(id + "?withParents=true", "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+        String response = cloudOfThingsRestClient.getResponse(id, "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+        ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
+        if (extensibleObject != null) {
+            ManagedObject mo = new ManagedObject(extensibleObject);
+            return mo;
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retrieves a ManagedObject identified by ID from the platform.
+     *
+     * @param id          the identifier of the desired {@link ManagedObject}
+     * @param withParents set true to load with parents (parentDevices, parentAssets)
+     * @return the found {@link ManagedObject} (or null if not found)
+     */
+    public ManagedObject get(String id, boolean withParents) {
+        String response = cloudOfThingsRestClient.getResponse(id + "?withParents=" + Boolean.toString(withParents), "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
             ManagedObject mo = new ManagedObject(extensibleObject);

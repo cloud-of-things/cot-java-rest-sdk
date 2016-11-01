@@ -75,31 +75,31 @@ public class InventoryApiExtendedIT {
         mo.setName("MyTest-testCreateAndRead");
 
 
-        ManagedObject createdParentMo = inventoryApi.create(mo);
-        Assert.assertNotNull("Should now have an Id", createdParentMo.getId());
-        createdParentMo = inventoryApi.get(createdParentMo.getId());
+        ManagedObject parentMo = inventoryApi.create(mo);
+        Assert.assertNotNull("Should now have an Id", parentMo.getId());
+        parentMo = inventoryApi.get(parentMo.getId());
 
-        ManagedObject moFromPlatform = inventoryApi.get(testManagedObject.getId());
-        ManagedObjectReference managedObjectReference = new ManagedObjectReference(moFromPlatform);
+        ManagedObject childMo = inventoryApi.get(testManagedObject.getId());
+        ManagedObjectReference refToChild = new ManagedObjectReference(childMo);
 
 
-        inventoryApi.addChildDeviceToManagedObject(createdParentMo, managedObjectReference);
+        inventoryApi.addChildDeviceToManagedObject(parentMo, refToChild);
 
         //Reload objects
-        ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
-        createdParentMo = inventoryApi.get(createdParentMo.getId());
+        childMo = inventoryApi.get(childMo.getId(), true);
+        parentMo = inventoryApi.get(parentMo.getId(), true);
 
-        Iterator<ManagedObjectReference> iter = reloadedMo.getParentDevices().get(1).iterator();
+        Iterator<ManagedObjectReference> iter = childMo.getParentDevices().get(1).iterator();
         Assert.assertTrue(iter.hasNext());
         ManagedObjectReference next = iter.next();
-        Assert.assertEquals(next.getManagedObject().getId(), createdParentMo.getId());
+        Assert.assertEquals(next.getManagedObject().getId(), parentMo.getId());
         Assert.assertTrue(next.getSelf().startsWith("http"));
 
-        ManagedObjectReference del = createdParentMo.getChildDevices().get(1).iterator().next();
+        ManagedObjectReference del = parentMo.getChildDevices().get(1).iterator().next();
         inventoryApi.removeManagedObjectReference(del);
 
-        reloadedMo = inventoryApi.get(reloadedMo.getId());
-        iter = reloadedMo.getParentDevices().get(1).iterator();
+        childMo = inventoryApi.get(childMo.getId());
+        iter = childMo.getParentDevices().get(1).iterator();
         Assert.assertFalse(iter.hasNext());
         try {
             next = iter.next();
