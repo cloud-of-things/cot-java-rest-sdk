@@ -74,6 +74,14 @@ public class ManagedObject extends ExtensibleObject {
         }
     }
 
+    public ManagedObjectReferenceCollection getParentAssets() {
+        if (anyObject.containsKey("assetParents")) {
+            return (ManagedObjectReferenceCollection) anyObject.get("assetParents");
+        } else {
+            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+        }
+    }
+
 //    public void setChildDevices(ManagedObjectReferenceCollection children) {
 //        anyObject.put("childDevices", children);
 //    }

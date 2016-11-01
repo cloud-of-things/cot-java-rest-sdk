@@ -8,7 +8,6 @@
 * * GET a managed object reference collection
 * * POST - add a managed object reference to the collection
 * * GET a managed object reference
-* * DELETE a managed object reference
 * Complete Events 
 * Refactor the basics, Clean Code
 * Implement Geo Features
@@ -29,4 +28,5 @@
 * * Filter FragmentType
 * * ... and combinations
 * * DELETE - delete a measurement collection
-
+* Complete Inventory
+* * DELETE a managed object reference
