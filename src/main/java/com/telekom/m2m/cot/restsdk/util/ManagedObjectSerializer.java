@@ -81,6 +81,10 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
                     ManagedObjectReferenceCollection morc = jsonDeserializationContext.deserialize(element.getValue(),
                             ManagedObjectReferenceCollection.class);
                     mo.set("childAssets", morc);
+                } else if (element.getKey().toString().equals("deviceParents")) {
+                    ManagedObjectReferenceCollection morc = jsonDeserializationContext.deserialize(element.getValue(),
+                            ManagedObjectReferenceCollection.class);
+                    mo.set("deviceParents", morc);
                 } else {
                     mo.set(element.getKey(),
                             jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
