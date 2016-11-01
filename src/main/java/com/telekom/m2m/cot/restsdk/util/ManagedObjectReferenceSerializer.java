@@ -16,8 +16,9 @@ public class ManagedObjectReferenceSerializer implements
     public ManagedObjectReference deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         if (jsonElement.isJsonObject()) {
             JsonElement jMO = jsonElement.getAsJsonObject().get("managedObject");
+            JsonElement selfString = jsonElement.getAsJsonObject().get("self");
             ManagedObject mo = jsonDeserializationContext.deserialize(jMO, ManagedObject.class);
-            return new ManagedObjectReference(mo);
+            return new ManagedObjectReference(mo, selfString.getAsString());
         }
         return new ManagedObjectReference();
     }

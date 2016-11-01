@@ -57,4 +57,9 @@ public class InventoryApi {
 
         cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
     }
+
+
+    public void removeChildFromManagedObject(ManagedObjectReference managedObjectReference) {
+        cloudOfThingsRestClient.delete(managedObjectReference.getSelf());
+    }
 }

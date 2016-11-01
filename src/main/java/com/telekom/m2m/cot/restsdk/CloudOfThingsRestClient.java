@@ -224,4 +224,24 @@ public class CloudOfThingsRestClient {
             throw new CotSdkException("Error in request", e);
         }
     }
+
+    public void delete(String url) {
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(url)
+                .delete()
+                .build();
+
+        try {
+            Response response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Error in delete with URL '" + url + "' (see https://http.cat/" + response.code() + ")");
+            }
+            response.body().close();
+
+        } catch (Exception e) {
+            throw new CotSdkException("Error in request", e);
+        }
+
+    }
 }

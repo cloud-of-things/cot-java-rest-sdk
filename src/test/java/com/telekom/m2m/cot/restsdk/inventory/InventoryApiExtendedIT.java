@@ -8,6 +8,7 @@ import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Created by Patrick Steinert on 14.10.16.
@@ -29,7 +30,7 @@ public class InventoryApiExtendedIT {
     }
 
     @Test
-    public void testAddChildren() throws Exception {
+    public void testAddAndRemoveChildren() throws Exception {
 
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
@@ -50,7 +51,19 @@ public class InventoryApiExtendedIT {
         Assert.assertTrue(iter.hasNext());
         ManagedObjectReference next = iter.next();
         Assert.assertEquals(next.getManagedObject().getId(), createdChildMo.getId());
+        Assert.assertTrue(next.getSelf().startsWith("http"));
 
+        inventoryApi.removeChildFromManagedObject(next);
+
+        reloadedMo = inventoryApi.get(testManagedObject.getId());
+        iter = reloadedMo.getChildDevices().get(1).iterator();
+        Assert.assertFalse(iter.hasNext());
+        try {
+            next = iter.next();
+            Assert.fail("Needs to throw an NSEE b/c no ref anymore.");
+        } catch (NoSuchElementException e) {
+
+        }
     }
 
 }
