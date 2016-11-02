@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.telekom.m2m.cot.restsdk.event;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
@@ -117,17 +114,19 @@ public class EventApiCollectionIT {
     public void testDeleteMultipleEventsBySource() throws Exception {
         EventApi eApi = cotPlat.getEventApi();
 
-        Event testEvent = new Event();
-        testEvent.setSource(testManagedObject);
-        testEvent.setTime(new Date());
-        testEvent.setType("mytype");
-        testEvent.setText("Test");
+        for (int i = 0; i < 6; i++) {
+            Event testEvent = new Event();
+            testEvent.setSource(testManagedObject);
+            testEvent.setTime(new Date(new Date().getTime() - (i * 5000)));
+            testEvent.setType("mytype-" + i);
+            testEvent.setText("Test" + i);
 
-        eApi.createEvent(testEvent);
+            eApi.createEvent(testEvent);
+        }
 
         EventCollection events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
         Event[] es = events.getEvents();
-        Assert.assertEquals(es.length, 1);
+             Assert.assertEquals(es.length, 5);
 
         eApi.deleteEvents(Filter.build().bySource(testManagedObject.getId()));
         events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
@@ -136,8 +135,7 @@ public class EventApiCollectionIT {
     }
 
     @Test
-    public void testMultipleEventsBySource() throws Exception {
-    	EventApi eApi = cotPlat.getEventApi();
+    public void testMultipleEventsBySource() throws Exception {    	EventApi eApi = cotPlat.getEventApi();
 
         Event testEvent= new Event();
         testEvent.setSource(testManagedObject);
