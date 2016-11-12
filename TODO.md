@@ -8,7 +8,7 @@
 * * GET a managed object reference collection
 * * POST - add a managed object reference to the collection
 * * GET a managed object reference
-* Complete Events 
+
 * Refactor the basics, Clean Code
 * Implement Geo Features
 * Make available different environments (base URL)
@@ -20,6 +20,7 @@
 
 # Done
 
+* Complete Events
 * Complete Device registration process
 * Implement removal of devices and its belongings
 * Complete MeasurementsAPI
