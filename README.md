@@ -28,14 +28,14 @@ You can find the Java Doc of the latest release here: http://marquies.github.io/
 
 **Completed Implemented**
 * **Measurements**: Complete implemented
-* **Events**: **Complete implemented**
+* **Events**: Complete implemented
 
 **Partly Implemented**
-* **Inventory**: **Partly implemented**
-* **Device control**: **Partly implemented**
-* **Alarms**: **Partly implemented**
-* **Device credentials**: **Partly implemented**
-* **Identity**: **Partly implemented**
+* **Inventory**: Partly implemented
+* **Device control**: Partly implemented
+* **Alarms**: Partly implemented
+* **Device credentials**: Partly implemented
+* **Identity**: Partly implemented
 
 **Not Implemented**
 * **SmartREST**: Not implemented
