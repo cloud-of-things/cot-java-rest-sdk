@@ -103,4 +103,13 @@ public class DeviceControlApi {
         cloudOfThingsRestClient.doPutRequest(json, "devicecontrol/operations/" + operation.getId(), CONTENT_TYPE_OPERATION);
         return operation;
     }
+
+    /**
+     * Retrieve Operations.
+     *
+     * @return an EventCollection.
+     */
+    public OperationCollection getOperations() {
+        return new OperationCollection(cloudOfThingsRestClient);
+    }
 }
