@@ -3,12 +3,12 @@ package com.telekom.m2m.cot.restsdk.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
+import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReference;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReferenceCollection;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
-import com.telekom.m2m.cot.restsdk.operation.Operation;
 
 /**
  * Created by breucking on 31.01.16.

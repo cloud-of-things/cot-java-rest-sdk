@@ -1,4 +1,4 @@
-package com.telekom.m2m.cot.restsdk.operation;
+package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 

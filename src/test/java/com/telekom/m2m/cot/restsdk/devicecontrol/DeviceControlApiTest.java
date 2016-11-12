@@ -2,7 +2,6 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.operation.Operation;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import org.mockito.Mockito;
 import org.testng.Assert;

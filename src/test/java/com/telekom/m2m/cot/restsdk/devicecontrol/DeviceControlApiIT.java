@@ -4,7 +4,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.operation.Operation;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.junit.Assert;
 import org.testng.annotations.AfterClass;
