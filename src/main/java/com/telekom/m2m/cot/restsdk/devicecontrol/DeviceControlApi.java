@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.io.IOException;
@@ -107,9 +108,21 @@ public class DeviceControlApi {
     /**
      * Retrieve Operations.
      *
-     * @return an EventCollection.
+     * @param resultSize size of the results (Max. 2000)
+     * @return an OperationCollection.
      */
-    public OperationCollection getOperations() {
-        return new OperationCollection(cloudOfThingsRestClient);
+    public OperationCollection getOperations(int resultSize) {
+        return new OperationCollection(resultSize, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Retrieve Operations by criteria.
+     *
+     * @param filters    filters of measurement attributes.
+     * @param resultSize size of the results (Max. 2000)
+     * @return an OperationCollection.
+     */
+    public OperationCollection getOperations(Filter.FilterBuilder filters, int resultSize) {
+        return new OperationCollection(filters, resultSize, cloudOfThingsRestClient);
     }
 }

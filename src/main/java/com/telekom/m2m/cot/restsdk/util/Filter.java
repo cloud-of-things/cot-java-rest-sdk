@@ -108,6 +108,11 @@ public class Filter {
             instance.arguments.put("fragmentType", fragmentType);
             return this;
         }
+
+        public FilterBuilder byDeviceId(String deviceId) {
+            instance.arguments.put("deviceId", deviceId);
+            return this;
+        }
     }
 
 }

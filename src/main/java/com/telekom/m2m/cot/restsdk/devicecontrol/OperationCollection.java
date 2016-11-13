@@ -57,15 +57,6 @@ public class OperationCollection {
         this.pageSize = resultSize;
     }
 
-    /**
-     * Creates a OperationCollection with filters.
-     * Use {@link DeviceControlApi} to get OperationCollection.
-     *
-     * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
-     */
-    public OperationCollection(CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-    }
 
     /**
      * Retrieves the current page.

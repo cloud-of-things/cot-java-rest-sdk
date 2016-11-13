@@ -1,7 +1,10 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -35,7 +38,7 @@ public class DeviceControlApiOperationsCollectionIT {
 
         DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
 
-        OperationCollection operationCollection = deviceControlApi.getOperations();
+        OperationCollection operationCollection = deviceControlApi.getOperations(5);
 
 
         Operation[] operations = operationCollection.getOperations();
@@ -54,59 +57,63 @@ public class DeviceControlApiOperationsCollectionIT {
         Assert.assertTrue(operation.getStatus().length() > 0);
     }
 
-//    @Test
-//    public void testMultipleEventsWithPaging() throws Exception {
-//        // Expects a tenant with already multiple measurements
-//
-//        // !!! Important !!!
-//        // Test assumes pageSize default is 5.
-//
-//        EventApi eventApi = cotPlat.getEventApi();
-//
-//        for (int i = 0; i < 6; i++) {
-//            Event testEvent = new Event();
-//            testEvent.setSource(testManagedObject);
-//            testEvent.setTime(new Date(new Date().getTime() - (i * 5000)));
-//            testEvent.setType("mytype-" + i);
-//            testEvent.setText("Test" + i);
-//
-//            eventApi.createEvent(testEvent);
-//        }
-//
-//        EventCollection eventCollection = eventApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
-//
-//
-//        Event[] events = eventCollection.getEvents();
-//
-//        Assert.assertEquals(events.length, 5);
-//        Assert.assertTrue(eventCollection.hasNext());
-//        Assert.assertFalse(eventCollection.hasPrevious());
-//
-//        eventCollection.next();
-//
-//        events = eventCollection.getEvents();
-//        Assert.assertEquals(events.length, 1);
-//
-//        Assert.assertFalse(eventCollection.hasNext());
-//        Assert.assertTrue(eventCollection.hasPrevious());
-//
-//        eventCollection.previous();
-//        events = eventCollection.getEvents();
-//
-//        Assert.assertEquals(events.length, 5);
-//
-//        Assert.assertTrue(eventCollection.hasNext());
-//        Assert.assertFalse(eventCollection.hasPrevious());
-//
-//        eventCollection.setPageSize(10);
-//        events = eventCollection.getEvents();
-//
-//        Assert.assertEquals(events.length, 6);
-//        Assert.assertFalse(eventCollection.hasNext());
-//        Assert.assertFalse(eventCollection.hasPrevious());
-//
-//    }
-//
+    @Test
+    public void testMultipleOperationssWithPaging() throws Exception {
+        // Expects a tenant with already multiple measurements
+
+        // !!! Important !!!
+        // Test assumes pageSize default is 5.
+
+        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+        JsonObject parameters = new JsonObject();
+        parameters.add("param1", new JsonPrimitive("1"));
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("name", new JsonPrimitive("example"));
+        jsonObject.add("parameters", parameters);
+
+        for (int i = 0; i < 6; i++) {
+            Operation testOperation = new Operation();
+            testOperation.setDeviceId(testManagedObject.getId());
+            testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
+
+            deviceControlApi.create(testOperation);
+        }
+
+        OperationCollection operationCollection = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
+
+
+        Operation[] operations = operationCollection.getOperations();
+
+        Assert.assertEquals(operations.length, 5);
+        Assert.assertTrue(operationCollection.hasNext());
+        Assert.assertFalse(operationCollection.hasPrevious());
+
+        operationCollection.next();
+
+        operations = operationCollection.getOperations();
+        Assert.assertEquals(operations.length, 1);
+
+        Assert.assertFalse(operationCollection.hasNext());
+        Assert.assertTrue(operationCollection.hasPrevious());
+
+        operationCollection.previous();
+        operations = operationCollection.getOperations();
+
+        Assert.assertEquals(operations.length, 5);
+
+        Assert.assertTrue(operationCollection.hasNext());
+        Assert.assertFalse(operationCollection.hasPrevious());
+
+        operationCollection.setPageSize(10);
+        operations = operationCollection.getOperations();
+
+        Assert.assertEquals(operations.length, 6);
+        Assert.assertFalse(operationCollection.hasNext());
+        Assert.assertFalse(operationCollection.hasPrevious());
+
+    }
+
 //    @Test
 //    public void testDeleteMultipleEventsBySource() throws Exception {
 //        EventApi eApi = cotPlat.getEventApi();

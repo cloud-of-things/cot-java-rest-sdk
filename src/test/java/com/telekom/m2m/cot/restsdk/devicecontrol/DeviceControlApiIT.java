@@ -40,7 +40,7 @@ public class DeviceControlApiIT {
         jsonObject.add("parameters", parameters);
 
         Operation operation = new Operation();
-        operation.setDeviceId("162261952");
+        operation.setDeviceId(testManagedObject.getId());
         operation.set("com_telekom_m2m_cotcommand", jsonObject);
 
         Operation createdOperation = deviceControlApi.create(operation);
@@ -49,7 +49,7 @@ public class DeviceControlApiIT {
 
         Operation retrievedOperation = deviceControlApi.getOperation(createdOperation.getId());
 
-        Assert.assertEquals(retrievedOperation.getDeviceId(), "162261952");
+        Assert.assertEquals(retrievedOperation.getDeviceId(), testManagedObject.getId());
         Assert.assertNotNull(retrievedOperation.get("com_telekom_m2m_cotcommand"));
     }
 
