@@ -53,3 +53,17 @@ You can find the Java Doc of the latest release here: http://marquies.github.io/
 ## Examples
 
 See examples folder. (Needs improvements ;) )
+
+## Release Notes
+### Release 0.2.0
+* Complete Events
+* Complete Device registration process
+* Implement removal of devices and its belongings
+* Complete MeasurementsAPI
+* * Refactor from single methods to Query objects. 
+* * Filter Date
+* * Filter FragmentType
+* * ... and combinations
+* * DELETE - delete a measurement collection
+* Complete Inventory
+* * DELETE a managed object reference
