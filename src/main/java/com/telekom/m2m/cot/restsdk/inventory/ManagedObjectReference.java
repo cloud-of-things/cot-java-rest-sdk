@@ -24,7 +24,7 @@ public class ManagedObjectReference {
      * <p>
      * Instanciate and create.
      *
-     * @param managedObject
+     * @param managedObject the referred ManagedObject.
      */
     public ManagedObjectReference(ManagedObject managedObject) {
         this.managedObject = managedObject;
