@@ -64,7 +64,7 @@ public class DeviceControlApiOperationsCollectionIT {
         Assert.assertTrue(operation.getCreationTime().compareTo(new Date()) < 0);
 
         Assert.assertTrue(operation.getStatus() != null);
-        Assert.assertTrue(operation.getStatus().length() > 0);
+        Assert.assertTrue(operation.getStatus().toString().length() > 0);
     }
 
     @Test
@@ -199,7 +199,7 @@ public class DeviceControlApiOperationsCollectionIT {
         allOperationWithSameStatus = true;
         Assert.assertTrue(os.length > 0);
         for (Operation o : os) {
-            if (!o.getStatus().equalsIgnoreCase(OperationStatus.SUCCESSFUL.toString())) {
+            if (!o.getStatus().toString().equalsIgnoreCase(OperationStatus.SUCCESSFUL.toString())) {
                 allOperationWithSameStatus = false;
             }
         }

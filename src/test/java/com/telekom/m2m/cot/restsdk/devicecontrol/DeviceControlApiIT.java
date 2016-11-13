@@ -55,26 +55,26 @@ public class DeviceControlApiIT {
 
     @Test
     public void testCreateAndUpdateOperation() throws Exception {
-//        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-//
-//        JsonObject parameters = new JsonObject();
-//        parameters.add("param1", new JsonPrimitive("1"));
-//
-//        JsonObject jsonObject = new JsonObject();
-//        jsonObject.add("name", new JsonPrimitive("example"));
-//        jsonObject.add("parameters", parameters);
-//
-//        Operation operation = new Operation();
-//        operation.setDeviceId(testManagedObject.getId());
-//        operation.set("com_telekom_m2m_cotcommand", jsonObject);
-//
-//        Operation createdOperation = deviceControlApi.create(operation);
-//
-//        Assert.assertNotNull("Should now have an Id", createdOperation.getId());
-//
-//        createdOperation.setStatus(OperationStatus.EXECUTING);
-//
-//        Operation updatedOperation = deviceControlApi.update(createdOperation);
+        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+
+        JsonObject parameters = new JsonObject();
+        parameters.add("param1", new JsonPrimitive("1"));
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("name", new JsonPrimitive("example"));
+        jsonObject.add("parameters", parameters);
+
+        Operation operation = new Operation();
+        operation.setDeviceId(testManagedObject.getId());
+        operation.set("com_telekom_m2m_cotcommand", jsonObject);
+
+        Operation createdOperation = deviceControlApi.create(operation);
+
+        Assert.assertNotNull("Should now have an Id", createdOperation.getId());
+
+        createdOperation.setStatus(OperationStatus.EXECUTING);
+
+        Operation updatedOperation = deviceControlApi.update(createdOperation);
 
     }
 

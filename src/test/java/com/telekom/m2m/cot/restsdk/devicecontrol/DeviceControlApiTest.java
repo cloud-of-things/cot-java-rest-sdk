@@ -65,7 +65,7 @@ public class DeviceControlApiTest {
 
         Assert.assertEquals(operation.getId(), "123");
         Assert.assertEquals(operation.getCreationTime().compareTo(new Date(1315303407000L)), 0);
-        Assert.assertEquals(operation.getStatus(), "PENDING");
+        Assert.assertEquals(operation.getStatus().toString(), "PENDING");
         Assert.assertEquals(operation.getDeviceId(), "1243");
 
         Object obj = operation.get("com_telekom_model_WebCamDevice");
