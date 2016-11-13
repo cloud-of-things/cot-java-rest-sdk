@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
+import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
@@ -131,7 +132,6 @@ public class MeasurementApiCollectionIT {
         Assert.assertEquals(ms.length, 0);
     }
 
-    // TODO This test sucks, see comment
     @Test
     public void testMultipleMeasurementsBySource() throws Exception {
         MeasurementApi mApi = cotPlat.getMeasurementApi();
@@ -147,8 +147,8 @@ public class MeasurementApiCollectionIT {
         Assert.assertTrue(ms.length > 0);
         boolean allMeasuremntsFromSource = true;
         for (Measurement m : ms) {
-            // TODO getId? This is needs to be getSource().getId()
-            if (!m.getId().equals(testManagedObject.getId())) {
+            JsonObject source = (JsonObject) m.get("source");
+            if (!source.get("id").getAsString().equals(testManagedObject.getId())) {
                 allMeasuremntsFromSource = false;
             }
         }
@@ -160,8 +160,8 @@ public class MeasurementApiCollectionIT {
         allMeasuremntsFromSource = true;
         Assert.assertTrue(ms.length > 0);
         for (Measurement m : ms) {
-            // TODO getId? This is needs to be getSource().getId()
-            if (!m.getId().equals(testManagedObject.getId())) {
+            JsonObject source = (JsonObject) m.get("source");
+            if (!source.get("id").getAsString().equals(testManagedObject.getId())) {
                 allMeasuremntsFromSource = false;
             }
         }
