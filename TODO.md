@@ -11,6 +11,7 @@
 
 * Complete DeviceControl
 * * Operations Filter with Agent
+* * Bulk Operations
 
 * Refactor FilterBuilder
 * * Currently all filters are allowed with any *Collection. Would be better if just available filters work.
