@@ -125,4 +125,13 @@ public class DeviceControlApi {
     public OperationCollection getOperations(Filter.FilterBuilder filters, int resultSize) {
         return new OperationCollection(filters, resultSize, cloudOfThingsRestClient);
     }
+
+    /**
+     * Deletes a collection of Operations by criteria.
+     *
+     * @param filters filters of Operation attributes.
+     */
+    public void deleteOperations(Filter.FilterBuilder filters) {
+        cloudOfThingsRestClient.delete("", "devicecontrol/operations?" + filters.buildFilter() + "&x=");
+    }
 }

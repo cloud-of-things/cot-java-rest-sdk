@@ -1,5 +1,7 @@
 package com.telekom.m2m.cot.restsdk.util;
 
+import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
+
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -111,6 +113,11 @@ public class Filter {
 
         public FilterBuilder byDeviceId(String deviceId) {
             instance.arguments.put("deviceId", deviceId);
+            return this;
+        }
+
+        public FilterBuilder byStatus(OperationStatus operationStatus) {
+            instance.arguments.put("status", operationStatus.toString());
             return this;
         }
     }

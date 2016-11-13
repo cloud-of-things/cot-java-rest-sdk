@@ -131,6 +131,7 @@ public class MeasurementApiCollectionIT {
         Assert.assertEquals(ms.length, 0);
     }
 
+    // TODO This test sucks, see comment
     @Test
     public void testMultipleMeasurementsBySource() throws Exception {
         MeasurementApi mApi = cotPlat.getMeasurementApi();
@@ -146,6 +147,7 @@ public class MeasurementApiCollectionIT {
         Assert.assertTrue(ms.length > 0);
         boolean allMeasuremntsFromSource = true;
         for (Measurement m : ms) {
+            // TODO getId? This is needs to be getSource().getId()
             if (!m.getId().equals(testManagedObject.getId())) {
                 allMeasuremntsFromSource = false;
             }
@@ -158,7 +160,8 @@ public class MeasurementApiCollectionIT {
         allMeasuremntsFromSource = true;
         Assert.assertTrue(ms.length > 0);
         for (Measurement m : ms) {
-            if (m.getId().equals(testManagedObject.getId())) {
+            // TODO getId? This is needs to be getSource().getId()
+            if (!m.getId().equals(testManagedObject.getId())) {
                 allMeasuremntsFromSource = false;
             }
         }

@@ -9,6 +9,12 @@
 * * POST - add a managed object reference to the collection
 * * GET a managed object reference
 
+* Complete DeviceControl
+* * Operations Filter with Agent
+
+* Refactor FilterBuilder
+* * Currently all filters are allowed with any *Collection. Would be better if just available filters work.
+
 * Refactor the basics, Clean Code
 * Implement Geo Features
 * Make available different environments (base URL)

@@ -21,6 +21,16 @@ public class DeviceControlApiOperationsCollectionIT {
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
+    private static JsonObject jsonObject = new JsonObject();
+
+    static {
+        JsonObject parameters = new JsonObject();
+        parameters.add("param1", new JsonPrimitive("1"));
+
+        jsonObject.add("name", new JsonPrimitive("example"));
+        jsonObject.add("parameters", parameters);
+    }
+
     @BeforeMethod
     public void setUp() {
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
@@ -65,12 +75,6 @@ public class DeviceControlApiOperationsCollectionIT {
         // Test assumes pageSize default is 5.
 
         DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-        JsonObject parameters = new JsonObject();
-        parameters.add("param1", new JsonPrimitive("1"));
-
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("name", new JsonPrimitive("example"));
-        jsonObject.add("parameters", parameters);
 
         for (int i = 0; i < 6; i++) {
             Operation testOperation = new Operation();
@@ -114,229 +118,121 @@ public class DeviceControlApiOperationsCollectionIT {
 
     }
 
-//    @Test
-//    public void testDeleteMultipleEventsBySource() throws Exception {
-//        EventApi eApi = cotPlat.getEventApi();
-//
-//        for (int i = 0; i < 6; i++) {
-//            Event testEvent = new Event();
-//            testEvent.setSource(testManagedObject);
-//            testEvent.setTime(new Date(new Date().getTime() - (i * 5000)));
-//            testEvent.setType("mytype-" + i);
-//            testEvent.setText("Test" + i);
-//
-//            eApi.createEvent(testEvent);
-//        }
-//
-//        EventCollection events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
-//        Event[] es = events.getEvents();
-//        Assert.assertEquals(es.length, 5);
-//
-//        eApi.deleteEvents(Filter.build().bySource(testManagedObject.getId()));
-//        events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
-//        es = events.getEvents();
-//        Assert.assertEquals(es.length, 0);
-//    }
-//
-//    @Test
-//    public void testMultipleEventsBySource() throws Exception {
-//        EventApi eApi = cotPlat.getEventApi();
-//
-//        Event testEvent = new Event();
-//        testEvent.setSource(testManagedObject);
-//        testEvent.setTime(new Date());
-//        testEvent.setType("mytype");
-//        testEvent.setText("Test");
-//        eApi.createEvent(testEvent);
-//
-//        EventCollection events = eApi.getEvents();
-//        Event[] es = events.getEvents();
-//        Assert.assertTrue(es.length > 0);
-//        boolean allEventsFromSource = true;
-//        for (Event m : es) {
-//            if (!m.getId().equals(testManagedObject.getId())) {
-//                allEventsFromSource = false;
-//            }
-//        }
-//        Assert.assertFalse(allEventsFromSource);
-//
-//        //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
-//        events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
-//        es = events.getEvents();
-//        allEventsFromSource = true;
-//        Assert.assertTrue(es.length > 0);
-//        for (Event m : es) {
-//            if (m.getId().equals(testManagedObject.getId())) {
-//                allEventsFromSource = false;
-//            }
-//        }
-//        Assert.assertTrue(allEventsFromSource);
-//    }
-//
-//    @Test
-//    public void testMultipleEventsByType() throws Exception {
-//        EventApi eApi = cotPlat.getEventApi();
-//
-//        Event testEvent = new Event();
-//        testEvent.setSource(testManagedObject);
-//        testEvent.setTime(new Date());
-//        testEvent.setType("mysuperspecialtype");
-//        testEvent.setText("Test");
-//
-//        eApi.createEvent(testEvent);
-//
-//        EventCollection events = eApi.getEvents();
-//        Event[] es = events.getEvents();
-//        Assert.assertTrue(es.length > 0);
-//        boolean allEventsFromSameType = true;
-//        for (Event m : es) {
-//            if (!m.getType().equals(testManagedObject.getType())) {
-//                allEventsFromSameType = false;
-//            }
-//        }
-//        Assert.assertFalse(allEventsFromSameType);
-//
-//        events = eApi.getEvents(Filter.build().byType(testEvent.getType()));
-//        es = events.getEvents();
-//        allEventsFromSameType = true;
-//        Assert.assertTrue(es.length > 0);
-//        for (Event m : es) {
-//            if (!m.getType().equals(testEvent.getType())) {
-//                allEventsFromSameType = false;
-//            }
-//        }
-//        Assert.assertTrue(allEventsFromSameType);
-//    }
-//
-//    @Test
-//    public void testMultipleEventByDate() throws Exception {
-//        EventApi eApi = cotPlat.getEventApi();
-//
-//        Event testEvent = new Event();
-//        testEvent.setSource(testManagedObject);
-//        testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
-//        testEvent.setType("mysuperspecialtype");
-//        testEvent.setText("Test");
-//
-//        eApi.createEvent(testEvent);
-//
-//        Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-//        EventCollection events = eApi.getEvents(Filter.build().byDate(yesterday, new Date()));
-//
-//
-//        Event[] es = events.getEvents();
-//        Assert.assertTrue(es.length > 0);
-//
-//        Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
-//
-//        events = eApi.getEvents(Filter.build().byDate(beforeYesterday, yesterday));
-//        es = events.getEvents();
-//        Assert.assertEquals(es.length, 0);
-//    }
-//
-//
-//    @Test
-//    public void testMultipleEventsByDateAndBySource() throws Exception {
-//        EventApi eApi = cotPlat.getEventApi();
-//
-//        Event testEvent = new Event();
-//        testEvent.setSource(testManagedObject);
-//        testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
-//        testEvent.setType("mysuperspecialtype");
-//        testEvent.setText("Test");
-//
-//        eApi.createEvent(testEvent);
-//
-//        Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-//        EventCollection events = eApi.getEvents(
-//                Filter.build()
-//                        .byDate(yesterday, new Date())
-//                        .bySource(testManagedObject.getId()));
-//
-//
-//        Event[] es = events.getEvents();
-//        Assert.assertEquals(es.length, 1);
-//
-//        Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
-//
-//        events = eApi.getEvents(
-//                Filter.build()
-//                        .byDate(beforeYesterday, yesterday)
-//                        .bySource(testManagedObject.getId()));
-//        es = events.getEvents();
-//        Assert.assertEquals(es.length, 0);
-//    }
-//
-//
-//    @Test
-//    public void testMultipleEventsByTypeAndBySource() throws Exception {
-//        EventApi eApi = cotPlat.getEventApi();
-//
-//        Position sts = new Position();
-//        sts.setAlt(1000.0);
-//        sts.setLat(50.722607);
-//        sts.setLon(7.144011);
-//
-//        Event testEvent = new Event();
-//        testEvent.setSource(testManagedObject);
-//        testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
-//        testEvent.setType("mysuperspecialtype");
-//        testEvent.setText("Test");
-//
-//        testEvent.set(sts);
-//        eApi.createEvent(testEvent);
-//
-//        EventCollection events = eApi.getEvents(
-//                Filter.build()
-//                        .byType("mysuperspecialtype")
-//                        .bySource(testManagedObject.getId()));
-//
-//
-//        Event[] es = events.getEvents();
-//        Assert.assertEquals(es.length, 1);
-//
-//
-//        events = eApi.getEvents(
-//                Filter.build()
-//                        .byType("NOT_USED")
-//                        .bySource(testManagedObject.getId()));
-//        es = events.getEvents();
-//        Assert.assertEquals(es.length, 0);
-//    }
-//
-//
-//    @Test
-//    public void testMultipleEventsByFragmentTypeAndBySource() throws Exception {
-//        EventApi eApi = cotPlat.getEventApi();
-//
-//        Position sts = new Position();
-//        sts.setAlt(1000.0);
-//        sts.setLat(50.722607);
-//        sts.setLon(7.144011);
-//
-//        Event testEvent = new Event();
-//        testEvent.setSource(testManagedObject);
-//        testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
-//        testEvent.setType("mysuperspecialtype");
-//        testEvent.setText("Test");
-//        testEvent.set(sts);
-//        eApi.createEvent(testEvent);
-//
-//        EventCollection events = eApi.getEvents(
-//                Filter.build()
-//                        .byFragmentType("com_telekom_m2m_cot_restsdk_util_Position")
-//                        .bySource(testManagedObject.getId()));
-//
-//
-//        Event[] es = events.getEvents();
-//        Assert.assertEquals(es.length, 1);
-//
-//
-//        events = eApi.getEvents(
-//                Filter.build()
-//                        .byFragmentType("com_telekom_m2m_cot_restsdk_util_Position_not")
-//                        .bySource(testManagedObject.getId()));
-//        es = events.getEvents();
-//        Assert.assertEquals(es.length, 0);
-//    }
+    @Test
+    public void testDeleteMultipleOperationsBySource() throws Exception {
+        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+
+        for (int i = 0; i < 6; i++) {
+            Operation testOperation = new Operation();
+            testOperation.setDeviceId(testManagedObject.getId());
+            testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
+
+            deviceControlApi.create(testOperation);
+        }
+
+        OperationCollection operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
+        Operation[] os = operations.getOperations();
+        Assert.assertEquals(os.length, 5);
+
+        deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject.getId()));
+        operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
+        os = operations.getOperations();
+        Assert.assertEquals(os.length, 0);
+    }
+
+    @Test
+    public void testMultipleOperationsBySource() throws Exception {
+        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
+
+        Operation testOperation = new Operation();
+        testOperation.setDeviceId(testManagedObject.getId());
+        testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
+        dcApi.create(testOperation);
+
+        OperationCollection operations = dcApi.getOperations(5);
+        Operation[] os = operations.getOperations();
+        Assert.assertTrue(os.length > 0);
+        boolean allOperationsFromSource = true;
+        for (Operation o : os) {
+            if (!o.getDeviceId().equals(testManagedObject.getId())) {
+                allOperationsFromSource = false;
+            }
+        }
+        Assert.assertFalse(allOperationsFromSource);
+
+        operations = dcApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 20);
+        os = operations.getOperations();
+        allOperationsFromSource = true;
+        Assert.assertTrue(os.length > 0);
+        for (Operation o : os) {
+            if (!o.getDeviceId().equals(testManagedObject.getId())) {
+                allOperationsFromSource = false;
+            }
+        }
+        Assert.assertTrue(allOperationsFromSource);
+    }
+
+    @Test
+    public void testMultipleOpearationByStatus() throws Exception {
+        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
+
+        Operation testOperation = new Operation();
+        testOperation.setDeviceId(testManagedObject.getId());
+        testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
+        dcApi.create(testOperation);
+
+        // Test could be flaky, because can't predict if first 50
+        // operations can not have same status
+        OperationCollection operations = dcApi.getOperations(50);
+        Operation[] os = operations.getOperations();
+        Assert.assertTrue(os.length > 0);
+        boolean allOperationWithSameStatus = true;
+        for (Operation o : os) {
+            if (!o.getStatus().equals(OperationStatus.FAILED)) {
+                allOperationWithSameStatus = false;
+            }
+        }
+        Assert.assertFalse(allOperationWithSameStatus);
+
+        operations = dcApi.getOperations(Filter.build().byStatus(OperationStatus.SUCCESSFUL), 5);
+        os = operations.getOperations();
+        allOperationWithSameStatus = true;
+        Assert.assertTrue(os.length > 0);
+        for (Operation o : os) {
+            if (!o.getStatus().equalsIgnoreCase(OperationStatus.SUCCESSFUL.toString())) {
+                allOperationWithSameStatus = false;
+            }
+        }
+        Assert.assertTrue(allOperationWithSameStatus);
+    }
+
+    @Test
+    public void testMultipleOperationsByDateAndByDeviceId() throws Exception {
+        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
+
+        Operation testOperation = new Operation();
+        testOperation.setDeviceId(testManagedObject.getId());
+        testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
+        dcApi.create(testOperation);
+
+        Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
+        OperationCollection events = dcApi.getOperations(
+                Filter.build()
+                        .byDate(yesterday, new Date())
+                        .byDeviceId(testManagedObject.getId()), 5);
+
+
+        Operation[] os = events.getOperations();
+        Assert.assertEquals(os.length, 1);
+
+        Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
+
+        events = dcApi.getOperations(
+                Filter.build()
+                        .byDate(beforeYesterday, yesterday)
+                        .byDeviceId(testManagedObject.getId()), 5);
+        os = events.getOperations();
+        Assert.assertEquals(os.length, 0);
+    }
+
 }
