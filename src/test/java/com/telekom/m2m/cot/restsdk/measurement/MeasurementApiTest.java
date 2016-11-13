@@ -23,4 +23,5 @@ public class MeasurementApiTest {
         MeasurementApi measurementApi = platform.getMeasurementApi();
         measurementApi.getMeasurement("1234");
     }
+
 }

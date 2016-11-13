@@ -66,6 +66,7 @@ public class TestHelper {
         ManagedObject mo = new ManagedObject();
         mo.setName(name);
         mo.set("c8y_IsDevice", new JsonObject());
+        mo.set("com_cumulocity_model_Agent", new JsonObject());
         return mo;
     }
 

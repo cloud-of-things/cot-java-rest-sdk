@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.telekom.m2m.cot</groupId>
-    <artifactId>java-rest-client</artifactId>
-    <version>0.3.0-SNAPSHOT</version>
+    <artifactId>examples</artifactId>
+    <version>0.2.0-SNAPSHOT</version>
 
-    <name>Cloud of Things Java REST SDK</name>
-    <description>This is an SDK to interfere with the Cloud of Things by
-        Deutsche Telekom AG.
-    </description>
+    <name>Cloud of Things Java REST SDK Examples</name>
     <url>https://github.com/marquies/cot-java-rest-sdk</url>
 
     <licenses>
@@ -19,28 +18,6 @@
             </name>
         </license>
     </licenses>
-
-    <scm>
-        <connection>scm:git:git@github.com:marquies/cot-java-rest-sdk.git
-        </connection>
-        <developerConnection>
-            scm:git:git@github.com:marquies/cot-java-rest-sdk.git
-        </developerConnection>
-        <url>git@github.com:marquies/cot-java-rest-sdk.git</url>
-    <tag>HEAD</tag>
-  </scm>
-
-    <distributionManagement>
-        <snapshotRepository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
-        </snapshotRepository>
-        <repository>
-            <id>ossrh</id>
-            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/
-            </url>
-        </repository>
-    </distributionManagement>
 
     <developers>
         <developer>
@@ -61,6 +38,16 @@
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
+        <dependency>
+            <groupId>com.telekom.m2m.cot</groupId>
+            <artifactId>java-rest-client</artifactId>
+            <version>0.2.0-SNAPSHOT</version>
+        </dependency>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>mockwebserver</artifactId>
@@ -95,7 +82,11 @@
             <version>${powermock.version}</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-csv</artifactId>
+            <version>1.3</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -132,6 +123,14 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

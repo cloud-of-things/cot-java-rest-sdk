@@ -8,13 +8,18 @@ import java.util.List;
 public class ManagedObjectReferenceCollection {
 
     private final List<ManagedObjectReference> mos;
+    private String self;
 
-    public ManagedObjectReferenceCollection(List<ManagedObjectReference> mos) {
+    public ManagedObjectReferenceCollection(List<ManagedObjectReference> mos, String self) {
         this.mos = mos;
+        this.self = self;
     }
 
     public Iterable<ManagedObjectReference> get(int pageSize) {
         return mos;
     }
 
+    public String getSelf() {
+        return self;
+    }
 }

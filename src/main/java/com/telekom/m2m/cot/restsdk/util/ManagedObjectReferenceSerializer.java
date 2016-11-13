@@ -16,13 +16,19 @@ public class ManagedObjectReferenceSerializer implements
     public ManagedObjectReference deserialize(JsonElement jsonElement, Type typeOfT, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
         if (jsonElement.isJsonObject()) {
             JsonElement jMO = jsonElement.getAsJsonObject().get("managedObject");
+            JsonElement selfString = jsonElement.getAsJsonObject().get("self");
             ManagedObject mo = jsonDeserializationContext.deserialize(jMO, ManagedObject.class);
-            return new ManagedObjectReference(mo);
+            return new ManagedObjectReference(mo, selfString.getAsString());
         }
-        return new ManagedObjectReference();
+        // Undeviced to return null or Exception.
+        return null;
     }
 
     public JsonElement serialize(ManagedObjectReference src, Type typeOfSrc, JsonSerializationContext context) {
-        throw new UnsupportedOperationException();
+        JsonObject reducedMo = new JsonObject();
+        reducedMo.add("id", new JsonPrimitive(src.getManagedObject().getId()));
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("managedObject", reducedMo);
+        return jsonObject;
     }
 }

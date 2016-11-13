@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
+ * Represents a ManagedObject from the platform.
+ *
+ * The ManagedObject can be model any physical or cyber-physical object, even virtual object.
+ *
  * Created by breucking on 30.01.16.
  */
 public class ManagedObject extends ExtensibleObject {
@@ -50,8 +54,39 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("childDevices")) {
             return (ManagedObjectReferenceCollection) anyObject.get("childDevices");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>());
+            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
         }
-
     }
+
+    public ManagedObjectReferenceCollection getChildAssets() {
+        if (anyObject.containsKey("childAssets")) {
+            return (ManagedObjectReferenceCollection) anyObject.get("childAssets");
+        } else {
+            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+        }
+    }
+
+    public ManagedObjectReferenceCollection getParentDevices() {
+        if (anyObject.containsKey("deviceParents")) {
+            return (ManagedObjectReferenceCollection) anyObject.get("deviceParents");
+        } else {
+            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+        }
+    }
+
+    public ManagedObjectReferenceCollection getParentAssets() {
+        if (anyObject.containsKey("assetParents")) {
+            return (ManagedObjectReferenceCollection) anyObject.get("assetParents");
+        } else {
+            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+        }
+    }
+
+//    public void setChildDevices(ManagedObjectReferenceCollection children) {
+//        anyObject.put("childDevices", children);
+//    }
+//
+//    public void addChildDevice(ManagedObjectReference managedObjectReference) {
+//
+//    }
 }

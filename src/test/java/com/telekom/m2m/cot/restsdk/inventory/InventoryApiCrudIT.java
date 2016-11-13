@@ -12,7 +12,7 @@ import java.util.Iterator;
 /**
  * Created by breucking on 30.01.16.
  */
-public class InventoryApiIT {
+public class InventoryApiCrudIT {
 
     @Test
     public void testCreateManagedObject() throws Exception {
@@ -32,8 +32,12 @@ public class InventoryApiIT {
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
         ManagedObject mo = inventoryApi.get("142300");
-        Iterable<ManagedObjectReference> children = mo.getChildDevices().get(5);
+        ManagedObjectReferenceCollection childs = mo.getChildDevices();
+        Assert.assertNotNull(childs.getSelf());
+
+        Iterable<ManagedObjectReference> children = childs.get(5);
         Iterator<ManagedObjectReference> iter = children.iterator();
+
         Assert.assertTrue(iter.hasNext());
         ManagedObject child = iter.next().getManagedObject();
         Assert.assertEquals(child.getName(), "RaspPi 8fef9ec2 Sensor BMP180");
@@ -97,7 +101,6 @@ public class InventoryApiIT {
         inventoryApi.delete(retrievedMo.getId());
         retrievedMo = inventoryApi.get(createdMo.getId());
         Assert.assertNull(retrievedMo);
-
     }
 
 }

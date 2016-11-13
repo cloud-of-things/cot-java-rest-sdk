@@ -1,4 +1,4 @@
-package com.telekom.m2m.cot.restsdk.operation;
+package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
@@ -35,8 +35,21 @@ public class Operation extends ExtensibleObject {
         return (Date) anyObject.get("creationTime");
     }
 
-    public String getStatus() {
-        return (String) anyObject.get("status");
+    public OperationStatus getStatus() {
+        if (!anyObject.containsKey("status")) {
+            return null;
+        }
+
+        Object status = anyObject.get("status");
+
+        if (status instanceof OperationStatus) {
+            return (OperationStatus) status;
+        }
+        if (status instanceof String) {
+            return OperationStatus.valueOf((String) status);
+        }
+
+        return null;
     }
 
     public String getDeviceId() {

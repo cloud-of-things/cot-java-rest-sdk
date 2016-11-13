@@ -1,4 +1,4 @@
-package com.telekom.m2m.cot.restsdk.operation;
+package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 /**
  * Created by breucking on 31.01.16.

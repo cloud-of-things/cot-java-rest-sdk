@@ -2,7 +2,6 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.operation.Operation;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import org.mockito.Mockito;
 import org.testng.Assert;
@@ -66,7 +65,7 @@ public class DeviceControlApiTest {
 
         Assert.assertEquals(operation.getId(), "123");
         Assert.assertEquals(operation.getCreationTime().compareTo(new Date(1315303407000L)), 0);
-        Assert.assertEquals(operation.getStatus(), "PENDING");
+        Assert.assertEquals(operation.getStatus().toString(), "PENDING");
         Assert.assertEquals(operation.getDeviceId(), "1243");
 
         Object obj = operation.get("com_telekom_model_WebCamDevice");

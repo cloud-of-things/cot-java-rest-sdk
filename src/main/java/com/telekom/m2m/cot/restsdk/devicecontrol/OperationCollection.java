@@ -1,4 +1,4 @@
-package com.telekom.m2m.cot.restsdk.measurement;
+package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -18,7 +18,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * @since 0.1.0
  * Created by breucking on 14.02.16.
  */
-public class MeasurementCollection /*implements Iterable<Measurement>*/ {
+public class OperationCollection {
 
     private Filter.FilterBuilder criteria = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -26,64 +26,65 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
 
     private Gson gson = GsonUtils.createGson();
 
-    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.operationCollection+json;charset=UTF-8;ver=0.9";
     private boolean nextAvailable = false;
     private boolean previousAvailable = false;
     private int pageSize = 5;
 
     /**
-     * Creates a MeasurementCollection.
-     * Use {@link MeasurementApi} to get MeasurementCollections.
+     * Creates a OperationCollection.
+     * Use {@link DeviceControlApi} to get OperationCollection.
      *
      * @param resultSize              size of the results (Max. 2000)
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      */
-    MeasurementCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
+    OperationCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
         this.pageSize = resultSize;
     }
 
     /**
-     * Creates a MeasurementCollection with filters.
-     * Use {@link MeasurementApi} to get MeasurementCollections.
+     * Creates a OperationCollection with filters.
+     * Use {@link DeviceControlApi} to get OperationCollection.
      *
      * @param filterBuilder           the build criteria.
      * @param resultSize              size of the results (Max. 2000)
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      */
-    MeasurementCollection(Filter.FilterBuilder filterBuilder, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
+    OperationCollection(Filter.FilterBuilder filterBuilder, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.criteria = filterBuilder;
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
         this.pageSize = resultSize;
     }
 
+
     /**
      * Retrieves the current page.
      *
-     * @return array of found Measurements.
+     * @return array of found Operations.
      * @since 0.1.0
      */
-    public Measurement[] getMeasurements() {
+    public Operation[] getOperations() {
         JsonObject object = getJsonObject(pageCursor);
 
         previousAvailable = object.has("prev");
 
-        if (object.has("measurements")) {
-            JsonArray jsonMeasurements = object.get("measurements").getAsJsonArray();
-            Measurement[] arrayOfMeasurements = new Measurement[jsonMeasurements.size()];
-            for (int i = 0; i < jsonMeasurements.size(); i++) {
-                JsonElement jsonMeasurement = jsonMeasurements.get(i).getAsJsonObject();
-                Measurement measurement = new Measurement(gson.fromJson(jsonMeasurement, ExtensibleObject.class));
-                arrayOfMeasurements[i] = measurement;
+        if (object.has("operations")) {
+            JsonArray jsonOperations = object.get("operations").getAsJsonArray();
+            Operation[] arrayOfOperations = new Operation[jsonOperations.size()];
+            for (int i = 0; i < jsonOperations.size(); i++) {
+                JsonElement jsonOperation = jsonOperations.get(i).getAsJsonObject();
+                Operation operation = new Operation(gson.fromJson(jsonOperation, ExtensibleObject.class));
+                arrayOfOperations[i] = operation;
             }
-            return arrayOfMeasurements;
+            return arrayOfOperations;
         } else
             return null;
     }
 
     private JsonObject getJsonObject(int page) {
         String response;
-        String url = "/measurement/measurements?" +
+        String url = "/devicecontrol/operations?" +
                 "currentPage=" + page +
                 "&pageSize=" + pageSize;
         if (criteria != null) {
@@ -120,9 +121,9 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
      */
     public boolean hasNext() {
         JsonObject object = getJsonObject(pageCursor + 1);
-        if (object.has("measurements")) {
-            JsonArray jsonMeasurements = object.get("measurements").getAsJsonArray();
-            nextAvailable = jsonMeasurements.size() > 0 ? true : false;
+        if (object.has("operations")) {
+            JsonArray jsonOperations = object.get("operations").getAsJsonArray();
+            nextAvailable = jsonOperations.size() > 0 ? true : false;
         }
         return nextAvailable;
     }
