@@ -60,10 +60,10 @@ See examples folder. (Needs improvements ;) )
 * Complete Device registration process
 * Implement removal of devices and its belongings
 * Complete MeasurementsAPI
-* * Refactor from single methods to Query objects. 
-* * Filter Date
-* * Filter FragmentType
-* * ... and combinations
-* * DELETE - delete a measurement collection
+ * Refactor from single methods to Query objects. 
+ * Filter Date
+ * Filter FragmentType
+ * ... and combinations
+ * DELETE - delete a measurement collection
 * Complete Inventory
-* * DELETE a managed object reference
+ * DELETE a managed object reference
