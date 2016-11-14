@@ -74,7 +74,7 @@ public class MeasurementApi {
      * @return the found Measurements.
      */
     public MeasurementCollection getMeasurements(int resultSize) {
-        return new MeasurementCollection(5, cloudOfThingsRestClient);
+        return new MeasurementCollection(resultSize, cloudOfThingsRestClient);
     }
 
     /**
