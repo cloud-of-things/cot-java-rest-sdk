@@ -23,7 +23,7 @@ public class ManagedObjectCollection {
     private Filter.FilterBuilder criteria = null;
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
-    private int pageCursor;
+    private int pageCursor = 1;
 
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.managedObjectCollection+json;charset=UTF-8;ver=0.9";
     private boolean nextAvailable = false;
@@ -37,12 +37,27 @@ public class ManagedObjectCollection {
      * Internal constructor to create a ManagedObjectCollection.
      * Use {@link InventoryApi} to get a ManagedObjectCollection.
      *
-     * @param pageSize
+     * @param resultSize
      * @param cloudOfThingsRestClient
      */
-    ManagedObjectCollection(int pageSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.pageCursor = pageSize;
+    ManagedObjectCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
+        this.pageCursor = resultSize;
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+    }
+
+
+    /**
+     * Internal constructor to create a ManagedObjectCollection.
+     * Use {@link InventoryApi} to get a ManagedObjectCollection.
+     *
+     * @param resultSize
+     * @param cloudOfThingsRestClient
+     * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     */
+    ManagedObjectCollection(Filter.FilterBuilder filters, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
+        this.criteria = filters;
+        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        this.pageSize = resultSize;
     }
 
     /**
@@ -79,5 +94,58 @@ public class ManagedObjectCollection {
         response = cloudOfThingsRestClient.getResponse(url, CONTENT_TYPE);
 
         return gson.fromJson(response, JsonObject.class);
+    }
+
+    /**
+     * Moves cursor to the next page.
+     */
+    public void next() {
+        pageCursor += 1;
+    }
+
+    /**
+     * Moves cursor to the previous page.
+     */
+    public void previous() {
+        pageCursor -= 1;
+    }
+
+    /**
+     * Checks if the next page has elements. <b>Use with caution, it does a seperate HTTP request, so it is considered as slow</b>
+     *
+     * @return true if next page has managedObjects, otherwise false.
+     */
+    public boolean hasNext() {
+        JsonObject object = getJsonObject(pageCursor + 1);
+        if (object.has("managedObjects")) {
+            JsonArray jsonManagedObjects = object.get("managedObjects").getAsJsonArray();
+            nextAvailable = jsonManagedObjects.size() > 0 ? true : false;
+        }
+        return nextAvailable;
+    }
+
+    /**
+     * Checks if there is a previous page.
+     *
+     * @return true if next page has managedObjects, otherwise false.
+     */
+    public boolean hasPrevious() {
+        return previousAvailable;
+    }
+
+    /**
+     * Sets the page size for page queries.
+     * The queries uses page size as a limit of elements to retrieve.
+     * There is a maximum number of elements, currently 2,000 elements.
+     * <i>Default is 5</i>
+     *
+     * @param pageSize the new page size as positive integer.
+     */
+    public void setPageSize(int pageSize) {
+        if (pageSize > 0) {
+            this.pageSize = pageSize;
+        } else {
+            this.pageSize = 0;
+        }
     }
 }

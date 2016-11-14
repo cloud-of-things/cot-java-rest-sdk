@@ -1,13 +1,13 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+import org.testng.asserts.SoftAssert;
+
+import java.util.ArrayList;
 
 /**
  * @author steinert
@@ -15,28 +15,7 @@ import org.testng.annotations.Test;
 public class InventoryManagedObjectCollectionIT {
 
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private ManagedObject testManagedObject;
-
-    private static JsonObject jsonObject = new JsonObject();
-
-    static {
-        JsonObject parameters = new JsonObject();
-        parameters.add("param1", new JsonPrimitive("1"));
-
-        jsonObject.add("name", new JsonPrimitive("example"));
-        jsonObject.add("parameters", parameters);
-    }
-
-    @BeforeMethod
-    public void setUp() {
-        testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
-    }
-
-    @AfterMethod
-    public void tearDown() {
-        TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
-    }
-
+    private SoftAssert softAssert = new SoftAssert();
 
     @Test
     public void testMultipleManagedObjects() throws Exception {
@@ -47,69 +26,78 @@ public class InventoryManagedObjectCollectionIT {
         ManagedObjectCollection moCollection = inventoryApi.getManagedObjects(5);
 
 
-        ManagedObject[] operations = moCollection.getManagedObjects();
+        ManagedObject[] managedObjects = moCollection.getManagedObjects();
 
-        Assert.assertTrue(operations.length > 0);
+        Assert.assertTrue(managedObjects.length > 0);
 
-        ManagedObject managedObject = operations[0];
+        ManagedObject managedObject = managedObjects[0];
 
         Assert.assertTrue(managedObject.getId() != null);
         Assert.assertTrue(managedObject.getId().length() > 0);
 
 
     }
-//
-//    @Test
-//    public void testMultipleOperationssWithPaging() throws Exception {
-//        // Expects a tenant with already multiple measurements
-//
-//        // !!! Important !!!
-//        // Test assumes pageSize default is 5.
-//
-//        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-//
-//        for (int i = 0; i < 6; i++) {
-//            Operation testOperation = new Operation();
-//            testOperation.setDeviceId(testManagedObject.getId());
-//            testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-//
-//            deviceControlApi.create(testOperation);
-//        }
-//
-//        OperationCollection operationCollection = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
-//
-//
-//        Operation[] operations = operationCollection.getOperations();
-//
-//        Assert.assertEquals(operations.length, 5);
-//        Assert.assertTrue(operationCollection.hasNext());
-//        Assert.assertFalse(operationCollection.hasPrevious());
-//
-//        operationCollection.next();
-//
-//        operations = operationCollection.getOperations();
-//        Assert.assertEquals(operations.length, 1);
-//
-//        Assert.assertFalse(operationCollection.hasNext());
-//        Assert.assertTrue(operationCollection.hasPrevious());
-//
-//        operationCollection.previous();
-//        operations = operationCollection.getOperations();
-//
-//        Assert.assertEquals(operations.length, 5);
-//
-//        Assert.assertTrue(operationCollection.hasNext());
-//        Assert.assertFalse(operationCollection.hasPrevious());
-//
-//        operationCollection.setPageSize(10);
-//        operations = operationCollection.getOperations();
-//
-//        Assert.assertEquals(operations.length, 6);
-//        Assert.assertFalse(operationCollection.hasNext());
-//        Assert.assertFalse(operationCollection.hasPrevious());
-//
-//    }
-//
+
+    @Test
+    public void testMultipleManagedObjectsWithPaging() throws Exception {
+        // Expects a tenant with already multiple measurements
+
+        // !!! Important !!!
+        // Test assumes pageSize default is 5.
+
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        ArrayList<ManagedObject> list = new ArrayList<ManagedObject>();
+
+        for (int i = 0; i < 6; i++) {
+            ManagedObject testMo = new ManagedObject();
+            testMo.setType("my_special_test_type");
+
+            list.add(inventoryApi.create(testMo));
+
+        }
+
+        ManagedObjectCollection moCollection = inventoryApi.getManagedObjects(Filter.build().byType("my_special_test_type"), 5);
+
+
+        ManagedObject[] managedObjects = moCollection.getManagedObjects();
+
+
+        softAssert.assertEquals(managedObjects.length, 5, "length should be 5");
+        softAssert.assertTrue(moCollection.hasNext(), "should have next");
+        softAssert.assertFalse(moCollection.hasPrevious(), "should not have prev because is first");
+
+        moCollection.next();
+
+        managedObjects = moCollection.getManagedObjects();
+        softAssert.assertEquals(managedObjects.length, 1, "length should be 1");
+
+        softAssert.assertFalse(moCollection.hasNext(), "should not have nextbecause is last");
+        softAssert.assertTrue(moCollection.hasPrevious(), "should have prev");
+
+        moCollection.previous();
+        managedObjects = moCollection.getManagedObjects();
+
+        softAssert.assertEquals(managedObjects.length, 5, "length should be 5");
+
+        softAssert.assertTrue(moCollection.hasNext(), "should have next");
+        softAssert.assertFalse(moCollection.hasPrevious(), "should not have prev because is first");
+
+        moCollection.setPageSize(10);
+        managedObjects = moCollection.getManagedObjects();
+
+        softAssert.assertEquals(managedObjects.length, 6, "length should be 6");
+        softAssert.assertFalse(moCollection.hasNext(), "should not have next because contains all");
+        softAssert.assertFalse(moCollection.hasPrevious(), "should not have next because contains all");
+
+        // Cleanup
+        for (ManagedObject mo : list) {
+            inventoryApi.delete(mo.getId());
+        }
+
+        softAssert.assertAll();
+
+    }
+
 //    @Test
 //    public void testDeleteMultipleOperationsBySource() throws Exception {
 //        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
@@ -131,39 +119,26 @@ public class InventoryManagedObjectCollectionIT {
 //        os = operations.getOperations();
 //        Assert.assertEquals(os.length, 0);
 //    }
-//
-//    @Test
-//    public void testMultipleOperationsBySource() throws Exception {
-//        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
-//
-//        Operation testOperation = new Operation();
-//        testOperation.setDeviceId(testManagedObject.getId());
-//        testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-//        dcApi.create(testOperation);
-//
-//        OperationCollection operations = dcApi.getOperations(5);
-//        Operation[] os = operations.getOperations();
-//        Assert.assertTrue(os.length > 0);
-//        boolean allOperationsFromSource = true;
-//        for (Operation o : os) {
-//            if (!o.getDeviceId().equals(testManagedObject.getId())) {
-//                allOperationsFromSource = false;
-//            }
-//        }
-//        Assert.assertFalse(allOperationsFromSource);
-//
-//        operations = dcApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 20);
-//        os = operations.getOperations();
-//        allOperationsFromSource = true;
-//        Assert.assertTrue(os.length > 0);
-//        for (Operation o : os) {
-//            if (!o.getDeviceId().equals(testManagedObject.getId())) {
-//                allOperationsFromSource = false;
-//            }
-//        }
-//        Assert.assertTrue(allOperationsFromSource);
-//    }
-//
+
+    @Test
+    public void testMultipleManagedObjectsByText() throws Exception {
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "my_specialxxyyzz_name");
+
+        ManagedObjectCollection managedObjects = inventoryApi.getManagedObjects(Filter.build().byText("my_specialxxyyzz_name"), 5);
+        ManagedObject[] mos = managedObjects.getManagedObjects();
+        Assert.assertTrue(mos.length > 0);
+        boolean allMosWithName = true;
+        for (ManagedObject managedObject : mos) {
+            if (!managedObject.getName().contains("specialxxyyzz")) {
+                allMosWithName = false;
+            }
+        }
+        softAssert.assertTrue(allMosWithName);
+        inventoryApi.delete(testManagedObject.getId());
+        softAssert.assertAll();
+    }
+
 //    @Test
 //    public void testMultipleOpearationByStatus() throws Exception {
 //        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();

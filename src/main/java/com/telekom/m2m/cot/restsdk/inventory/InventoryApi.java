@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
@@ -147,8 +148,21 @@ public class InventoryApi {
      *
      * @param pageSize size of the results (Max. 2000)
      * @return the found Managed Objects.
+     * @since 0.3.0
      */
     public ManagedObjectCollection getManagedObjects(int pageSize) {
         return new ManagedObjectCollection(pageSize, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Retrieves Measurements filtered by criteria.
+     *
+     * @param filters    filters of measurement attributes.
+     * @param resultSize size of the results (Max. 2000)
+     * @return the MeasurementsCollections to naviagte through the results.
+     * @since 0.3.0
+     */
+    public ManagedObjectCollection getManagedObjects(Filter.FilterBuilder filters, int resultSize) {
+        return new ManagedObjectCollection(filters, resultSize, cloudOfThingsRestClient);
     }
 }
