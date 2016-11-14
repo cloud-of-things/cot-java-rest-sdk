@@ -141,4 +141,14 @@ public class InventoryApi {
 
         cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
     }
+
+    /**
+     * Retrieves Managed Objects.
+     *
+     * @param pageSize size of the results (Max. 2000)
+     * @return the found Managed Objects.
+     */
+    public ManagedObjectCollection getManagedObjects(int pageSize) {
+        return new ManagedObjectCollection(pageSize, cloudOfThingsRestClient);
+    }
 }
