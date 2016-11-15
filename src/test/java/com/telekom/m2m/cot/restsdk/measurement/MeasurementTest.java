@@ -1,12 +1,9 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import com.telekom.m2m.cot.restsdk.util.Position;
 import com.telekom.m2m.cot.restsdk.util.SampleTemperatureSensor;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -24,14 +21,14 @@ public class MeasurementTest {
 
         SampleTemperatureSensor sts = new SampleTemperatureSensor();
 
-        Measurement measument = new Measurement();
-        measument.setId("1234567");
-        measument.setTime(date);
-        measument.setType("ASpecialType");
-        measument.set(sts);
+        Measurement measurement = new Measurement();
+        measurement.setId("1234567");
+        measurement.setTime(date);
+        measurement.setType("ASpecialType");
+        measurement.set(sts);
 
         Gson gson = GsonUtils.createGson();
-        String json = gson.toJson(measument);
+        String json = gson.toJson(measurement);
 
         Measurement m = new Measurement(gson.fromJson(json, ExtensibleObject.class));
 

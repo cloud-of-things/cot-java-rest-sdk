@@ -101,7 +101,7 @@ public class Filter {
         }
 
         /**
-         * Adds a build for a time range.
+         * Adds a build for a fragment.
          *
          * @param fragmentType to build for.
          * @return an approprieate build Object.
@@ -111,13 +111,47 @@ public class Filter {
             return this;
         }
 
+        /**
+         * Adds a build for a deviceId.
+         *
+         * @param deviceId to build for.
+         * @return an approprieate build Object.
+         */
         public FilterBuilder byDeviceId(String deviceId) {
             instance.arguments.put("deviceId", deviceId);
             return this;
         }
 
+        /**
+         * Adds a build for a status.
+         *
+         * @param operationStatus to build for.
+         * @return an approprieate build Object.
+         */
         public FilterBuilder byStatus(OperationStatus operationStatus) {
             instance.arguments.put("status", operationStatus.toString());
+            return this;
+        }
+
+        /**
+         * Adds a build for a text.
+         *
+         * @param text to build for.
+         * @return an approprieate build Object.
+         */
+        public FilterBuilder byText(String text) {
+            instance.arguments.put("text", text);
+            return this;
+        }
+
+        /**
+         * Adds a build for a list of comma separated Ids.
+         *
+         * @param listOfIds to build for (comma separated).
+         * @return an approprieate build Object.
+         */
+        public FilterBuilder byListOfIds(String listOfIds) {
+            instance.arguments.put("ids", listOfIds);
             return this;
         }
     }

@@ -57,6 +57,7 @@ public class ManagedObjectTest {
 
     }
 
+
     @Test
     public void testEmptyChildDevices() throws Exception {
 

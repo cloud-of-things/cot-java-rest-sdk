@@ -39,7 +39,7 @@ public class ManagedObject extends ExtensibleObject {
     }
 
     public void setType(String type) {
-        anyObject.get("type");
+        anyObject.put("type", type);
     }
 
     public String getType() {
