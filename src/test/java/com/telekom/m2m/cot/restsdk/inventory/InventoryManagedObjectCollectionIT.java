@@ -139,67 +139,56 @@ public class InventoryManagedObjectCollectionIT {
         softAssert.assertAll();
     }
 
+    @Test
+    public void testMultipleManagedObjectsByListOfIDs() throws Exception {
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "my_specialxxyyzz_name");
+
+        ManagedObjectCollection managedObjects = inventoryApi.getManagedObjects(Filter.build().byListOfIds("1,2," + testManagedObject.getId() + ",7"), 5);
+        ManagedObject[] mos = managedObjects.getManagedObjects();
+        Assert.assertEquals(mos.length, 1);
+        ManagedObject mo = mos[0];
+        softAssert.assertEquals(mo.getId(), testManagedObject.getId());
+        softAssert.assertEquals(mo.getName(), "my_specialxxyyzz_name");
+        inventoryApi.delete(testManagedObject.getId());
+        softAssert.assertAll();
+    }
+
 //    @Test
-//    public void testMultipleOpearationByStatus() throws Exception {
-//        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
+//    public void testMultipleManagedObjectsByFragment() throws Exception {
+//        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+//        ManagedObject testManagedObject  = TestHelper.createManagedObject("IT-Test-MO_DELETE");
+//        testManagedObject = inventoryApi.create(testManagedObject);
 //
-//        Operation testOperation = new Operation();
-//        testOperation.setDeviceId(testManagedObject.getId());
-//        testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-//        dcApi.create(testOperation);
+//        SampleTemperatureSensor sts = new SampleTemperatureSensor();
+//        sts.setTemperature(10);
 //
-//        // Test could be flaky, because can't predict if first 50
-//        // operations can not have same status
-//        OperationCollection operations = dcApi.getOperations(50);
-//        Operation[] os = operations.getOperations();
-//        Assert.assertTrue(os.length > 0);
+//        Measurement measurement = new Measurement();
+//        measurement.setTime(new Date());
+//        measurement.setType("com_telekom_TestType");
+//        measurement.setSource(testManagedObject);
+//        measurement.set(sts);
+//
+//        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+//        Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
+//
+//        testManagedObject = inventoryApi.get(testManagedObject.getId());
+//
+//        ManagedObjectCollection managedObjects = inventoryApi.getManagedObjects(Filter.build().byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor"), 5);
+//        ManagedObject[] mos = managedObjects.getManagedObjects();
+//        Assert.assertTrue(mos.length > 0);
 //        boolean allOperationWithSameStatus = true;
-//        for (Operation o : os) {
-//            if (!o.getStatus().equals(OperationStatus.FAILED)) {
+//        for (ManagedObject o : mos) {
+//            if (!o.getName().equals("IT-Test-MO_DELETE")) {
 //                allOperationWithSameStatus = false;
 //            }
 //        }
-//        Assert.assertFalse(allOperationWithSameStatus);
+//        softAssert.assertFalse(allOperationWithSameStatus, "Don't got the wanted MOs");
 //
-//        operations = dcApi.getOperations(Filter.build().byStatus(OperationStatus.SUCCESSFUL), 5);
-//        os = operations.getOperations();
-//        allOperationWithSameStatus = true;
-//        Assert.assertTrue(os.length > 0);
-//        for (Operation o : os) {
-//            if (!o.getStatus().toString().equalsIgnoreCase(OperationStatus.SUCCESSFUL.toString())) {
-//                allOperationWithSameStatus = false;
-//            }
-//        }
-//        Assert.assertTrue(allOperationWithSameStatus);
-//    }
+//        inventoryApi.delete(testManagedObject.getId());
 //
-//    @Test
-//    public void testMultipleOperationsByDateAndByDeviceId() throws Exception {
-//        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
+//        softAssert.assertAll();
 //
-//        Operation testOperation = new Operation();
-//        testOperation.setDeviceId(testManagedObject.getId());
-//        testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-//        dcApi.create(testOperation);
-//
-//        Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-//        OperationCollection events = dcApi.getOperations(
-//                Filter.build()
-//                        .byDate(yesterday, new Date())
-//                        .byDeviceId(testManagedObject.getId()), 5);
-//
-//
-//        Operation[] os = events.getOperations();
-//        Assert.assertEquals(os.length, 1);
-//
-//        Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
-//
-//        events = dcApi.getOperations(
-//                Filter.build()
-//                        .byDate(beforeYesterday, yesterday)
-//                        .byDeviceId(testManagedObject.getId()), 5);
-//        os = events.getOperations();
-//        Assert.assertEquals(os.length, 0);
 //    }
 
 }

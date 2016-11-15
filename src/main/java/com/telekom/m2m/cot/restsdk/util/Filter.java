@@ -143,6 +143,17 @@ public class Filter {
             instance.arguments.put("text", text);
             return this;
         }
+
+        /**
+         * Adds a build for a list of comma separated Ids.
+         *
+         * @param listOfIds to build for (comma separated).
+         * @return an approprieate build Object.
+         */
+        public FilterBuilder byListOfIds(String listOfIds) {
+            instance.arguments.put("ids", listOfIds);
+            return this;
+        }
     }
 
 }
