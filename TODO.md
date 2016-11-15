@@ -2,12 +2,12 @@
 
 * Complete Inventory 
 * * Write children (implemented, needs refactoring)
-* * Get ManagedObjectCollection
 * * Query Language
 * * GET supported measurements of a managed object
 * * GET a managed object reference collection
 * * POST - add a managed object reference to the collection
 * * GET a managed object reference
+* * testMultipleManagedObjectsByFragment
 
 * Complete DeviceControl
 * * Operations Filter with Agent
