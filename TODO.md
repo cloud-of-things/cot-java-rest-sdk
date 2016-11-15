@@ -4,9 +4,6 @@
  * Write children (implemented, needs refactoring)
  * Query Language
  * GET supported measurements of a managed object
- * GET a managed object reference collection
- * POST - add a managed object reference to the collection
- * GET a managed object reference
  * testMultipleManagedObjectsByFragment
 
 * Complete DeviceControl
@@ -25,7 +22,12 @@
  * MeasurementsAPI
  * ManagedObject
 
-# Done
+# Done 0.3.0
+* Complete Inventory
+ * Get ManagedObjects in Collection
+ 
+
+# Done 0.2.0
 
 * Complete Events
 * Complete Device registration process
