@@ -103,9 +103,13 @@ public class CloudOfThingsRestClient {
 
         try {
             Response r = client.newCall(request).execute();
-            String result = r.body().string();
-            r.body().close();
-            return result;
+            if (r.isSuccessful()) {
+                String result = r.body().string();
+                r.body().close();
+                return result;
+            } else {
+                throw new CotSdkException(r.code(), "Error in request");
+            }
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         }
@@ -121,12 +125,15 @@ public class CloudOfThingsRestClient {
         try {
             response = client.newCall(request).execute();
             String result = null;
-            if (response.isSuccessful())
+            if (response.isSuccessful()) {
                 result = response.body().string();
-            response.body().close();
-            return result;
+                response.body().close();
+                return result;
+            } else {
+                throw new CotSdkException(response.code(), "Error in request.");
+            }
         } catch (Exception e) {
-            throw new CotSdkException("Error in requets", e);
+            throw new CotSdkException("Error in request", e);
         }
     }
 

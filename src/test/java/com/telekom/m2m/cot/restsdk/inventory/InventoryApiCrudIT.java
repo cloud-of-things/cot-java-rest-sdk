@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -99,8 +100,12 @@ public class InventoryApiCrudIT {
         Assert.assertEquals(playObj.get("foo").getAsString(), "bar");
 
         inventoryApi.delete(retrievedMo.getId());
-        retrievedMo = inventoryApi.get(createdMo.getId());
-        Assert.assertNull(retrievedMo);
+        try {
+            retrievedMo = inventoryApi.get(createdMo.getId());
+            Assert.fail("Should throw 404 because it is deleted.");
+        } catch (CotSdkException e) {
+        }
+
     }
 
 }
