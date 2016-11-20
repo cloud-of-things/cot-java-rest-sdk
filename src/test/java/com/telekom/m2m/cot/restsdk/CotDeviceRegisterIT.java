@@ -98,7 +98,11 @@ public class CotDeviceRegisterIT {
         deviceControlApi.createNewDevice(operation);
 
         // Step 2: (device) Device request
-        unregDevCred.getCredentials(deviceId);
+        try {
+            unregDevCred.getCredentials(deviceId);
+        } catch (CotSdkException e) {
+
+        }
 
         // Step 3: (devicemanager) Accept request
         deviceControlApi.acceptDevice(deviceId);
@@ -144,12 +148,18 @@ public class CotDeviceRegisterIT {
         // Step 6: (device) Delete Identity & Device
         devIdentityApi.delete(retrievedExtId);
 
-        Assert.assertNull(devIdentityApi.getExternalId(retrievedExtId));
+        try {
+            devIdentityApi.getExternalId(retrievedExtId);
+            Assert.fail("Should throw Exception, because is deleted.");
+        } catch (CotSdkException e) {
 
-        inventory.delete(newMo.getId());
+        }
+        try {
+            inventory.delete(newMo.getId());
+            Assert.fail("Should throw Exception, because is deleted.");
+        } catch (CotSdkException e) {
 
-        ManagedObject object = inventory.get(newMo.getId());
-        Assert.assertNull(object);
+        }
 
     }
 

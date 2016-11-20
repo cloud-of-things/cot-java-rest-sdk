@@ -69,7 +69,7 @@ public class EventApiIT {
         Assert.assertEquals(retrievedEvent.getText(), "Sample Text");
         Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening), 0);
         Assert.assertNotNull(retrievedEvent.getCreationTime());
-        Assert.assertEquals(retrievedEvent.getCreationTime().compareTo(timeOfEventHappening), 1);
+        Assert.assertEquals(retrievedEvent.getCreationTime().compareTo(timeOfEventHappening), -1);
 
     }
 

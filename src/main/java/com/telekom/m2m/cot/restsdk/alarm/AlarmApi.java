@@ -18,6 +18,7 @@ public class AlarmApi {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
+
     public Alarm getAlarm(String id) {
         String response = cloudOfThingsRestClient.getResponse(id, "alarm/alarms", CONTENT_TYPE);
         Alarm alarm = new Alarm(gson.fromJson(response, ExtensibleObject.class));
