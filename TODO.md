@@ -6,6 +6,11 @@
  * GET supported measurements of a managed object
  * testMultipleManagedObjectsByFragment
 
+* Complete Alarm API
+ * Update
+ * Delete
+ * Retrieve collections
+
 * Complete DeviceControl
  * Operations Filter with Agent
  * Bulk Operations
