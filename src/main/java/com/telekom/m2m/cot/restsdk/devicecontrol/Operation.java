@@ -119,7 +119,7 @@ public class Operation extends ExtensibleObject {
      *
      * @param id the unique identifier.
      */
-    public void setId(String id) {
+    void setId(String id) {
         anyObject.put("id", id);
     }
 }

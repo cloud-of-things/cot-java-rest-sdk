@@ -67,10 +67,11 @@ public class Alarm extends ExtensibleObject {
 
     /**
      * Set the unique identifier of the alarm.
+     * Just used internally.
      *
      * @param id the new identifier.
      */
-    public void setId(String id) {
+    void setId(String id) {
         anyObject.put("id", id);
     }
 
@@ -147,7 +148,7 @@ public class Alarm extends ExtensibleObject {
     /**
      * Setting the alarm type.
      *
-     * @param type a String with the alarm type. Use cot_abc style.
+     * @param type a String with the alarm type. Use cot_abc_xyz style.
      */
     public void setType(String type) {
         anyObject.put("type", type);
@@ -164,7 +165,7 @@ public class Alarm extends ExtensibleObject {
 
     /**
      * Set the {@link ManagedObject} where alarm happened.
-     * Mandatory when creating an event. Don't reset if already created.
+     * Mandatory when creating an alarm. Don't reset if already created.
      *
      * @param source
      */
