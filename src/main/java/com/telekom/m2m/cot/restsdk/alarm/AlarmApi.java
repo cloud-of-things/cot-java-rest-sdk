@@ -6,6 +6,8 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
+ * Use AlarmApi to work with Alarms.
+ *
  * Created by breucking on 22.09.16.
  */
 public class AlarmApi {
@@ -14,16 +16,33 @@ public class AlarmApi {
     private final Gson gson = GsonUtils.createGson();
 
 
+    /**
+     * Internal constructor.
+     *
+     * @param cloudOfThingsRestClient the configured rest client.
+     */
     public AlarmApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
-    public Alarm getAlarm(String id) {
-        String response = cloudOfThingsRestClient.getResponse(id, "alarm/alarms", CONTENT_TYPE);
+    /**
+     * Retrieve a specific Alarm from the CoT platform.
+     *
+     * @param alarmId the unique identifier of the desired Alarm.
+     * @return
+     */
+    public Alarm getAlarm(String alarmId) {
+        String response = cloudOfThingsRestClient.getResponse(alarmId, "alarm/alarms", CONTENT_TYPE);
         Alarm alarm = new Alarm(gson.fromJson(response, ExtensibleObject.class));
         return alarm;
     }
 
+    /**
+     * Stores an alarm in the CoT platform.
+     *
+     * @param alarm the alarm to create.
+     * @return the created alarm with the assigned unique identifier.
+     */
     public Alarm create(Alarm alarm) {
         String json = gson.toJson(alarm);
         String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "alarm/alarms", CONTENT_TYPE);

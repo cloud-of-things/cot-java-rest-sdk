@@ -76,8 +76,11 @@ public class Alarm extends ExtensibleObject {
 
     /**
      * Get the unique identifier of the alarm.
+     * If the Alarm was retrieved from the platform, it has an ID. If just
+     * created, there is no ID.
      *
-     * @return String with ID.
+     * @return String the unique identifier of the alarm or null if not
+     * available.
      */
     public String getId() {
         return (String) anyObject.get("id");
@@ -87,7 +90,7 @@ public class Alarm extends ExtensibleObject {
      * Get the type of the alarm.
      * The type categorizes the alarm.
      *
-     * @return a String with the type.
+     * @return a String with the type or null if not available.
      */
     public String getType() {
         return (String) anyObject.get("type");
