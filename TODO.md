@@ -6,9 +6,6 @@
  * GET supported measurements of a managed object
  * testMultipleManagedObjectsByFragment
 
-* Complete Alarm API
- * Retrieve collections
-
 * Complete DeviceControl
  * Operations Filter with Agent
  * Bulk Operations
@@ -28,6 +25,9 @@
 # Done 0.3.0
 * Complete Inventory
  * Get ManagedObjects in Collection
+* Complete Alarm API
+ * Retrieve collections
+ * Update Alarms
  
 
 # Done 0.2.0
