@@ -7,8 +7,6 @@
  * testMultipleManagedObjectsByFragment
 
 * Complete Alarm API
- * Update
- * Delete
  * Retrieve collections
 
 * Complete DeviceControl
