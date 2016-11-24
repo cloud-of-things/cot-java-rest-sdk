@@ -10,9 +10,8 @@ import java.util.Set;
 /**
  * Filter to build as criteria for collection queries.
  *
- *
- * @since 0.2.0
  * @author Patrick Steinert
+ * @since 0.2.0
  */
 public class Filter {
 
@@ -51,7 +50,7 @@ public class Filter {
          * Adds a build for source id.
          *
          * @param id ID of the source ({@link com.telekom.m2m.cot.restsdk.inventory.ManagedObject}) to build for.
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder bySource(String id) {
             instance.arguments.put("source", id);
@@ -77,7 +76,7 @@ public class Filter {
          * Adds a build for type.
          *
          * @param type type to build for.
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder byType(String type) {
             //instance.type = type;
@@ -90,7 +89,7 @@ public class Filter {
          *
          * @param from start of the date range (more in the history).
          * @param to   end of the date range (more in the future).
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder byDate(Date from, Date to) {
             //instance.dateFrom = from;
@@ -104,7 +103,7 @@ public class Filter {
          * Adds a build for a fragment.
          *
          * @param fragmentType to build for.
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder byFragmentType(String fragmentType) {
             instance.arguments.put("fragmentType", fragmentType);
@@ -115,7 +114,7 @@ public class Filter {
          * Adds a build for a deviceId.
          *
          * @param deviceId to build for.
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder byDeviceId(String deviceId) {
             instance.arguments.put("deviceId", deviceId);
@@ -126,7 +125,7 @@ public class Filter {
          * Adds a build for a status.
          *
          * @param operationStatus to build for.
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder byStatus(OperationStatus operationStatus) {
             instance.arguments.put("status", operationStatus.toString());
@@ -137,7 +136,7 @@ public class Filter {
          * Adds a build for a text.
          *
          * @param text to build for.
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder byText(String text) {
             instance.arguments.put("text", text);
@@ -148,10 +147,22 @@ public class Filter {
          * Adds a build for a list of comma separated Ids.
          *
          * @param listOfIds to build for (comma separated).
-         * @return an approprieate build Object.
+         * @return an appropriate build Object.
          */
         public FilterBuilder byListOfIds(String listOfIds) {
             instance.arguments.put("ids", listOfIds);
+            return this;
+        }
+
+        /**
+         * Adds a build for a Alarm status.
+         *
+         * @param status to build for.
+         * @return an appropriate build Object.
+         * @since 0.3.0
+         */
+        public FilterBuilder byStatus(String status) {
+            instance.arguments.put("status", status);
             return this;
         }
     }

@@ -174,7 +174,8 @@ public class CloudOfThingsRestClient {
             if (response.isSuccessful()) {
                 int i = 1;
             } else {
-                int i = 2;
+                throw new CotSdkException(response.code(),
+                        "Requested returned error code");
             }
             response.body().close();
         } catch (Exception e) {
