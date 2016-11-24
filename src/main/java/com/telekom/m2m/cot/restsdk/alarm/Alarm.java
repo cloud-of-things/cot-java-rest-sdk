@@ -192,4 +192,22 @@ public class Alarm extends ExtensibleObject {
     public void setSeverity(String severity) {
         anyObject.put("severity", severity);
     }
+
+    /**
+     * Getting the status of the Alarm.
+     *
+     * @return a String with the status. Use class members STATE_* to compare.
+     */
+    public String getStatus() {
+        return (String) anyObject.get("status");
+    }
+
+    /**
+     * Getting the severity of the Alarm.
+     *
+     * @return a String with the severity. Use class members SEVERITY_* to compare.
+     */
+    public String getSeverity() {
+        return (String) anyObject.get("severity");
+    }
 }

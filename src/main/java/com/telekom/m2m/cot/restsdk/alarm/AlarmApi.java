@@ -7,7 +7,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
  * Use AlarmApi to work with Alarms.
- *
+ * <p>
  * Created by breucking on 22.09.16.
  */
 public class AlarmApi {
@@ -50,5 +50,19 @@ public class AlarmApi {
         return alarm;
     }
 
+    /**
+     * Updates an Alarm. It is just possible to update status and severity.
+     * Any further attributes will be ignored.
+     *
+     * @param alarm the alarm to update.
+     */
+    public void update(Alarm alarm) {
+        ExtensibleObject extensibleObject = new ExtensibleObject();
+        extensibleObject.set("status", alarm.getStatus());
+        extensibleObject.set("severity", alarm.getSeverity());
+
+        String json = gson.toJson(extensibleObject);
+        cloudOfThingsRestClient.doPutRequest(json, "alarm/alarms/" + alarm.getId(), CONTENT_TYPE);
+    }
 
 }

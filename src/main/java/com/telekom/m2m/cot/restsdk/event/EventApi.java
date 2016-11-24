@@ -53,7 +53,7 @@ public class EventApi {
     }
 
     /**
-     * Deletes a Event.
+     * Deletes an Event.
      *
      * @param event the Event to delete
      */
