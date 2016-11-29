@@ -22,8 +22,7 @@
     </licenses>
 
     <scm>
-        <connection>scm:git:git@github.com:marquies/cot-java-rest-sdk.git
-        </connection>
+        <connection>scm:git:git@github.com:marquies/cot-java-rest-sdk.git</connection>
         <developerConnection>
             scm:git:git@github.com:marquies/cot-java-rest-sdk.git
         </developerConnection>
