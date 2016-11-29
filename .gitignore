@@ -1,0 +1,13 @@
+target/
+.java-version
+
+# eclipse project files
+.project
+.settings/
+.classpath
+
+# intellij project files
+*.iws
+*.iml
+.idea
+
