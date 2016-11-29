@@ -7,6 +7,7 @@ import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
@@ -58,6 +59,31 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenThrow(new RuntimeException());
+
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
+        cloudOfThingsRestClient.doPutRequest("", "", "");
+    }
+
+    @Test(expectedExceptions = CotSdkException.class)
+    public void testDoPutRequestWithNonSuccessStatusCode() throws Exception {
+
+        final OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
+
+        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
+
+        final Response response = PowerMockito.mock(Response.class);
+        PowerMockito.when(response.isSuccessful())
+                .thenReturn(false);
+        final ResponseBody responseBody = PowerMockito.mock(ResponseBody.class);
+        PowerMockito.when(response.body())
+                .thenReturn(responseBody);
+
+        final Call call = PowerMockito.mock(Call.class);
+        PowerMockito.when(clientMock.newCall(any(Request.class)))
+                .thenReturn(call);
+        PowerMockito.when(call.execute())
+                .thenReturn(response);
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
