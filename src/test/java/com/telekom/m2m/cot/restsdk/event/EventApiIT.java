@@ -40,9 +40,9 @@ public class EventApiIT {
         event.set("foo", "{ \"alt\": 99.9, \"lng\": 8.55436, \"lat\": 50.02868 }");
 
         EventApi eventApi = cotPlat.getEventApi();
+        eventApi.createEvent(event);
 
-        Event createdEvent = eventApi.createEvent(event);
-        Assert.assertNotNull("Should now have an Id", event.getId());
+        Assert.assertNotNull(event.getId(), "Should now have an Id");
     }
 
     @Test
