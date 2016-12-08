@@ -4,7 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -101,13 +105,30 @@ public class CloudOfThingsRestClient {
                 .post(body)
                 .build();
 
+        Response response = null;
         try {
-            Response r = client.newCall(request).execute();
-            String result = r.body().string();
-            r.body().close();
-            return result;
+            response = client.newCall(request).execute();
+
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(
+                        String.format(
+                                "request (%s) was not successful, got response with http status %s and message \"%s\"",
+                                request,
+                                response.code(),
+                                response.message()
+                        )
+                );
+
+            }
+
+            return response.body().string();
+
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            if (response != null) {
+                response.body().close();
+            }
         }
     }
 
