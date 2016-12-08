@@ -111,6 +111,7 @@ public class CloudOfThingsRestClient {
 
             if (!response.isSuccessful()) {
                 throw new CotSdkException(
+                        response.code(),
                         String.format(
                                 "request (%s) was not successful, got response with http status %s and message \"%s\"",
                                 request,
@@ -202,6 +203,7 @@ public class CloudOfThingsRestClient {
         }
         if (response != null && !response.isSuccessful()) {
             throw new CotSdkException(
+                    response.code(),
                     String.format(
                             "request (%s) was not successful, got response with http status %s and message \"%s\"",
                             request,

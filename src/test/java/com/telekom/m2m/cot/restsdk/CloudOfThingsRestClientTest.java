@@ -16,6 +16,8 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 
 import static org.mockito.Matchers.any;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 /**
  * Created by breucking on 30.01.16.
@@ -65,7 +67,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         cloudOfThingsRestClient.doPutRequest("", "", "");
     }
 
-    @Test(expectedExceptions = CotSdkException.class)
+    @Test
     public void testDoPutRequestWithNonSuccessStatusCode() throws Exception {
 
         final OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
@@ -75,6 +77,9 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         final Response response = PowerMockito.mock(Response.class);
         PowerMockito.when(response.isSuccessful())
                 .thenReturn(false);
+        final int httpStatusCode = 404;
+        PowerMockito.when(response.code())
+                .thenReturn(httpStatusCode);
         final ResponseBody responseBody = PowerMockito.mock(ResponseBody.class);
         PowerMockito.when(response.body())
                 .thenReturn(responseBody);
@@ -87,7 +92,13 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
-        cloudOfThingsRestClient.doPutRequest("", "", "");
+        try {
+            cloudOfThingsRestClient.doPutRequest("", "", "");
+            fail("an exception should have occured");
+        } catch (CotSdkException e) {
+            assertEquals(httpStatusCode, e.getHttpStatus());
+        }
+
     }
 
     @Test
@@ -155,15 +166,17 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         cloudOfThingsRestClient.doPostRequest("", "", "");
     }
 
-    @Test(expectedExceptions = CotSdkException.class)
+    @Test
     public void testPostWithNonSuccessStatusCode() throws Exception {
 
         OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
         Call call = PowerMockito.mock(Call.class);
 
         Response response = PowerMockito.mock(Response.class);
+
+        final int httpStatusCode = 403;
         PowerMockito.when(response.code())
-                .thenReturn(403);
+                .thenReturn(httpStatusCode);
         ResponseBody responseBody = PowerMockito.mock(ResponseBody.class);
         PowerMockito.when(response.body())
                 .thenReturn(responseBody);
@@ -176,7 +189,12 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
                 clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD
         );
 
-        cloudOfThingsRestClient.doPostRequest("", "", "");
+        try {
+            cloudOfThingsRestClient.doPutRequest("", "", "");
+            fail("an exception should have occured");
+        } catch (CotSdkException e) {
+            assertEquals(httpStatusCode, e.getHttpStatus());
+        }
 
     }
 
