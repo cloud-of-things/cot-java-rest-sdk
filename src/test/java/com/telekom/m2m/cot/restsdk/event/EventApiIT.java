@@ -57,7 +57,7 @@ public class EventApiIT {
 
         EventApi eventApi = cotPlat.getEventApi();
 
-        Thread.sleep(1000);
+        Thread.sleep(2000);
 
         Event createdEvent = eventApi.createEvent(event);
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());
@@ -69,7 +69,15 @@ public class EventApiIT {
         Assert.assertEquals(retrievedEvent.getText(), "Sample Text");
         Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening), 0);
         Assert.assertNotNull(retrievedEvent.getCreationTime());
-        Assert.assertEquals(retrievedEvent.getCreationTime().compareTo(timeOfEventHappening), 1);
+
+        Assert.assertTrue(
+                retrievedEvent.getCreationTime().after(timeOfEventHappening),
+                String.format(
+                        "retrievedEvent.getCreationTime(): %s, timeOfEventHappening: %s",
+                        retrievedEvent.getCreationTime(),
+                        timeOfEventHappening
+                )
+        );
 
     }
 
