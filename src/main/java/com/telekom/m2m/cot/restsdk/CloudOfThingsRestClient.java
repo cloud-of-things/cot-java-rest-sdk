@@ -121,8 +121,14 @@ public class CloudOfThingsRestClient {
         try {
             response = client.newCall(request).execute();
             String result = null;
-            if (response.isSuccessful())
+            if (response.isSuccessful()) {
                 result = response.body().string();
+            } else {
+                if (response.code() != 404) {
+                    response.body().close();
+                    throw new CotSdkException(response.code(), "Error in request.");
+                }
+            }
             response.body().close();
             return result;
         } catch (Exception e) {
