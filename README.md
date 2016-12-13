@@ -24,6 +24,10 @@ inventoryApi.get("idOfManagedObject");
 
 You can find the Java Doc of the latest release here: http://marquies.github.io/cot-java-rest-sdk/
 
+## Developer Information
+
+Developers can find information in the [Wiki](https://github.com/marquies/cot-java-rest-sdk/wiki)
+
 ## Completenes of API
 
 **Completed Implemented**

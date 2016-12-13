@@ -33,6 +33,13 @@ public class IdentityApi {
 
     }
 
+    /**
+     * Retrieves External Identity objects from the CoT.
+     *
+     * @param externalId a constructed ExternalId object with the externalId set.
+     * @return the desired ExternalId object or null if not found
+     * @throws Exception if somethings went wrong, expecially in server communication.
+     */
     public ExternalId getExternalId(ExternalId externalId) throws Exception {
         String response = cloudOfThingsRestClient.getResponse(externalId.getExternalId(), "/identity/externalIds/" + externalId.getType() + "/", CONTENT_TYPE);
         return gson.fromJson(response, ExternalId.class);
