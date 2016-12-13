@@ -9,7 +9,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>0.2.0</version>
+    <version>0.2.2</version>
 </dependency>
 ```
 
@@ -59,6 +59,10 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 See examples folder. (Needs improvements ;) )
 
 ## Release Notes
+
+### Release 0.2.2
+* Improves error handling: now differentiate between server errors (>500) and 404 in *Api.get* uses. Former throws exception.
+
 ### Release 0.2.0
 * Complete Events
 * Complete Device registration process
