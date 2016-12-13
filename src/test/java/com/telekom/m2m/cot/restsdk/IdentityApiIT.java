@@ -7,10 +7,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Created by A4328054 on 12.12.2016.
+ * Created by Patrick Steinert on 12.12.2016.
  */
 public class IdentityApiIT {
-    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD, "10.206.247.65", 8080);
+    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
     @Test
     public void testNotFoundGet() throws Exception {
