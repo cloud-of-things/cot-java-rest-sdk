@@ -69,4 +69,14 @@ public class IdentityApi {
         cloudOfThingsRestClient.delete(externalId.getExternalId(), "/identity/externalIds/" + externalId.getType());
     }
 
+    /**
+     * Get a pageable {@link ExternalIdCollection} to retrieve ExternalIds.
+     *
+     * @param externalId value of the external ID
+     * @param resultSize size of the results (Max. 2000)  @return the found Alarms in a pageable collection.
+     * @since 0.3.0
+     */
+    public ExternalIdCollection getGlobalIds(String externalId, int resultSize) {
+        return new ExternalIdCollection(externalId, resultSize, cloudOfThingsRestClient);
+    }
 }

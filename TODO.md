@@ -27,6 +27,8 @@
 * Complete Alarm API
  * Retrieve collections
  * Update Alarms
+* Complete Device Credentials API
+* Complete IdentityApi
  
 
 # Done 0.2.0

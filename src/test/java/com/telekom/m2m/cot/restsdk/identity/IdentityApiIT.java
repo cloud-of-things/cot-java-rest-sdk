@@ -53,4 +53,22 @@ public class IdentityApiIT {
         foundId = idApi.getExternalId(newExtId);
         Assert.assertNull(foundId);
     }
+
+
+    @Test
+    public void testGetMultipleGlobalIds() throws Exception {
+        IdentityApi idApi = cotPlat.getIdentityApi();
+        String extId = "142300";
+
+        ExternalId externalId = new ExternalId();
+        externalId.setExternalId(extId);
+        String type = "com_telekom_test";
+        externalId.setType(type);
+        externalId.setManagedObject(testManagedObject);
+
+        ExternalId newExtId = idApi.create(externalId);
+
+        ExternalIdCollection externalIdCollection = idApi.getGlobalIds(extId, 5);
+        Assert.assertEquals(externalIdCollection.getExternalIds().length, 1);
+    }
 }
