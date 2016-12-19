@@ -17,7 +17,7 @@ public class DeviceCredentialsApi {
     /**
      * Constructor for this API - just used internal.
      *
-     * @param cloudOfThingsRestClient
+     * @param cloudOfThingsRestClient the REST client to access CoT.
      */
     public DeviceCredentialsApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;

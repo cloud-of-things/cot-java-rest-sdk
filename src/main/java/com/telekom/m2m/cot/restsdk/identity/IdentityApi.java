@@ -24,7 +24,7 @@ public class IdentityApi {
      * to create an instance.
      * </p>
      *
-     * @param cloudOfThingsRestClient
+     * @param cloudOfThingsRestClient the REST client to access CoT.
      */
     public IdentityApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -74,6 +74,7 @@ public class IdentityApi {
      *
      * @param externalId value of the external ID
      * @param resultSize size of the results (Max. 2000)  @return the found Alarms in a pageable collection.
+     * @return a collection of found ExternalIds.
      * @since 0.3.0
      */
     public ExternalIdCollection getGlobalIds(String externalId, int resultSize) {

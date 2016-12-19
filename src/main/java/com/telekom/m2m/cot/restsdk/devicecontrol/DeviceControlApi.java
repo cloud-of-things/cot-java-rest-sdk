@@ -50,7 +50,6 @@ public class DeviceControlApi {
      * Accepts a device after it requested the credentials for the first time.
      *
      * @param deviceId the Id of the device to accept.
-     * @throws IOException if request went wrong.
      * @since 0.1.0
      */
     public void acceptDevice(String deviceId) {
