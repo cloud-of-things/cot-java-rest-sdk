@@ -11,11 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-<<<<<<< HEAD
-    <version>0.2.2</version>
-=======
     <version>0.3.0</version>
->>>>>>> release/0.3.0
 </dependency>
 ```
 
