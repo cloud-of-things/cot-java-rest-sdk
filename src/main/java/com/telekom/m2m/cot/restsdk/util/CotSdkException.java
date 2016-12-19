@@ -3,7 +3,7 @@ package com.telekom.m2m.cot.restsdk.util;
 /**
  * Cloud of Things SDK Exception wraps Exception in Runtime Exceptions.
  *
- * Created by breucking on 02.02.16.
+ * Created by Patrick Steinert on 02.02.16.
  */
 public class CotSdkException extends RuntimeException {
 

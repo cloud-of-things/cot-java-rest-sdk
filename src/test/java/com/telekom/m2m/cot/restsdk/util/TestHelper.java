@@ -12,7 +12,7 @@ import java.security.SecureRandom;
 import java.util.Properties;
 
 /**
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class TestHelper {
     public static String TEST_HOST = "";

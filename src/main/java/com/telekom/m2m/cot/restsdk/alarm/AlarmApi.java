@@ -3,10 +3,13 @@ package com.telekom.m2m.cot.restsdk.alarm;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
- * Created by breucking on 22.09.16.
+ * Use AlarmApi to work with Alarms.
+ * <p>
+ * Created by Patrick Steinert on 22.09.16.
  */
 public class AlarmApi {
     CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -14,16 +17,33 @@ public class AlarmApi {
     private final Gson gson = GsonUtils.createGson();
 
 
+    /**
+     * Internal constructor.
+     *
+     * @param cloudOfThingsRestClient the configured rest client.
+     */
     public AlarmApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
-    public Alarm getAlarm(String id) {
-        String response = cloudOfThingsRestClient.getResponse(id, "alarm/alarms", CONTENT_TYPE);
+    /**
+     * Retrieve a specific Alarm from the CoT platform.
+     *
+     * @param alarmId the unique identifier of the desired Alarm.
+     * @return the retrieved Alarm.
+     */
+    public Alarm getAlarm(String alarmId) {
+        String response = cloudOfThingsRestClient.getResponse(alarmId, "alarm/alarms", CONTENT_TYPE);
         Alarm alarm = new Alarm(gson.fromJson(response, ExtensibleObject.class));
         return alarm;
     }
 
+    /**
+     * Stores an alarm in the CoT platform.
+     *
+     * @param alarm the alarm to create.
+     * @return the created alarm with the assigned unique identifier.
+     */
     public Alarm create(Alarm alarm) {
         String json = gson.toJson(alarm);
         String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "alarm/alarms", CONTENT_TYPE);
@@ -31,5 +51,51 @@ public class AlarmApi {
         return alarm;
     }
 
+    /**
+     * Updates an Alarm. It is just possible to update status and severity.
+     * Any further attributes will be ignored.
+     *
+     * @param alarm the alarm to update.
+     * @since 0.3.0
+     */
+    public void update(Alarm alarm) {
+        ExtensibleObject extensibleObject = new ExtensibleObject();
+        extensibleObject.set("status", alarm.getStatus());
+        extensibleObject.set("severity", alarm.getSeverity());
 
+        String json = gson.toJson(extensibleObject);
+        cloudOfThingsRestClient.doPutRequest(json, "alarm/alarms/" + alarm.getId(), CONTENT_TYPE);
+    }
+
+    /**
+     * Get a pageable AlarmCollection to retrieve Alarms.
+     *
+     * @param resultSize size of the results (Max. 2000)
+     * @return the found Alarms in a pageable collection.
+     * @since 0.3.0
+     */
+    public AlarmCollection getAlarms(int resultSize) {
+        return new AlarmCollection(resultSize, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Get a pageable AlarmCollection to retrieve Alarms.
+     *
+     * @param filters    adds search criteria
+     * @param resultSize size of the results (Max. 2000)
+     * @return the found Alarms in a pageable collection.
+     * @since 0.3.0
+     */
+    public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
+        return new AlarmCollection(filters, resultSize, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Deletes a collection of Alarms by criteria.
+     *
+     * @param filters filters of Alarm attributes.
+     */
+    public void deleteAlarms(Filter.FilterBuilder filters) {
+        cloudOfThingsRestClient.delete("", "alarm/alarms?" + filters.buildFilter() + "&x=");
+    }
 }

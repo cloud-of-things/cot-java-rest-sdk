@@ -12,7 +12,7 @@ import java.io.IOException;
  * DeviceControl API is used to work with operations.
  *
  * @since 0.1.0
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class DeviceControlApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -39,10 +39,9 @@ public class DeviceControlApi {
      *
      * @param operation {@link Operation} just with the deviceId to register.
      * @return the created operation.
-     * @throws IOException if request went wrong.
      * @since 0.1.0
      */
-    public Operation createNewDevice(Operation operation) throws IOException {
+    public Operation createNewDevice(Operation operation) {
         cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), "devicecontrol/newDeviceRequests", CONTENT_TYPE);
         return operation;
     }
@@ -51,10 +50,9 @@ public class DeviceControlApi {
      * Accepts a device after it requested the credentials for the first time.
      *
      * @param deviceId the Id of the device to accept.
-     * @throws IOException if request went wrong.
      * @since 0.1.0
      */
-    public void acceptDevice(String deviceId) throws IOException {
+    public void acceptDevice(String deviceId) {
         Operation operation = new Operation();
         operation.setStatus(OperationStatus.ACCEPTED);
 
@@ -134,4 +132,5 @@ public class DeviceControlApi {
     public void deleteOperations(Filter.FilterBuilder filters) {
         cloudOfThingsRestClient.delete("", "devicecontrol/operations?" + filters.buildFilter() + "&x=");
     }
+
 }

@@ -1,4 +1,4 @@
-package com.telekom.m2m.cot.restsdk.devicecontrol;
+package com.telekom.m2m.cot.restsdk.alarm;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -10,81 +10,73 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
- * Represents a pageable Measurement collection.
- * <p>
- * Collection can be scrolled with next() and prev().
- * <p>
+ * Created by Patrick Steinert on 24.11.16.
  *
- * @since 0.1.0
- * Created by Patrick Steinert on 14.02.16.
+ * @author Patrick Steinert
+ * @since 0.3.0
  */
-public class OperationCollection {
-
+public class AlarmCollection {
     private Filter.FilterBuilder criteria = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
     private int pageCursor = 1;
 
     private Gson gson = GsonUtils.createGson();
 
-    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.operationCollection+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarmCollection+json;charset=UTF-8;ver=0.9";
     private boolean nextAvailable = false;
     private boolean previousAvailable = false;
     private int pageSize = 5;
 
     /**
-     * Creates a OperationCollection.
-     * Use {@link DeviceControlApi} to get OperationCollection.
+     * Internal constructor to create an AlarmCollection.
      *
-     * @param resultSize              size of the results (Max. 2000)
-     * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     * @param cloudOfThingsRestClient
      */
-    OperationCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
+    AlarmCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
         this.pageSize = resultSize;
     }
 
     /**
-     * Creates a OperationCollection with filters.
-     * Use {@link DeviceControlApi} to get OperationCollection.
+     * Internal constructor to create an AlarmCollection.
      *
-     * @param filterBuilder           the build criteria.
-     * @param resultSize              size of the results (Max. 2000)
-     * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     * @param filters
+     * @param cloudOfThingsRestClient
      */
-    OperationCollection(Filter.FilterBuilder filterBuilder, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.criteria = filterBuilder;
+    AlarmCollection(Filter.FilterBuilder filters, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        this.criteria = filters;
         this.pageSize = resultSize;
     }
-
 
     /**
      * Retrieves the current page.
+     * <p>
+     * Retrieves the Alarms influenced by filters setted in construction.
      *
-     * @return array of found Operations.
-     * @since 0.1.0
+     * @return array of found Alarms
      */
-    public Operation[] getOperations() {
+    public Alarm[] getAlarms() {
         JsonObject object = getJsonObject(pageCursor);
 
         previousAvailable = object.has("prev");
 
-        if (object.has("operations")) {
-            JsonArray jsonOperations = object.get("operations").getAsJsonArray();
-            Operation[] arrayOfOperations = new Operation[jsonOperations.size()];
-            for (int i = 0; i < jsonOperations.size(); i++) {
-                JsonElement jsonOperation = jsonOperations.get(i).getAsJsonObject();
-                Operation operation = new Operation(gson.fromJson(jsonOperation, ExtensibleObject.class));
-                arrayOfOperations[i] = operation;
+        if (object.has("alarms")) {
+            JsonArray jsonAlarms = object.get("alarms").getAsJsonArray();
+            Alarm[] arrayOfAlarms = new Alarm[jsonAlarms.size()];
+            for (int i = 0; i < jsonAlarms.size(); i++) {
+                JsonElement jsonAlarm = jsonAlarms.get(i).getAsJsonObject();
+                Alarm alarm = new Alarm(gson.fromJson(jsonAlarm, ExtensibleObject.class));
+                arrayOfAlarms[i] = alarm;
             }
-            return arrayOfOperations;
+            return arrayOfAlarms;
         } else
             return null;
     }
 
     private JsonObject getJsonObject(int page) {
         String response;
-        String url = "/devicecontrol/operations?" +
+        String url = "/alarm/alarms?" +
                 "currentPage=" + page +
                 "&pageSize=" + pageSize;
         if (criteria != null) {
@@ -97,8 +89,6 @@ public class OperationCollection {
 
     /**
      * Moves cursor to the next page.
-     *
-     * @since 0.2.0
      */
     public void next() {
         pageCursor += 1;
@@ -106,8 +96,6 @@ public class OperationCollection {
 
     /**
      * Moves cursor to the previous page.
-     *
-     * @since 0.2.0
      */
     public void previous() {
         pageCursor -= 1;
@@ -116,14 +104,13 @@ public class OperationCollection {
     /**
      * Checks if the next page has elements. <b>Use with caution, it does a seperate HTTP request, so it is considered as slow</b>
      *
-     * @return true if next page has measurements, otherwise false.
-     * @since 0.2.0
+     * @return true if next page has events, otherwise false.
      */
     public boolean hasNext() {
         JsonObject object = getJsonObject(pageCursor + 1);
-        if (object.has("operations")) {
-            JsonArray jsonOperations = object.get("operations").getAsJsonArray();
-            nextAvailable = jsonOperations.size() > 0 ? true : false;
+        if (object.has("alarms")) {
+            JsonArray jsonEvents = object.get("alarms").getAsJsonArray();
+            nextAvailable = jsonEvents.size() > 0 ? true : false;
         }
         return nextAvailable;
     }
@@ -131,8 +118,7 @@ public class OperationCollection {
     /**
      * Checks if there is a previous page.
      *
-     * @return true if next page has measurements, otherwise false.
-     * @since 0.2.0
+     * @return true if next page has events, otherwise false.
      */
     public boolean hasPrevious() {
         return previousAvailable;
@@ -154,12 +140,4 @@ public class OperationCollection {
         }
     }
 
-
-//    public Iterator<Measurement> iterator() {
-//        return null;
-//    }
-//
-//    public Iterable<Measurement> elements(int limit) {
-//        return new MeasurementCollectionIterable()
-//    }
 }

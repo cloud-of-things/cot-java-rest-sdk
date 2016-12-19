@@ -7,7 +7,9 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
- * Created by breucking on 04.02.16.
+ * Use the Event to work with Events.
+ *
+ * Created by Patrick Steinert on 04.02.16.
  */
 public class EventApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -25,7 +27,8 @@ public class EventApi {
 
     /**
      * Retrives a specific Event.
-     * @param eventId of the desired Event.
+     *
+     * @param eventId the unique identifier of the desired Event.
      * @return the Event (or null if not found).
      */
     public Event getEvent(String eventId) {
@@ -36,8 +39,9 @@ public class EventApi {
 
     /**
      * Stores a Event.
+     *
      * @param event the event to create.
-     * @return the created event with the ID.
+     * @return the created event with the assigned unique identifier.
      */
     public Event createEvent(Event event) {
         String json = gson.toJson(event);
@@ -49,7 +53,8 @@ public class EventApi {
     }
 
     /**
-     * Deletes a Event.
+     * Deletes an Event.
+     *
      * @param event the Event to delete
      */
     public void deleteEvent(Event event) {

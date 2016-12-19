@@ -6,7 +6,7 @@ import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.Test;
 
 /**
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  */
 public class CloudOfThingsPlatformTestIT {
 

@@ -16,7 +16,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * <p>
  *
  * @since 0.1.0
- * Created by breucking on 14.02.16.
+ * Created by Patrick Steinert on 14.02.16.
  */
 public class MeasurementCollection /*implements Iterable<Measurement>*/ {
 
@@ -47,12 +47,12 @@ public class MeasurementCollection /*implements Iterable<Measurement>*/ {
      * Creates a MeasurementCollection with filters.
      * Use {@link MeasurementApi} to get MeasurementCollections.
      *
-     * @param filterBuilder           the build criteria.
+     * @param filters           the build criteria.
      * @param resultSize              size of the results (Max. 2000)
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      */
-    MeasurementCollection(Filter.FilterBuilder filterBuilder, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.criteria = filterBuilder;
+    MeasurementCollection(Filter.FilterBuilder filters, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
+        this.criteria = filters;
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
         this.pageSize = resultSize;
     }

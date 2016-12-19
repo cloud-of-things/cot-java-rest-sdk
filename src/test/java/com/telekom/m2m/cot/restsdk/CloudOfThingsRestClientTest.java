@@ -17,7 +17,7 @@ import java.io.IOException;
 import static org.mockito.Matchers.any;
 
 /**
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  */
 @PrepareForTest({OkHttpClient.class, CloudOfThingsRestClient.class, Response.class})
 public class CloudOfThingsRestClientTest extends PowerMockTestCase {

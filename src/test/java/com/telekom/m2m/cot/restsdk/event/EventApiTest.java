@@ -1,9 +1,9 @@
 package com.telekom.m2m.cot.restsdk.event;
 
-import com.telekom.m2m.cot.restsdk.util.Position;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.Position;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
@@ -13,7 +13,7 @@ import java.util.Date;
 import static org.mockito.Matchers.any;
 
 /**
- * Created by breucking on 03.02.16.
+ * Created by Patrick Steinert on 03.02.16.
  */
 public class EventApiTest {
     @Test(expectedExceptions = CotSdkException.class)

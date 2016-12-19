@@ -10,7 +10,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 /**
  * The API object to operate with Measrements in the platform.
  * <p>
- * Created by breucking on 07.02.16.
+ * Created by Patrick Steinert on 07.02.16.
  *
  * @since 0.1.0
  */

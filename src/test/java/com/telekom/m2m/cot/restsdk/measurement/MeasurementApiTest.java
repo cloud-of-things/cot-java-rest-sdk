@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import static org.mockito.Matchers.any;
 
 /**
- * Created by breucking on 07.02.16.
+ * Created by Patrick Steinert on 07.02.16.
  */
 public class MeasurementApiTest {
 

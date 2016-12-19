@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 /**
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  */
 public class CloudOfThingsRestClient {
 
@@ -180,7 +180,8 @@ public class CloudOfThingsRestClient {
             if (response.isSuccessful()) {
                 int i = 1;
             } else {
-                int i = 2;
+                throw new CotSdkException(response.code(),
+                        "Requested returned error code");
             }
             response.body().close();
         } catch (Exception e) {

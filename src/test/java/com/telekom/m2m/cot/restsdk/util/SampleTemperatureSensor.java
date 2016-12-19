@@ -3,7 +3,7 @@ package com.telekom.m2m.cot.restsdk.util;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementReading;
 
 /**
- * Created by breucking on 06.02.16.
+ * Created by Patrick Steinert on 06.02.16.
  */
 public class SampleTemperatureSensor {
 

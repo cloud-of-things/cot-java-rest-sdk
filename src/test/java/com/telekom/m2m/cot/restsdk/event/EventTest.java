@@ -1,19 +1,17 @@
 package com.telekom.m2m.cot.restsdk.event;
 
-import com.telekom.m2m.cot.restsdk.util.Position;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
-import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-
-import java.util.Date;
-
+import com.telekom.m2m.cot.restsdk.util.Position;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.util.Date;
+
 /**
- * Created by breucking on 05.02.16.
+ * Created by Patrick Steinert on 05.02.16.
  */
 public class EventTest {
 

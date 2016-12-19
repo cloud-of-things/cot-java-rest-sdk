@@ -12,7 +12,7 @@ import java.util.Date;
 import static org.mockito.Matchers.any;
 
 /**
- * Created by breucking on 03.02.16.
+ * Created by Patrick Steinert on 03.02.16.
  */
 public class DeviceControlApiTest {
     @Test(expectedExceptions = CotSdkException.class)

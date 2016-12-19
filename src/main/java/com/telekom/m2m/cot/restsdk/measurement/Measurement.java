@@ -6,7 +6,7 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import java.util.Date;
 
 /**
- * Created by breucking on 06.02.16.
+ * Created by Patrick Steinert on 06.02.16.
  */
 public class Measurement extends ExtensibleObject {
 

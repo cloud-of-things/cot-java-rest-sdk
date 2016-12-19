@@ -2,6 +2,8 @@
 
 This is an SDK to interfere with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
+_Recent version is: 0.3.0_
+
 ## Usage
 
 Add this to your `pom.xml` to include the SDK in your Maven Repo
@@ -9,7 +11,11 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
+<<<<<<< HEAD
     <version>0.2.2</version>
+=======
+    <version>0.3.0</version>
+>>>>>>> release/0.3.0
 </dependency>
 ```
 
@@ -33,13 +39,13 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 **Completed Implemented**
 * **Measurements**: Complete implemented
 * **Events**: Complete implemented
+* **Alarms**: Complete implemented
+* **Inventory**: Complete implemented
+* **Device credentials**: Complete implemented
+* **Identity**: Complete implemented
 
 **Partly Implemented**
-* **Inventory**: Partly implemented
-* **Device control**: Partly implemented
-* **Alarms**: Partly implemented
-* **Device credentials**: Partly implemented
-* **Identity**: Partly implemented
+* **Device control**: Complete implemented, except BulkOperations
 
 **Not Implemented**
 * **SmartREST**: Not implemented
@@ -59,9 +65,20 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 See examples folder. (Needs improvements ;) )
 
 ## Release Notes
+<<<<<<< HEAD
 
 ### Release 0.2.2
 * Improves error handling: now differentiate between server errors (>500) and 404 in *Api.get* uses. Former throws exception.
+=======
+### Release 0.3.0
+* Complete Inventory
+ * Get ManagedObjects in Collection
+* Complete Alarm API
+ * Retrieve collections
+ * Update Alarms
+* Complete Device Credentials API
+* Complete IdentityApi
+>>>>>>> release/0.3.0
 
 ### Release 0.2.0
 * Complete Events

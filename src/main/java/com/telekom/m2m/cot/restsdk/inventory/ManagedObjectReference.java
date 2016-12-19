@@ -12,7 +12,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
  * <li>parentDevices</li>
  * </ul>
  * <p>
- * Created by breucking on 03.09.16.
+ * Created by Patrick Steinert on 03.09.16.
  */
 public class ManagedObjectReference {
 

@@ -3,7 +3,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import org.testng.annotations.Test;
 
 /**
- * Created by breucking on 03.09.16.
+ * Created by Patrick Steinert on 03.09.16.
  */
 
 @Test
