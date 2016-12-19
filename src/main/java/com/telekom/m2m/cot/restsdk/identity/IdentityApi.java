@@ -67,6 +67,6 @@ public class IdentityApi {
     public void delete(ExternalId externalId) {
         // The request to create an external ID is different, so we need a custom object.
         cloudOfThingsRestClient.delete(externalId.getExternalId(), "/identity/externalIds/" + externalId.getType());
-
     }
+
 }
