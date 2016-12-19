@@ -39,10 +39,9 @@ public class DeviceControlApi {
      *
      * @param operation {@link Operation} just with the deviceId to register.
      * @return the created operation.
-     * @throws IOException if request went wrong.
      * @since 0.1.0
      */
-    public Operation createNewDevice(Operation operation) throws IOException {
+    public Operation createNewDevice(Operation operation) {
         cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), "devicecontrol/newDeviceRequests", CONTENT_TYPE);
         return operation;
     }
@@ -54,7 +53,7 @@ public class DeviceControlApi {
      * @throws IOException if request went wrong.
      * @since 0.1.0
      */
-    public void acceptDevice(String deviceId) throws IOException {
+    public void acceptDevice(String deviceId) {
         Operation operation = new Operation();
         operation.setStatus(OperationStatus.ACCEPTED);
 
