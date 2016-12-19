@@ -167,7 +167,7 @@ public class Alarm extends ExtensibleObject {
      * Set the {@link ManagedObject} where alarm happened.
      * Mandatory when creating an alarm. Don't reset if already created.
      *
-     * @param source
+     * @param source the source ManagedObject of the alarm.
      */
     public void setSource(ManagedObject source) {
         anyObject.put("source", source);

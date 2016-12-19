@@ -122,7 +122,7 @@ public class Event extends ExtensibleObject {
      * Set the {@link ManagedObject} where event happened.
      * Mandatory when creating an event. Don't reset if already created.
      *
-     * @param source
+     * @param source the source ManagedObject where the event happened.
      */
     public void setSource(ManagedObject source) {
         anyObject.put("source", source);

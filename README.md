@@ -2,6 +2,8 @@
 
 This is an SDK to interfere with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
+_Recent version is: 0.3.0_
+
 ## Usage
 
 Add this to your `pom.xml` to include the SDK in your Maven Repo

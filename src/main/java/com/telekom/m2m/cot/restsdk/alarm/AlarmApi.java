@@ -30,7 +30,7 @@ public class AlarmApi {
      * Retrieve a specific Alarm from the CoT platform.
      *
      * @param alarmId the unique identifier of the desired Alarm.
-     * @return
+     * @return the retrieved Alarm.
      */
     public Alarm getAlarm(String alarmId) {
         String response = cloudOfThingsRestClient.getResponse(alarmId, "alarm/alarms", CONTENT_TYPE);
