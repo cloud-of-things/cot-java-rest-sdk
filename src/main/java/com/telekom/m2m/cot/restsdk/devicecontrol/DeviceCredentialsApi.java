@@ -4,8 +4,6 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
-import java.io.IOException;
-
 /**
  * Device credentials is used to work with device credentials and new device requests.
  * <p>
@@ -30,9 +28,8 @@ public class DeviceCredentialsApi {
      *
      * @param deviceId the unique identifier of the device.
      * @return a DeviceCredential object with the device credentials or null if not found.
-     * @throws IOException if communication went wrong.
      */
-    public DeviceCredentials getCredentials(String deviceId) throws IOException {
+    public DeviceCredentials getCredentials(String deviceId) {
         DeviceCredentials deviceCredentials = new DeviceCredentials();
         deviceCredentials.setId(deviceId);
         String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(deviceCredentials), "devicecontrol/deviceCredentials", CONTENT_TYPE);
