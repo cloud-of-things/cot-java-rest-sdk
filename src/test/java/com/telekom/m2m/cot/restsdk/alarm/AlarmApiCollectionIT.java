@@ -36,7 +36,7 @@ public class AlarmApiCollectionIT {
 
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
-        AlarmCollection alarmCollection = alarmApi.getAlarms();
+        AlarmCollection alarmCollection = alarmApi.getAlarms(5);
 
 
         Alarm[] alarms = alarmCollection.getAlarms();
@@ -77,7 +77,7 @@ public class AlarmApiCollectionIT {
             alarmApi.create(testAlarm);
         }
 
-        AlarmCollection alarmCollection = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()));
+        AlarmCollection alarmCollection = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
 
 
         Alarm[] alarms = alarmCollection.getAlarms();
@@ -127,12 +127,12 @@ public class AlarmApiCollectionIT {
             alarmApi.create(testAlarm);
         }
 
-        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()));
+        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
         Alarm[] as = alarms.getAlarms();
         Assert.assertEquals(as.length, 5);
 
         alarmApi.deleteAlarms(Filter.build().bySource(testManagedObject.getId()));
-        alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()));
+        alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
         as = alarms.getAlarms();
         Assert.assertEquals(as.length, 0);
     }
@@ -151,7 +151,7 @@ public class AlarmApiCollectionIT {
 
         alarmApi.create(testAlarm);
 
-        AlarmCollection alarms = alarmApi.getAlarms();
+        AlarmCollection alarms = alarmApi.getAlarms(50);
         Alarm[] as = alarms.getAlarms();
         Assert.assertTrue(as.length > 0);
         boolean allAlarmsFromSameStatus = true;
@@ -162,7 +162,7 @@ public class AlarmApiCollectionIT {
         }
         Assert.assertFalse(allAlarmsFromSameStatus);
 
-        alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE));
+        alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE), 50);
         as = alarms.getAlarms();
         allAlarmsFromSameStatus = true;
         Assert.assertTrue(as.length > 0);
@@ -187,7 +187,7 @@ public class AlarmApiCollectionIT {
         testAlarm.setSeverity(Alarm.SEVERITY_MAJOR);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().byDate(yesterday, new Date()));
+        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().byDate(yesterday, new Date()), 5);
 
 
         Alarm[] as = alarms.getAlarms();
@@ -195,7 +195,7 @@ public class AlarmApiCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        alarms = alarmApi.getAlarms(Filter.build().byDate(beforeYesterday, yesterday));
+        alarms = alarmApi.getAlarms(Filter.build().byDate(beforeYesterday, yesterday), 5);
         as = alarms.getAlarms();
         Assert.assertEquals(as.length, 0);
     }
@@ -217,7 +217,7 @@ public class AlarmApiCollectionIT {
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
         AlarmCollection alarms = alarmApi.getAlarms(Filter.build().byDate(yesterday, new Date())
-                .bySource(testManagedObject.getId()));
+                .bySource(testManagedObject.getId()), 5);
 
 
         Alarm[] as = alarms.getAlarms();
@@ -226,7 +226,7 @@ public class AlarmApiCollectionIT {
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
         alarms = alarmApi.getAlarms(Filter.build().byDate(beforeYesterday, yesterday)
-                .bySource(testManagedObject.getId()));
+                .bySource(testManagedObject.getId()), 5);
 
         as = alarms.getAlarms();
         Assert.assertEquals(as.length, 0);
@@ -246,13 +246,13 @@ public class AlarmApiCollectionIT {
         alarmApi.create(testAlarm);
 
         AlarmCollection alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE)
-                .bySource(testManagedObject.getId()));
+                .bySource(testManagedObject.getId()), 5);
 
         Alarm[] as = alarms.getAlarms();
         Assert.assertEquals(as.length, 1);
 
         alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACKNOWLEDGED)
-                .bySource(testManagedObject.getId()));
+                .bySource(testManagedObject.getId()), 5);
 
         as = alarms.getAlarms();
         Assert.assertEquals(as.length, 0);

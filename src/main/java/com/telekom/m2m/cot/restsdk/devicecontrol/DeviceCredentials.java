@@ -1,7 +1,7 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 /**
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class DeviceCredentials {
     private String id;

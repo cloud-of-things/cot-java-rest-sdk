@@ -32,8 +32,9 @@ public class AlarmCollection {
      *
      * @param cloudOfThingsRestClient
      */
-    AlarmCollection(CloudOfThingsRestClient cloudOfThingsRestClient) {
+    AlarmCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        this.pageSize = resultSize;
     }
 
     /**
@@ -42,9 +43,10 @@ public class AlarmCollection {
      * @param filters
      * @param cloudOfThingsRestClient
      */
-    AlarmCollection(Filter.FilterBuilder filters, CloudOfThingsRestClient cloudOfThingsRestClient) {
+    AlarmCollection(Filter.FilterBuilder filters, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
         this.criteria = filters;
+        this.pageSize = resultSize;
     }
 
     /**

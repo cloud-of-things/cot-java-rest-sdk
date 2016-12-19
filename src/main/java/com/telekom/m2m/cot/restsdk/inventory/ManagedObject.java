@@ -10,7 +10,7 @@ import java.util.Date;
  *
  * The ManagedObject can be model any physical or cyber-physical object, even virtual object.
  *
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  */
 public class ManagedObject extends ExtensibleObject {
 

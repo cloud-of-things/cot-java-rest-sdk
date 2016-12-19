@@ -8,7 +8,7 @@ import java.util.Date;
 /**
  * Represents an object in the platform.
  * <p>
- * Created by breucking on 04.02.16.
+ * Created by Patrick Steinert on 04.02.16.
  */
 public class Event extends ExtensibleObject {
 

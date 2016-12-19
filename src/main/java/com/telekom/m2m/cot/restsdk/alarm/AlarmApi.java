@@ -9,7 +9,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 /**
  * Use AlarmApi to work with Alarms.
  * <p>
- * Created by breucking on 22.09.16.
+ * Created by Patrick Steinert on 22.09.16.
  */
 public class AlarmApi {
     CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -70,22 +70,24 @@ public class AlarmApi {
     /**
      * Get a pageable AlarmCollection to retrieve Alarms.
      *
+     * @param resultSize size of the results (Max. 2000)
      * @return the found Alarms in a pageable collection.
      * @since 0.3.0
      */
-    public AlarmCollection getAlarms() {
-        return new AlarmCollection(cloudOfThingsRestClient);
+    public AlarmCollection getAlarms(int resultSize) {
+        return new AlarmCollection(resultSize, cloudOfThingsRestClient);
     }
 
     /**
      * Get a pageable AlarmCollection to retrieve Alarms.
      *
-     * @param filters adds search criteria
+     * @param filters    adds search criteria
+     * @param resultSize size of the results (Max. 2000)
      * @return the found Alarms in a pageable collection.
      * @since 0.3.0
      */
-    public AlarmCollection getAlarms(Filter.FilterBuilder filters) {
-        return new AlarmCollection(filters, cloudOfThingsRestClient);
+    public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
+        return new AlarmCollection(filters, resultSize, cloudOfThingsRestClient);
     }
 
     /**

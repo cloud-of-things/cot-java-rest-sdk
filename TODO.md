@@ -17,7 +17,6 @@
 * Implement Geo Features
 * Make available different environments (base URL)
 * Implement Mass Retrieval of Measurements 
-* Make it available on Maven
 * Notifications
  * MeasurementsAPI
  * ManagedObject

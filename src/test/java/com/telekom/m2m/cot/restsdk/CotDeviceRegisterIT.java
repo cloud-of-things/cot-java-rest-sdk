@@ -13,7 +13,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class CotDeviceRegisterIT {
 

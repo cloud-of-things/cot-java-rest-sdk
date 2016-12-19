@@ -9,7 +9,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 /**
  * Use the Event to work with Events.
  *
- * Created by breucking on 04.02.16.
+ * Created by Patrick Steinert on 04.02.16.
  */
 public class EventApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;

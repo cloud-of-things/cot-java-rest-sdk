@@ -9,7 +9,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 /**
  * Represents the API to retrieve and manipulate ManagedObjects.
  * <p>
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  */
 public class InventoryApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;

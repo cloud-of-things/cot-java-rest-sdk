@@ -10,7 +10,7 @@ import java.util.Date;
  * Alarms have status to indicate if alarm is active, acknowledged or cleared.
  * Alarms have a severity.
  * <p>
- * Created by breucking on 22.09.16.
+ * Created by Patrick Steinert on 22.09.16.
  */
 public class Alarm extends ExtensibleObject {
 

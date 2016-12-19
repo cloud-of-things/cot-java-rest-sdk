@@ -9,7 +9,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import java.io.IOException;
 
 /**
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class IdentityApi {
     String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.externalId+json;charset=UTF-8;ver=0.9";

@@ -8,7 +8,7 @@ import java.util.Date;
  * An Operation is used to send operations to the device (or Thing in IoT
  * terms).
  * <p>
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class Operation extends ExtensibleObject {
 

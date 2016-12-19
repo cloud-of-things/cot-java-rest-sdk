@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import java.util.Date;
 
 /**
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  */
 public class EventApiIT {
 

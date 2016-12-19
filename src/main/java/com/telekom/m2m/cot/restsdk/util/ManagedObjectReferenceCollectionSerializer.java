@@ -8,7 +8,7 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 /**
- * Created by breucking on 03.09.16.
+ * Created by Patrick Steinert on 03.09.16.
  */
 public class ManagedObjectReferenceCollectionSerializer implements
         JsonSerializer<ManagedObjectReferenceCollection>,

@@ -11,7 +11,7 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReferenceCollection;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
 
 /**
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class GsonUtils {
     public static Gson createGson() {

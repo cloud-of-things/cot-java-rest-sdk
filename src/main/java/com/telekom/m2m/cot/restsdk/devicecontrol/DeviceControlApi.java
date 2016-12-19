@@ -12,7 +12,7 @@ import java.io.IOException;
  * DeviceControl API is used to work with operations.
  *
  * @since 0.1.0
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class DeviceControlApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -134,4 +134,5 @@ public class DeviceControlApi {
     public void deleteOperations(Filter.FilterBuilder filters) {
         cloudOfThingsRestClient.delete("", "devicecontrol/operations?" + filters.buildFilter() + "&x=");
     }
+
 }

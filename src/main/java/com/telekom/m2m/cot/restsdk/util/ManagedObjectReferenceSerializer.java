@@ -7,7 +7,7 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReference;
 import java.lang.reflect.Type;
 
 /**
- * Created by breucking on 03.09.16.
+ * Created by Patrick Steinert on 03.09.16.
  */
 public class ManagedObjectReferenceSerializer implements
         JsonSerializer<ManagedObjectReference>,

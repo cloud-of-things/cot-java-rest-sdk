@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * The CloudOfThingsPlatform is the starting point to interfere the Cloud of Things.
  * <p>
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  *
  * @since 0.1.0
  */

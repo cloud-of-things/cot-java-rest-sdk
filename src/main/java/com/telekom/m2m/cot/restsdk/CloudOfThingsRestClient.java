@@ -11,7 +11,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 
 /**
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  */
 public class CloudOfThingsRestClient {
 

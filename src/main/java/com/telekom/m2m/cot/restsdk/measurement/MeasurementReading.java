@@ -1,7 +1,7 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
 /**
- * Created by breucking on 07.02.16.
+ * Created by Patrick Steinert on 07.02.16.
  */
 public class MeasurementReading {
     private float value;

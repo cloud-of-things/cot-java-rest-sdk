@@ -12,7 +12,7 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.times;
 
 /**
- * Created by breucking on 03.02.16.
+ * Created by Patrick Steinert on 03.02.16.
  */
 public class InventoryApiTest {
     @Test(expectedExceptions = CotSdkException.class)

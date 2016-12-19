@@ -16,7 +16,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * <p>
  *
  * @since 0.1.0
- * Created by breucking on 14.02.16.
+ * Created by Patrick Steinert on 14.02.16.
  */
 public class OperationCollection {
 

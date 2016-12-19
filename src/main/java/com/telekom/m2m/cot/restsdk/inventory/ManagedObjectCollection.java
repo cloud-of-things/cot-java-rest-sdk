@@ -14,7 +14,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * <p>
  * Collection can be scrolled with next() and prev().
  * <p>
- * Created by breucking on 30.01.16.
+ * Created by Patrick Steinert on 30.01.16.
  *
  * @since 0.3.0
  */

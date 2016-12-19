@@ -7,7 +7,7 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
- * Created by breucking on 05.02.16.
+ * Created by Patrick Steinert on 05.02.16.
  */
 public class AlarmTest {
 

@@ -12,7 +12,7 @@ import java.util.Iterator;
 import static org.mockito.Matchers.any;
 
 /**
- * Created by breucking on 29.08.16.
+ * Created by Patrick Steinert on 29.08.16.
  */
 public class ManagedObjectTest {
 

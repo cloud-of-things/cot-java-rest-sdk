@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 import java.util.Date;
 
 /**
- * Created by breucking on 05.02.16.
+ * Created by Patrick Steinert on 05.02.16.
  */
 public class MeasurementTest {
 

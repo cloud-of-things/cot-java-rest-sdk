@@ -3,7 +3,7 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 /**
  * Enumeration for operation status values.
  * <p>
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public enum OperationStatus {
     /**

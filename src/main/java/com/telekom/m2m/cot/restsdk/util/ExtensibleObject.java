@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by breucking on 31.01.16.
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class ExtensibleObject {
     protected final Map<String, Object> anyObject = new HashMap<String, Object>();
