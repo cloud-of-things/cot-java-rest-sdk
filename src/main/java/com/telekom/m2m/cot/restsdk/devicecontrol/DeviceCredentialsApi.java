@@ -7,25 +7,56 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import java.io.IOException;
 
 /**
- * Created by breucking on 31.01.16.
+ * Device credentials is used to work with device credentials and new device requests.
+ * <p>
+ * Created by Patrick Steinert on 31.01.16.
  */
 public class DeviceCredentialsApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
-    protected Gson gson = GsonUtils.createGson();    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.deviceCredentials+json;charset=UTF-8;ver=0.9";
+    protected Gson gson = GsonUtils.createGson();
+    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.deviceCredentials+json;charset=UTF-8;ver=0.9";
 
-
-    private String deviceCredentialsApi = "devicecontrol/deviceCredentials";
-
+    /**
+     * Constructor for this API - just used internal.
+     *
+     * @param cloudOfThingsRestClient
+     */
     public DeviceCredentialsApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.cloudOfThingsRestClient= cloudOfThingsRestClient;
+        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
+    /**
+     * Retrieve the credentials of a certain device.
+     *
+     * @param deviceId the unique identifier of the device.
+     * @return a DeviceCredential object with the device credentials or null if not found.
+     * @throws IOException if communication went wrong.
+     */
     public DeviceCredentials getCredentials(String deviceId) throws IOException {
         DeviceCredentials deviceCredentials = new DeviceCredentials();
         deviceCredentials.setId(deviceId);
-        String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(deviceCredentials), deviceCredentialsApi, CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(deviceCredentials), "devicecontrol/deviceCredentials", CONTENT_TYPE);
 
         DeviceCredentials retrievedDeviceCredentials = gson.fromJson(response, DeviceCredentials.class);
         return retrievedDeviceCredentials;
+    }
+
+    /**
+     * Retrieves a collection for all new device requests.
+     *
+     * @param resultSize size of the results (Max. 2000)
+     * @return an object to retrieve NewDeviceRequests.
+     */
+    public NewDeviceRequestCollection getNewDeviceRequests(int resultSize) {
+        return new NewDeviceRequestCollection(resultSize, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Deletes a certain new device requests.
+     *
+     * @param deviceId the unique identifier.
+     */
+    public void deleteNewDeviceRequests(String deviceId) {
+        cloudOfThingsRestClient.delete(deviceId, "devicecontrol/newDeviceRequests");
     }
 }
