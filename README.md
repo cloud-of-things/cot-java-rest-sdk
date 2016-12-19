@@ -34,12 +34,12 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 * **Measurements**: Complete implemented
 * **Events**: Complete implemented
 * **Alarms**: Complete implemented
+* **Inventory**: Complete implemented
+* **Device credentials**: Complete implemented
+* **Identity**: Complete implemented
 
 **Partly Implemented**
-* **Inventory**: Partly implemented
-* **Device control**: Partly implemented
-* **Device credentials**: Partly implemented
-* **Identity**: Partly implemented
+* **Device control**: Complete implemented, except BulkOperations
 
 **Not Implemented**
 * **SmartREST**: Not implemented
