@@ -10,7 +10,7 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
- * Represents a non-pageable NewDeviceRequest collection.
+ * Represents a pageable NewDeviceRequest collection.
  *
  * @since 0.3.0
  * Created by Patrick Steinert on 19.12.16.
