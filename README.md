@@ -61,11 +61,9 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 See examples folder. (Needs improvements ;) )
 
 ## Release Notes
-<<<<<<< HEAD
 
-### Release 0.2.2
-* Improves error handling: now differentiate between server errors (>500) and 404 in *Api.get* uses. Former throws exception.
-=======
+Short information about what has changed between releases.
+
 ### Release 0.3.0
 * Complete Inventory
  * Get ManagedObjects in Collection
@@ -74,7 +72,9 @@ See examples folder. (Needs improvements ;) )
  * Update Alarms
 * Complete Device Credentials API
 * Complete IdentityApi
->>>>>>> release/0.3.0
+
+### Release 0.2.2
+* Improves error handling: now differentiate between server errors (>500) and 404 in *Api.get* uses. Former throws exception.
 
 ### Release 0.2.0
 * Complete Events
