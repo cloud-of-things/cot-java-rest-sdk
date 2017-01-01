@@ -78,5 +78,11 @@ public class DeviceControlApiIT {
 
     }
 
+    @Test
+    public void testGetBulkOperations() throws Exception {
+        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+        deviceControlApi.getBulkOperation("1");
+    }
+
 
 }
