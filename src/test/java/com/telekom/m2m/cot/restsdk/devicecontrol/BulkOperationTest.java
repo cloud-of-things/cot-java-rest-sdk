@@ -41,6 +41,9 @@ public class BulkOperationTest {
 
         Assert.assertEquals(bulkOperation.getId(), "123");
         Assert.assertEquals(bulkOperation.getGroupId(), "124301");
+        Assert.assertEquals(bulkOperation.getStatus(), "ACTIVE");
+        Assert.assertEquals(bulkOperation.getCreationRamp().intValue(), 15);
+
 
     }
 

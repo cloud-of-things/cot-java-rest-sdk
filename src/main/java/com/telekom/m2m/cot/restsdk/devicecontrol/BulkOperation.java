@@ -45,4 +45,24 @@ public class BulkOperation extends ExtensibleObject {
     public String getGroupId() {
         return (String) anyObject.get("groupId");
     }
+
+    /**
+     * Get the status of the bulk operations.
+     * <p>
+     * Valid values: ACTIVE, COMPLETED, DELETED
+     *
+     * @return a String with the status
+     */
+    public String getStatus() {
+        return (String) anyObject.get("status");
+    }
+
+    /**
+     * Get the ramp up time, specifying the delay between every operation.
+     *
+     * @return the number in seconds.
+     */
+    public Number getCreationRamp() {
+        return (Number) anyObject.get("creationRamp");
+    }
 }
