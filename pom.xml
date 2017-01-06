@@ -228,4 +228,11 @@
         </plugins>
     </build>
 
+    <repositories>
+        <repository>
+            <id>tarent-nexus-bonn</id>
+            <url>https://repo-bn-01.lan.tarent.de/repository/all_repos/</url>
+        </repository>
+    </repositories>
+
 </project>
