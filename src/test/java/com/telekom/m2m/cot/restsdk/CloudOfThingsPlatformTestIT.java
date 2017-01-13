@@ -1,8 +1,10 @@
 package com.telekom.m2m.cot.restsdk;
 
+import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -21,4 +23,14 @@ public class CloudOfThingsPlatformTestIT {
         InventoryApi inventoryApi = cotPlatform.getInventoryApi();
         inventoryApi.get("test");
     }
+
+    @Test
+    public void testWithCredentials() throws Exception {
+        CotCredentials cotCredentials = new CotCredentials(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, cotCredentials);
+        InventoryApi inventoryApi = cotPlatform.getInventoryApi();
+        inventoryApi.get("test");
+        Assert.assertNotNull(inventoryApi);
+    }
+
 }

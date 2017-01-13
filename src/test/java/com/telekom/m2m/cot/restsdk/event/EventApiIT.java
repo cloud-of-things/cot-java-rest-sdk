@@ -42,12 +42,13 @@ public class EventApiIT {
         EventApi eventApi = cotPlat.getEventApi();
 
         Event createdEvent = eventApi.createEvent(event);
-        Assert.assertNotNull("Should now have an Id", event.getId());
+        Assert.assertNotNull("Should now have an Id", createdEvent.getId());
     }
 
     @Test
     public void testCreateAndRead() throws Exception {
         Date timeOfEventHappening = new Date();
+        timeOfEventHappening.setSeconds(timeOfEventHappening.getSeconds() - 10);
 
         Event event = new Event();
         event.setText("Sample Text");
@@ -56,8 +57,6 @@ public class EventApiIT {
         event.setSource(testManagedObject);
 
         EventApi eventApi = cotPlat.getEventApi();
-
-        Thread.sleep(1000);
 
         Event createdEvent = eventApi.createEvent(event);
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());

@@ -221,17 +221,26 @@ public class CloudOfThingsRestClient {
                 .put(body)
                 .build();
 
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                int i = 1;
-            } else {
-                int i = 2;
-            }
-            response.body().close();
-
+            response = client.newCall(request).execute();
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            if (response != null) {
+                response.body().close();
+            }
+        }
+        if (response != null && !response.isSuccessful()) {
+            throw new CotSdkException(
+                    response.code(),
+                    String.format(
+                            "request (%s) was not successful, got response with http status %s and message \"%s\"",
+                            request,
+                            response.code(),
+                            response.message()
+                    )
+            );
         }
     }
 

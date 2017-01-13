@@ -86,10 +86,10 @@ public class InventoryApiCrudIT {
 
         inventoryApi.update(retrievedMo);
 
-        retrievedMo = inventoryApi.get(createdMo.getId());
+        ManagedObject aretrievedMo = inventoryApi.get(createdMo.getId());
 
-        Assert.assertEquals(retrievedMo.getId(), createdMo.getId(), "Should have the same Id");
-        Assert.assertEquals(retrievedMo.getName(), "NewName", "Should have the same Name");
+        Assert.assertEquals(aretrievedMo.getId(), createdMo.getId(), "Should have the same Id");
+        Assert.assertEquals(aretrievedMo.getName(), "NewName", "Should have the same Name");
 
         Object play = retrievedMo.get("play");
         Assert.assertNotNull(play);

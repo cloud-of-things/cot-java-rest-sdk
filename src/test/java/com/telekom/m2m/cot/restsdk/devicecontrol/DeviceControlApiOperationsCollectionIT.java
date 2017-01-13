@@ -216,22 +216,24 @@ public class DeviceControlApiOperationsCollectionIT {
         dcApi.create(testOperation);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-        OperationCollection events = dcApi.getOperations(
+        Date now = new Date();
+        now.setSeconds(now.getSeconds() + 60);
+        OperationCollection operations = dcApi.getOperations(
                 Filter.build()
-                        .byDate(yesterday, new Date())
+                        .byDate(yesterday, now)
                         .byDeviceId(testManagedObject.getId()), 5);
 
 
-        Operation[] os = events.getOperations();
+        Operation[] os = operations.getOperations();
         Assert.assertEquals(os.length, 1);
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        events = dcApi.getOperations(
+        operations = dcApi.getOperations(
                 Filter.build()
                         .byDate(beforeYesterday, yesterday)
                         .byDeviceId(testManagedObject.getId()), 5);
-        os = events.getOperations();
+        os = operations.getOperations();
         Assert.assertEquals(os.length, 0);
     }
 

@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk;
 
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
+import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
@@ -32,6 +33,23 @@ public class CloudOfThingsPlatform {
     /**
      * Get a platform object to register new devices. This should be used for retrieving the credentials.
      *
+     * @param host           URL to the host to connect to
+     * @param cotCredentials a credentials object with the credentials.
+     */
+    public CloudOfThingsPlatform(String host, CotCredentials cotCredentials) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .readTimeout(1, TimeUnit.MINUTES)
+                .build();
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client,
+                host,
+                cotCredentials.getTenant(),
+                cotCredentials.getUsername(),
+                cotCredentials.getPassword());
+    }
+
+    /**
+     * Get a platform object to register new devices. This should be used for retrieving the credentials.
+     *
      * @param host URL to the host to connect to.
      * @return a CloudOfThingsPlatform object with special connection properties.
      */
@@ -40,6 +58,23 @@ public class CloudOfThingsPlatform {
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)));
+    }
+
+    /**
+     * Get a platform object to register new devices through a proxy server. This should be used for retrieving the
+     * credentials.
+     *
+     * @param host      URL to the host to connect to.
+     * @param proxyHost hostname of the HTTP proxy server
+     * @param proxyPort port of the HTTP proxy server.
+     * @return a CloudOfThingsPlatform object with special connection properties.
+     */
+    public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host, String proxyHost, int proxyPort) {
+        return new CloudOfThingsPlatform(host,
+                new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)),
+                new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
+                new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)),
+                proxyHost, proxyPort);
     }
 
     /**
@@ -55,6 +90,26 @@ public class CloudOfThingsPlatform {
                 .readTimeout(1, TimeUnit.MINUTES)
                 .build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, tenant, username, password);
+    }
+
+    /**
+     * Get a platform object to register new devices. This should be used for retrieving the credentials.
+     *
+     * @param host           URL to the host to connect to
+     * @param cotCredentials a credentials object with the credentials.
+     * @param proxyHost      hostname of the HTTP proxy server
+     * @param proxyPort      port of the HTTP proxy server.
+     */
+    public CloudOfThingsPlatform(String host, CotCredentials cotCredentials, String proxyHost, int proxyPort) {
+        OkHttpClient client = new OkHttpClient.Builder()
+                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
+                .readTimeout(1, TimeUnit.MINUTES)
+                .build();
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client,
+                host,
+                cotCredentials.getTenant(),
+                cotCredentials.getUsername(),
+                cotCredentials.getPassword());
     }
 
     /**
