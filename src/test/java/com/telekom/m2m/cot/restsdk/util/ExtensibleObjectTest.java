@@ -8,7 +8,9 @@ import org.testng.annotations.Test;
 
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
@@ -138,4 +140,62 @@ public class ExtensibleObjectTest {
         Assert.assertFalse(obj.has("foo"));
     }
 
+    @Test
+    public void testSetAttributesNull() throws Exception {
+        ExtensibleObject eo = new ExtensibleObject();
+        eo.set("test1", "String");
+        eo.set("test2", 4711);
+        eo.set("test3", null);
+        eo.set("test4", new Position());
+        eo.set("test5", new Date());
+
+        Map<String, Object> attributesBefore = eo.getAttributes();
+
+        Assert.assertEquals(attributesBefore.get("test1"), "String");
+        Assert.assertEquals(attributesBefore.get("test2"), 4711);
+        Assert.assertEquals(attributesBefore.get("test3"), null);
+
+        eo.setAttributes(null);
+
+        Map<String, Object> attributesAfter = eo.getAttributes();
+
+        Assert.assertEquals(attributesAfter.get("test1"), "String");
+        Assert.assertEquals(attributesAfter.get("test2"), 4711);
+        Assert.assertEquals(attributesAfter.get("test3"), null);
+        Assert.assertEquals(attributesAfter, attributesBefore);
+
+    }
+
+    @Test
+    public void testShallowCopyAttributes() throws Exception {
+        ExtensibleObject eo = new ExtensibleObject();
+        Map<String, Object> attr = eo.getAttributes();
+
+        Assert.assertNotNull(attr);
+        Assert.assertEquals(attr.values().size(), 0);
+        attr.put("foo", "bar");
+
+        Assert.assertNull(eo.get("foo"));
+    }
+
+    @Test
+    public void testGetSetAttributes() throws Exception {
+        ExtensibleObject eo = new ExtensibleObject();
+        Map<String, Object> attr = eo.getAttributes();
+
+        Assert.assertNotNull(attr);
+        Assert.assertEquals(attr.values().size(), 0);
+
+        attr.put("foo", "bar");
+
+        Assert.assertNull(eo.get("foo"));
+
+        eo.setAttributes(attr);
+
+        Assert.assertEquals(eo.get("foo"), "bar");
+
+        attr.put("foo", "boo");
+
+        Assert.assertEquals(eo.get("foo"), "bar");
+    }
 }
