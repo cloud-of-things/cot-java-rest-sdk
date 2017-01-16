@@ -4,7 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -47,6 +51,8 @@ public class CloudOfThingsRestClient {
      * @return the id of the Object.
      */
     public String doRequestWithIdResponse(String json, String api, String contentType) {
+
+        Response response = null;
         try {
             RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
             Request request = new Request.Builder()
@@ -57,7 +63,7 @@ public class CloudOfThingsRestClient {
                     .url(host + "/" + api)
                     .post(body)
                     .build();
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
                 Gson gson = GsonUtils.createGson();
                 JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
@@ -73,12 +79,13 @@ public class CloudOfThingsRestClient {
                 String[] pathParts = location.split("\\/");
                 result = pathParts[pathParts.length - 1];
             }
-            response.body().close();
             return result;
         } catch (CotSdkException e) {
             throw e;
         } catch (Exception e) {
             throw new CotSdkException("Problem", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
 
@@ -100,14 +107,14 @@ public class CloudOfThingsRestClient {
                 .url(host + "/" + api)
                 .post(body)
                 .build();
-
+        Response response = null;
         try {
-            Response r = client.newCall(request).execute();
-            String result = r.body().string();
-            r.body().close();
-            return result;
+            response = client.newCall(request).execute();
+            return response.body().string();
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
 
@@ -133,7 +140,10 @@ public class CloudOfThingsRestClient {
             return result;
         } catch (Exception e) {
             throw new CotSdkException("Error in requets", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
+
     }
 
     public String getResponse(String api, String contentType) {
@@ -145,7 +155,7 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(request).execute();
-            String result = null;
+            String result;
             if (response.isSuccessful()) {
                 result = response.body().string();
                 response.body().close();
@@ -161,6 +171,8 @@ public class CloudOfThingsRestClient {
             return result;
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
 
     }
@@ -175,17 +187,17 @@ public class CloudOfThingsRestClient {
                 .put(body)
                 .build();
 
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                int i = 1;
-            } else {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(),
                         "Requested returned error code");
             }
-            response.body().close();
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
 
@@ -198,9 +210,9 @@ public class CloudOfThingsRestClient {
                 .url(host + "/" + api + "/" + id)
                 .put(body)
                 .build();
-
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if (response.isSuccessful()) {
                 int i = 1;
             } else {
@@ -210,7 +222,10 @@ public class CloudOfThingsRestClient {
 
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
+
     }
 
     public void delete(String id, String api) {
@@ -219,16 +234,16 @@ public class CloudOfThingsRestClient {
                 .url(host + "/" + api + "/" + id)
                 .delete()
                 .build();
-
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Error in delete with ID '" + id + "' (see https://http.cat/" + response.code() + ")");
             }
-            response.body().close();
-
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
 
@@ -238,9 +253,9 @@ public class CloudOfThingsRestClient {
                 .url(url)
                 .delete()
                 .build();
-
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
+            response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Error in delete with URL '" + url + "' (see https://http.cat/" + response.code() + ")");
             }
@@ -248,7 +263,16 @@ public class CloudOfThingsRestClient {
 
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
 
     }
+
+    private void closeResponseBodyIfResponseAndBodyNotNull(final Response response) {
+        if (response != null && response.body() != null) {
+            response.body().close();
+        }
+    }
+
 }
