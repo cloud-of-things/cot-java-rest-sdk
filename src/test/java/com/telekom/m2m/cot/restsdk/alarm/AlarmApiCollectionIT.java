@@ -175,7 +175,7 @@ public class AlarmApiCollectionIT {
         Assert.assertTrue(allAlarmsFromSameStatus);
     }
 
-    @Ignore
+/*
     @Test
     public void testMultipleAlarmsByTime() throws Exception {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
@@ -202,6 +202,7 @@ public class AlarmApiCollectionIT {
         Assert.assertEquals(as.length, 0);
     }
 
+*/
 
     @Test
     public void testMultipleAlarmsByTimeAndBySource() throws Exception {
