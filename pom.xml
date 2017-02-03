@@ -30,14 +30,14 @@
 
     <distributionManagement>
         <repository>
-            <id>internal-release-repository</id>
+            <id>internal-evolvis-release-repository</id>
             <name>internal release repository</name>
-            <url>sftp://dev-repo.tarent.de:/var/www/dev_repo/releases</url>
+            <url>sftp://maven@dev-repo.tarent.de:/var/www/dev_repo/releases</url>
         </repository>
         <snapshotRepository>
-            <id>internal-snapshot-repository</id>
+            <id>internal-evolvis-snapshot-repository</id>
             <name>internal snapshot repository</name>
-            <url>sftp://dev-repo.tarent.de:/var/www/dev_repo/snapshots</url>
+            <url>sftp://maven@dev-repo.tarent.de:/var/www/dev_repo/snapshots</url>
         </snapshotRepository>
     </distributionManagement>
 
