@@ -97,25 +97,49 @@ public class CloudOfThingsRestClient {
      * @param contentType the Content-Type of the JSON Object.
      * @return the received JSON response body.
      */
+    /**
+     * Proceedes a HTTP POST request and returns the response body as String.
+     *
+     * @param json        Request body, needs to be a json object correlating to the contentType.
+     * @param api         the REST API string.
+     * @param contentType the Content-Type of the JSON Object.
+     * @return the received JSON response body.
+     */
     public String doPostRequest(String json, String api, String contentType) {
 
-        RequestBody body;
-        if (contentType != null) {
-            body = RequestBody.create(MediaType.parse(contentType), json);
-        } else {
-            body = RequestBody.create(null, json);
+        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType)
+                .addHeader("Accept", contentType)
+                .url(host + "/" + api)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            return response.body().string();
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
         }
+    }
 
-        Request.Builder requestBuilder = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString);
+    /**
+     * Proceedes a HTTP POST request and returns the response body as String.
+     * Method will throw an exception if the response code is indicating
+     * a non successfull request.
+     *
+     * @param json Request body, needs to be a json object.
+     * @param api  the REST API string.
+     * @return the received JSON response body.
+     */
+    public String doPostRequest(String json, String api) {
 
-        if (contentType != null) {
-            requestBuilder = requestBuilder
-                    .addHeader("Content-Type", contentType)
-                    .addHeader("Accept", contentType);
-        }
-        Request request = requestBuilder
-
+        RequestBody body = RequestBody.create(null, json);
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
                 .url(host + "/" + api)
                 .post(body)
                 .build();
@@ -123,7 +147,7 @@ public class CloudOfThingsRestClient {
         try {
             response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Error in request.");
+                throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             return response.body().string();
         } catch (IOException e) {
@@ -132,6 +156,7 @@ public class CloudOfThingsRestClient {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
+
 
     public String getResponse(String id, String api, String contentType) {
         Request request = new Request.Builder()

@@ -174,19 +174,15 @@ public class InventoryApi {
      */
     public void registerAsChildDevice(ManagedObject parentDevice, ManagedObject childDevice) {
 
-        final String json = createJson(childDevice);
+        final String json = String.format("{ \"managedObject\" : { \"id\" : \"%s\" } }", childDevice.getId());
         final String apiPattern = "inventory/managedObjects/%s/childDevices";
         final String api = String.format(
                 apiPattern,
                 parentDevice.getId()
         );
 
-        cloudOfThingsRestClient.doPostRequest(json, api, null);
+        cloudOfThingsRestClient.doPostRequest(json, api);
     }
 
-    private static final String JSON_PATTERN = "{ \"managedObject\" : { \"id\" : \"%s\" } }";
 
-    private String createJson(final ManagedObject childDevice) {
-        return String.format(JSON_PATTERN, childDevice.getId());
-    }
 }
