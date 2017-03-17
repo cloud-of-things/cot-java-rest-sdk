@@ -99,17 +99,32 @@ public class CloudOfThingsRestClient {
      */
     public String doPostRequest(String json, String api, String contentType) {
 
-        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
+        RequestBody body;
+        if (contentType != null) {
+            body = RequestBody.create(MediaType.parse(contentType), json);
+        } else {
+            body = RequestBody.create(null, json);
+        }
+
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString);
+
+        if (contentType != null) {
+            requestBuilder = requestBuilder
+                    .addHeader("Content-Type", contentType)
+                    .addHeader("Accept", contentType);
+        }
+        Request request = requestBuilder
+
                 .url(host + "/" + api)
                 .post(body)
                 .build();
         Response response = null;
         try {
             response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Error in request.");
+            }
             return response.body().string();
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
