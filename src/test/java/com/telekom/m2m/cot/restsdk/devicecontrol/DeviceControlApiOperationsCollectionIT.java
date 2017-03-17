@@ -19,6 +19,8 @@ import java.util.Date;
 public class DeviceControlApiOperationsCollectionIT {
 
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
+    private ManagedObject testManagedObjectParent;
     private ManagedObject testManagedObject;
 
     private static JsonObject jsonObject = new JsonObject();
@@ -34,11 +36,26 @@ public class DeviceControlApiOperationsCollectionIT {
     @BeforeMethod
     public void setUp() {
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
+
+        testManagedObjectParent =
+                TestHelper.createRandomManagedObjectInPlatform(
+                        cotPlat,
+                        TestHelper.createManagedObject("parent_agent_device", true)
+                );
+        testManagedObject =
+                TestHelper.createRandomManagedObjectInPlatform(
+                        cotPlat,
+                        TestHelper.createManagedObject("fake_name", false)
+                );
+
+        TestHelper.registerAsChildDevice(cotPlat, testManagedObjectParent, testManagedObject);
+
     }
 
     @AfterMethod
     public void tearDown() {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObjectParent);
     }
 
 
@@ -233,6 +250,35 @@ public class DeviceControlApiOperationsCollectionIT {
                         .byDeviceId(testManagedObject.getId()), 5);
         os = events.getOperations();
         Assert.assertEquals(os.length, 0);
+    }
+
+    @Test
+    public void testOperationByAgentId() {
+
+        // given
+        final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+
+        final Operation testOperation = new Operation();
+        testOperation.setDeviceId(testManagedObject.getId());
+        testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
+        deviceControlApi.create(testOperation);
+
+        final String agentId = testManagedObjectParent.getId();
+
+        // when
+        OperationCollection operationCollection = deviceControlApi.getOperations(
+                Filter.build()
+                        .byAgentId(agentId), 5);
+
+        // then
+        final Operation[] operations = operationCollection.getOperations();
+        Assert.assertEquals(operations.length, 1);
+
+        Assert.assertEquals(
+                testManagedObject.getId(),
+                operations[0].getDeviceId()
+        );
+
     }
 
 }

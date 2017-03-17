@@ -63,11 +63,21 @@ public class TestHelper {
     }
 
     public static ManagedObject createManagedObject(String name) {
+        return createManagedObject(name, true);
+    }
+
+    public static ManagedObject createManagedObject(String name, boolean isAgent) {
         ManagedObject mo = new ManagedObject();
         mo.setName(name);
         mo.set("c8y_IsDevice", new JsonObject());
-        mo.set("com_cumulocity_model_Agent", new JsonObject());
+        if (isAgent) {
+            mo.set("com_cumulocity_model_Agent", new JsonObject());
+        }
         return mo;
+    }
+
+    public static ManagedObject createRandomManagedObjectInPlatform(CloudOfThingsPlatform cloudOfThingsPlatform, ManagedObject managedObject) {
+        return cloudOfThingsPlatform.getInventoryApi().create(managedObject);
     }
 
     public static ManagedObject createRandomManagedObjectInPlatform(CloudOfThingsPlatform cloudOfThingsPlatform, String name) {
@@ -77,4 +87,11 @@ public class TestHelper {
     public static void deleteManagedObjectInPlatform(CloudOfThingsPlatform cloudOfThingsPlatform, ManagedObject managedObject) {
         cloudOfThingsPlatform.getInventoryApi().delete(managedObject.getId());
     }
+
+    public static void registerAsChildDevice(CloudOfThingsPlatform cloudOfThingsPlatform, ManagedObject parentDevice, ManagedObject childDevice) {
+        cloudOfThingsPlatform.getInventoryApi().registerAsChildDevice(
+                parentDevice, childDevice
+        );
+    }
+
 }
