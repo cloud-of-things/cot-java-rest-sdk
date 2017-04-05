@@ -2,7 +2,7 @@
 
 This is an SDK to interfere with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
-_Recent version is: 0.3.0_
+_Recent version is: 0.4.0_
 
 ## Usage
 
@@ -11,7 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>0.3.0</version>
+    <version>0.4.0</version>
 </dependency>
 ```
 

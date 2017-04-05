@@ -4,11 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import okhttp3.*;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
