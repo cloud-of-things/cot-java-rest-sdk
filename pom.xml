@@ -65,7 +65,7 @@
     <dependencies>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>OkHttp</artifactId>
+            <artifactId>okhttp</artifactId>
             <version>3.0.1</version>
         </dependency>
         <dependency>
