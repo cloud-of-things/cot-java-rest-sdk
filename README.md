@@ -61,6 +61,12 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 See examples folder. (Needs improvements ;) )
 
 ## Release Notes
+
+### Release 0.4.0
+
+* Improvements, e.g. connection exception handling
+* Bulk Operations (beta)
+
 ### Release 0.3.0
 * Complete Inventory
  * Get ManagedObjects in Collection
