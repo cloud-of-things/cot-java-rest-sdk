@@ -4,7 +4,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import okhttp3.*;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -177,7 +181,7 @@ public class CloudOfThingsRestClient {
 
     }
 
-    public void doPutRequest(String json, String api, String contentType) {
+    public void doPutRequest(final String json, final String api, final String contentType) {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
@@ -210,6 +214,7 @@ public class CloudOfThingsRestClient {
 
         }
     }
+
 
     public void doPutRequest(String json, String id, String api, String contentType) {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);

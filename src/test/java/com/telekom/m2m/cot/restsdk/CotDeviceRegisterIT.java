@@ -43,9 +43,7 @@ public class CotDeviceRegisterIT {
         CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
-
         DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice(TestHelper.TEST_HOST).getDeviceCredentialsApi();
-
 
         // Step 1: (devicemanager) Register Device
         Operation operation = new Operation(deviceId);
@@ -64,6 +62,7 @@ public class CotDeviceRegisterIT {
         }
 
         // Step 3: (devicemanager) Accept request
+
         deviceControlApi.acceptDevice(deviceId);
 
         // Step 4: (device) Create MO

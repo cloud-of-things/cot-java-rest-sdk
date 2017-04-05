@@ -40,9 +40,9 @@ public class EventApiIT {
         event.set("foo", "{ \"alt\": 99.9, \"lng\": 8.55436, \"lat\": 50.02868 }");
 
         EventApi eventApi = cotPlat.getEventApi();
+        eventApi.createEvent(event);
 
-        Event createdEvent = eventApi.createEvent(event);
-        Assert.assertNotNull("Should now have an Id", createdEvent.getId());
+        Assert.assertNotNull(event.getId(), "Should now have an Id");
     }
 
     @Test
@@ -58,6 +58,8 @@ public class EventApiIT {
 
         EventApi eventApi = cotPlat.getEventApi();
 
+        Thread.sleep(2000);
+
         Event createdEvent = eventApi.createEvent(event);
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());
 
@@ -68,7 +70,15 @@ public class EventApiIT {
         Assert.assertEquals(retrievedEvent.getText(), "Sample Text");
         Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening), 0);
         Assert.assertNotNull(retrievedEvent.getCreationTime());
-        Assert.assertEquals(retrievedEvent.getCreationTime().compareTo(timeOfEventHappening), 1);
+
+        Assert.assertTrue(
+                retrievedEvent.getCreationTime().after(timeOfEventHappening),
+                String.format(
+                        "retrievedEvent.getCreationTime(): %s, timeOfEventHappening: %s",
+                        retrievedEvent.getCreationTime(),
+                        timeOfEventHappening
+                )
+        );
 
     }
 
