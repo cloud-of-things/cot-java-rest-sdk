@@ -19,14 +19,14 @@ import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public class ReadMeasurements {
+public class MyReadMeasurements {
     private static final String NEW_LINE_SEPARATOR = "\n";
 
     public static void main(String[] args) {
-        String host = "https://cot-url";
-        String tenant = "tenant";
-        String user = "user";
-        String password = "password";
+        String host = "https://testing.int2-ram.m2m.telekom.com";
+        String tenant = "testing";
+        String user = "patrick-restplay";
+        String password = "Test1234";
 
         Calendar from = new GregorianCalendar(2016, Calendar.DECEMBER, 1, 0, 0, 0);
         Calendar to = new GregorianCalendar(2016, Calendar.DECEMBER, 31, 23, 59, 59);

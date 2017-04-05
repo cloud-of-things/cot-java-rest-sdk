@@ -5,6 +5,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.Subscriber;
 
 /**
  * DeviceControl API is used to work with operations.
@@ -143,5 +144,14 @@ public class DeviceControlApi {
                 CONTENT_TYPE_BULK_OPERATION);
         BulkOperation bulkOperation = new BulkOperation(gson.fromJson(response, ExtensibleObject.class));
         return bulkOperation;
+    }
+
+    /**
+     * Creates a notification subscriber, which allows to receive newly created operations.
+     *
+     * @return
+     */
+    public Subscriber<String, Operation> getNotificationsSubscriber() {
+        return new OperationNotificationSubscriber(cloudOfThingsRestClient);
     }
 }
