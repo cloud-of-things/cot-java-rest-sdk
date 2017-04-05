@@ -101,13 +101,31 @@ public class CloudOfThingsRestClient {
                 .post(body)
                 .build();
 
+        Response response = null;
         try {
-            Response r = client.newCall(request).execute();
-            String result = r.body().string();
-            r.body().close();
-            return result;
+            response = client.newCall(request).execute();
+
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(
+                        response.code(),
+                        String.format(
+                                "request (%s) was not successful, got response with http status %s and message \"%s\"",
+                                request,
+                                response.code(),
+                                response.message()
+                        )
+                );
+
+            }
+
+            return response.body().string();
+
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            if (response != null) {
+                response.body().close();
+            }
         }
     }
 
@@ -121,14 +139,8 @@ public class CloudOfThingsRestClient {
         try {
             response = client.newCall(request).execute();
             String result = null;
-            if (response.isSuccessful()) {
+            if (response.isSuccessful())
                 result = response.body().string();
-            } else {
-                if (response.code() != 404) {
-                    response.body().close();
-                    throw new CotSdkException(response.code(), "Error in request.");
-                }
-            }
             response.body().close();
             return result;
         } catch (Exception e) {
@@ -165,7 +177,7 @@ public class CloudOfThingsRestClient {
 
     }
 
-    public void doPutRequest(String json, String api, String contentType) {
+    public void doPutRequest(final String json, final String api, final String contentType) {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
@@ -175,19 +187,30 @@ public class CloudOfThingsRestClient {
                 .put(body)
                 .build();
 
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                int i = 1;
-            } else {
-                throw new CotSdkException(response.code(),
-                        "Requested returned error code");
-            }
-            response.body().close();
+            response = client.newCall(request).execute();
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            if (response != null) {
+                response.body().close();
+            }
+        }
+        if (response != null && !response.isSuccessful()) {
+            throw new CotSdkException(
+                    response.code(),
+                    String.format(
+                            "request (%s) was not successful, got response with http status %s and message \"%s\"",
+                            request,
+                            response.code(),
+                            response.message()
+                    )
+            );
+
         }
     }
+
 
     public void doPutRequest(String json, String id, String api, String contentType) {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
@@ -199,17 +222,26 @@ public class CloudOfThingsRestClient {
                 .put(body)
                 .build();
 
+        Response response = null;
         try {
-            Response response = client.newCall(request).execute();
-            if (response.isSuccessful()) {
-                int i = 1;
-            } else {
-                int i = 2;
-            }
-            response.body().close();
-
+            response = client.newCall(request).execute();
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
+        } finally {
+            if (response != null) {
+                response.body().close();
+            }
+        }
+        if (response != null && !response.isSuccessful()) {
+            throw new CotSdkException(
+                    response.code(),
+                    String.format(
+                            "request (%s) was not successful, got response with http status %s and message \"%s\"",
+                            request,
+                            response.code(),
+                            response.message()
+                    )
+            );
         }
     }
 

@@ -6,8 +6,6 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
-import java.io.IOException;
-
 /**
  * DeviceControl API is used to work with operations.
  *
@@ -19,6 +17,7 @@ public class DeviceControlApi {
     protected Gson gson = GsonUtils.createGson();
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.newDeviceRequest+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE_BULK_OPERATION = "application/vnd.com.nsn.cumulocity.bulkoperation+json;charset=UTF-8;ver=0.9";
 
     /**
      * Internal used constructor.
@@ -133,4 +132,16 @@ public class DeviceControlApi {
         cloudOfThingsRestClient.delete("", "devicecontrol/operations?" + filters.buildFilter() + "&x=");
     }
 
+    /**
+     * Retrieves a certain bulk operation.
+     *
+     * @param id the unique identifier of the bulk operation of retrieve.
+     * @return a BulkOperation object or null if not found.
+     */
+    public BulkOperation getBulkOperation(String id) {
+        String response = cloudOfThingsRestClient.getResponse(id, "/devicecontrol/bulkoperations/",
+                CONTENT_TYPE_BULK_OPERATION);
+        BulkOperation bulkOperation = new BulkOperation(gson.fromJson(response, ExtensibleObject.class));
+        return bulkOperation;
+    }
 }
