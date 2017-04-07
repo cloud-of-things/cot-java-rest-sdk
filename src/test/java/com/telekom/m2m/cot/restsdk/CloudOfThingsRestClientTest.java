@@ -92,7 +92,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
             cloudOfThingsRestClient.doPutRequest("", "", "");
             fail("an exception should have occured");
         } catch (CotSdkException e) {
-            assertEquals(httpStatusCode, e.getHttpStatus());
+            assertEquals(e.getHttpStatus(),httpStatusCode);
         }
 
     }
@@ -189,7 +189,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
             cloudOfThingsRestClient.doPutRequest("", "", "");
             fail("an exception should have occured");
         } catch (CotSdkException e) {
-            assertEquals(httpStatusCode, e.getHttpStatus());
+            assertEquals(e.getHttpStatus(), httpStatusCode);
         }
 
     }
