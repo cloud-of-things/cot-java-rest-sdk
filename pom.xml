@@ -4,7 +4,7 @@
 
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
 
     <name>Cloud of Things Java REST SDK</name>
     <description>This is an SDK to interfere with the Cloud of Things by
@@ -65,7 +65,7 @@
     <dependencies>
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
-            <artifactId>OkHttp</artifactId>
+            <artifactId>okhttp</artifactId>
             <version>3.0.1</version>
         </dependency>
         <dependency>

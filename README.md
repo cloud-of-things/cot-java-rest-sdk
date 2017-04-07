@@ -2,7 +2,7 @@
 
 This is an SDK to interfere with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
-_Recent version is: 0.4.0_
+_Recent version is: 0.4.1_
 
 ## Usage
 
@@ -11,7 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>0.4.0</version>
+    <version>0.4.1</version>
 </dependency>
 ```
 
@@ -62,10 +62,13 @@ See examples folder. (Needs improvements ;) )
 
 ## Release Notes
 
+Short information about what has changed between releases.
+
 ### Release 0.4.0
 Short information about what has changed between releases.
 
-* Improvements
+* Improvements, e.g. connection exception handling
+* Short information about what has changed between releases.
 * Bulk Operations (beta)
 
 ### Release 0.3.0
@@ -76,9 +79,6 @@ Short information about what has changed between releases.
  * Update Alarms
 * Complete Device Credentials API
 * Complete IdentityApi
-
-### Release 0.2.2
-* Improves error handling: now differentiate between server errors (>500) and 404 in *Api.get* uses. Former throws exception.
 
 ### Release 0.2.0
 * Complete Events
