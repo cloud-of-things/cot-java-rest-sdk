@@ -62,9 +62,12 @@ See examples folder. (Needs improvements ;) )
 
 ## Release Notes
 
+Short information about what has changed between releases.
+
 ### Release 0.4.0
 
 * Improvements, e.g. connection exception handling
+* Short information about what has changed between releases.
 * Bulk Operations (beta)
 
 ### Release 0.3.0

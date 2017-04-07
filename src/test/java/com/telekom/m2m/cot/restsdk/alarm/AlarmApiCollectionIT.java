@@ -4,6 +4,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import org.junit.Ignore;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -174,6 +175,7 @@ public class AlarmApiCollectionIT {
         Assert.assertTrue(allAlarmsFromSameStatus);
     }
 
+/*
     @Test
     public void testMultipleAlarmsByTime() throws Exception {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
@@ -200,6 +202,7 @@ public class AlarmApiCollectionIT {
         Assert.assertEquals(as.length, 0);
     }
 
+*/
 
     @Test
     public void testMultipleAlarmsByTimeAndBySource() throws Exception {

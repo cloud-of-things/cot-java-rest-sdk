@@ -4,10 +4,14 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.AssertJUnit.fail;
 
 /**
  * @author steinert
@@ -16,6 +20,19 @@ public class InventoryManagedObjectCollectionIT {
 
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private SoftAssert softAssert = new SoftAssert();
+
+    private List<ManagedObject> toBeDeleted = new ArrayList<ManagedObject>();
+
+    @AfterMethod
+    public void tearDown() {
+
+        for (ManagedObject managedObject : toBeDeleted) {
+            cotPlat.getInventoryApi().delete(
+                    managedObject.getId()
+            );
+        }
+
+    }
 
     @Test
     public void testMultipleManagedObjects() throws Exception {
@@ -190,5 +207,37 @@ public class InventoryManagedObjectCollectionIT {
 //        softAssert.assertAll();
 //
 //    }
+
+
+    @Test
+    public void testRegisterAsChildDevice() {
+
+        // given
+        final InventoryApi inventoryApi = cotPlat.getInventoryApi();
+
+        final ManagedObject parentDevice =
+                TestHelper.createRandomManagedObjectInPlatform(cotPlat, "parent_device");
+        toBeDeleted.add(parentDevice);
+        final ManagedObject childDevice =
+                TestHelper.createRandomManagedObjectInPlatform(cotPlat, "child_device");
+        toBeDeleted.add(childDevice);
+
+        // when
+        inventoryApi.registerAsChildDevice(parentDevice, childDevice);
+
+        // then
+        final ManagedObject parentDeviceFromAPI = inventoryApi.get(parentDevice.getId());
+        verifyContainsNewChild(parentDeviceFromAPI, childDevice);
+
+    }
+
+    private void verifyContainsNewChild(final ManagedObject parentDevice, final ManagedObject childDevice) {
+        for (ManagedObjectReference childDeviceReference : parentDevice.getChildDevices().get(5)) {
+            if (childDevice.getId().equals(childDeviceReference.getManagedObject().getId())) {
+                return;
+            }
+        }
+        fail("could not find child device!");
+    }
 
 }

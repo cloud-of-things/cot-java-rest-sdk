@@ -165,4 +165,24 @@ public class InventoryApi {
     public ManagedObjectCollection getManagedObjects(Filter.FilterBuilder filters, int resultSize) {
         return new ManagedObjectCollection(filters, resultSize, cloudOfThingsRestClient);
     }
+
+    /**
+     * Registers a device as child device of another device
+     *
+     * @param parentDevice device which should become the parent of the childDevice
+     * @param childDevice  device which should be marked as child device of the parentDevice
+     */
+    public void registerAsChildDevice(ManagedObject parentDevice, ManagedObject childDevice) {
+
+        final String json = String.format("{ \"managedObject\" : { \"id\" : \"%s\" } }", childDevice.getId());
+        final String apiPattern = "inventory/managedObjects/%s/childDevices";
+        final String api = String.format(
+                apiPattern,
+                parentDevice.getId()
+        );
+
+        cloudOfThingsRestClient.doPostRequest(json, api);
+    }
+
+
 }

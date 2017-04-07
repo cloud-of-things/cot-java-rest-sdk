@@ -165,6 +165,19 @@ public class Filter {
             instance.arguments.put("status", status);
             return this;
         }
+
+        /**
+         * Adds a build for an agentId.
+         *
+         * @param agentId to build for.
+         * @return an appropriate build Object.
+         * @since 0.3.1
+         */
+        public FilterBuilder byAgentId(String agentId) {
+            instance.arguments.put("agentId", agentId);
+            return this;
+        }
+
     }
 
 }
