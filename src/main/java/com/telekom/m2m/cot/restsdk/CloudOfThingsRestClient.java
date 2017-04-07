@@ -79,7 +79,6 @@ public class CloudOfThingsRestClient {
                 String[] pathParts = location.split("\\/");
                 result = pathParts[pathParts.length - 1];
             }
-            response.body().close();
             return result;
         } catch (CotSdkException e) {
             throw e;
