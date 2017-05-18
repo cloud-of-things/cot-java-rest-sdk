@@ -9,6 +9,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -18,6 +20,8 @@ import java.util.Base64;
  * Created by Patrick Steinert on 30.01.16.
  */
 public class CloudOfThingsRestClient {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(CloudOfThingsRestClient.class);
 
     private final String encodedAuthString;
     private final String tenant;
@@ -118,7 +122,16 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(request).execute();
-            return response.body().string();
+
+            final String responseBody = response.body().string();
+
+            if (!response.isSuccessful()) {
+                LOGGER.info(
+                        "response for post request with api {} and json {} and contentType {} was not successful. response code: {}, response body: {}",
+                        api, json, contentType, response.code(), responseBody
+                );
+            }
+            return responseBody;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
