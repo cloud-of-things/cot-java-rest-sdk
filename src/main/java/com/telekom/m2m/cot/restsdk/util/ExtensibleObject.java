@@ -37,4 +37,10 @@ public class ExtensibleObject {
     public void set(Object object) {
         anyObject.put(object.getClass().getCanonicalName().replace('.', '_'), object );
     }
+
+    @Override
+    public String toString() {
+        return "ExtensibleObject{" + "anyObject=" + anyObject +
+                '}';
+    }
 }

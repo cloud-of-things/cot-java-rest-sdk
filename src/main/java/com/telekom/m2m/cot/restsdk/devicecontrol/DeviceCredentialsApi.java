@@ -2,7 +2,9 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import org.slf4j.LoggerFactory;
 
 /**
  * Device credentials is used to work with device credentials and new device requests.
@@ -10,6 +12,9 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class DeviceCredentialsApi {
+
+    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DeviceCredentialsApi.class);
+
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     protected Gson gson = GsonUtils.createGson();
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.deviceCredentials+json;charset=UTF-8;ver=0.9";
@@ -46,6 +51,27 @@ public class DeviceCredentialsApi {
      */
     public NewDeviceRequestCollection getNewDeviceRequests(int resultSize) {
         return new NewDeviceRequestCollection(resultSize, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Retrieves a NewDeviceRequest by its id.
+     *
+     * @param newDeviceRequestId id of the newDeviceRequest
+     * @return the NewDeviceRequest.
+     */
+    public NewDeviceRequest getNewDeviceRequest(final String newDeviceRequestId) {
+
+        final String api = "/devicecontrol/newDeviceRequests/" + newDeviceRequestId;
+        LOGGER.debug("getNewDeviceRequest with api {}", api);
+
+        final String response = cloudOfThingsRestClient.getResponse(api, CONTENT_TYPE);
+
+        LOGGER.debug("response for getNewDeviceRequest: {}", response);
+
+        final ExtensibleObject extensibleObject = gson.fromJson(response, ExtensibleObject.class);
+
+        return extensibleObject != null ?
+                new NewDeviceRequest(extensibleObject) : null;
     }
 
     /**
