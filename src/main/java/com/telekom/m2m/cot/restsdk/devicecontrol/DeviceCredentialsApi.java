@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
@@ -13,7 +14,7 @@ import org.slf4j.LoggerFactory;
  */
 public class DeviceCredentialsApi {
 
-    private static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger(DeviceCredentialsApi.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(DeviceCredentialsApi.class);
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     protected Gson gson = GsonUtils.createGson();
