@@ -125,6 +125,14 @@ public class CloudOfThingsRestClient {
 
             final String responseBody = response.body().string();
 
+            LOGGER.debug(
+                    "response code for post request with api {} and json {} and contentType {}",
+                    api,
+                    json,
+                    contentType,
+                    response.code()
+            );
+
             if (!response.isSuccessful()) {
                 LOGGER.info(
                         "response for post request with api {} and json {} and contentType {} was not successful. response code: {}, response body: {}",
