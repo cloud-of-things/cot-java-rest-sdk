@@ -24,19 +24,12 @@ public class CloudOfThingsRestClient {
     private static final Logger LOGGER = LoggerFactory.getLogger(CloudOfThingsRestClient.class);
 
     private final String encodedAuthString;
-    private final String tenant;
-    private final String user;
-    private final String password;
     private final String host;
 
     protected OkHttpClient client;
 
-    public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String tenant, String user, String password) {
+    public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
         this.host = host;
-        this.user = user;
-        this.password = password;
-        this.tenant = tenant;
-
         try {
             encodedAuthString = Base64.getEncoder().encodeToString((user + ":" + password).getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {

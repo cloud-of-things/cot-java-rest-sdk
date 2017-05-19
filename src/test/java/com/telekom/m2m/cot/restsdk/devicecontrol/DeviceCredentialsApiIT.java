@@ -25,7 +25,7 @@ public class DeviceCredentialsApiIT {
 
     @BeforeMethod
     public void setUp() {
-        platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     }
 
     @AfterMethod

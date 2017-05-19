@@ -22,7 +22,7 @@ public class CotDeviceRegisterIT {
     public void testDeviceRegister() throws Exception {
         String deviceId = "mydevice-name";
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
 
@@ -49,7 +49,7 @@ public class CotDeviceRegisterIT {
         Assert.assertNotNull(devCred.getTenantId());
         Assert.assertNotNull(devCred.getUsername());
 
-        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getTenantId(), devCred.getUsername(), devCred.getPassword());
+        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getUsername(), devCred.getPassword());
 
         //IdentityApi identityApi = platform.getIdentityApi();
         //ExternalId identity = identityApi.getExternalId("");
@@ -80,7 +80,7 @@ public class CotDeviceRegisterIT {
     public void testDeviceRegisterWithIdentity() throws Exception {
         String deviceId = "mydevice-name";
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
 
 
@@ -106,7 +106,7 @@ public class CotDeviceRegisterIT {
         Assert.assertNotNull(devCred.getTenantId());
         Assert.assertNotNull(devCred.getUsername());
 
-        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getTenantId(), devCred.getUsername(), devCred.getPassword());
+        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getUsername(), devCred.getPassword());
 
         InventoryApi inventory = platformForDevice.getInventoryApi();
 

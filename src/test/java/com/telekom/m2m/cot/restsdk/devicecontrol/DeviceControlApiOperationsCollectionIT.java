@@ -18,7 +18,7 @@ import java.util.Date;
  */
 public class DeviceControlApiOperationsCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
     private ManagedObject testManagedObjectParent;
     private ManagedObject testManagedObject;
