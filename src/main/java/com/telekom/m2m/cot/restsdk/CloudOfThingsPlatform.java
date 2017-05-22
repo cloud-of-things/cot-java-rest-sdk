@@ -62,13 +62,12 @@ public class CloudOfThingsPlatform {
      * with the CoT over HTTP proxy server.
      *
      * @param host      URL to the host to connect to.
-     * @param tenant    the tenant of the platform.
      * @param username  the username of the platform user.
      * @param password  the username of the platform user.
      * @param proxyHost hostname of the HTTP proxy server
      * @param proxyPort port of the HTTP proxy server.
      */
-    public CloudOfThingsPlatform(String host, String tenant, String username, String password, String proxyHost, int proxyPort) {
+    public CloudOfThingsPlatform(String host, String username, String password, String proxyHost, int proxyPort) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
                 .readTimeout(1, TimeUnit.MINUTES)
