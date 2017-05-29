@@ -8,33 +8,41 @@ import com.telekom.m2m.cot.restsdk.identity.ExternalId;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
  */
 public class CotDeviceRegisterIT {
 
+    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
     @Test
     public void testDeviceRegister() throws Exception {
-        String deviceId = "mydevice-name";
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-        DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
+        String deviceId = "mydevice-name_" + System.currentTimeMillis();
 
+        DeviceControlApi deviceControlApi = cloudOfThingsPlatform.getDeviceControlApi();
 
         DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice(TestHelper.TEST_HOST).getDeviceCredentialsApi();
-
 
         // Step 1: (devicemanager) Register Device
         Operation operation = new Operation(deviceId);
         deviceControlApi.createNewDevice(operation);
 
         // Step 2: (device) Device request
-        unregDevCred.getCredentials(deviceId);
+        try {
+            unregDevCred.getCredentials(deviceId);
+            fail("an exception should have been thrown");
+        } catch (CotSdkException e) {
+            assertEquals(HttpStatus.NOT_FOUND.getCode(), e.getHttpStatus());
+        }
 
         // Step 3: (devicemanager) Accept request
         deviceControlApi.acceptDevice(deviceId);
@@ -71,28 +79,27 @@ public class CotDeviceRegisterIT {
         Assert.assertNull(object);
 
 
-
-
-
     }
 
     @Test
     public void testDeviceRegisterWithIdentity() throws Exception {
-        String deviceId = "mydevice-name";
+        String deviceId = "mydevice-name_" + System.currentTimeMillis();
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-        DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
-
+        DeviceControlApi deviceControlApi = cloudOfThingsPlatform.getDeviceControlApi();
 
         DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("https://management.int2-ram.m2m.telekom.com").getDeviceCredentialsApi();
-
 
         // Step 1: (devicemanager) Register Device
         Operation operation = new Operation(deviceId);
         deviceControlApi.createNewDevice(operation);
 
         // Step 2: (device) Device request
-        unregDevCred.getCredentials(deviceId);
+        try {
+            unregDevCred.getCredentials(deviceId);
+            fail("an exception should have been thrown");
+        } catch (CotSdkException e) {
+            assertEquals(HttpStatus.NOT_FOUND.getCode(), e.getHttpStatus());
+        }
 
         // Step 3: (devicemanager) Accept request
         deviceControlApi.acceptDevice(deviceId);

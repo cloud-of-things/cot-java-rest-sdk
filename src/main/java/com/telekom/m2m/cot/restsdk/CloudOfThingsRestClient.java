@@ -99,6 +99,10 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
 
             return response.body().string();
         } catch (IOException e) {
