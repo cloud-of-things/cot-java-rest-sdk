@@ -10,6 +10,7 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -72,7 +73,11 @@ public class MeasurementApi {
      * @param measurements the measurements to create.
      * @return the created measurement with the ID.
      */
-    public List<Measurement> createMeasurements(List<Measurement> measurements) {
+    public List<Measurement> createMeasurements(final List<Measurement> measurements) {
+
+        if (measurements.isEmpty()) {
+            return Collections.emptyList();
+        }
 
         final String json = gson.toJson(createJsonObject(measurements));
 
