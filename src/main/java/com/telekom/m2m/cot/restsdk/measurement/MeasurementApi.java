@@ -24,6 +24,8 @@ public class MeasurementApi {
     private static final String CONTENT_TYPE_MEASUREMENT = " application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
 
+    private static final String MEASUREMENTS_API = "measurement/measurements/";
+
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private Gson gson = GsonUtils.createGson();
 
@@ -44,7 +46,7 @@ public class MeasurementApi {
      * @return the Measurement (or null if not found).
      */
     public Measurement getMeasurement(String id) {
-        String response = cloudOfThingsRestClient.getResponse(id, "measurement/measurements/", CONTENT_TYPE_MEASUREMENT);
+        String response = cloudOfThingsRestClient.getResponse(id, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT);
         if (response == null) {
             throw new CotSdkException("Measurement not found (id='" + id + "')");
         }
@@ -59,7 +61,7 @@ public class MeasurementApi {
      */
     public Measurement createMeasurement(Measurement measurement) {
         String json = gson.toJson(measurement);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "measurement/measurements/", CONTENT_TYPE_MEASUREMENT);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT);
         measurement.setId(id);
         return measurement;
     }
@@ -74,7 +76,7 @@ public class MeasurementApi {
 
         final String json = gson.toJson(createJsonObject(measurements));
 
-        final String response = cloudOfThingsRestClient.doPostRequest(json, "measurement/measurements/", CONTENT_TYPE_MEASUREMENT_COLLECTION);
+        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION);
 
         return gson.fromJson(response, MeasurementsHolder.class)
                 .getMeasurements();
@@ -86,7 +88,7 @@ public class MeasurementApi {
      * @param measurement the Measurement to delete
      */
     public void delete(Measurement measurement) {
-        cloudOfThingsRestClient.delete(measurement.getId(), "measurement/measurements/");
+        cloudOfThingsRestClient.delete(measurement.getId(), MEASUREMENTS_API);
     }
 
     /**
