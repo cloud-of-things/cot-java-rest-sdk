@@ -89,14 +89,6 @@ public class CloudOfThingsRestClient {
      * @param contentType the Content-Type of the JSON Object.
      * @return the received JSON response body.
      */
-    /**
-     * Proceedes a HTTP POST request and returns the response body as String.
-     *
-     * @param json        Request body, needs to be a json object correlating to the contentType.
-     * @param api         the REST API string.
-     * @param contentType the Content-Type of the JSON Object.
-     * @return the received JSON response body.
-     */
     public String doPostRequest(String json, String api, String contentType) {
 
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
