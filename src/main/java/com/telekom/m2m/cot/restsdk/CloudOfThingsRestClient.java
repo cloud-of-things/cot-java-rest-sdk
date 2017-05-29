@@ -59,10 +59,7 @@ public class CloudOfThingsRestClient {
                     .build();
             response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
-                String err = "Request failed.";
-                if (o.has("error"))
-                    err += " Platform provided details: '" + o.get("error") + "'";
+                final String err = getErrorMessage(response);
                 throw new CotSdkException(response.code(), err);
             }
             String location = response.header("Location");
@@ -182,10 +179,7 @@ public class CloudOfThingsRestClient {
             if (response.isSuccessful()) {
                 result = response.body().string();
             } else {
-                final JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
-                String err = "Request failed.";
-                if (o.has("error"))
-                    err += " Platform provided details: '" + o.get("error") + "'";
+                final String err = getErrorMessage(response);
                 throw new CotSdkException(response.code(), err);
             }
             return result;
@@ -283,6 +277,16 @@ public class CloudOfThingsRestClient {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
 
+    }
+
+    private String getErrorMessage(final Response response) throws IOException {
+        final JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
+        String errorMessage = "Request failed.";
+        if (o.has("error")) {
+            errorMessage += " Platform provided details: '" + o.get("error") + "'";
+        }
+
+        return errorMessage;
     }
 
     private void closeResponseBodyIfResponseAndBodyNotNull(final Response response) {
