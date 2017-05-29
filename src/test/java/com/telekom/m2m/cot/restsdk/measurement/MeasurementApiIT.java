@@ -9,39 +9,43 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
  */
 public class MeasurementApiIT {
 
-    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeClass
     public void setUp() {
-        testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
+        testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cloudOfThingsPlatform, "fake_name");
     }
 
     @AfterClass
     public void tearDown() {
-        TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
+        TestHelper.deleteManagedObjectInPlatform(cloudOfThingsPlatform, testManagedObject);
     }
 
-
     @Test
-    public void testCreateEvent() throws Exception {
+    public void testCreateMeasurement() throws Exception {
         Measurement measurement = new Measurement();
         measurement.setTime(new Date());
         measurement.setType("com_telekom_TestType");
         measurement.setSource(testManagedObject);
 
-        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+        MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
         Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
 
-        Assert.assertNotNull("Should now have an Id", createdMeasurements.getId());
+        assertNotNull("Should now have an Id", createdMeasurements.getId());
     }
 
     @Test
@@ -53,7 +57,7 @@ public class MeasurementApiIT {
         measurement.setType("com_telekom_TestType");
         measurement.setSource(testManagedObject);
 
-        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+        MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
         Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
 
@@ -73,7 +77,7 @@ public class MeasurementApiIT {
         measurement.setType("com_telekom_TestType");
         measurement.setSource(testManagedObject);
 
-        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+        MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
         Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
 
@@ -86,4 +90,36 @@ public class MeasurementApiIT {
         Measurement deletedMeasurement = measurementApi.getMeasurement(createdMeasurements.getId());
     }
 
+    @Test
+    public void createMeasurements() {
+
+        // given
+        final Measurement measurement = createMeasurement(testManagedObject);
+        final Measurement measurement2 = createMeasurement(testManagedObject);
+
+        final List<Measurement> measurements = Arrays.asList(
+                measurement,
+                measurement2
+        );
+
+        final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+
+        // when
+        final List<Measurement> createdMeasurements = measurementApi.createMeasurements(
+                measurements
+        );
+
+        // then
+        assertNotNull(createdMeasurements);
+        assertEquals(measurements.size(), createdMeasurements.size());
+
+    }
+
+    private static Measurement createMeasurement(final ManagedObject source) {
+        final Measurement measurement = new Measurement();
+        measurement.setTime(new Date());
+        measurement.setType("com_telekom_TestType");
+        measurement.setSource(source);
+        return measurement;
+    }
 }
