@@ -40,4 +40,12 @@ public class DeviceCredentials {
     public String getUsername() {
         return username;
     }
+
+    @Override
+    public String toString() {
+        return "DeviceCredentials{" + "id='" + id + '\'' +
+                ", tenantId='" + tenantId + '\'' +
+                ", username='" + username + '\'' +
+                '}';
+    }
 }

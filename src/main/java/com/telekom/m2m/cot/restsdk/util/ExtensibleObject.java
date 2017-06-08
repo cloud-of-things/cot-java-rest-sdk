@@ -89,4 +89,10 @@ public class ExtensibleObject {
             anyObject.putAll(attributes);
         }
     }
+
+    @Override
+    public String toString() {
+        return "ExtensibleObject{" + "anyObject=" + anyObject +
+                '}';
+    }
 }

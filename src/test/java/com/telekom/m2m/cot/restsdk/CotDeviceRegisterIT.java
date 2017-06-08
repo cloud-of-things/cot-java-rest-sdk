@@ -13,69 +13,51 @@ import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
  */
 public class CotDeviceRegisterIT {
 
-    private DeviceCredentials deviceCredentials;
-
-    private String deviceId;
-
-    private void tearDown() throws Exception {
-
-        if (deviceCredentials != null) {
-            CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(
-                    TestHelper.TEST_HOST, deviceCredentials.getTenantId(), deviceCredentials.getUsername(), deviceCredentials.getPassword()
-            );
-            platformForDevice.getInventoryApi().delete(deviceId);
-            // TODO: delete device user/ Gerätezugang! (-> https://<tenant>.int2-ram.m2m.telekom.com/apps/devicemanagement/index.html#/deviceusers)
-        }
-
-    }
+    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
     @Test
     public void testDeviceRegister() throws Exception {
-        String deviceId = "mydevice-name";
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-        DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
+        String deviceId = "mydevice-name_" + System.currentTimeMillis();
+
+        DeviceControlApi deviceControlApi = cloudOfThingsPlatform.getDeviceControlApi();
 
         DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice(TestHelper.TEST_HOST).getDeviceCredentialsApi();
 
         // Step 1: (devicemanager) Register Device
         Operation operation = new Operation(deviceId);
-
-        try {
-            deviceControlApi.createNewDevice(operation);
-        } catch (CotSdkException e) {
-
-        }
+        deviceControlApi.createNewDevice(operation);
 
         // Step 2: (device) Device request
         try {
             unregDevCred.getCredentials(deviceId);
+            fail("an exception should have been thrown");
         } catch (CotSdkException e) {
-
+            assertEquals(HttpStatus.NOT_FOUND.getCode(), e.getHttpStatus());
         }
 
         // Step 3: (devicemanager) Accept request
-
         deviceControlApi.acceptDevice(deviceId);
 
         // Step 4: (device) Create MO
-        deviceCredentials = unregDevCred.getCredentials(deviceId);
+        DeviceCredentials devCred = unregDevCred.getCredentials(deviceId);
 
-        Assert.assertNotNull(deviceCredentials);
-        Assert.assertNotNull(deviceCredentials.getId());
-        Assert.assertEquals(deviceCredentials.getId(), deviceId);
-        Assert.assertNotNull(deviceCredentials.getPassword());
-        Assert.assertNotNull(deviceCredentials.getTenantId());
-        Assert.assertNotNull(deviceCredentials.getUsername());
+        Assert.assertNotNull(devCred);
+        Assert.assertNotNull(devCred.getId());
+        Assert.assertEquals(devCred.getId(), deviceId);
+        Assert.assertNotNull(devCred.getPassword());
+        Assert.assertNotNull(devCred.getTenantId());
+        Assert.assertNotNull(devCred.getUsername());
 
-        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, deviceCredentials.getTenantId(), deviceCredentials.getUsername(), deviceCredentials.getPassword());
+        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getUsername(), devCred.getPassword());
 
         //IdentityApi identityApi = platform.getIdentityApi();
         //ExternalId identity = identityApi.getExternalId("");
@@ -90,49 +72,48 @@ public class CotDeviceRegisterIT {
 
         Assert.assertNotNull(newMo.getId());
 
-        this.deviceId = newMo.getId();
-        tearDown();
+        // Step 6: (device) Delete Device
+        inventory.delete(newMo.getId());
+
+        ManagedObject object = inventory.get(newMo.getId());
+        Assert.assertNull(object);
+
+
     }
 
     @Test
     public void testDeviceRegisterWithIdentity() throws Exception {
-        String deviceId = "mydevice-name";
+        String deviceId = "mydevice-name_" + System.currentTimeMillis();
 
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-        DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
-
+        DeviceControlApi deviceControlApi = cloudOfThingsPlatform.getDeviceControlApi();
 
         DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("https://management.int2-ram.m2m.telekom.com").getDeviceCredentialsApi();
 
-
         // Step 1: (devicemanager) Register Device
         Operation operation = new Operation(deviceId);
-        try {
-            deviceControlApi.createNewDevice(operation);
-        } catch (CotSdkException e) {
-
-        }
+        deviceControlApi.createNewDevice(operation);
 
         // Step 2: (device) Device request
         try {
             unregDevCred.getCredentials(deviceId);
+            fail("an exception should have been thrown");
         } catch (CotSdkException e) {
-
+            assertEquals(HttpStatus.NOT_FOUND.getCode(), e.getHttpStatus());
         }
 
         // Step 3: (devicemanager) Accept request
         deviceControlApi.acceptDevice(deviceId);
 
         // Step 4: (device) Create MO
-        deviceCredentials = unregDevCred.getCredentials(deviceId);
+        DeviceCredentials devCred = unregDevCred.getCredentials(deviceId);
 
-        Assert.assertNotNull(deviceCredentials);
-        Assert.assertNotNull(deviceCredentials.getId());
-        Assert.assertNotNull(deviceCredentials.getPassword());
-        Assert.assertNotNull(deviceCredentials.getTenantId());
-        Assert.assertNotNull(deviceCredentials.getUsername());
+        Assert.assertNotNull(devCred);
+        Assert.assertNotNull(devCred.getId());
+        Assert.assertNotNull(devCred.getPassword());
+        Assert.assertNotNull(devCred.getTenantId());
+        Assert.assertNotNull(devCred.getUsername());
 
-        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, deviceCredentials.getTenantId(), deviceCredentials.getUsername(), deviceCredentials.getPassword());
+        CloudOfThingsPlatform platformForDevice = new CloudOfThingsPlatform(TestHelper.TEST_HOST, devCred.getUsername(), devCred.getPassword());
 
         InventoryApi inventory = platformForDevice.getInventoryApi();
 
@@ -147,7 +128,7 @@ public class CotDeviceRegisterIT {
         String idString = "fantasy-" + TestHelper.getRandom(10);
         IdentityApi devIdentityApi = platformForDevice.getIdentityApi();
         ExternalId externalId = new ExternalId();
-        externalId.setExternalId(idString);
+        externalId.setExternalId(new String(idString));
         externalId.setType("com_telekom_SerialNumber");
         externalId.setManagedObject(newMo);
 
@@ -164,10 +145,12 @@ public class CotDeviceRegisterIT {
         // Step 6: (device) Delete Identity & Device
         devIdentityApi.delete(retrievedExtId);
 
-        assertNull(devIdentityApi.getExternalId(retrievedExtId));
+        Assert.assertNull(devIdentityApi.getExternalId(retrievedExtId));
 
-        this.deviceId = newMo.getId();
-        tearDown();
+        inventory.delete(newMo.getId());
+
+        ManagedObject object = inventory.get(newMo.getId());
+        Assert.assertNull(object);
 
     }
 

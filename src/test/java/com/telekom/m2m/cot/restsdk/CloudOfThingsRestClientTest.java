@@ -29,7 +29,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenThrow(new RuntimeException());
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.doRequestWithIdResponse("", "", "");
     }
@@ -47,7 +47,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
         PowerMockito.when(call.execute()).thenReturn(response);
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.doRequestWithIdResponse("", "", "");
     }
@@ -59,7 +59,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenThrow(new RuntimeException());
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.doPutRequest("", "", "");
     }
@@ -67,7 +67,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
     @Test
     public void testConnection() throws Exception {
         OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
-        CloudOfThingsRestClient cotRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cotRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     }
 
     @Test(expectedExceptions = CotSdkException.class)
@@ -77,7 +77,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenThrow(new RuntimeException());
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.getResponse("", "", "");
     }
@@ -89,7 +89,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenThrow(new RuntimeException());
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.delete("", "");
     }
@@ -109,7 +109,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
         PowerMockito.when(call.execute()).thenThrow(new IOException());
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.delete("", "");
     }
@@ -127,7 +127,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
         PowerMockito.when(call.execute()).thenThrow(new IOException());
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.doPostRequest("", "", "");
     }
@@ -147,7 +147,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
         PowerMockito.when(call.execute()).thenReturn(response);
 
-        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
         cloudOfThingsRestClient.delete("", "");
     }

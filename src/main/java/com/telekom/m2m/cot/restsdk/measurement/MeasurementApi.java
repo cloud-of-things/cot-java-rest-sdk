@@ -1,11 +1,17 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The API object to operate with Measrements in the platform.
@@ -16,7 +22,10 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class MeasurementApi {
 
-    private static final String CONTENT_TYPE = " application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE_MEASUREMENT = " application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
+
+    private static final String MEASUREMENTS_API = "measurement/measurements/";
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private Gson gson = GsonUtils.createGson();
@@ -38,7 +47,7 @@ public class MeasurementApi {
      * @return the Measurement (or null if not found).
      */
     public Measurement getMeasurement(String id) {
-        String response = cloudOfThingsRestClient.getResponse(id, "measurement/measurements/", CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.getResponse(id, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT);
         if (response == null) {
             throw new CotSdkException("Measurement not found (id='" + id + "')");
         }
@@ -53,9 +62,29 @@ public class MeasurementApi {
      */
     public Measurement createMeasurement(Measurement measurement) {
         String json = gson.toJson(measurement);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "measurement/measurements/", CONTENT_TYPE);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT);
         measurement.setId(id);
         return measurement;
+    }
+
+    /**
+     * Stores a list of Measurements.
+     *
+     * @param measurements the measurements to create.
+     * @return the created measurement with the ID.
+     */
+    public List<Measurement> createMeasurements(final List<Measurement> measurements) {
+
+        if (measurements.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        final String json = gson.toJson(createJsonObject(measurements));
+
+        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION);
+
+        return gson.fromJson(response, MeasurementsHolder.class)
+                .getMeasurements();
     }
 
     /**
@@ -64,7 +93,7 @@ public class MeasurementApi {
      * @param measurement the Measurement to delete
      */
     public void delete(Measurement measurement) {
-        cloudOfThingsRestClient.delete(measurement.getId(), "measurement/measurements/");
+        cloudOfThingsRestClient.delete(measurement.getId(), MEASUREMENTS_API);
     }
 
     /**
@@ -97,4 +126,16 @@ public class MeasurementApi {
     public void deleteMeasurements(Filter.FilterBuilder filters) {
         cloudOfThingsRestClient.delete("", "measurement/measurements?" + filters.buildFilter() + "&x=");
     }
+
+    private JsonObject createJsonObject(final List<Measurement> measurements) {
+        final JsonObject jsonObject = new JsonObject();
+        jsonObject.add("measurements", listToJsonArray(measurements));
+        return jsonObject;
+    }
+
+    private JsonArray listToJsonArray(final List<Measurement> measurements) {
+        final JsonParser jsonParser = new JsonParser();
+        return jsonParser.parse(gson.toJson(measurements)).getAsJsonArray();
+    }
+
 }

@@ -19,7 +19,7 @@ public class CloudOfThingsPlatformTestIT {
 
     @Test(expectedExceptions = CotSdkException.class)
     public void testBadProxyConnection() throws Exception {
-        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD, "127.99.88.77", 1111);
+        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD, "127.99.88.77", 1111);
         InventoryApi inventoryApi = cotPlatform.getInventoryApi();
         inventoryApi.get("test");
     }

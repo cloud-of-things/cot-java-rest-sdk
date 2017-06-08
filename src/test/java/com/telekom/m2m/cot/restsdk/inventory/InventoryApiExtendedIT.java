@@ -16,7 +16,7 @@ import java.util.NoSuchElementException;
  * @author Patrick Steinert
  */
 public class InventoryApiExtendedIT {
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeClass

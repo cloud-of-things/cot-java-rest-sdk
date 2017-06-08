@@ -14,11 +14,10 @@ import java.util.Date;
 
 /**
  * @author chuhlich
- *
  */
 public class EventApiCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeMethod
@@ -126,7 +125,7 @@ public class EventApiCollectionIT {
 
         EventCollection events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
         Event[] es = events.getEvents();
-             Assert.assertEquals(es.length, 5);
+        Assert.assertEquals(es.length, 5);
 
         eApi.deleteEvents(Filter.build().bySource(testManagedObject.getId()));
         events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
@@ -135,9 +134,10 @@ public class EventApiCollectionIT {
     }
 
     @Test
-    public void testMultipleEventsBySource() throws Exception {    	EventApi eApi = cotPlat.getEventApi();
+    public void testMultipleEventsBySource() throws Exception {
+        EventApi eApi = cotPlat.getEventApi();
 
-        Event testEvent= new Event();
+        Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
         testEvent.setType("mytype");
@@ -172,7 +172,7 @@ public class EventApiCollectionIT {
     public void testMultipleEventsByType() throws Exception {
         EventApi eApi = cotPlat.getEventApi();
 
-        Event testEvent= new Event();
+        Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
         testEvent.setType("mysuperspecialtype");
@@ -205,9 +205,9 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventByDate() throws Exception {
-    	EventApi eApi = cotPlat.getEventApi();
+        EventApi eApi = cotPlat.getEventApi();
 
-    	Event testEvent = new Event();
+        Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
@@ -232,9 +232,9 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByDateAndBySource() throws Exception {
-    	EventApi eApi = cotPlat.getEventApi();
+        EventApi eApi = cotPlat.getEventApi();
 
-    	Event testEvent = new Event();
+        Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
@@ -265,7 +265,7 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByTypeAndBySource() throws Exception {
-    	EventApi eApi = cotPlat.getEventApi();
+        EventApi eApi = cotPlat.getEventApi();
 
         Position sts = new Position();
         sts.setAlt(1000.0);
@@ -302,7 +302,7 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByFragmentTypeAndBySource() throws Exception {
-    	EventApi eApi = cotPlat.getEventApi();
+        EventApi eApi = cotPlat.getEventApi();
 
         Position sts = new Position();
         sts.setAlt(1000.0);
