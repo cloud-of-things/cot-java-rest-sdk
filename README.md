@@ -64,9 +64,6 @@ See examples folder. (Needs improvements ;) )
 
 Short information about what has changed between releases.
 
-### Release 0.4.0
-Short information about what has changed between releases.
-
 ### Release 0.5.0
 * Most important change is the removal of right now unused parameter tenant in CloudOfThingsPlatform constructor ([See commit 62079fe](https://github.com/marquies/cot-java-rest-sdk/commit/62079feee68dfc371b545cf2ed69fa9f858e5573)).
 * Unsuccessful creation/store of objects in the CoT will now result in a CotSdkException.
