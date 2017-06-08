@@ -42,7 +42,6 @@ public class CloudOfThingsPlatform {
                 .build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client,
                 host,
-                cotCredentials.getTenant(),
                 cotCredentials.getUsername(),
                 cotCredentials.getPassword());
     }
@@ -72,7 +71,6 @@ public class CloudOfThingsPlatform {
      */
     public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host, String proxyHost, int proxyPort) {
         return new CloudOfThingsPlatform(host,
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)),
                 proxyHost, proxyPort);
@@ -107,7 +105,6 @@ public class CloudOfThingsPlatform {
                 .build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client,
                 host,
-                cotCredentials.getTenant(),
                 cotCredentials.getUsername(),
                 cotCredentials.getPassword());
     }

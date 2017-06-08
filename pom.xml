@@ -32,11 +32,6 @@
   </scm>
 
     <distributionManagement>
-        <repository>
-            <id>internal-evolvis-release-repository</id>
-            <name>internal release repository</name>
-            <url>sftp://maven@dev-repo.tarent.de:/var/www/dev_repo/releases</url>
-        </repository>
         <snapshotRepository>
             <id>ossrh</id>
             <url>https://oss.sonatype.org/content/repositories/snapshots</url>
