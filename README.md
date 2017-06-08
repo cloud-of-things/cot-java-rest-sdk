@@ -2,7 +2,7 @@
 
 This is an SDK to interfere with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
-_Recent version is: 0.4.1_
+_Recent version is: 0.5.0_
 
 ## Usage
 
@@ -11,7 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>0.4.1</version>
+    <version>0.5.0</version>
 </dependency>
 ```
 
@@ -67,6 +67,13 @@ Short information about what has changed between releases.
 ### Release 0.4.0
 Short information about what has changed between releases.
 
+### Release 0.5.0
+* Most important change is the removal of right now unused parameter tenant in CloudOfThingsPlatform constructor ([See commit 62079fe](https://github.com/marquies/cot-java-rest-sdk/commit/62079feee68dfc371b545cf2ed69fa9f858e5573)).
+* Unsuccessful creation/store of objects in the CoT will now result in a CotSdkException.
+* New method DeviceCredentialsApi.NewDeviceRequest(..).
+* MeasurementsApi supports creating measurement collections.
+
+### Release 0.4.0
 * Improvements, e.g. connection exception handling
 * Short information about what has changed between releases.
 * Bulk Operations (beta)

@@ -19,20 +19,14 @@ import java.util.Base64;
  */
 public class CloudOfThingsRestClient {
 
+    private Gson gson = GsonUtils.createGson();
     private final String encodedAuthString;
-    private final String tenant;
-    private final String user;
-    private final String password;
     private final String host;
 
     protected OkHttpClient client;
 
-    public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String tenant, String user, String password) {
+    public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
         this.host = host;
-        this.user = user;
-        this.password = password;
-        this.tenant = tenant;
-
         try {
             encodedAuthString = Base64.getEncoder().encodeToString((user + ":" + password).getBytes("utf-8"));
         } catch (UnsupportedEncodingException e) {
@@ -65,12 +59,7 @@ public class CloudOfThingsRestClient {
                     .build();
             response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                Gson gson = GsonUtils.createGson();
-                JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
-                response.body().close();
-                String err = "Request failed.";
-                if (o.has("error"))
-                    err += " Platform provided details: '" + o.get("error") + "'";
+                final String err = getErrorMessage(response);
                 throw new CotSdkException(response.code(), err);
             }
             String location = response.header("Location");
@@ -110,6 +99,11 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
+
             return response.body().string();
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
@@ -164,11 +158,9 @@ public class CloudOfThingsRestClient {
                 result = response.body().string();
             } else {
                 if (response.code() != 404) {
-                    response.body().close();
                     throw new CotSdkException(response.code(), "Error in request.");
                 }
             }
-            response.body().close();
             return result;
         } catch (Exception e) {
             throw new CotSdkException("Error in requets", e);
@@ -190,14 +182,8 @@ public class CloudOfThingsRestClient {
             String result;
             if (response.isSuccessful()) {
                 result = response.body().string();
-                response.body().close();
             } else {
-                Gson gson = GsonUtils.createGson();
-                JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
-                response.body().close();
-                String err = "Request failed.";
-                if (o.has("error"))
-                    err += " Platform provided details: '" + o.get("error") + "'";
+                final String err = getErrorMessage(response);
                 throw new CotSdkException(response.code(), err);
             }
             return result;
@@ -250,8 +236,6 @@ public class CloudOfThingsRestClient {
             } else {
                 int i = 2;
             }
-            response.body().close();
-
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         } finally {
@@ -291,14 +275,22 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Error in delete with URL '" + url + "' (see https://http.cat/" + response.code() + ")");
             }
-            response.body().close();
-
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
 
+    }
+
+    private String getErrorMessage(final Response response) throws IOException {
+        final JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
+        String errorMessage = "Request failed.";
+        if (o.has("error")) {
+            errorMessage += " Platform provided details: '" + o.get("error") + "'";
+        }
+
+        return errorMessage;
     }
 
     private void closeResponseBodyIfResponseAndBodyNotNull(final Response response) {

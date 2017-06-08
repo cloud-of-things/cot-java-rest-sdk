@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
@@ -10,6 +11,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class DeviceCredentialsApi {
+
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     protected Gson gson = GsonUtils.createGson();
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.deviceCredentials+json;charset=UTF-8;ver=0.9";
@@ -46,6 +48,24 @@ public class DeviceCredentialsApi {
      */
     public NewDeviceRequestCollection getNewDeviceRequests(int resultSize) {
         return new NewDeviceRequestCollection(resultSize, cloudOfThingsRestClient);
+    }
+
+    /**
+     * Retrieves a NewDeviceRequest by its id.
+     *
+     * @param newDeviceRequestId id of the newDeviceRequest
+     * @return the NewDeviceRequest.
+     */
+    public NewDeviceRequest getNewDeviceRequest(final String newDeviceRequestId) {
+
+        final String api = "/devicecontrol/newDeviceRequests/" + newDeviceRequestId;
+
+        final String response = cloudOfThingsRestClient.getResponse(api, CONTENT_TYPE);
+
+        final ExtensibleObject extensibleObject = gson.fromJson(response, ExtensibleObject.class);
+
+        return extensibleObject != null ?
+                new NewDeviceRequest(extensibleObject) : null;
     }
 
     /**

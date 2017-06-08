@@ -12,13 +12,13 @@ public class CloudOfThingsPlatformTest {
 
     @Test
     public void testGetManagemendApi() throws Exception {
-        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         cotPlatform.getManagementApi();
     }
 
     @Test
     public void testGetInventoryApi() throws Exception {
-        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         InventoryApi inventoryApi = cotPlatform.getInventoryApi();
         Assert.assertNotNull(inventoryApi);
     }

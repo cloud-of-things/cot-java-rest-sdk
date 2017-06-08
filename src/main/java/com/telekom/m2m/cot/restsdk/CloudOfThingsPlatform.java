@@ -42,7 +42,6 @@ public class CloudOfThingsPlatform {
                 .build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client,
                 host,
-                cotCredentials.getTenant(),
                 cotCredentials.getUsername(),
                 cotCredentials.getPassword());
     }
@@ -54,10 +53,11 @@ public class CloudOfThingsPlatform {
      * @return a CloudOfThingsPlatform object with special connection properties.
      */
     public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host) {
-        return new CloudOfThingsPlatform(host,
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)),
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)));
+        return new CloudOfThingsPlatform(
+                host,
+                new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)) + "/" + new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
+                new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD))
+        );
     }
 
     /**
@@ -71,7 +71,6 @@ public class CloudOfThingsPlatform {
      */
     public static CloudOfThingsPlatform getPlatformToRegisterDevice(String host, String proxyHost, int proxyPort) {
         return new CloudOfThingsPlatform(host,
-                new String(Base64.getDecoder().decode(REGISTERDEVICE_TENANT)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_USERNAME)),
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)),
                 proxyHost, proxyPort);
@@ -81,15 +80,14 @@ public class CloudOfThingsPlatform {
      * Creates a CloudOfThingsPlatform object, the start point to interfere with the CoT.
      *
      * @param host     URL to the host to connect to.
-     * @param tenant   the tenant of the platform.
      * @param username the username of the platform user.
      * @param password the username of the platform user.
      */
-    public CloudOfThingsPlatform(String host, String tenant, String username, String password) {
+    public CloudOfThingsPlatform(String host, String username, String password) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .readTimeout(1, TimeUnit.MINUTES)
                 .build();
-        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, tenant, username, password);
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, username, password);
     }
 
     /**
@@ -107,7 +105,6 @@ public class CloudOfThingsPlatform {
                 .build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client,
                 host,
-                cotCredentials.getTenant(),
                 cotCredentials.getUsername(),
                 cotCredentials.getPassword());
     }
@@ -117,18 +114,17 @@ public class CloudOfThingsPlatform {
      * with the CoT over HTTP proxy server.
      *
      * @param host      URL to the host to connect to.
-     * @param tenant    the tenant of the platform.
      * @param username  the username of the platform user.
      * @param password  the username of the platform user.
      * @param proxyHost hostname of the HTTP proxy server
      * @param proxyPort port of the HTTP proxy server.
      */
-    public CloudOfThingsPlatform(String host, String tenant, String username, String password, String proxyHost, int proxyPort) {
+    public CloudOfThingsPlatform(String host, String username, String password, String proxyHost, int proxyPort) {
         OkHttpClient client = new OkHttpClient.Builder()
                 .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
                 .readTimeout(1, TimeUnit.MINUTES)
                 .build();
-        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, tenant, username, password);
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, username, password);
     }
 
     /**
