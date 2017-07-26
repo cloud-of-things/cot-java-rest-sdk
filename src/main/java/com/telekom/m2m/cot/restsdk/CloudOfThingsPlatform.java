@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk;
 
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
+import com.telekom.m2m.cot.restsdk.audit.AuditApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
@@ -187,5 +188,14 @@ public class CloudOfThingsPlatform {
      */
     public AlarmApi getAlarmApi() {
         return new AlarmApi(cloudOfThingsRestClient);
+    }
+
+    /**
+     * Returns the object to work with the audit API.
+     *
+     * @return ready to use AuditApi object.
+     */
+    public AuditApi getAuditApi() {
+        return new AuditApi(cloudOfThingsRestClient);
     }
 }
