@@ -50,7 +50,7 @@ public class AuditRecordCollection {
     /**
      * Retrieves the current page.
      * <p>
-     * Retrieves the AuditRecords influenced by filters setted in construction.
+     * Retrieves the AuditRecords influenced by filters set in construction.
      *
      * @return array of found AuditRecords
      */
@@ -100,7 +100,7 @@ public class AuditRecordCollection {
     }
 
     /**
-     * Checks if the next page has elements. <b>Use with caution, it does a seperate HTTP request, so it is considered as slow</b>
+     * Checks if the next page has elements. <b>Use with caution, it does a separate HTTP request, so it is considered as slow</b>
      *
      * @return true if next page has audit records, otherwise false.
      */

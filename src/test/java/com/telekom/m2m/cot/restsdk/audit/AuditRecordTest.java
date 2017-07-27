@@ -13,15 +13,15 @@ import java.util.Date;
  */
 public class AuditRecordTest {
 
-    String auditRecordId = "234";
-    String text = "new audit record created";
-    String type = "com_telekom_audit_TestType";
-    Date timeOfAuditRecording = new Date();
-    String user = "integration-tester";
-    String application = this.getClass().getSimpleName();
-    String activity = "Create Audit Record";
-    String managedObjectId = "123";
-    String managedObjectName = "device123";
+    private final String auditRecordId = "234";
+    private final String text = "new audit record created";
+    private final String type = "com_telekom_audit_TestType";
+    private final Date timeOfAuditRecording = new Date();
+    private final String user = "integration-tester";
+    private final String application = this.getClass().getSimpleName();
+    private final String activity = "Create Audit Record";
+    private final String managedObjectId = "123";
+    private final String managedObjectName = "device123";
 
     @Test
     public void testAuditRecordSetterAndGetter() {
