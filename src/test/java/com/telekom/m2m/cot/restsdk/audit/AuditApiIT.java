@@ -31,17 +31,18 @@ public class AuditApiIT {
 
     @Test
     public void testAuditApi() throws Exception {
-        String text = "new audit record created";
-        String type = "com_telekom_audit_TestType";
-        Date timeOfAuditRecording = new Date();
+        // given
+        final String text = "new audit record created";
+        final String type = "com_telekom_audit_TestType";
+        final Date timeOfAuditRecording = new Date();
         // reduce time by 1 second to get a difference between "time" set by client and "creationTime" set by platform
         // because sometimes there is a difference between client time and platform time
         timeOfAuditRecording.setTime(timeOfAuditRecording.getTime()-1000);
-        String user = "integration-tester";
-        String application = this.getClass().getSimpleName();
-        String activity = "Create Audit Record";
+        final String user = "integration-tester";
+        final String application = this.getClass().getSimpleName();
+        final String activity = "Create Audit Record";
 
-        AuditRecord auditRecord = new AuditRecord();
+        final AuditRecord auditRecord = new AuditRecord();
         auditRecord.setText(text);
         auditRecord.setType(type);
         auditRecord.setTime(timeOfAuditRecording);
@@ -50,15 +51,19 @@ public class AuditApiIT {
         auditRecord.setApplication(application);
         auditRecord.setActivity(activity);
 
-        AuditApi auditApi = cotPlat.getAuditApi();
-        AuditRecord createdAuditRecord = auditApi.createAuditRecord(auditRecord);
+        final AuditApi auditApi = cotPlat.getAuditApi();
 
-//        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
-//        Assert.assertNotNull(auditRecordCollection, "Should contain some audit records");
+        // when
+        final AuditRecord createdAuditRecord = auditApi.createAuditRecord(auditRecord);
+
+        // then
         Assert.assertNotNull(auditRecord.getId(), "Should now have an Id!");
         Assert.assertEquals(auditRecord.getId(), createdAuditRecord.getId());
 
-        AuditRecord retrievedAuditRecord = auditApi.getAuditRecord(createdAuditRecord.getId());
+        // when
+        final AuditRecord retrievedAuditRecord = auditApi.getAuditRecord(createdAuditRecord.getId());
+
+        // then
         Assert.assertEquals(retrievedAuditRecord.getId(), createdAuditRecord.getId());
         Assert.assertEquals(retrievedAuditRecord.getText(), text);
         Assert.assertEquals(retrievedAuditRecord.getType(), type);
@@ -78,6 +83,16 @@ public class AuditApiIT {
                         timeOfAuditRecording
                 )
         );
+
+        // when
+        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
+
+        // then
+        Assert.assertNotNull(auditRecordCollection);
+        Assert.assertNotNull(auditRecordCollection.getAuditRecords(), "auditRecordCollection should contain some audit records");
+        Assert.assertTrue(auditRecordCollection.getAuditRecords().length > 0, "auditRecordCollection should contain some audit records");
+
+        //TODO: test with filter
     }
 
 

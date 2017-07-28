@@ -80,7 +80,7 @@ public class AuditApiTest {
     public void testGetAuditRecordsWithFilter() {
         final AuditApi auditApi = new AuditApi(cotRestClientMock);
         final String type = "com_telekom_audit_TestType";
-        Filter.FilterBuilder filterBuilder = Filter.build().byType(type);
+        final Filter.FilterBuilder filterBuilder = Filter.build().byType(type);
 
         AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords(filterBuilder);
 
