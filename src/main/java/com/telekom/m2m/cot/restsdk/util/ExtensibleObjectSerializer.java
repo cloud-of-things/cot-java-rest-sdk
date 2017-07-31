@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObject>, JsonDeserializer<ExtensibleObject> {
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 
     public JsonElement serialize(ExtensibleObject src, Type typeOfSrc,
                                  JsonSerializationContext context) {
@@ -77,9 +77,9 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                     converted = tmp.getAsNumber();
                 }
                 mo.set(element.getKey(), converted);
-            } else if (element.getValue().isJsonObject())
-                mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
-
+            } else if (element.getValue().isJsonObject()) {
+                mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), type));
+            }
         }
 
         return mo;

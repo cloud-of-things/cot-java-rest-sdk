@@ -1,8 +1,8 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
-import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.SampleTemperatureSensor;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
@@ -147,8 +147,8 @@ public class MeasurementApiCollectionIT {
         Assert.assertTrue(ms.length > 0);
         boolean allMeasuremntsFromSource = true;
         for (Measurement m : ms) {
-            JsonObject source = (JsonObject) m.get("source");
-            if (!source.get("id").getAsString().equals(testManagedObject.getId())) {
+            ExtensibleObject source = (ExtensibleObject) m.get("source");
+            if (!source.get("id").equals(testManagedObject.getId())) {
                 allMeasuremntsFromSource = false;
             }
         }
@@ -160,8 +160,8 @@ public class MeasurementApiCollectionIT {
         allMeasuremntsFromSource = true;
         Assert.assertTrue(ms.length > 0);
         for (Measurement m : ms) {
-            JsonObject source = (JsonObject) m.get("source");
-            if (!source.get("id").getAsString().equals(testManagedObject.getId())) {
+            ExtensibleObject source = (ExtensibleObject) m.get("source");
+            if (!source.get("id").equals(testManagedObject.getId())) {
                 allMeasuremntsFromSource = false;
             }
         }

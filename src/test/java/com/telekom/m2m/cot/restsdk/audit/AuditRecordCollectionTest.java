@@ -14,8 +14,6 @@ import org.testng.annotations.Test;
  */
 public class AuditRecordCollectionTest {
 
-    private final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
-
     private final String relativeApiUrl = "audit/auditRecords/";
     private final String contentType = "application/vnd.com.nsn.cumulocity.auditRecord+json;charset=UTF-8;ver=0.9";
     private final String elementName = "auditRecords";
@@ -24,6 +22,8 @@ public class AuditRecordCollectionTest {
     @Test
     public void testGetAuditRecords() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
         final AuditRecordCollection auditRecordCollectionSpy = Mockito.spy(new AuditRecordCollection(
                 cotRestClientMock,
                 relativeApiUrl,
@@ -51,6 +51,8 @@ public class AuditRecordCollectionTest {
     @Test
     public void testGetAuditRecordsIsEmpty() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
         final AuditRecordCollection auditRecordCollectionSpy = Mockito.spy(new AuditRecordCollection(
                 cotRestClientMock,
                 relativeApiUrl,

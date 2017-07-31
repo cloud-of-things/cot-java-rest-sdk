@@ -30,8 +30,6 @@ public class AuditRecordTest {
 
         // then
         checkAssertions(testAuditRecord);
-        //TODO: remove this if it works in checkAssertions(..)
-        Assert.assertEquals(testAuditRecord.getSource().getName(), managedObjectName);
     }
 
 
@@ -66,8 +64,6 @@ public class AuditRecordTest {
         Assert.assertTrue(json.contains(application));
         Assert.assertTrue(json.contains(activity));
         Assert.assertTrue(json.contains(managedObjectId));
-        // TODO: managedObjectName will not be serialized yet
-//        Assert.assertTrue(json.contains(managedObjectName));
     }
 
     @Test
@@ -109,9 +105,8 @@ public class AuditRecordTest {
         Assert.assertEquals(testAuditRecord.getText(), text);
         Assert.assertEquals(testAuditRecord.getType(), type);
         Assert.assertEquals(testAuditRecord.getTime().compareTo(timeOfAuditRecording), 0);
-        // TODO: resolve java.lang.ClassCastException: com.google.gson.JsonObject cannot be cast to com.telekom.m2m.cot.restsdk.util.ExtensibleObject
-//        Assert.assertEquals(testAuditRecord.getSource().getId(), managedObjectId);
-        // TODO: managedObject.name will not be serialized yet
+        Assert.assertEquals(testAuditRecord.getSource().getId(), managedObjectId);
+        // managedObject.name serialization will not be provided yet
 //        Assert.assertEquals(testAuditRecord.getSource().getName(), managedObjectName);
         Assert.assertEquals(testAuditRecord.getUser(), user);
         Assert.assertEquals(testAuditRecord.getApplication(), application);
