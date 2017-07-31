@@ -69,8 +69,7 @@ public class AuditApiIT {
         Assert.assertEquals(retrievedAuditRecord.getText(), text);
         Assert.assertEquals(retrievedAuditRecord.getType(), type);
         Assert.assertEquals(retrievedAuditRecord.getTime().compareTo(timeOfAuditRecording), 0);
-        // TODO: resolve java.lang.ClassCastException: com.google.gson.JsonObject cannot be cast to com.telekom.m2m.cot.restsdk.util.ExtensibleObject
-//        Assert.assertEquals(retrievedAuditRecord.getSource().getId(), testManagedObject.getId());
+        Assert.assertEquals(retrievedAuditRecord.getSource().getId(), testManagedObject.getId());
         Assert.assertEquals(retrievedAuditRecord.getUser(), user);
         Assert.assertEquals(retrievedAuditRecord.getApplication(), application);
         Assert.assertEquals(retrievedAuditRecord.getActivity(), activity);

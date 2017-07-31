@@ -12,9 +12,13 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 22.09.16.
  */
 public class AlarmApi {
-    CloudOfThingsRestClient cloudOfThingsRestClient;
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarm+json;charset=UTF-8;ver=0.9";
+    private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarmCollection+json;charset=UTF-8;ver=0.9";
+    private static final String RELATIVE_API_URL = "/alarm/alarms/";
+    private static final String COLLECTION_ELEMENT_NAME = "alarms";
+
     private final Gson gson = GsonUtils.createGson();
+    CloudOfThingsRestClient cloudOfThingsRestClient;
 
 
     /**
@@ -33,7 +37,7 @@ public class AlarmApi {
      * @return the retrieved Alarm.
      */
     public Alarm getAlarm(String alarmId) {
-        String response = cloudOfThingsRestClient.getResponse(alarmId, "alarm/alarms", CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.getResponse(alarmId, RELATIVE_API_URL, CONTENT_TYPE);
         Alarm alarm = new Alarm(gson.fromJson(response, ExtensibleObject.class));
         return alarm;
     }
@@ -46,7 +50,7 @@ public class AlarmApi {
      */
     public Alarm create(Alarm alarm) {
         String json = gson.toJson(alarm);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "alarm/alarms", CONTENT_TYPE);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE);
         alarm.setId(id);
         return alarm;
     }
@@ -64,7 +68,7 @@ public class AlarmApi {
         extensibleObject.set("severity", alarm.getSeverity());
 
         String json = gson.toJson(extensibleObject);
-        cloudOfThingsRestClient.doPutRequest(json, "alarm/alarms/" + alarm.getId(), CONTENT_TYPE);
+        cloudOfThingsRestClient.doPutRequest(json, RELATIVE_API_URL + alarm.getId(), CONTENT_TYPE);
     }
 
     /**
@@ -75,7 +79,14 @@ public class AlarmApi {
      * @since 0.3.0
      */
     public AlarmCollection getAlarms(int resultSize) {
-        return new AlarmCollection(resultSize, cloudOfThingsRestClient);
+        return new AlarmCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_API_URL,
+                gson,
+                COLLECTION_CONTENT_TYPE,
+                COLLECTION_ELEMENT_NAME,
+                null,
+                resultSize);
     }
 
     /**
@@ -87,7 +98,14 @@ public class AlarmApi {
      * @since 0.3.0
      */
     public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
-        return new AlarmCollection(filters, resultSize, cloudOfThingsRestClient);
+        return new AlarmCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_API_URL,
+                gson,
+                COLLECTION_CONTENT_TYPE,
+                COLLECTION_ELEMENT_NAME,
+                filters,
+                resultSize);
     }
 
     /**
@@ -96,6 +114,6 @@ public class AlarmApi {
      * @param filters filters of Alarm attributes.
      */
     public void deleteAlarms(Filter.FilterBuilder filters) {
-        cloudOfThingsRestClient.delete("", "alarm/alarms?" + filters.buildFilter() + "&x=");
+        cloudOfThingsRestClient.delete("", RELATIVE_API_URL+ "?" + filters.buildFilter() + "&x=");
     }
 }

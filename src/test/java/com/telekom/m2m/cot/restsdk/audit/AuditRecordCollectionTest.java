@@ -15,8 +15,6 @@ import org.testng.annotations.Test;
 public class AuditRecordCollectionTest {
 
     private final String relativeApiUrl = "audit/auditRecords/";
-    private final String contentType = "application/vnd.com.nsn.cumulocity.auditRecord+json;charset=UTF-8;ver=0.9";
-    private final String elementName = "auditRecords";
     private final Gson gson = GsonUtils.createGson();
 
     @Test
@@ -28,8 +26,6 @@ public class AuditRecordCollectionTest {
                 cotRestClientMock,
                 relativeApiUrl,
                 gson,
-                contentType,
-                elementName,
                 null
         ));
 
@@ -57,8 +53,6 @@ public class AuditRecordCollectionTest {
                 cotRestClientMock,
                 relativeApiUrl,
                 gson,
-                contentType,
-                elementName,
                 null
         ));
 

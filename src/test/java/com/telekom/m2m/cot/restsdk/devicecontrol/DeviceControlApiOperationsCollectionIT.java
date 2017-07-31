@@ -58,81 +58,40 @@ public class DeviceControlApiOperationsCollectionIT {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObjectParent);
     }
 
-
     @Test
-    public void testMultipleEvents() throws Exception {
-        // Expects a tenant with already multiple measurements
+    public void testOperationCollection() throws Exception {
+        // given at least one created operation entry
+        final Operation operation = new Operation();
+        operation.setDeviceId(testManagedObject.getId());
+        operation.set("com_telekom_m2m_cotcommand", jsonObject);
 
-        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+        final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
 
-        OperationCollection operationCollection = deviceControlApi.getOperations(5);
+        deviceControlApi.create(operation);
 
+        // when
+        final OperationCollection operationCollection = deviceControlApi.getOperations(5);
 
-        Operation[] operations = operationCollection.getOperations();
+        // then
+        Assert.assertNotNull(operationCollection);
+
+        final Operation[] operations = operationCollection.getOperations();
 
         Assert.assertTrue(operations.length > 0);
+        Assert.assertEquals(operations.length, operationCollection.getJsonArray().size());
 
-        Operation operation = operations[0];
+        final Operation retrievedOperation = operations[0];
+        final JsonObject jsonObject = operationCollection.getJsonArray().get(0).getAsJsonObject();
 
-        Assert.assertTrue(operation.getId() != null);
-        Assert.assertTrue(operation.getId().length() > 0);
+        Assert.assertTrue(retrievedOperation.getId() != null);
+        Assert.assertFalse(retrievedOperation.getId().isEmpty());
+        Assert.assertTrue(retrievedOperation.getId().equals(jsonObject.get("id").getAsString()));
 
-        Assert.assertTrue(operation.getCreationTime() != null);
-        Assert.assertTrue(operation.getCreationTime().compareTo(new Date()) < 0);
+        Assert.assertTrue(retrievedOperation.getCreationTime() != null);
+        Assert.assertTrue(retrievedOperation.getCreationTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(operation.getStatus() != null);
-        Assert.assertTrue(operation.getStatus().toString().length() > 0);
-    }
-
-    @Test
-    public void testMultipleOperationssWithPaging() throws Exception {
-        // Expects a tenant with already multiple measurements
-
-        // !!! Important !!!
-        // Test assumes pageSize default is 5.
-
-        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-
-        for (int i = 0; i < 6; i++) {
-            Operation testOperation = new Operation();
-            testOperation.setDeviceId(testManagedObject.getId());
-            testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-
-            deviceControlApi.create(testOperation);
-        }
-
-        OperationCollection operationCollection = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
-
-
-        Operation[] operations = operationCollection.getOperations();
-
-        Assert.assertEquals(operations.length, 5);
-        Assert.assertTrue(operationCollection.hasNext());
-        Assert.assertFalse(operationCollection.hasPrevious());
-
-        operationCollection.next();
-
-        operations = operationCollection.getOperations();
-        Assert.assertEquals(operations.length, 1);
-
-        Assert.assertFalse(operationCollection.hasNext());
-        Assert.assertTrue(operationCollection.hasPrevious());
-
-        operationCollection.previous();
-        operations = operationCollection.getOperations();
-
-        Assert.assertEquals(operations.length, 5);
-
-        Assert.assertTrue(operationCollection.hasNext());
-        Assert.assertFalse(operationCollection.hasPrevious());
-
-        operationCollection.setPageSize(10);
-        operations = operationCollection.getOperations();
-
-        Assert.assertEquals(operations.length, 6);
-        Assert.assertFalse(operationCollection.hasNext());
-        Assert.assertFalse(operationCollection.hasPrevious());
-
+        Assert.assertTrue(retrievedOperation.getStatus() != null);
+        Assert.assertTrue(retrievedOperation.getStatus().toString().equals(jsonObject.get("status").getAsString()));
     }
 
     @Test

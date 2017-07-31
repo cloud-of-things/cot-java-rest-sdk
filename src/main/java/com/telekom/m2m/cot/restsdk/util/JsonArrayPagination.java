@@ -49,6 +49,34 @@ public class JsonArrayPagination {
     }
 
     /**
+     * Creates a JsonArrayPagination.
+     *
+     * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     * @param relativeApiUrl          relative url of the REST API without leading slash.
+     * @param gson                    the necessary json De-/serializer.
+     * @param contentType             the Content-Type of the JSON Object.
+     * @param collectionElementName   json element name which contains an array of JSON Objects.
+     * @param filterBuilder           the build criteria or null if all items should be retrieved.
+     * @param pageSize                max number of retrieved elements per page.
+     */
+    public JsonArrayPagination(
+            final CloudOfThingsRestClient cloudOfThingsRestClient,
+            final String relativeApiUrl,
+            final Gson gson,
+            final String contentType,
+            final String collectionElementName,
+            final Filter.FilterBuilder filterBuilder,
+            final int pageSize) {
+        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        this.relativeApiUrl = relativeApiUrl;
+        this.gson = gson;
+        this.contentType = contentType;
+        this.collectionElementName = collectionElementName;
+        this.criteria = filterBuilder;
+        this.pageSize = pageSize;
+    }
+
+    /**
      * Retrieves the current page.
      * <p>
      * Retrieves the entries influenced by filters setted in construction.

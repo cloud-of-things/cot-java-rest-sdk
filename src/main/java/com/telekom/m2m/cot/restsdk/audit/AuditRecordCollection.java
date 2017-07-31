@@ -13,6 +13,9 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  */
 public class AuditRecordCollection extends JsonArrayPagination {
 
+    private static final String CONTENT_TYPE_COLLECTION = "application/vnd.com.nsn.cumulocity.auditRecordCollection+json;charset=UTF-8;ver=0.9";
+    private static final String COLLECTION_ELEMENT_NAME = "auditRecords";
+
     /**
      * Creates an AuditRecordCollection.
      * Use {@link AuditApi} to get AuditRecordCollections.
@@ -20,17 +23,13 @@ public class AuditRecordCollection extends JsonArrayPagination {
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      * @param relativeApiUrl          relative url of the REST API without leading slash.
      * @param gson                    the necessary json De-/serializer.
-     * @param contentType             the Content-Type of the JSON Object.
-     * @param collectionElementName   json element name which contains an array of JSON Objects.
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      */
     AuditRecordCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
                           final String relativeApiUrl,
                           final Gson gson,
-                          final String contentType,
-                          final String collectionElementName,
                           final Filter.FilterBuilder filterBuilder) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, contentType, collectionElementName, filterBuilder);
+        super(cloudOfThingsRestClient, relativeApiUrl, gson, CONTENT_TYPE_COLLECTION, COLLECTION_ELEMENT_NAME, filterBuilder);
     }
 
     /**
@@ -47,7 +46,7 @@ public class AuditRecordCollection extends JsonArrayPagination {
             final AuditRecord[] arrayOfAuditRecords = new AuditRecord[jsonAuditRecords.size()];
             for (int i = 0; i < jsonAuditRecords.size(); i++) {
                 JsonElement jsonAuditRecord = jsonAuditRecords.get(i).getAsJsonObject();
-                final AuditRecord auditRecord = new AuditRecord(super.gson.fromJson(jsonAuditRecord, ExtensibleObject.class));
+                final AuditRecord auditRecord = new AuditRecord(gson.fromJson(jsonAuditRecord, ExtensibleObject.class));
                 arrayOfAuditRecords[i] = auditRecord;
             }
             return arrayOfAuditRecords;

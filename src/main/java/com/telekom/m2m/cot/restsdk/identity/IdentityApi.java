@@ -78,6 +78,11 @@ public class IdentityApi {
      * @since 0.3.0
      */
     public ExternalIdCollection getGlobalIds(String externalId, int resultSize) {
-        return new ExternalIdCollection(externalId, resultSize, cloudOfThingsRestClient);
+        return new ExternalIdCollection(
+                cloudOfThingsRestClient,
+                "/identity/globalIds/" + externalId + "/externalIds",
+                gson,
+                null,
+                resultSize);
     }
 }
