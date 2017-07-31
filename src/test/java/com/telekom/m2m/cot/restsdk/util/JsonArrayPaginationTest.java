@@ -12,26 +12,27 @@ import org.testng.annotations.Test;
  */
 public class JsonArrayPaginationTest {
 
-    private final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
-
     private final String relativeApiUrl = "audit/auditRecords/";
     private final String contentType = "application/vnd.com.nsn.cumulocity.auditRecord+json;charset=UTF-8;ver=0.9";
     private final String elementName = "auditRecords";
     private final Gson gson = GsonUtils.createGson();
     private final String type = "com_telekom_audit_TestType";
 
-    private final JsonArrayPagination jsonArrayPagination = new JsonArrayPagination(
-            cotRestClientMock,
-            relativeApiUrl,
-            gson,
-            contentType,
-            elementName,
-            null
-    );
+    private JsonArrayPagination createJsonArrayPagination(CloudOfThingsRestClient cloudOfThingsRestClient) {
+        return new JsonArrayPagination(
+                cloudOfThingsRestClient,
+                relativeApiUrl,
+                gson,
+                contentType,
+                elementName,
+                null
+        );
+    }
 
     @Test
-    public void testGetJsonArray() throws Exception {
+    public void testGetJsonArray() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
         final Filter.FilterBuilder filterBuilder = Filter.build().byType(type);
         final JsonArrayPagination jsonArrayPaginationWithFilter = new JsonArrayPagination(
                 cotRestClientMock,
@@ -60,8 +61,11 @@ public class JsonArrayPaginationTest {
     }
 
     @Test
-    public void testGetJsonArrayWithoutFilter() throws Exception {
+    public void testGetJsonArrayWithoutFilter() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+
         final String json = "{\"auditRecords\":[{\"id\":\"234\"}]}";
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
 
@@ -80,8 +84,11 @@ public class JsonArrayPaginationTest {
     }
 
     @Test
-    public void testGetJsonArrayWithoutResults() throws Exception {
+    public void testGetJsonArrayWithoutResults() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+
         final String json = "{\"auditRecords\":[]}";
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
 
@@ -96,9 +103,28 @@ public class JsonArrayPaginationTest {
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
     }
 
-    @Test
-    public void testGetJsonArrayWithoutCollection() throws Exception {
+    @Test(expectedExceptions = CotSdkException.class)
+    public void testGetJsonArrayWithException() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+
+        final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
+
+        Mockito.when(cotRestClientMock.getResponse(url, contentType)).thenThrow(new CotSdkException("exception was thrown"));
+
+        // when
+        JsonArray jsonArray = jsonArrayPagination.getJsonArray();
+
+        // then an exception should be thrown
+    }
+
+    @Test
+    public void testGetJsonArrayWithoutCollection() {
+        // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+
         final String json = "{}";
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
 
@@ -113,8 +139,11 @@ public class JsonArrayPaginationTest {
     }
 
     @Test
-    public void testPagination() throws Exception {
+    public void testPagination() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+
         final String jsonResultPageEmpty = "{\"auditRecords\":[]}";
         final String jsonResultPage1 = "{\"auditRecords\":[{\"id\":\"1\"}]}";
         final String jsonResultPage2 = "{\"auditRecords\":[{\"id\":\"2\"}],\"prev\":\"page1\"}";
@@ -177,8 +206,11 @@ public class JsonArrayPaginationTest {
     }
 
     @Test
-    public void testSetPageSize() throws Exception {
+    public void testSetPageSize() {
         // given
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+
         final String jsonResultPageSize1 = "{\"auditRecords\":[{\"id\":\"1\"}]}";
         final String jsonResultPageSize2 = "{\"auditRecords\":[{\"id\":\"1\"},{\"id\":\"2\"}]}";
         final String urlPageSize1 = relativeApiUrl + "?currentPage=1&pageSize=1";
@@ -219,11 +251,4 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 2);
     }
-
-    // TODO:
-// test Exception handling in getJsonObject()
-// with
-//        response = cloudOfThingsRestClient.getResponse(url, contentType);
-//        return gson.fromJson(response, JsonObject.class);
-
 }
