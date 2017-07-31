@@ -50,7 +50,7 @@ public class AuditRecordCollectionIT {
         auditApi.createAuditRecord(auditRecord);
 
         // when
-        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
+        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
 
         // then
         Assert.assertNotNull(auditRecordCollection);
@@ -96,7 +96,7 @@ public class AuditRecordCollectionIT {
         auditApi.createAuditRecord(auditRecord);
 
         // when
-        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords(filterBuilder);
+        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
 
         // then
         Assert.assertNotNull(auditRecordCollection);

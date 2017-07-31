@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.audit;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -15,7 +16,7 @@ import java.util.Date;
  */
 public class AuditApiIT {
 
-    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeClass
@@ -36,7 +37,7 @@ public class AuditApiIT {
         final String type = "com_telekom_audit_TestType";
         final Date timeOfAuditRecording = new Date();
         // reduce time by 1 second to get a difference between "time" set by client and "creationTime" set by platform
-        // because sometimes there is a difference between client time and platform time
+        // because sometimes the system time of the client is not equal to the system time of the platform
         timeOfAuditRecording.setTime(timeOfAuditRecording.getTime()-1000);
         final String user = "integration-tester";
         final String application = this.getClass().getSimpleName();
@@ -85,14 +86,21 @@ public class AuditApiIT {
         );
 
         // when
-        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
 
         // then
         Assert.assertNotNull(auditRecordCollection);
         Assert.assertNotNull(auditRecordCollection.getAuditRecords(), "auditRecordCollection should contain some audit records");
         Assert.assertTrue(auditRecordCollection.getAuditRecords().length > 0, "auditRecordCollection should contain some audit records");
 
-        //TODO: test with filter
+        // when
+        final Filter.FilterBuilder filterBuilder = Filter.build().bySource(testManagedObject.getId());
+        auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
+
+        // then
+        Assert.assertNotNull(auditRecordCollection);
+        Assert.assertNotNull(auditRecordCollection.getAuditRecords(), "auditRecordCollection should contain some audit records");
+        Assert.assertEquals(auditRecordCollection.getAuditRecords().length, 1, "auditRecordCollection should contain exact one audit record");
     }
 
 

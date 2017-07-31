@@ -36,8 +36,7 @@ public class AuditApi {
      */
     public AuditRecord getAuditRecord(final String auditRecordId) {
         final String response = cloudOfThingsRestClient.getResponse(auditRecordId, RELATIVE_API_URL, CONTENT_TYPE);
-        final AuditRecord auditRecord = new AuditRecord(gson.fromJson(response, ExtensibleObject.class));
-        return auditRecord;
+        return new AuditRecord(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
@@ -60,7 +59,7 @@ public class AuditApi {
      *
      * @return the first page of AuditRecordCollection which can be used to navigate through the found AuditRecords.
      */
-    public AuditRecordCollection getAuditRecords() {
+    public AuditRecordCollection getAuditRecordCollection() {
         return new AuditRecordCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -77,7 +76,7 @@ public class AuditApi {
      * @param filters filters of audit record attributes.
      * @return the first page of AuditRecordCollection which can be used to navigate through the found AuditRecords.
      */
-    public AuditRecordCollection getAuditRecords(final Filter.FilterBuilder filters) {
+    public AuditRecordCollection getAuditRecordCollection(final Filter.FilterBuilder filters) {
         return new AuditRecordCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,

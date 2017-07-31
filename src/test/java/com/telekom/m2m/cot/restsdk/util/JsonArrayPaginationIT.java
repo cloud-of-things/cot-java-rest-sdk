@@ -1,6 +1,5 @@
 package com.telekom.m2m.cot.restsdk.util;
 
-import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.audit.AuditApi;
 import com.telekom.m2m.cot.restsdk.audit.AuditRecord;
@@ -47,7 +46,7 @@ public class JsonArrayPaginationIT {
         auditApi.createAuditRecord(testAuditRecord);
 
         // when
-        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
+        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
 
         final AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
 
@@ -83,7 +82,7 @@ public class JsonArrayPaginationIT {
         }
 
         // when you retrieve the created audit records filtered by id of the testManagedObject
-        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords(Filter.build().bySource(testManagedObject.getId()));
+        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().bySource(testManagedObject.getId()));
         auditRecordCollection.setPageSize(2);
 
         AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
@@ -138,30 +137,30 @@ public class JsonArrayPaginationIT {
         auditApi.createAuditRecord(testAuditRecord);
 
         // when you retrieve the first page of the audit records
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
         AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
 
         // then there should be at least one audit record with a source.id which does not match to the source.id of the just created testAuditRecord
         Assert.assertTrue(auditRecords.length > 0);
         boolean allAuditRecordsFromSource = true;
         for (AuditRecord auditRecord : auditRecords) {
-            final JsonObject source = (JsonObject) auditRecord.get("source");
-            if (!source.get("id").getAsString().equals(testManagedObject.getId())) {
+            final ManagedObject source = auditRecord.getSource();
+            if (!source.get("id").equals(testManagedObject.getId())) {
                 allAuditRecordsFromSource = false;
             }
         }
         Assert.assertFalse(allAuditRecordsFromSource);
 
         // when you search by id of the testManagedObject for created audit record
-        auditRecordCollection = auditApi.getAuditRecords(Filter.build().bySource(testManagedObject.getId()));
+        auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().bySource(testManagedObject.getId()));
         auditRecords = auditRecordCollection.getAuditRecords();
 
         // then there should be delivered only audit records with the requested source.id
         allAuditRecordsFromSource = true;
         Assert.assertTrue(auditRecords.length > 0);
         for (AuditRecord auditRecord : auditRecords) {
-            final JsonObject source = (JsonObject) auditRecord.get("source");
-            if (!source.get("id").getAsString().equals(testManagedObject.getId())) {
+            final ManagedObject source = auditRecord.getSource();
+            if (!source.get("id").equals(testManagedObject.getId())) {
                 allAuditRecordsFromSource = false;
             }
         }
@@ -183,7 +182,7 @@ public class JsonArrayPaginationIT {
         auditApi.createAuditRecord(testAuditRecord);
 
         // when you retrieve the first page of the audit records
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
         AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
 
         // then there should be at least one audit record with a type which does not match to the type of the just created testAuditRecord
@@ -197,7 +196,7 @@ public class JsonArrayPaginationIT {
         Assert.assertFalse(allAuditRecordsFromSameType);
 
         // when you search by type of the testManagedObject for created audit record
-        auditRecordCollection = auditApi.getAuditRecords(Filter.build().byType(testAuditRecord.getType()));
+        auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byType(testAuditRecord.getType()));
         auditRecords = auditRecordCollection.getAuditRecords();
 
         // then there should be delivered only audit records with the requested type
@@ -227,7 +226,7 @@ public class JsonArrayPaginationIT {
 
         // when you are searching for audit records created in the last five minutes
         Date sinceAboutFiveMinutes = new Date(new Date().getTime() - (1000 * 60 * 5));
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords(Filter.build().byDate(sinceAboutFiveMinutes, new Date()));
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byDate(sinceAboutFiveMinutes, new Date()));
         AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
 
         // then there should be found at least one record
@@ -236,7 +235,7 @@ public class JsonArrayPaginationIT {
         // when you are searching for audit records in the future
         Date inOneMinute = new Date(new Date().getTime() + (1000 * 60 * 1));
         Date inTwoMinutes = new Date(new Date().getTime() + (1000 * 60 * 2));
-        auditRecordCollection = auditApi.getAuditRecords(Filter.build().byDate(inOneMinute, inTwoMinutes));
+        auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byDate(inOneMinute, inTwoMinutes));
         auditRecords = auditRecordCollection.getAuditRecords();
 
         // then there should be found no records
@@ -260,7 +259,7 @@ public class JsonArrayPaginationIT {
         final Date sinceAboutFiveMinutes = new Date(new Date().getTime() - (1000 * 60 * 5));
 
         // when you are searching for records with a specific source.id created in last five minutes
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords(
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(
                 Filter.build()
                         .byDate(sinceAboutFiveMinutes, new Date())
                         .bySource(testManagedObject.getId()));
@@ -273,7 +272,7 @@ public class JsonArrayPaginationIT {
         // when you are searching for records with a specific source.id created in last ten to five minutes
         final Date sinceAboutTenMinutes = new Date(new Date().getTime() - (1000 * 60 * 10));
 
-        auditRecordCollection = auditApi.getAuditRecords(
+        auditRecordCollection = auditApi.getAuditRecordCollection(
                 Filter.build()
                         .byDate(sinceAboutTenMinutes, sinceAboutFiveMinutes)
                         .bySource(testManagedObject.getId()));
@@ -303,7 +302,7 @@ public class JsonArrayPaginationIT {
         auditApi.createAuditRecord(testAuditRecord);
 
         // when you are searching for records with a specific source.id and type
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords(
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(
                 Filter.build()
                         .byType(testAuditRecord.getType())
                         .bySource(testManagedObject.getId()));
@@ -314,7 +313,7 @@ public class JsonArrayPaginationIT {
         Assert.assertEquals(auditRecords.length, 1);
 
         // when you are searching for records with a type which does not exist
-        auditRecordCollection = auditApi.getAuditRecords(
+        auditRecordCollection = auditApi.getAuditRecordCollection(
                 Filter.build()
                         .byType("NOT_USED" + System.currentTimeMillis())
                         .bySource(testManagedObject.getId()));

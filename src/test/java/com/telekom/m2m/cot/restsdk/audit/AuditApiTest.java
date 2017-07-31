@@ -16,10 +16,10 @@ import static org.mockito.Matchers.eq;
  */
 public class AuditApiTest {
 
-    private final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
-
     @Test
     public void testAuditApi() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
         AuditApi auditApi = new AuditApi(cotRestClientMock);
 
         Assert.assertNotNull(auditApi);
@@ -27,6 +27,8 @@ public class AuditApiTest {
 
     @Test
     public void testGetAuditRecord() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
         final AuditApi auditApi = new AuditApi(cotRestClientMock);
 
         final String auditRecordId = "234";
@@ -50,6 +52,8 @@ public class AuditApiTest {
 
     @Test
     public void testCreateAuditRecord() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
         final AuditApi auditApi = new AuditApi(cotRestClientMock);
 
         final String auditRecordId = "234";
@@ -68,21 +72,25 @@ public class AuditApiTest {
     }
 
     @Test
-    public void testGetAuditRecords() {
+    public void testGetAuditRecordCollection() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
         final AuditApi auditApi = new AuditApi(cotRestClientMock);
 
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords();
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
 
         Assert.assertNotNull(auditRecordCollection);
     }
 
     @Test
-    public void testGetAuditRecordsWithFilter() {
+    public void testGetAuditRecordCollectionWithFilter() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
         final AuditApi auditApi = new AuditApi(cotRestClientMock);
         final String type = "com_telekom_audit_TestType";
         final Filter.FilterBuilder filterBuilder = Filter.build().byType(type);
 
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecords(filterBuilder);
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
 
         Assert.assertNotNull(auditRecordCollection);
     }
