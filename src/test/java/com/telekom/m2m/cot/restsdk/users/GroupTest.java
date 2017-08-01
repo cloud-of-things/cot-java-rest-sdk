@@ -25,10 +25,10 @@ public class GroupTest {
 
 		JsonObject o = gson.fromJson(json, JsonObject.class);
 		Assert.assertEquals(o.get("id").getAsString(), "667");
-		Assert.assertEquals(o.get("firstName").getAsString(), "FName");
-		Assert.assertEquals(o.get("lastName").getAsString(), "LName");
-		Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
-		Assert.assertEquals(o.get("password").getAsString(), "verysecret");
+//		Assert.assertEquals(o.get("firstName").getAsString(), "FName");
+//		Assert.assertEquals(o.get("lastName").getAsString(), "LName");
+//		Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
+//		Assert.assertEquals(o.get("password").getAsString(), "verysecret");
 
 	}
 }

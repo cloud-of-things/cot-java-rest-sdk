@@ -10,8 +10,8 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.svenson.JSONProperty;
-import org.svenson.JSONTypeHint;
+//import org.svenson.JSONProperty;
+//import org.svenson.JSONTypeHint;
 
 public class RoleReferenceCollection {
 
@@ -21,7 +21,7 @@ public class RoleReferenceCollection {
 		references = new ArrayList();
 	}
 
-	@JSONTypeHint(RoleReference.class)
+//	@JSONTypeHint(RoleReference.class)
 	public List<RoleReference> getReferences() {
 		return references;
 	}
@@ -30,7 +30,7 @@ public class RoleReferenceCollection {
 		this.references = references;
 	}
 
-	@JSONProperty(ignore = true)
+//	@JSONProperty(ignore = true)
 	public Iterator<RoleReference> iterator() {
 		return references.iterator();
 	}
