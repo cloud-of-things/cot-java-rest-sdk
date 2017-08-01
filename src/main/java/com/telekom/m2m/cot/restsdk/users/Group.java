@@ -2,6 +2,10 @@ package com.telekom.m2m.cot.restsdk.users;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
+/**
+ * Class that defines the methods of group. Created by Ozan Arslan on 13.07.2017
+ */
+
 public class Group extends ExtensibleObject {
 
 	/**

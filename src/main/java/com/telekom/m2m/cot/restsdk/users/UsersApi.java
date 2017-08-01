@@ -95,7 +95,7 @@ public class UsersApi {
 	 * 
 	 * @param user
 	 * @param tenantId
-	 * @return an instance of a User.
+	 * @return an instance of a User
 	 */
 	public User createUser(User user, String tenantId) {
 		String json = gson.toJson(user);
