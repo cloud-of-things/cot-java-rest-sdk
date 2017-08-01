@@ -13,9 +13,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class AlarmApi {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarm+json;charset=UTF-8;ver=0.9";
-    private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarmCollection+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "/alarm/alarms/";
-    private static final String COLLECTION_ELEMENT_NAME = "alarms";
 
     private final Gson gson = GsonUtils.createGson();
     CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -83,8 +81,6 @@ public class AlarmApi {
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
                 gson,
-                COLLECTION_CONTENT_TYPE,
-                COLLECTION_ELEMENT_NAME,
                 null,
                 resultSize);
     }
@@ -102,8 +98,6 @@ public class AlarmApi {
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
                 gson,
-                COLLECTION_CONTENT_TYPE,
-                COLLECTION_ELEMENT_NAME,
                 filters,
                 resultSize);
     }

@@ -16,6 +16,9 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  */
 public class AlarmCollection extends JsonArrayPagination {
 
+    private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarmCollection+json;charset=UTF-8;ver=0.9";
+    private static final String COLLECTION_ELEMENT_NAME = "alarms";
+
     /**
      * Creates an AlarmCollection.
      * Use {@link AlarmApi} to get AlarmCollection.
@@ -23,19 +26,15 @@ public class AlarmCollection extends JsonArrayPagination {
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      * @param relativeApiUrl          relative url of the REST API without leading slash.
      * @param gson                    the necessary json De-/serializer.
-     * @param contentType             the Content-Type of the JSON Object.
-     * @param collectionElementName   json element name which contains an array of JSON Objects.
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      * @param pageSize                max number of retrieved elements per page.
      */
     AlarmCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
     final String relativeApiUrl,
     final Gson gson,
-    final String contentType,
-    final String collectionElementName,
     final Filter.FilterBuilder filterBuilder,
     final int pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, contentType, collectionElementName, filterBuilder, pageSize);
+        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
     }
 
     /**
