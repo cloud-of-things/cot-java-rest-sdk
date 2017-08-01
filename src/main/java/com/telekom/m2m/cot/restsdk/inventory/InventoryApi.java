@@ -17,6 +17,7 @@ public class InventoryApi {
 
     private static final String CONTENT_TYPE_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
+    private static final String RELATIVE_API_URL = "inventory/managedObjects/";
 
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -32,7 +33,7 @@ public class InventoryApi {
     public ManagedObject create(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
         managedObject.setId(id);
 
         return managedObject;
@@ -47,7 +48,7 @@ public class InventoryApi {
      * @return the found {@link ManagedObject} (or null if not found)
      */
     public ManagedObject get(String id) {
-        String response = cloudOfThingsRestClient.getResponse(id, "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+        String response = cloudOfThingsRestClient.getResponse(id, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
             ManagedObject mo = new ManagedObject(extensibleObject);
@@ -65,7 +66,7 @@ public class InventoryApi {
      * @return the found {@link ManagedObject} (or null if not found)
      */
     public ManagedObject get(String id, boolean withParents) {
-        String response = cloudOfThingsRestClient.getResponse(id + "?withParents=" + Boolean.toString(withParents), "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+        String response = cloudOfThingsRestClient.getResponse(id + "?withParents=" + Boolean.toString(withParents), RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
             ManagedObject mo = new ManagedObject(extensibleObject);
@@ -81,7 +82,7 @@ public class InventoryApi {
      * @param id the identifier of the {@link ManagedObject} to delete.
      */
     public void delete(String id) {
-        cloudOfThingsRestClient.delete(id, "inventory/managedObjects");
+        cloudOfThingsRestClient.delete(id, RELATIVE_API_URL);
     }
 
     /**
@@ -91,7 +92,7 @@ public class InventoryApi {
      */
     public void update(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
-        cloudOfThingsRestClient.doPutRequest(json, managedObject.getId(), "inventory/managedObjects", CONTENT_TYPE_MANAGEDOBJECT);
+        cloudOfThingsRestClient.doPutRequest(json, managedObject.getId(), RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
     }
 
     /**
@@ -151,19 +152,29 @@ public class InventoryApi {
      * @since 0.3.0
      */
     public ManagedObjectCollection getManagedObjects(int pageSize) {
-        return new ManagedObjectCollection(pageSize, cloudOfThingsRestClient);
+        return new ManagedObjectCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_API_URL,
+                gson,
+                null,
+                pageSize);
     }
 
     /**
      * Retrieves Measurements filtered by criteria.
      *
      * @param filters    filters of measurement attributes.
-     * @param resultSize size of the results (Max. 2000)
+     * @param pageSize size of the results (Max. 2000)
      * @return the MeasurementsCollections to naviagte through the results.
      * @since 0.3.0
      */
-    public ManagedObjectCollection getManagedObjects(Filter.FilterBuilder filters, int resultSize) {
-        return new ManagedObjectCollection(filters, resultSize, cloudOfThingsRestClient);
+    public ManagedObjectCollection getManagedObjects(Filter.FilterBuilder filters, int pageSize) {
+        return new ManagedObjectCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_API_URL,
+                gson,
+                filters,
+                pageSize);
     }
 
     /**
@@ -175,7 +186,7 @@ public class InventoryApi {
     public void registerAsChildDevice(ManagedObject parentDevice, ManagedObject childDevice) {
 
         final String json = String.format("{ \"managedObject\" : { \"id\" : \"%s\" } }", childDevice.getId());
-        final String apiPattern = "inventory/managedObjects/%s/childDevices";
+        final String apiPattern = RELATIVE_API_URL + "%s/childDevices";
         final String api = String.format(
                 apiPattern,
                 parentDevice.getId()

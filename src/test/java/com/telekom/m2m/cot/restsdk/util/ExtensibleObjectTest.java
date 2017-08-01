@@ -47,7 +47,7 @@ public class ExtensibleObjectTest {
         mo.setName("Foo");
         mo.set("test_element", "foo");
 
-        HashMap<String, String> object = new HashMap<String, String>();
+        HashMap<String, String> object = new HashMap<>();
         object.put("foo", "bar");
         mo.set("nested", object);
 
@@ -67,7 +67,7 @@ public class ExtensibleObjectTest {
         ManagedObject mo = new ManagedObject();
         mo.setId("1");
         mo.setName("Foo");
-        mo.set("nested_empty", new HashMap<Object, Object>());
+        mo.set("nested_empty", new HashMap<>());
         mo.set("nested_empty2", new Object());
 
         Gson gson = GsonUtils.createGson();
@@ -112,11 +112,11 @@ public class ExtensibleObjectTest {
 
         Object deserializedObject = mo.get("nested");
 
-        Assert.assertTrue(deserializedObject instanceof JsonObject);
+        Assert.assertTrue(deserializedObject instanceof ExtensibleObject);
 
-        JsonObject obj = (JsonObject) deserializedObject;
+        ExtensibleObject obj = (ExtensibleObject) deserializedObject;
         Assert.assertTrue(obj.has("foo"));
-        Assert.assertEquals(obj.get("foo").getAsString(), "bar");
+        Assert.assertEquals(obj.get("foo"), "bar");
 
     }
 
@@ -134,9 +134,9 @@ public class ExtensibleObjectTest {
 
         Object deserializedObject = mo.get("nested_empty");
 
-        Assert.assertTrue(deserializedObject instanceof JsonObject);
+        Assert.assertTrue(deserializedObject instanceof ExtensibleObject);
 
-        JsonObject obj = (JsonObject) deserializedObject;
+        ExtensibleObject obj = (ExtensibleObject) deserializedObject;
         Assert.assertFalse(obj.has("foo"));
     }
 

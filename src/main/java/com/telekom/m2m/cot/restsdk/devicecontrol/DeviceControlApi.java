@@ -19,6 +19,9 @@ public class DeviceControlApi {
     private static final String CONTENT_TYPE_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_BULK_OPERATION = "application/vnd.com.nsn.cumulocity.bulkoperation+json;charset=UTF-8;ver=0.9";
 
+    private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
+    private static final String RELATIVE_OPERATION_API_URL = "devicecontrol/operations/";
+
     /**
      * Internal used constructor.
      * <p>
@@ -41,7 +44,7 @@ public class DeviceControlApi {
      * @since 0.1.0
      */
     public Operation createNewDevice(Operation operation) {
-        cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), "devicecontrol/newDeviceRequests", CONTENT_TYPE);
+        cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE);
         return operation;
     }
 
@@ -55,7 +58,7 @@ public class DeviceControlApi {
         Operation operation = new Operation();
         operation.setStatus(OperationStatus.ACCEPTED);
 
-        cloudOfThingsRestClient.doPutRequest(gson.toJson(operation), "devicecontrol/newDeviceRequests/" + deviceId, CONTENT_TYPE);
+        cloudOfThingsRestClient.doPutRequest(gson.toJson(operation), RELATIVE_NEW_DEVICE_REQUEST_API_URL + deviceId, CONTENT_TYPE);
     }
 
     /**
@@ -66,7 +69,7 @@ public class DeviceControlApi {
      * @since 0.1.0
      */
     public Operation getOperation(String operationId) {
-        String response = cloudOfThingsRestClient.getResponse(operationId, "devicecontrol/operations/", CONTENT_TYPE_OPERATION);
+        String response = cloudOfThingsRestClient.getResponse(operationId, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION);
         Operation operation = new Operation(gson.fromJson(response, ExtensibleObject.class));
         return operation;
     }
@@ -81,7 +84,7 @@ public class DeviceControlApi {
     public Operation create(Operation operation) {
         String json = gson.toJson(operation);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "devicecontrol/operations/", CONTENT_TYPE_OPERATION);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION);
         operation.setId(id);
 
         return operation;
@@ -98,7 +101,7 @@ public class DeviceControlApi {
     public Operation update(Operation operation) {
         String json = "{\"status\" : \"" + operation.getStatus() + "\"}";
 
-        cloudOfThingsRestClient.doPutRequest(json, "devicecontrol/operations/" + operation.getId(), CONTENT_TYPE_OPERATION);
+        cloudOfThingsRestClient.doPutRequest(json, RELATIVE_OPERATION_API_URL + operation.getId(), CONTENT_TYPE_OPERATION);
         return operation;
     }
 
@@ -109,7 +112,12 @@ public class DeviceControlApi {
      * @return an OperationCollection.
      */
     public OperationCollection getOperations(int resultSize) {
-        return new OperationCollection(resultSize, cloudOfThingsRestClient);
+        return new OperationCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_OPERATION_API_URL,
+                gson,
+                null,
+                resultSize);
     }
 
     /**
@@ -120,7 +128,12 @@ public class DeviceControlApi {
      * @return an OperationCollection.
      */
     public OperationCollection getOperations(Filter.FilterBuilder filters, int resultSize) {
-        return new OperationCollection(filters, resultSize, cloudOfThingsRestClient);
+        return new OperationCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_OPERATION_API_URL,
+                gson,
+                filters,
+                resultSize);
     }
 
     /**
@@ -129,7 +142,7 @@ public class DeviceControlApi {
      * @param filters filters of Operation attributes.
      */
     public void deleteOperations(Filter.FilterBuilder filters) {
-        cloudOfThingsRestClient.delete("", "devicecontrol/operations?" + filters.buildFilter() + "&x=");
+        cloudOfThingsRestClient.delete("", RELATIVE_OPERATION_API_URL + "?" + filters.buildFilter() + "&x=");
     }
 
     /**

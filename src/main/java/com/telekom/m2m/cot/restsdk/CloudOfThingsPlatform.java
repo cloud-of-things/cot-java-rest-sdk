@@ -6,6 +6,7 @@ import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
+import com.telekom.m2m.cot.restsdk.audit.AuditApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
@@ -26,7 +27,6 @@ import okhttp3.OkHttpClient;
  * @since 0.1.0
  */
 public class CloudOfThingsPlatform {
-
 	private static final String REGISTERDEVICE_USERNAME = "ZGV2aWNlYm9vdHN0cmFw";
 	private static final String REGISTERDEVICE_PASSWORD = "RmhkdDFiYjFm";
 	private static final String REGISTERDEVICE_TENANT = "bWFuYWdlbWVudA==";
@@ -205,5 +205,14 @@ public class CloudOfThingsPlatform {
 	 */
 	public AlarmApi getAlarmApi() {
 		return new AlarmApi(cloudOfThingsRestClient);
+	}
+
+	/**
+	 * Returns the object to work with the audit API.
+	 *
+	 * @return ready to use AuditApi object.
+	 */
+	public AuditApi getAuditApi() {
+		return new AuditApi(cloudOfThingsRestClient);
 	}
 }

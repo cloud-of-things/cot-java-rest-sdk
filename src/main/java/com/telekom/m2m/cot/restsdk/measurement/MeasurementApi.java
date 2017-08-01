@@ -103,7 +103,12 @@ public class MeasurementApi {
      * @return the found Measurements.
      */
     public MeasurementCollection getMeasurements(int resultSize) {
-        return new MeasurementCollection(resultSize, cloudOfThingsRestClient);
+        return new MeasurementCollection(
+                cloudOfThingsRestClient,
+                MEASUREMENTS_API,
+                gson,
+                null,
+                resultSize);
     }
 
     /**
@@ -115,7 +120,12 @@ public class MeasurementApi {
      * @since 0.2.0
      */
     public MeasurementCollection getMeasurements(Filter.FilterBuilder filters, int resultSize) {
-        return new MeasurementCollection(filters, resultSize, cloudOfThingsRestClient);
+        return new MeasurementCollection(
+                cloudOfThingsRestClient,
+                MEASUREMENTS_API,
+                gson,
+                filters,
+                resultSize);
     }
 
     /**
@@ -124,7 +134,7 @@ public class MeasurementApi {
      * @param filters filters of measurement attributes.
      */
     public void deleteMeasurements(Filter.FilterBuilder filters) {
-        cloudOfThingsRestClient.delete("", "measurement/measurements?" + filters.buildFilter() + "&x=");
+        cloudOfThingsRestClient.delete("", MEASUREMENTS_API + "?" + filters.buildFilter() + "&x=");
     }
 
     private JsonObject createJsonObject(final List<Measurement> measurements) {

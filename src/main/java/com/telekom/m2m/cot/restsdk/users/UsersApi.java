@@ -32,7 +32,11 @@ public class UsersApi {
 	 * @return an instance of GroupCollection
 	 */
 	public GroupCollection getGroups(String tenant) {
-		return new GroupCollection(cloudOfThingsRestClient, tenant);
+		return new GroupCollection(
+				cloudOfThingsRestClient,
+				"user/" + tenant + "/groups/",
+				gson,
+				null);
 	}
 
 	/**

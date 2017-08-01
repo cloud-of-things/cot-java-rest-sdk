@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.util;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
+import com.telekom.m2m.cot.restsdk.audit.AuditRecord;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
@@ -22,6 +23,7 @@ public class GsonUtils {
 		return new GsonBuilder().registerTypeAdapter(ManagedObject.class, new ManagedObjectSerializer())
 				.registerTypeAdapter(Event.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(Alarm.class, new ExtensibleObjectSerializer())
+				.registerTypeAdapter(AuditRecord.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(Operation.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(Measurement.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(ExtensibleObject.class, new ExtensibleObjectSerializer())

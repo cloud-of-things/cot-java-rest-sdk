@@ -12,9 +12,11 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 04.02.16.
  */
 public class EventApi {
-    private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.event+json;charset=UTF-8;ver=0.9";
+    private static final String RELATIVE_API_URL = "event/events/";
+
     private final Gson gson = GsonUtils.createGson();
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
     /**
      * Internal Constructor.
@@ -32,7 +34,7 @@ public class EventApi {
      * @return the Event (or null if not found).
      */
     public Event getEvent(String eventId) {
-        String response = cloudOfThingsRestClient.getResponse(eventId, "event/events/", CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.getResponse(eventId, RELATIVE_API_URL, CONTENT_TYPE);
         Event event = new Event(gson.fromJson(response, ExtensibleObject.class));
         return event;
     }
@@ -46,7 +48,7 @@ public class EventApi {
     public Event createEvent(Event event) {
         String json = gson.toJson(event);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "event/events/", CONTENT_TYPE);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE);
         event.setId(id);
 
         return event;
@@ -58,7 +60,7 @@ public class EventApi {
      * @param event the Event to delete
      */
     public void deleteEvent(Event event) {
-        cloudOfThingsRestClient.delete(event.getId(), "event/events/");
+        cloudOfThingsRestClient.delete(event.getId(), RELATIVE_API_URL);
     }
 
     /**
@@ -67,7 +69,11 @@ public class EventApi {
      * @return the found Events.
      */
     public EventCollection getEvents() {
-        return new EventCollection(cloudOfThingsRestClient);
+        return new EventCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_API_URL,
+                gson,
+                null);
     }
 
     /**
@@ -78,7 +84,11 @@ public class EventApi {
      * @since 0.2.0
      */
     public EventCollection getEvents(Filter.FilterBuilder filters) {
-        return new EventCollection(filters, cloudOfThingsRestClient);
+        return new EventCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_API_URL,
+                gson,
+                filters);
     }
 
     /**
@@ -87,6 +97,6 @@ public class EventApi {
      * @param filters filters of Event attributes.
      */
     public void deleteEvents(Filter.FilterBuilder filters) {
-        cloudOfThingsRestClient.delete("", "event/events?" + filters.buildFilter() + "&x=");
+        cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filters.buildFilter() + "&x=");
     }
 }

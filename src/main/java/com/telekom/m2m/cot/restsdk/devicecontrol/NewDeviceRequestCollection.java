@@ -3,10 +3,10 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
  * Represents a pageable NewDeviceRequest collection.
@@ -14,116 +14,49 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * @since 0.3.0
  * Created by Patrick Steinert on 19.12.16.
  */
-public class NewDeviceRequestCollection {
+public class NewDeviceRequestCollection extends JsonArrayPagination {
 
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
-    private int pageCursor = 1;
-
-    private Gson gson = GsonUtils.createGson();
-
-    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.newDeviceRequestCollection+json;charset=UTF-8;ver=0.9";
-
-    private boolean nextAvailable = false;
-    private boolean previousAvailable = false;
-    private int pageSize = 5;
+    private static final String CONTENT_TYPE_NEW_DEVICE_REQUEST_COLLECTION = "application/vnd.com.nsn.cumulocity.newDeviceRequestCollection+json;charset=UTF-8;ver=0.9";
+    private static final String NEW_DEVICE_REQUEST_COLLECTION_ELEMENT_NAME = "newDeviceRequests";
 
     /**
-     * Internal contstructor to create a NewDeviceRequestCollection.
-     * Use {@link DeviceControlApi} to get NewDeviceRequest.
+     * Creates an NewDeviceRequestCollection.
+     * Use {@link DeviceCredentialsApi} to get NewDeviceRequestCollection.
      *
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     * @param relativeApiUrl          relative url of the REST API without leading slash.
+     * @param gson                    the necessary json De-/serializer.
+     * @param filterBuilder           the build criteria or null if all items should be retrieved.
+     * @param pageSize                max number of retrieved elements per page.
      */
-    NewDeviceRequestCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-        this.pageSize = resultSize;
+    NewDeviceRequestCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
+                    final String relativeApiUrl,
+                    final Gson gson,
+                    final Filter.FilterBuilder filterBuilder,
+                    final int pageSize) {
+        super(cloudOfThingsRestClient, relativeApiUrl, gson, CONTENT_TYPE_NEW_DEVICE_REQUEST_COLLECTION, NEW_DEVICE_REQUEST_COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
     }
 
     /**
-     * Retrieves all NewDeviceRequest.
+     * Retrieves the current page.
+     * <p>
+     * Retrieves the NewDeviceRequests influenced by filters set in construction.
      *
-     * @return array of found NewDeviceRequests.
+     * @return array of found NewDeviceRequests
      */
     public NewDeviceRequest[] getNewDeviceRequests() {
+        final JsonArray jsonNewDeviceRequests = getJsonArray();
 
-        JsonObject object = getJsonObject(pageCursor);
-
-        previousAvailable = object.has("prev");
-
-        if (object.has("newDeviceRequests")) {
-            JsonArray jsonNewDeviceRequests = object.get("newDeviceRequests").getAsJsonArray();
-            NewDeviceRequest[] arrayOfNewDeviceRequests = new NewDeviceRequest[jsonNewDeviceRequests.size()];
+        if (jsonNewDeviceRequests != null) {
+            final NewDeviceRequest[] arrayOfNewDeviceRequests = new NewDeviceRequest[jsonNewDeviceRequests.size()];
             for (int i = 0; i < jsonNewDeviceRequests.size(); i++) {
-                JsonElement jsonOperation = jsonNewDeviceRequests.get(i).getAsJsonObject();
-                NewDeviceRequest newDeviceRequests = new NewDeviceRequest(gson.fromJson(jsonOperation, ExtensibleObject.class));
-                arrayOfNewDeviceRequests[i] = newDeviceRequests;
+                JsonElement jsonNewDeviceRequest = jsonNewDeviceRequests.get(i).getAsJsonObject();
+                final NewDeviceRequest newDeviceRequest = new NewDeviceRequest(gson.fromJson(jsonNewDeviceRequest, ExtensibleObject.class));
+                arrayOfNewDeviceRequests[i] = newDeviceRequest;
             }
             return arrayOfNewDeviceRequests;
-        } else
-            return null;
-    }
-
-    private JsonObject getJsonObject(int page) {
-        String response;
-        String url = "/devicecontrol/newDeviceRequests?" +
-                "currentPage=" + page +
-                "&pageSize=" + pageSize;
-
-        response = cloudOfThingsRestClient.getResponse(url, CONTENT_TYPE);
-
-        return gson.fromJson(response, JsonObject.class);
-    }
-
-    /**
-     * Moves cursor to the next page.
-     */
-    public void next() {
-        pageCursor += 1;
-    }
-
-    /**
-     * Moves cursor to the previous page.
-     */
-    public void previous() {
-        pageCursor -= 1;
-    }
-
-    /**
-     * Checks if the next page has elements. <b>Use with caution, it does a seperate HTTP request, so it is considered as slow</b>
-     *
-     * @return true if next page has measurements, otherwise false.
-     */
-    public boolean hasNext() {
-        JsonObject object = getJsonObject(pageCursor + 1);
-        if (object.has("newDeviceRequests")) {
-            JsonArray jsonNewDeviceRequests = object.get("newDeviceRequests").getAsJsonArray();
-            nextAvailable = jsonNewDeviceRequests.size() > 0 ? true : false;
-        }
-        return nextAvailable;
-    }
-
-    /**
-     * Checks if there is a previous page.
-     *
-     * @return true if next page has measurements, otherwise false.
-     */
-    public boolean hasPrevious() {
-        return previousAvailable;
-    }
-
-    /**
-     * Sets the page size for page queries.
-     * The queries uses page size as a limit of elements to retrieve.
-     * There is a maximum number of elements, currently 2,000 elements.
-     * <i>Default is 5</i>
-     *
-     * @param pageSize the new page size as positive integer.
-     */
-    public void setPageSize(int pageSize) {
-        if (pageSize > 0) {
-            this.pageSize = pageSize;
         } else {
-            this.pageSize = 0;
+            return null;
         }
     }
-
 }

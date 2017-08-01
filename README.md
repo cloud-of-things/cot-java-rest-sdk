@@ -39,6 +39,7 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 * **Inventory**: Complete implemented
 * **Device credentials**: Complete implemented
 * **Identity**: Complete implemented
+* **Auditing**: Complete implemented
 
 **Partly Implemented**
 * **Device control**: Complete implemented, except BulkOperations
@@ -46,7 +47,6 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 **Not Implemented**
 * **SmartREST**: Not implemented
 * **Users**: Not implemented
-* **Auditing**: Not implemented
 * **Device management library**: Not implemented
 * **Sensor library**: Not implemented
 * **Real-time statements**: Not implemented
@@ -63,6 +63,10 @@ See examples folder. (Needs improvements ;) )
 ## Release Notes
 
 Short information about what has changed between releases.
+
+### Release 0.5.1-SNAPSHOT
+* Complete Audit API
+* Refactor collection classes extending JsonArrayPagination base class
 
 ### Release 0.5.0
 * Most important change is the removal of right now unused parameter tenant in CloudOfThingsPlatform constructor ([See commit 62079fe](https://github.com/marquies/cot-java-rest-sdk/commit/62079feee68dfc371b545cf2ed69fa9f858e5573)).
