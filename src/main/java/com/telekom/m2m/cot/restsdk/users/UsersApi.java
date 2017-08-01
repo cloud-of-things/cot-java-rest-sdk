@@ -48,7 +48,7 @@ public class UsersApi {
 	 * Method to retrieve a user by username, in a given tenant.
 	 * 
 	 * @param userName
-	 * @param tanent
+	 * @param tenant
 	 * @return an instance of a user.
 	 */
 	public User getUserByName(String userName, String tenant)

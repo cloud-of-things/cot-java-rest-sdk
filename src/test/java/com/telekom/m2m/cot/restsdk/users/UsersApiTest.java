@@ -9,6 +9,10 @@ public class UsersApiTest {
 	// TODO fix the logger problem below
 	// private static final Logger logger =
 	// LoggerFactory.getLogger(UsersApiTest.class);
+	// (test inside the Maven, idea: keep it outside of the library, keep the
+	// dependencies as low as possible.)
+	// for integration test: assertion.
+	//
 
 	@Test
 	public void testUserApiMethods() {
