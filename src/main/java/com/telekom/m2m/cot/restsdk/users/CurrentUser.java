@@ -2,12 +2,9 @@ package com.telekom.m2m.cot.restsdk.users;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
-//import com.cumulocity.rest.representation.user.DateTime;
-//import com.cumulocity.rest.representation.user.RoleRepresentation;
-
 /**
- * @author ozanarslan
- *
+ * Class that defines the methods of current user. Created by Ozan Arslan on
+ * 13.07.2017
  */
 
 public class CurrentUser extends ExtensibleObject {
