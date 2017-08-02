@@ -19,7 +19,7 @@ import com.telekom.m2m.cot.restsdk.users.UsersApi;
 import okhttp3.OkHttpClient;
 
 /**
- * The CloudOfThingsPlatform is the starting point to interfere the Cloud of
+ * The CloudOfThingsPlatform is the starting point to access the Cloud of
  * Things.
  * <p>
  * Created by Patrick Steinert on 30.01.16.

@@ -79,7 +79,7 @@ public class JsonArrayPagination {
     /**
      * Retrieves the current page.
      * <p>
-     * Retrieves the entries influenced by filters setted in construction.
+     * Retrieves the entries influenced by filters set in construction.
      *
      * @return JsonArray of found JsonElements
      */

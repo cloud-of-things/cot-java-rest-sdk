@@ -36,7 +36,7 @@ public class CloudOfThingsRestClient {
     }
 
     /**
-     * Proceedes a HTTP POST request and parses the response Header.
+     * Proceeds a HTTP POST request and parses the response Header.
      * Response header 'Location' will be split to get the ID of the object (mostly created).
      *
      * @param json        Request body, needs to be a json object correlating to the contentType.
@@ -72,14 +72,14 @@ public class CloudOfThingsRestClient {
         } catch (CotSdkException e) {
             throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Problem", e);
+            throw new CotSdkException("Problem: " + e.getMessage(), e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
 
     /**
-     * Proceedes a HTTP POST request and returns the response body as String.
+     * Proceeds a HTTP POST request and returns the response body as String.
      *
      * @param json        Request body, needs to be a json object correlating to the contentType.
      * @param api         the REST API string.
@@ -113,7 +113,7 @@ public class CloudOfThingsRestClient {
     }
 
     /**
-     * Proceedes a HTTP POST request and returns the response body as String.
+     * Proceeds a HTTP POST request and returns the response body as String.
      * Method will throw an exception if the response code is indicating
      * a non successfull request.
      *
