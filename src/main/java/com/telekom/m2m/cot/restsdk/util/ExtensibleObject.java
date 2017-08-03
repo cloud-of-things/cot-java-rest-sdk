@@ -10,7 +10,7 @@ import java.util.Map;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class ExtensibleObject {
-    protected final HashMap<String, Object> anyObject = new HashMap<String, Object>();
+    protected final HashMap<String, Object> anyObject = new HashMap<>();
 
     /**
      * Constructur for use in sub classes.
@@ -70,7 +70,7 @@ public class ExtensibleObject {
     /**
      * Set a custom attribute with its name derived from class package and name.
      * <p>
-     * E.g. a class com.telekom.SpecialObject will get the identifiert com_telekom_SpecialObject.
+     * E.g. a class com.telekom.SpecialObject will get the identifier com_telekom_SpecialObject.
      *
      * @param attribute the value of the custom attribute.
      */

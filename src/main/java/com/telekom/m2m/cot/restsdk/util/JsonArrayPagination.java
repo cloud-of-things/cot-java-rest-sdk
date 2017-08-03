@@ -79,7 +79,7 @@ public class JsonArrayPagination {
     /**
      * Retrieves the current page.
      * <p>
-     * Retrieves the entries influenced by filters setted in construction.
+     * Retrieves the entries influenced by filters set in construction.
      *
      * @return JsonArray of found JsonElements
      */
@@ -135,7 +135,7 @@ public class JsonArrayPagination {
         final JsonObject object = getJsonObject(pageCursor + 1);
         if (object.has(collectionElementName)) {
             final JsonArray jsonArray = object.get(collectionElementName).getAsJsonArray();
-            nextAvailable = jsonArray.size() > 0 ? true : false;
+            nextAvailable = (jsonArray.size() > 0);
         }
         return nextAvailable;
     }

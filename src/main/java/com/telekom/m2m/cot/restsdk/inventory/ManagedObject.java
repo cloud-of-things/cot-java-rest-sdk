@@ -8,14 +8,14 @@ import java.util.Date;
 /**
  * Represents a ManagedObject from the platform.
  * <p>
- * The ManagedObject can be model any physical or cyber-physical object, even virtual object.
+ * The ManagedObject can model any physical or cyber-physical object, even virtual object.
  * <p>
  * Created by Patrick Steinert on 30.01.16.
  */
 public class ManagedObject extends ExtensibleObject {
 
     /**
-     * Default construction to create a new managed objects.
+     * Default construction to create a new managed object.
      */
     public ManagedObject() {
         super();

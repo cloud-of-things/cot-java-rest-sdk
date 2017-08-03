@@ -10,6 +10,7 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReference;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReferenceCollection;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
+import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRule;
 import com.telekom.m2m.cot.restsdk.users.CurrentUser;
 import com.telekom.m2m.cot.restsdk.users.Group;
 import com.telekom.m2m.cot.restsdk.users.Role;
@@ -34,6 +35,7 @@ public class GsonUtils {
 				.registerTypeAdapter(Group.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(CurrentUser.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(Role.class, new ExtensibleObjectSerializer())
+				.registerTypeAdapter(RetentionRule.class, new ExtensibleObjectSerializer())
 
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").create();
 	}

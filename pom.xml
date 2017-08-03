@@ -183,7 +183,7 @@
                     <!-- Keep your maven submodules at the same version as the parent POM -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <!--
-                      Pusing in-development features to origin allows all devs to see what each other
+                      Pushing in-development features to origin allows all devs to see what each other
                       are working on
                     -->
                     <pushFeatures>true</pushFeatures>

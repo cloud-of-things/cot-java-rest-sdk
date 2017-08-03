@@ -26,6 +26,7 @@ public class CloudOfThingsRestClient {
 
 	protected OkHttpClient client;
 
+
 	public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
 		this.host = host;
 		try {
@@ -37,7 +38,7 @@ public class CloudOfThingsRestClient {
 	}
 
 	/**
-	 * Proceedes a HTTP POST request and parses the response Header. Response
+	 * Proceeds a HTTP POST request and parses the response Header. Response
 	 * header 'Location' will be split to get the ID of the object (mostly
 	 * created).
 	 *
@@ -74,14 +75,14 @@ public class CloudOfThingsRestClient {
 		} catch (CotSdkException e) {
 			throw e;
 		} catch (Exception e) {
-			throw new CotSdkException("Problem", e);
+			throw new CotSdkException("Problem: " + e.getMessage(), e);
 		} finally {
 			closeResponseBodyIfResponseAndBodyNotNull(response);
 		}
 	}
 
 	/**
-	 * Proceedes a HTTP POST request and returns the response body as String.
+	 * Proceeds a HTTP POST request and returns the response body as String.
 	 *
 	 * @param json
 	 *            Request body, needs to be a json object correlating to the
@@ -115,9 +116,9 @@ public class CloudOfThingsRestClient {
 	}
 
 	/**
-	 * Proceedes a HTTP POST request and returns the response body as String.
+	 * Proceeds a HTTP POST request and returns the response body as String.
 	 * Method will throw an exception if the response code is indicating a non
-	 * successfull request.
+	 * successful request.
 	 *
 	 * @param json
 	 *            Request body, needs to be a json object.
