@@ -13,7 +13,7 @@ import org.testng.annotations.Test;
 public class RetentionRuleTest {
 
     @Test
-    public void testEventSerialization() {
+    public void testRetentionRuleSerialization() {
 
         Gson gson = GsonUtils.createGson();
 

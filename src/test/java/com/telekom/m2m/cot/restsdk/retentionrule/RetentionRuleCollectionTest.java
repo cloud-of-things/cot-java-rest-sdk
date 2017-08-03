@@ -77,7 +77,7 @@ public class RetentionRuleCollectionTest {
 
         // Did we get enough rules?
         assertEquals(3, rules.length);
-        // All of them (i.e. no duplicates or something like that), in the right order order?
+        // All of them (i.e. no duplicates or something like that), in the right order?
         assertEquals("EVENT", rules[0].getDataType());
         assertEquals("fragmentType2", rules[1].getFragmentType());
         assertEquals("*", rules[2].getType());
