@@ -12,7 +12,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class IdentityApi {
-    String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.externalId+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.externalId+json;charset=UTF-8;ver=0.9";
     protected Gson gson = GsonUtils.createGson();
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;

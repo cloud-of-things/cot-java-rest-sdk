@@ -19,27 +19,28 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
 
     public JsonElement serialize(ExtensibleObject src, Type typeOfSrc,
                                  JsonSerializationContext context) {
-        if (src == null)
+        if (src == null) {
             return null;
-        else {
-            JsonObject object = new JsonObject();
-            Map<String, Object> attributes = src.getAttributes();
-            Set<String> keys = attributes.keySet();
-            for (String key : keys) {
-                if (key.equals("source")) {
-                    Object source = attributes.get(key);
-                    if (source instanceof ManagedObject) {
-                        JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) source).getId());
-                        JsonObject sourceObject = new JsonObject();
-                        sourceObject.add("id", primitive);
-                        object.add(key, sourceObject);
-                        continue;
-                    }
-                }
-                object.add(key, context.serialize(attributes.get(key)));
-            }
-            return object;
         }
+
+        JsonObject object = new JsonObject();
+        Map<String, Object> attributes = src.getAttributes();
+        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if ("source".equals(key)) {
+                if (value instanceof ManagedObject) {
+                    JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) value).getId());
+                    JsonObject sourceObject = new JsonObject();
+                    sourceObject.add("id", primitive);
+                    object.add(key, sourceObject);
+                    continue;
+                }
+            }
+            object.add(key, context.serialize(value));
+        }
+        return object;
+
     }
 
     public ExtensibleObject deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
