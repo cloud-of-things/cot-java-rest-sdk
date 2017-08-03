@@ -7,7 +7,8 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 public class UsersApi {
 	private final CloudOfThingsRestClient cloudOfThingsRestClient;
-	private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.user+json;ver=0.9";
+	private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
+	// application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9
 	private final Gson gson = GsonUtils.createGson();
 
 	public UsersApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
@@ -32,11 +33,7 @@ public class UsersApi {
 	 * @return an instance of GroupCollection
 	 */
 	public GroupCollection getGroups(String tenant) {
-		return new GroupCollection(
-				cloudOfThingsRestClient,
-				"user/" + tenant + "/groups/",
-				gson,
-				null);
+		return new GroupCollection(cloudOfThingsRestClient, "user/" + tenant + "/groups/", gson, null);
 	}
 
 	/**
@@ -60,9 +57,7 @@ public class UsersApi {
 	{
 
 		String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/users/" + userName, CONTENT_TYPE);
-
 		User user = new User(gson.fromJson(result, ExtensibleObject.class));
-
 		return user;
 
 	}
@@ -81,8 +76,10 @@ public class UsersApi {
 		return group;
 	}
 
+	// Operations on Current User:
+
 	/**
-	 * Method to return the currently logged in user.
+	 * Method to retrieve the currently logged in user.
 	 * 
 	 * @return an instance of the currently logged in user.
 	 */
@@ -92,10 +89,31 @@ public class UsersApi {
 		return currentuser;
 	}
 
-	// TODO: setRoles
+	public void updateCurrentUserFirstName(String firstName) {
+		User user = new User();
+		user.setFirstName(firstName);
+		String json = gson.toJson(user);
+		cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
 
+	}
+
+	public void updateCurrentUserLastName(String lastName) {
+		User user = new User();
+		user.setLastName(lastName);
+		String json = gson.toJson(user);
+		cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
+	}
+
+	public void updateCurrentUserPassword(String password) {
+		User user = new User();
+		user.setLastName(password);
+		String json = gson.toJson(user);
+		cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
+	}
+
+	// Operations on a generic User:
 	/**
-	 * A method to create a user WORK IN PROGRESS
+	 * A method to create a user
 	 * 
 	 * @param user
 	 * @param tenantId
@@ -104,24 +122,39 @@ public class UsersApi {
 	public User createUser(User user, String tenantId) {
 		String json = gson.toJson(user);
 		// post requrest:
-		String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenantId + "/users/", CONTENT_TYPE);
+		String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenantId + "/users", CONTENT_TYPE);
 		user.setId(id);
-
 		return user;
 	}
 
-	/*
-	 * public User getUser(String URL, String userName, String tanentId)
-	 * 
-	 * {
-	 * 
-	 * String result; result = cloudOfThingsRestClient.getResponse("user/" +
-	 * tanentId + "/users/" + userName, CONTENT_TYPE); User user =
-	 * gson.fromJson(result, User.class);
-	 * 
-	 * return user;
-	 * 
-	 * }
-	 */
+	public void deleteUser(User user, String tenantId) {
+		cloudOfThingsRestClient.delete(user.getId(), "user/" + tenantId + "/users");
+
+	}
+
+	public void deleteUserByUserName(String userName, String tenantId) {
+
+		User user = getUserByName(userName, tenantId);
+		cloudOfThingsRestClient.delete(user.getId(), "user/" + tenantId + "/users");
+
+	}
+
+	public void updateUserFirstName(User user, String tenant, String firstName) {
+		user.setFirstName(firstName);
+		String json = gson.toJson(user);
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
+	}
+
+	public void updateUserLastName(User user, String tenant, String lastName) {
+		user.setFirstName(lastName);
+		String json = gson.toJson(user);
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
+	}
+
+	public void updateUserPassword(User user, String tenant, String password) {
+		user.setFirstName(password);
+		String json = gson.toJson(user);
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
+	}
 
 }
