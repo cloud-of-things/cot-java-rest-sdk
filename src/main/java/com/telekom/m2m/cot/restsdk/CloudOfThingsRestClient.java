@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.util.Base64;
 
 import com.google.gson.Gson;
@@ -156,19 +157,20 @@ public class CloudOfThingsRestClient {
 			if (response.isSuccessful()) {
 				result = response.body().string();
 			} else {
-				if (response.code() != 404) {
+				if (response.code() != HttpURLConnection.HTTP_NOT_FOUND) {
 					throw new CotSdkException(response.code(), "Error in request.");
 				}
 			}
 			return result;
 		} catch (Exception e) {
-			throw new CotSdkException("Error in requets", e);
+			throw new CotSdkException("Error in request", e);
 		} finally {
 			closeResponseBodyIfResponseAndBodyNotNull(response);
 		}
 
 	}
 
+	// TODO: check why the contentType is not necessary, because experiments seemed to indicate that it is...
 	public String getResponse(String api, String contentType) {
 		Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
 				.url(host + "/" + api).build();
@@ -219,11 +221,6 @@ public class CloudOfThingsRestClient {
 		Response response = null;
 		try {
 			response = client.newCall(request).execute();
-			if (response.isSuccessful()) {
-				int i = 1;
-			} else {
-				int i = 2;
-			}
 		} catch (Exception e) {
 			throw new CotSdkException("Error in request", e);
 		} finally {
