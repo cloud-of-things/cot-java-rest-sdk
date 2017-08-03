@@ -4,7 +4,12 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
@@ -93,5 +98,18 @@ public class AuditApiTest {
         AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
 
         Assert.assertNotNull(auditRecordCollection);
+    }
+
+    @Test
+    public void testDeleteAuditRecords() throws Exception {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
+        final AuditApi auditApi = new AuditApi(cotRestClientMock);
+        final String type = "com_telekom_audit_TestType";
+        final Filter.FilterBuilder filterBuilder = Filter.build().byType(type);
+
+        auditApi.deleteAuditRecords(filterBuilder);
+
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).deleteBy("type="+type, "audit/auditRecords/");
     }
 }
