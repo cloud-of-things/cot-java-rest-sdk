@@ -11,6 +11,30 @@ import java.util.Date;
  * Created by Andreas Dyck on 24.07.17.
  */
 public class AuditRecord extends ExtensibleObject {
+    /**
+     * Critical (highest severity).
+     */
+    public static final String SEVERITY_CRITICAL = "CRITICAL";
+
+    /**
+     * Major (2nd highest severity).
+     */
+    public static final String SEVERITY_MAJOR = "MAJOR";
+
+    /**
+     * Minor(2nd lowest severity).
+     */
+    public static final String SEVERITY_MINOR = "MINOR";
+
+    /**
+     * Warning (lowest severity).
+     */
+    public static final String SEVERITY_WARNING = "WARNING";
+
+    /**
+     * Just an information.
+     */
+    public static final String SEVERITY_INFORMATION = "INFORMATION";
 
     /**
      * Default construction to create a new audit record.
@@ -137,7 +161,7 @@ public class AuditRecord extends ExtensibleObject {
         if(source instanceof ManagedObject) {
             return (ManagedObject)source;
         }
-        return new ManagedObject((ExtensibleObject) anyObject.get("source"));
+        return new ManagedObject((ExtensibleObject) source);
     }
 
     /**
@@ -192,5 +216,23 @@ public class AuditRecord extends ExtensibleObject {
      */
     public String getUser() {
         return (String) anyObject.get("user");
+    }
+
+    /**
+     * Set the severity of the activity.
+     *
+     * @param severity a String with the severity of the activity.
+     */
+    public void setSeverity(String severity) {
+        anyObject.put("severity", severity);
+    }
+
+    /**
+     * Get the severity of the activity.
+     *
+     * @return a String with the severity of the activity.
+     */
+    public String getSeverity() {
+        return (String) anyObject.get("severity");
     }
 }
