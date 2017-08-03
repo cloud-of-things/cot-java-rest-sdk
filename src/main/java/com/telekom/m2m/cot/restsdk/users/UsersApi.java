@@ -141,7 +141,6 @@ public class UsersApi {
 	 * 
 	 * @param user
 	 * @param tenant
-	 * @return an instance of a User
 	 */
 	public void createUserNoReturn(User user, String tenant) {
 		String json = gson.toJson(user);
@@ -192,7 +191,6 @@ public class UsersApi {
 	 *            of the user.
 	 * @param password
 	 *            of the user.
-	 * @return an instance of the user.
 	 */
 	public void createUserNoReturn(String userName, String tenant, String firstName, String lastName, String password) {
 		User user = new User();
