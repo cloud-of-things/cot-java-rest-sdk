@@ -17,51 +17,51 @@ public class RetentionRuleTest {
 
         Gson gson = GsonUtils.createGson();
 
-        RetentionRule rIn = new RetentionRule();
-        rIn.setId(12345678L);
-        rIn.setEditable(true);
-        rIn.setType("xx_yy_zz");
-        rIn.setDataType("aa_bb_cc");
-        rIn.setFragmentType("11_22_33");
-        rIn.setSource("the source");
-        rIn.setMaximumAge(365);
+        RetentionRule ruleIn = new RetentionRule();
+        ruleIn.setId(12345678L);
+        ruleIn.setEditable(true);
+        ruleIn.setType("xx_yy_zz");
+        ruleIn.setDataType("aa_bb_cc");
+        ruleIn.setFragmentType("11_22_33");
+        ruleIn.setSource("the source");
+        ruleIn.setMaximumAge(365);
 
         // Just to be sure, bc it's not normal trivial getters/setters:
-        assertEquals(12345678L, (long)rIn.getId());
-        assertTrue(rIn.isEditable());
-        assertEquals("xx_yy_zz", rIn.getType());
-        assertEquals("aa_bb_cc", rIn.getDataType());
-        assertEquals("11_22_33", rIn.getFragmentType());
-        assertEquals("the source", rIn.getSource());
-        assertEquals(365, (long)rIn.getMaximumAge());
+        assertEquals(12345678L, (long)ruleIn.getId());
+        assertTrue(ruleIn.isEditable());
+        assertEquals("xx_yy_zz", ruleIn.getType());
+        assertEquals("aa_bb_cc", ruleIn.getDataType());
+        assertEquals("11_22_33", ruleIn.getFragmentType());
+        assertEquals("the source", ruleIn.getSource());
+        assertEquals(365, (long)ruleIn.getMaximumAge());
 
-        String json = gson.toJson(rIn);
+        String json = gson.toJson(ruleIn);
 
-        ExtensibleObject o = gson.fromJson(json, ExtensibleObject.class);
-        RetentionRule rOut = new RetentionRule(o);
-        assertEquals(12345678L, (long)rOut.getId());
-        assertTrue(rOut.isEditable());
-        assertEquals("xx_yy_zz", rOut.getType());
-        assertEquals("aa_bb_cc", rOut.getDataType());
-        assertEquals("11_22_33", rOut.getFragmentType());
-        assertEquals("the source", rOut.getSource());
-        assertEquals(365, (long)rOut.getMaximumAge());
+        ExtensibleObject eo = gson.fromJson(json, ExtensibleObject.class);
+        RetentionRule ruleOut = new RetentionRule(eo);
+        assertEquals(12345678L, (long)ruleOut.getId());
+        assertTrue(ruleOut.isEditable());
+        assertEquals("xx_yy_zz", ruleOut.getType());
+        assertEquals("aa_bb_cc", ruleOut.getDataType());
+        assertEquals("11_22_33", ruleOut.getFragmentType());
+        assertEquals("the source", ruleOut.getSource());
+        assertEquals(365, ruleOut.getMaximumAge());
 
 
-        rIn = new RetentionRule();
-        rIn.setEditable(false);
-        rIn.setMaximumAge(7);
+        ruleIn = new RetentionRule();
+        ruleIn.setEditable(false);
+        ruleIn.setMaximumAge(7);
 
-        json = gson.toJson(rIn);
+        json = gson.toJson(ruleIn);
 
-        o = gson.fromJson(json, ExtensibleObject.class);
-        rOut = new RetentionRule(o);
-        assertNull(rOut.getId());
-        assertFalse(rOut.isEditable());
-        assertNull(rOut.getType());
-        assertNull(rOut.getDataType());
-        assertNull(rOut.getFragmentType());
-        assertNull(rOut.getSource());
-        assertEquals(7, (long)rOut.getMaximumAge());
+        eo = gson.fromJson(json, ExtensibleObject.class);
+        ruleOut = new RetentionRule(eo);
+        assertNull(ruleOut.getId());
+        assertFalse(ruleOut.isEditable());
+        assertNull(ruleOut.getType());
+        assertNull(ruleOut.getDataType());
+        assertNull(ruleOut.getFragmentType());
+        assertNull(ruleOut.getSource());
+        assertEquals(7, (long)ruleOut.getMaximumAge());
     }
 }

@@ -14,6 +14,7 @@ import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
+import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRuleApi;
 import com.telekom.m2m.cot.restsdk.users.UsersApi;
 
 import okhttp3.OkHttpClient;
@@ -215,4 +216,14 @@ public class CloudOfThingsPlatform {
 	public AuditApi getAuditApi() {
 		return new AuditApi(cloudOfThingsRestClient);
 	}
+
+	/**
+	 * Returns the object to work with the retention rules API.
+	 *
+	 * @return ready to use RetentionRuleApi object.
+	 */
+	public RetentionRuleApi getRetentionRuleApi() {
+		return new RetentionRuleApi(cloudOfThingsRestClient);
+	}
+
 }

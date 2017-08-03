@@ -142,25 +142,31 @@ public class RetentionRule extends ExtensibleObject {
     /**
      * Get the maximumAge of the rule.
      *
-     * @return a Long with the maximumAge (null indicates a parsing problem, because maximumAge is mandatory).
+     * @return an int with the maximumAge
      */
-    public Long getMaximumAge() {
+    public int getMaximumAge() {
         Object maximumAge = anyObject.get("maximumAge");
+        if (maximumAge instanceof Number) {
+            return ((Number) maximumAge).intValue();
+        }
+        if (maximumAge instanceof String) {
+            return Integer.parseInt((String) maximumAge);
+        }
         try {
-            return (maximumAge instanceof Number) ? ((Number) maximumAge).longValue() : (long) maximumAge;
+            return (int) maximumAge;
         } catch (ClassCastException | NullPointerException ex) {
             // TODO: is there really no better way? The untyped anyObject-Map makes it hard to know what
             //       we can expect here and it wouldn't be nice to explicitly rely on gson here.
-            return null;
         }
+        return 0;
     }
 
     /**
      * Setting the rule maximumAge.
      *
-     * @param maximumAge a long with the rule maximumAge.
+     * @param maximumAge an int with the rule maximumAge.
      */
-    public void setMaximumAge(long maximumAge) {
+    public void setMaximumAge(int maximumAge) {
         anyObject.put("maximumAge", maximumAge);
     }
 

@@ -133,7 +133,7 @@ public class JsonArrayPagination {
         final JsonObject object = getJsonObject(pageCursor + 1);
         if (object.has(collectionElementName)) {
             final JsonArray jsonArray = object.get(collectionElementName).getAsJsonArray();
-            nextAvailable = jsonArray.size() > 0 ? true : false;
+            nextAvailable = (jsonArray.size() > 0);
         }
         return nextAvailable;
     }
