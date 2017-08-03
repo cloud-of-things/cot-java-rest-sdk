@@ -56,7 +56,7 @@ public class UsersApiTest {
 
 		System.out.println("User name of the deleted user: " + usertocreate.getUserName());
 
-		// Now create a user and delete is by its name:
+		// Now create a user and delete it by its name:
 		User seconduser = new User();
 		seconduser.setLastName("testLastNameabcdefh");
 		seconduser.setFirstName("testFirstNameabcdefh");
@@ -65,6 +65,29 @@ public class UsersApiTest {
 		User SecondCreatedUser = platform.getUsersApi().createUser(seconduser, "nbiotdemo");
 		platform.getUsersApi().deleteUserByUserName("SecondUserToDeleteByName4", "nbiotdemo");
 
+		// Create a user with no return method:
+		User userForNoReturn = new User();
+		userForNoReturn.setLastName("lastName");
+		userForNoReturn.setFirstName("firstName");
+		userForNoReturn.setPassword("password1234");
+		userForNoReturn.setUserName("UserforNoReturn");
+		platform.getUsersApi().createUserNoReturn(userForNoReturn, "nbiotdemo");
+		// Now check if this user has successfully been created in the cloud by
+		// calling it back:
+		System.out.println("The name of the user created by no return method: "
+				+ platform.getUsersApi().getUserByName("UserforNoReturn", "nbiotdemo").getUserName());
+		// Now delete that user:
+		platform.getUsersApi().deleteUserByUserName("UserforNoReturn", "nbiotdemo");
+
+		// Create a user with no return by providing user information:
+		platform.getUsersApi().createUserNoReturn("NoReturnWithUserName", "nbiotdemo", "firstname", "lastname",
+				"password");
+		// Now check if this user has been created in the cloud:
+		System.out.println("The name of the user created by no return method: "
+				+ platform.getUsersApi().getUserByName("NoReturnWithUserName", "nbiotdemo").getUserName());
+
+		// Now delete that user:
+		platform.getUsersApi().deleteUserByUserName("NoReturnWithUserName", "nbiotdemo");
 	}
 
 }
