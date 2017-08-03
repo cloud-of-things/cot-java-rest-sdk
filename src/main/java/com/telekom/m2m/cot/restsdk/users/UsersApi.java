@@ -216,21 +216,19 @@ public class UsersApi {
 	}
 
 	public void updateUserFirstName(User user, String tenant, String firstName) {
-		user.setFirstName(firstName);
-		String json = gson.toJson(user);
-		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
+		String json = "{\"firstName\":\"" + firstName + "\"}";
+
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
 	}
 
 	public void updateUserLastName(User user, String tenant, String lastName) {
-		user.setFirstName(lastName);
-		String json = gson.toJson(user);
-		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
+		String json = "{\"lastName\":\"" + lastName + "\"}";
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
 	}
 
 	public void updateUserPassword(User user, String tenant, String password) {
-		user.setFirstName(password);
-		String json = gson.toJson(user);
-		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
+		String json = "{\"password\":\"" + password + "\"}";
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
 	}
 
 }

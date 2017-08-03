@@ -42,19 +42,20 @@ public class UsersApiTest {
 		platform.getUsersApi().updateCurrentUserFirstName("FirstNameSecondUpdate");
 		System.out.println("Current user first name second update: " + currentuser.getFirstName());
 
+		// Test operations on a generic user:
+
+		// Create a user in the cloud by using a User object:
 		User usertocreate = new User();
-		usertocreate.setUserName("testUserNameabcdefghi");
-		usertocreate.setLastName("testLastNameabcdef");
-		usertocreate.setFirstName("testFirstNameabcdef");
-		usertocreate.setPassword("TestStrongPWabcdef");
+		usertocreate.setUserName("testUser");
+		usertocreate.setLastName("LastName");
+		usertocreate.setFirstName("FirstName");
+		usertocreate.setPassword("password1234");
 
 		User createduser = platform.getUsersApi().createUser(usertocreate, "nbiotdemo");
 		System.out.println("User name: of the created user:" + createduser.getUserName());
 
-		// deleteuser:
+		// Now delete that user:
 		platform.getUsersApi().deleteUser(createduser, "nbiotdemo");
-
-		System.out.println("User name of the deleted user: " + usertocreate.getUserName());
 
 		// Now create a user and delete it by its name:
 		User seconduser = new User();
@@ -88,6 +89,36 @@ public class UsersApiTest {
 
 		// Now delete that user:
 		platform.getUsersApi().deleteUserByUserName("NoReturnWithUserName", "nbiotdemo");
+
+		// Create a user in the cloud and update its fields:
+		User userToUpdateFields = new User();
+		userToUpdateFields.setUserName("InitialUserName");
+		userToUpdateFields.setFirstName("InitialFirstName");
+		userToUpdateFields.setLastName("InitialLastName");
+		userToUpdateFields.setPassword("InitialPassword1234");
+		platform.getUsersApi().createUserNoReturn(userToUpdateFields, "nbiotdemo");
+		// check if that worked:
+		System.out.println("User first name before update: "
+				+ platform.getUsersApi().getUserByName("InitialUserName", "nbiotdemo").getFirstName());
+		// update its first name:
+		platform.getUsersApi().updateUserFirstName(userToUpdateFields, "nbiotdemo", "firstNameAfterUpdate");
+		// check if that worked:
+		System.out.println("First Name after Update:"
+				+ platform.getUsersApi().getUserByName("InitialUserName", "nbiotdemo").getFirstName());
+		// update its last name:
+		platform.getUsersApi().updateUserLastName(userToUpdateFields, "nbiotdemo", "LastNameAfterUpdate");
+		// check if that worked:
+		System.out.println("Last Name after Update:"
+				+ platform.getUsersApi().getUserByName("InitialUserName", "nbiotdemo").getLastName());
+		// update its password:
+		platform.getUsersApi().updateUserPassword(userToUpdateFields, "nbiotdemo", "passwordAfterUpdate");
+		// check if that worked:
+		System.out.println("Password before update (should be null):"
+				+ platform.getUsersApi().getUserByName("InitialUserName", "nbiotdemo").getPassword());
+		System.out.println("Password after Update (should be null):"
+				+ platform.getUsersApi().getUserByName("InitialUserName", "nbiotdemo").getPassword());
+		// now delete that user from the cloud:
+		platform.getUsersApi().deleteUserByUserName("InitialUserName", "nbiotdemo");
 	}
 
 }

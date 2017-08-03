@@ -17,7 +17,7 @@ public class UsersAPIIT {
 		// given
 
 		User user = new User();
-		user.setId("667");
+		user.setUserName("UserNameIT");
 		user.setEmail("mail@mail.com");
 		user.setFirstName("FName");
 		user.setLastName("LName");
@@ -30,6 +30,10 @@ public class UsersAPIIT {
 
 		// then
 		Assert.assertNotNull(storedUser.getId(), "Should now have an Id!");
+		Assert.assertNotNull(storedUser.getUserName(), "Should have a userName");
+		Assert.assertNotNull(storedUser.getFirstName(), "Should have a firstName");
+		Assert.assertNotNull(storedUser.getLastName(), "Should have a lastName");
 
+		usersApi.deleteUserByUserName("UserNameIT", TestHelper.TEST_TENANT);
 	}
 }
