@@ -5,6 +5,14 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+/**
+ * @author ozanarslan
+ *
+ */
+/**
+ * @author ozanarslan
+ *
+ */
 public class UsersApi {
 	private final CloudOfThingsRestClient cloudOfThingsRestClient;
 	private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
@@ -113,29 +121,99 @@ public class UsersApi {
 
 	// Operations on a generic User:
 	/**
-	 * A method to create a user
+	 * A method to create a user in the cloud from a pre-defined user object and
+	 * return it.
 	 * 
 	 * @param user
-	 * @param tenantId
+	 * @param tenant
 	 * @return an instance of a User
 	 */
-	public User createUser(User user, String tenantId) {
+	public User createUser(User user, String tenant) {
 		String json = gson.toJson(user);
 		// post requrest:
-		String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenantId + "/users", CONTENT_TYPE);
+		String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/users", CONTENT_TYPE);
 		user.setId(id);
 		return user;
 	}
 
-	public void deleteUser(User user, String tenantId) {
-		cloudOfThingsRestClient.delete(user.getId(), "user/" + tenantId + "/users");
+	/**
+	 * A method to create a user in the cloud from a pre-defined user object and
+	 * 
+	 * @param user
+	 * @param tenant
+	 * @return an instance of a User
+	 */
+	public void createUserNoReturn(User user, String tenant) {
+		String json = gson.toJson(user);
+		// post requrest:
+		String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/users", CONTENT_TYPE);
+		user.setId(id);
+	}
+
+	/**
+	 * A method to create a user in the cloud and return it by providing a
+	 * userName, password, firstName, lastName and a tenant.
+	 * 
+	 * @param userName
+	 *            of the user.
+	 * @param tenant
+	 *            of the tenant where the user resides.
+	 * @param firstName
+	 *            of the user.
+	 * @param lastName
+	 *            of the user.
+	 * @param password
+	 *            of the user.
+	 * @return an instance of the user.
+	 */
+	public User createUser(String userName, String tenant, String firstName, String lastName, String password) {
+		User user = new User();
+		user.setUserName(userName);
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setPassword(password);
+		String json = gson.toJson(user);
+		String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/users", CONTENT_TYPE);
+		user.setId(id);
+		return user;
+	}
+
+	/**
+	 * A method to create a user in the cloud and return it by providing a
+	 * userName, password, firstName, lastName and a tenant.
+	 * 
+	 * @param userName
+	 *            of the user.
+	 * @param tenant
+	 *            of the tenant where the user resides.
+	 * @param firstName
+	 *            of the user.
+	 * @param lastName
+	 *            of the user.
+	 * @param password
+	 *            of the user.
+	 * @return an instance of the user.
+	 */
+	public void createUserNoReturn(String userName, String tenant, String firstName, String lastName, String password) {
+		User user = new User();
+		user.setUserName(userName);
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setPassword(password);
+		String json = gson.toJson(user);
+		String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/users", CONTENT_TYPE);
+		user.setId(id);
+	}
+
+	public void deleteUser(User user, String tenant) {
+		cloudOfThingsRestClient.delete(user.getId(), "user/" + tenant + "/users");
 
 	}
 
-	public void deleteUserByUserName(String userName, String tenantId) {
+	public void deleteUserByUserName(String userName, String tenant) {
 
-		User user = getUserByName(userName, tenantId);
-		cloudOfThingsRestClient.delete(user.getId(), "user/" + tenantId + "/users");
+		User user = getUserByName(userName, tenant);
+		cloudOfThingsRestClient.delete(user.getId(), "user/" + tenant + "/users");
 
 	}
 
