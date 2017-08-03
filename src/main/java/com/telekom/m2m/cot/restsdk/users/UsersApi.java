@@ -111,7 +111,7 @@ public class UsersApi {
 		cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
 	}
 
-	// Operations on generic User:
+	// Operations on a generic User:
 	/**
 	 * A method to create a user
 	 * 
@@ -142,13 +142,19 @@ public class UsersApi {
 	public void updateUserFirstName(User user, String tenant, String firstName) {
 		user.setFirstName(firstName);
 		String json = gson.toJson(user);
-		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE));
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
 	}
 
 	public void updateUserLastName(User user, String tenant, String lastName) {
 		user.setFirstName(lastName);
 		String json = gson.toJson(user);
-		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE));
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
+	}
+
+	public void updateUserPassword(User user, String tenant, String password) {
+		user.setFirstName(password);
+		String json = gson.toJson(user);
+		cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users", CONTENT_TYPE);
 	}
 
 }
