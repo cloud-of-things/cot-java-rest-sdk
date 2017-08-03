@@ -263,6 +263,27 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    public void deleteBy(final String filter, final String api) {
+        final Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api + "?" + filter)
+                .delete()
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Error in delete by criteria '" + filter + "'");
+            }
+        } catch (CotSdkException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new CotSdkException("Error in request: " + e.getMessage(), e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
     public void delete(String url) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)

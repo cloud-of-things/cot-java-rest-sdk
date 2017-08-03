@@ -86,4 +86,13 @@ public class AuditApi {
                 gson,
                 filters);
     }
+
+    /**
+     * Deletes a collection of AuditRecord by criteria (User, Type and Application).
+     *
+     * @param filters filters of audit record attributes.
+     */
+    public void deleteAuditRecords(Filter.FilterBuilder filters) {
+        cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_API_URL);
+    }
 }

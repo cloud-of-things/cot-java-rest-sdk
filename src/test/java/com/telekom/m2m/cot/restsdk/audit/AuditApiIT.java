@@ -99,6 +99,15 @@ public class AuditApiIT {
         Assert.assertNotNull(auditRecordCollection);
         Assert.assertNotNull(auditRecordCollection.getAuditRecords());
         Assert.assertEquals(auditRecordCollection.getAuditRecords().length, 1, "auditRecordCollection should contain exact one audit record");
+
+        // when
+        auditApi.deleteAuditRecords(filterBuilder);
+        auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
+
+        // then
+        Assert.assertNotNull(auditRecordCollection);
+        Assert.assertNotNull(auditRecordCollection.getAuditRecords());
+        Assert.assertEquals(auditRecordCollection.getAuditRecords().length, 0, "auditRecordCollection filtered by type may not contain audit records anymore");
     }
 
 
