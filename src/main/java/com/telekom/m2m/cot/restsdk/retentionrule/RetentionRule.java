@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.retentionrule;
 
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 
@@ -41,9 +42,7 @@ public class RetentionRule extends ExtensibleObject {
         try {
             return (id instanceof Number) ? ((Number) id).longValue() : (Long) id;
         } catch (ClassCastException | NullPointerException ex) {
-            // TODO: is there really no better way? The untyped anyObject-Map makes it hard to know what
-            //       we can expect here and it wouldn't be nice to explicitly rely on gson here.
-            return null;
+            throw new CotSdkException("RetentionRule has invalid id in json.", ex);
         }
     }
 
@@ -155,10 +154,8 @@ public class RetentionRule extends ExtensibleObject {
         try {
             return (int) maximumAge;
         } catch (ClassCastException | NullPointerException ex) {
-            // TODO: is there really no better way? The untyped anyObject-Map makes it hard to know what
-            //       we can expect here and it wouldn't be nice to explicitly rely on gson here.
+            throw new CotSdkException("RetentionRule has invalid id in json.", ex);
         }
-        return 0;
     }
 
     /**

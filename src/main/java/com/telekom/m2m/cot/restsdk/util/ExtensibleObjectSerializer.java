@@ -8,7 +8,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
@@ -28,14 +27,12 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
         for (Map.Entry<String, Object> entry : attributes.entrySet()) {
             String key = entry.getKey();
             Object value = entry.getValue();
-            if ("source".equals(key)) {
-                if (value instanceof ManagedObject) {
-                    JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) value).getId());
-                    JsonObject sourceObject = new JsonObject();
-                    sourceObject.add("id", primitive);
-                    object.add(key, sourceObject);
-                    continue;
-                }
+            if ("source".equals(key) && (value instanceof ManagedObject)) {
+                JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) value).getId());
+                JsonObject sourceObject = new JsonObject();
+                sourceObject.add("id", primitive);
+                object.add(key, sourceObject);
+                continue;
             }
             object.add(key, context.serialize(value));
         }
