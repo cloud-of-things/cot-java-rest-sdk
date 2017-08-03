@@ -56,8 +56,8 @@ public class RetentionRuleApi {
      */
     public RetentionRule createRetentionRule(RetentionRule rule) {
         Map<String, Object> attributes = rule.getAttributes();
-        attributes.remove("id");
-        attributes.remove("editable");
+        attributes.remove("id"); // Because it feels wrong to ask the server to create an object with a predefined id. It is the server which assigns ids.
+        attributes.remove("editable"); // TODO: is there some way to write this via the REST API?
         ExtensibleObject eo = new ExtensibleObject();
         eo.setAttributes(attributes);
         RetentionRule filteredRule = new RetentionRule(eo);
@@ -80,6 +80,15 @@ public class RetentionRuleApi {
         cloudOfThingsRestClient.delete(rule.getId().toString(), RELATIVE_API_URL);
     }
 
+    /**
+     * Deletes a rule by id.
+     *
+     * @param id the id of the RetentionRule to delete
+     */
+    public void deleteRetentionRule(long id) {
+        cloudOfThingsRestClient.delete(String.valueOf(id), RELATIVE_API_URL);
+    }
+
 
     /**
      * Updates a rule.
@@ -88,7 +97,8 @@ public class RetentionRuleApi {
      */
     public void update(RetentionRule rule) {
         Map<String, Object> attributes = rule.getAttributes();
-        attributes.remove("id");
+        attributes.remove("id"); // It doesn't make sense to change the ID of a rule afterwards.
+        attributes.remove("editable"); // TODO: is there some way to write this via the REST API?
 
         ExtensibleObject extensibleObject = new ExtensibleObject();
         extensibleObject.setAttributes(attributes);

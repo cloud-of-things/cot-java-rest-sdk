@@ -177,7 +177,8 @@ public class RetentionRule extends ExtensibleObject {
      * @return the boolean editable-flag
      */
     public boolean isEditable() {
-        return (boolean) anyObject.get("editable");
+        Object editable = anyObject.get("editable");
+        return (editable != null) && (boolean)editable;
     }
 
     /**

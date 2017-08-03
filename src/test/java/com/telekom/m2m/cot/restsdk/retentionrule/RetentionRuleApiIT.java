@@ -14,6 +14,7 @@ import org.testng.annotations.Test;
 import java.util.Date;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
@@ -93,7 +94,7 @@ public class RetentionRuleApiIT {
         long id1 = retentionRuleApi.createRetentionRule(rule).getId();
         long id2 = retentionRuleApi.createRetentionRule(rule).getId();
         rule.setSource("foo");
-        retentionRuleApi.createRetentionRule(rule); // This is the one that should be filtered out later. TODO: doesn't work
+        long id3 = retentionRuleApi.createRetentionRule(rule).getId(); // This is the one that should be filtered out later. TODO: doesn't work
 
         // when
         RetentionRuleCollection collection = retentionRuleApi.getRetentionRules();
@@ -120,5 +121,10 @@ public class RetentionRuleApiIT {
         assertEquals(rules.length, 0);
         */
 
+        // cleanup
+        retentionRuleApi.deleteRetentionRule(id0);
+        retentionRuleApi.deleteRetentionRule(id1);
+        retentionRuleApi.deleteRetentionRule(id2);
+        retentionRuleApi.deleteRetentionRule(id3);
     }
 }
