@@ -20,6 +20,7 @@ public class AuditRecordTest {
     private final String user = "integration-tester";
     private final String application = this.getClass().getSimpleName();
     private final String activity = "Create Audit Record";
+    private final String severity = AuditRecord.SEVERITY_MINOR;
     private final String managedObjectId = "123";
     private final String managedObjectName = "device123";
 
@@ -31,7 +32,6 @@ public class AuditRecordTest {
         // then
         checkAssertions(testAuditRecord);
     }
-
 
     @Test
     public void testAuditRecordWrapper() {
@@ -63,6 +63,7 @@ public class AuditRecordTest {
         Assert.assertTrue(json.contains(user));
         Assert.assertTrue(json.contains(application));
         Assert.assertTrue(json.contains(activity));
+        Assert.assertTrue(json.contains(severity));
         Assert.assertTrue(json.contains(managedObjectId));
     }
 
@@ -96,6 +97,7 @@ public class AuditRecordTest {
         auditRecord.setUser(user);
         auditRecord.setApplication(application);
         auditRecord.setActivity(activity);
+        auditRecord.setSeverity(severity);
 
         return auditRecord;
     }
@@ -106,11 +108,10 @@ public class AuditRecordTest {
         Assert.assertEquals(testAuditRecord.getType(), type);
         Assert.assertEquals(testAuditRecord.getTime().compareTo(timeOfAuditRecording), 0);
         Assert.assertEquals(testAuditRecord.getSource().getId(), managedObjectId);
-        // managedObject.name serialization will not be provided yet
-//        Assert.assertEquals(testAuditRecord.getSource().getName(), managedObjectName);
         Assert.assertEquals(testAuditRecord.getUser(), user);
         Assert.assertEquals(testAuditRecord.getApplication(), application);
         Assert.assertEquals(testAuditRecord.getActivity(), activity);
+        Assert.assertEquals(testAuditRecord.getSeverity(), severity);
         Assert.assertNull(testAuditRecord.getCreationTime());
     }
 }

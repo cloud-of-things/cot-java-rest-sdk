@@ -100,6 +100,8 @@ public class JsonArrayPagination {
         String url = relativeApiUrl +
                 "?currentPage=" + page +
                 "&pageSize=" + pageSize;
+        //hint: it is possible to change the sort order by adding query parameter "revert=true"
+
         if (criteria != null) {
             url += "&" + criteria.buildFilter();
         }

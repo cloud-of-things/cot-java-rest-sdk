@@ -33,9 +33,7 @@ public class AuditRecordCollection extends JsonArrayPagination {
     }
 
     /**
-     * Retrieves the current page.
-     * <p>
-     * Retrieves the AuditRecords influenced by filters set in construction.
+     * Retrieves the AuditRecords influenced by filters set in constructor.
      *
      * @return array of found AuditRecords
      */
