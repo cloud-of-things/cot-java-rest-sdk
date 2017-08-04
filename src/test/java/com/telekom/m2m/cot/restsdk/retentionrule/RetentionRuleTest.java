@@ -17,6 +17,8 @@ public class RetentionRuleTest {
 
         Gson gson = GsonUtils.createGson();
 
+        // Test a rule with all fields set:
+
         RetentionRule ruleIn = new RetentionRule();
         ruleIn.setId(12345678L);
         ruleIn.setEditable(true);
@@ -47,6 +49,7 @@ public class RetentionRuleTest {
         assertEquals("the source", ruleOut.getSource());
         assertEquals(365, ruleOut.getMaximumAge());
 
+        // Test a sparse rule, with some empty/default fields:
 
         ruleIn = new RetentionRule();
         ruleIn.setEditable(false);

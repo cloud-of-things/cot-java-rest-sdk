@@ -11,6 +11,13 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class RetentionRule extends ExtensibleObject {
 
+    public static final String DATA_TYPE_EVENT = "EVENT";
+    public static final String DATA_TYPE_MEASUREMENT = "MEASUREMENT";
+    public static final String DATA_TYPE_ALARM = "ALARM";
+    public static final String DATA_TYPE_AUDIT = "AUDIT";
+    public static final String DATA_TYPE_OPERATION = "OPERATION";
+    public static final String DATA_TYPE_ALL = "*";
+
 
     /**
      * Default constructor to create a new rule.
@@ -39,9 +46,19 @@ public class RetentionRule extends ExtensibleObject {
      */
     public Long getId() {
         Object id = anyObject.get("id");
+        if (id == null) {
+            return null;
+        }
+
+        if (id instanceof Number) {
+            return ((Number) id).longValue();
+        }
+        if (id instanceof String) {
+            return Long.parseLong((String) id);
+        }
         try {
-            return (id instanceof Number) ? ((Number) id).longValue() : (Long) id;
-        } catch (ClassCastException | NullPointerException ex) {
+            return (Long) id;
+        } catch (ClassCastException ex) {
             throw new CotSdkException("RetentionRule has invalid id in json.", ex);
         }
     }
@@ -145,6 +162,11 @@ public class RetentionRule extends ExtensibleObject {
      */
     public int getMaximumAge() {
         Object maximumAge = anyObject.get("maximumAge");
+
+        if (maximumAge == null) {
+            return 0;
+        }
+
         if (maximumAge instanceof Number) {
             return ((Number) maximumAge).intValue();
         }
@@ -153,8 +175,8 @@ public class RetentionRule extends ExtensibleObject {
         }
         try {
             return (int) maximumAge;
-        } catch (ClassCastException | NullPointerException ex) {
-            throw new CotSdkException("RetentionRule has invalid id in json.", ex);
+        } catch (ClassCastException ex) {
+            throw new CotSdkException("RetentionRule has invalid maximumAge in json.", ex);
         }
     }
 
