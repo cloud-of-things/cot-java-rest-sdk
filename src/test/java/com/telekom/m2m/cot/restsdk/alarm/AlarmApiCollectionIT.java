@@ -149,15 +149,25 @@ public class AlarmApiCollectionIT {
     public void testMultipleAlarmsByStatus() throws Exception {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
-        Alarm testAlarm = new Alarm();
-        testAlarm.setSource(testManagedObject);
-        testAlarm.setTime(new Date(new Date().getTime() - (2 * 5000)));
-        testAlarm.setType("mytype");
-        testAlarm.setText("Test");
-        testAlarm.setStatus(Alarm.STATE_ACTIVE);
-        testAlarm.setSeverity(Alarm.SEVERITY_MAJOR);
+        Alarm testAlarm1 = new Alarm();
+        testAlarm1.setSource(testManagedObject);
+        testAlarm1.setTime(new Date(new Date().getTime() - (2 * 5000)));
+        testAlarm1.setType("mytype");
+        testAlarm1.setText("Test");
+        testAlarm1.setStatus(Alarm.STATE_ACTIVE);
+        testAlarm1.setSeverity(Alarm.SEVERITY_MAJOR);
 
-        alarmApi.create(testAlarm);
+        alarmApi.create(testAlarm1);
+
+        Alarm testAlarm2 = new Alarm();
+        testAlarm2.setSource(testManagedObject);
+        testAlarm2.setTime(new Date(new Date().getTime() - (2 * 5000)));
+        testAlarm2.setType("mytype");
+        testAlarm2.setText("Test");
+        testAlarm2.setStatus(Alarm.STATE_ACKNOWLEDGED);
+        testAlarm2.setSeverity(Alarm.SEVERITY_MAJOR);
+
+        alarmApi.create(testAlarm2);
 
         AlarmCollection alarms = alarmApi.getAlarms(50);
         Alarm[] as = alarms.getAlarms();
