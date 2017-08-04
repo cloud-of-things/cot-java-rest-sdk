@@ -154,11 +154,12 @@ public class AuditRecordCollectionIT {
         // when we search for audit records by user1 & type1 & application1
         AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
 
-        // then there can only be found one entry
+        // then
         Assert.assertNotNull(auditRecordCollection);
 
         final AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
 
+        // there can only be found one entry
         Assert.assertEquals(auditRecords.length, 1);
         Assert.assertEquals(auditRecords.length, auditRecordCollection.getJsonArray().size());
 
