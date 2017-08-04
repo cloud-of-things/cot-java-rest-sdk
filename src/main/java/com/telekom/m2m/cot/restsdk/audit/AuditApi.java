@@ -73,7 +73,7 @@ public class AuditApi {
     /**
      * Retrieves a pageable Collection of AuditRecords filtered by criteria.
      *
-     * It provides filtering by User, Type and Application
+     * It provides filtering by User, Type, Application, DateFrom, DateTo
      *
      * @param filters filters of audit record attributes.
      * @return the first page of AuditRecordCollection which can be used to navigate through the found AuditRecords.
@@ -88,7 +88,7 @@ public class AuditApi {
     }
 
     /**
-     * Deletes a collection of AuditRecord by criteria (User, Type and Application).
+     * Deletes a collection of AuditRecord by criteria (User, Type, Application, DateFrom, DateTo).
      *
      * @param filters filters of audit record attributes.
      */
