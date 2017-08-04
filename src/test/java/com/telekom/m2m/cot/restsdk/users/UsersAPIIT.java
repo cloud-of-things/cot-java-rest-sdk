@@ -4,7 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
 public class UsersAPIIT {
 
@@ -14,7 +13,6 @@ public class UsersAPIIT {
     private String password = "nbiot-Test-Pw";
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(host, userName, password);
     private String exampleGroup = "admins";
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
 
     @Test
     public void testGenericMethods() throws Exception {
@@ -76,7 +74,7 @@ public class UsersAPIIT {
     public void testCurrentUserMethods() throws Exception {
 
         // given
-        CurrentUser currentuser = new CurrentUser();
+        CurrentUser currentuser;
 
         // when
         currentuser = cotPlat.getUsersApi().getCurrentUser();

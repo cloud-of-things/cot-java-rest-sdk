@@ -12,9 +12,7 @@ public class UsersApiTest {
         CloudOfThingsPlatform platform = new CloudOfThingsPlatform("https://nbiotdemo.int2-ram.m2m.telekom.com",
                 "telekom-nbiot@lists.tarent.de", "nbiot-Test-Pw");
 
-        User user = new User();
-
-        user = platform.getUsersApi().getUserByName("telekom-nbiot@lists.tarent.de", "nbiotdemo");
+        User user = platform.getUsersApi().getUserByName("telekom-nbiot@lists.tarent.de", "nbiotdemo");
         user.setLastName("Black");
         System.out.println(user.getId());
         System.out.println(user.getEmail());
