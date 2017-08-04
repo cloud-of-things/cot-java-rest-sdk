@@ -18,32 +18,75 @@ import java.util.Date;
 public class JsonArrayPaginationIT {
 
     private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
+    private AuditApi auditApi;
+
     private ManagedObject testManagedObject;
+
+    // given
+    final String user1 = "integration-tester1-" + System.currentTimeMillis();
+    final String type1 = "com_telekom_audit_TestType1" + System.currentTimeMillis();
+    final String type2 = "com_telekom_audit_TestType2" + System.currentTimeMillis();
+    final String type3 = "com_telekom_audit_TestType3" + System.currentTimeMillis();
 
     @BeforeMethod
     public void setUp() {
+        auditApi = cotPlat.getAuditApi();
+
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
+
+        String text = "new audit record was created";
+        String activity = "Create Audit Record";
+        String severity = AuditRecord.SEVERITY_INFORMATION;
+
+        // auditRecord1:user1:type1
+        AuditRecord auditRecord1 = new AuditRecord();
+        auditRecord1.setUser(user1);
+        auditRecord1.setType(type1);
+        auditRecord1.setText(text);
+        auditRecord1.setTime(new Date());
+        auditRecord1.setSource(testManagedObject);
+        auditRecord1.setActivity(activity);
+        auditRecord1.setSeverity(severity);
+
+        auditApi.createAuditRecord(auditRecord1);
+
+        // auditRecord2:user1:type2
+        AuditRecord auditRecord2 = new AuditRecord();
+        auditRecord2.setUser(user1);
+        auditRecord2.setType(type2);
+        auditRecord2.setText(text);
+        auditRecord2.setTime(new Date());
+        auditRecord2.setSource(testManagedObject);
+        auditRecord2.setActivity(activity);
+        auditRecord2.setSeverity(severity);
+
+        auditApi.createAuditRecord(auditRecord2);
+
+        // auditRecord3:user1:type3
+        AuditRecord auditRecord3 = new AuditRecord();
+        auditRecord3.setUser(user1);
+        auditRecord3.setType(type3);
+        auditRecord3.setText(text);
+        auditRecord3.setTime(new Date());
+        auditRecord3.setSource(testManagedObject);
+        auditRecord3.setActivity(activity);
+        auditRecord3.setSeverity(severity);
+
+        auditApi.createAuditRecord(auditRecord3);
     }
 
     @AfterMethod
     public void tearDown() {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
+
+        Filter.FilterBuilder filterBuilder = Filter.build().byUser(user1);
+        auditApi.deleteAuditRecords(filterBuilder);
     }
 
     @Test
     public void testMultipleAuditRecords() {
-        // given
-        final String type = "com_telekom_audit_TestType";
-
-        final AuditRecord testAuditRecord = new AuditRecord();
-        testAuditRecord.setType(type);
-        testAuditRecord.setTime(new Date());
-        testAuditRecord.setText("new audit test record created");
-        testAuditRecord.setActivity("Create Test Audit Record");
-        testAuditRecord.setSource(testManagedObject);
-
-        final AuditApi auditApi = cotPlat.getAuditApi();
-        auditApi.createAuditRecord(testAuditRecord);
+        // given: three audit recods created in setUp
 
         // when
         final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
@@ -51,7 +94,7 @@ public class JsonArrayPaginationIT {
         final AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
 
         // then
-        Assert.assertTrue(auditRecords.length > 0);
+        Assert.assertTrue(auditRecords.length >= 3);  // It's >= because we don't know what other data might already be there.
 
         AuditRecord retrievedAuditRecord = auditRecords[0];
 
@@ -67,22 +110,10 @@ public class JsonArrayPaginationIT {
 
     @Test
     public void testMultipleAuditRecordsWithPaging() {
-        // given
-        final AuditApi auditApi = cotPlat.getAuditApi();
+        // given: three audit recods created in setUp
 
-        for (int i = 0; i < 3; i++) {
-            final AuditRecord testAuditRecord = new AuditRecord();
-            testAuditRecord.setType("mytype-" + i);
-            testAuditRecord.setTime(new Date(new Date().getTime() - (i * 5000)));
-            testAuditRecord.setSource(testManagedObject);
-            testAuditRecord.setText("new audit test record created");
-            testAuditRecord.setActivity("Create Test Audit Record");
-
-            auditApi.createAuditRecord(testAuditRecord);
-        }
-
-        // when you retrieve the created audit records filtered by id of the testManagedObject
-        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().bySource(testManagedObject.getId()));
+        // when you retrieve the created audit records filtered by user1
+        final AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byUser(user1));
         auditRecordCollection.setPageSize(2);
 
         AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
@@ -123,203 +154,32 @@ public class JsonArrayPaginationIT {
     }
 
     @Test
-    public void testMultipleAuditRecordsBySource() {
-        // given
-        final AuditApi auditApi = cotPlat.getAuditApi();
-
-        final AuditRecord testAuditRecord = new AuditRecord();
-        testAuditRecord.setSource(testManagedObject);
-        testAuditRecord.setTime(new Date());
-        testAuditRecord.setType("mytype");
-        testAuditRecord.setText("new audit test record created");
-        testAuditRecord.setActivity("Create Test Audit Record");
-
-        auditApi.createAuditRecord(testAuditRecord);
-
-        // when you retrieve the first page of the audit records
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
-        AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there should be at least one audit record with a source.id which does not match to the source.id of the just created testAuditRecord
-        Assert.assertTrue(auditRecords.length > 0);
-        boolean allAuditRecordsFromSource = true;
-        for (AuditRecord auditRecord : auditRecords) {
-            final ManagedObject source = auditRecord.getSource();
-            if (!source.get("id").equals(testManagedObject.getId())) {
-                allAuditRecordsFromSource = false;
-            }
-        }
-        Assert.assertFalse(allAuditRecordsFromSource);
-
-        // when you search by id of the testManagedObject for created audit record
-        auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().bySource(testManagedObject.getId()));
-        auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there should be delivered only audit records with the requested source.id
-        allAuditRecordsFromSource = true;
-        Assert.assertTrue(auditRecords.length > 0);
-        for (AuditRecord auditRecord : auditRecords) {
-            final ManagedObject source = auditRecord.getSource();
-            if (!source.get("id").equals(testManagedObject.getId())) {
-                allAuditRecordsFromSource = false;
-            }
-        }
-        Assert.assertTrue(allAuditRecordsFromSource);
-    }
-
-    @Test
     public void testMultipleAuditRecordsByType() {
-        //given
-        final AuditApi auditApi = cotPlat.getAuditApi();
-
-        AuditRecord testAuditRecord = new AuditRecord();
-        testAuditRecord.setSource(testManagedObject);
-        testAuditRecord.setTime(new Date());
-        testAuditRecord.setType("mysuperspecialtype" + System.currentTimeMillis());
-        testAuditRecord.setText("new audit test record created");
-        testAuditRecord.setActivity("Create Test Audit Record");
-
-        auditApi.createAuditRecord(testAuditRecord);
+        // given: three audit recods created in setUp
 
         // when you retrieve the first page of the audit records
         AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection();
         AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
 
-        // then there should be at least one audit record with a type which does not match to the type of the just created testAuditRecord
-        Assert.assertTrue(auditRecords.length > 0);
-        boolean allAuditRecordsFromSameType = true;
+        // then there should be at least one audit record with a type which does not match to the type1
+        Assert.assertTrue(auditRecords.length >= 3);
+        boolean type1AuditRecords = true;
         for (AuditRecord auditRecord : auditRecords) {
-            if (!auditRecord.getType().equals(testManagedObject.getType())) {
-                allAuditRecordsFromSameType = false;
+            if (!auditRecord.getType().equals(type1)) {
+                type1AuditRecords = false;
             }
         }
-        Assert.assertFalse(allAuditRecordsFromSameType);
+        Assert.assertFalse(type1AuditRecords);
 
-        // when you search by type of the testManagedObject for created audit record
-        auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byType(testAuditRecord.getType()));
+        // when you retrieve the created audit records filtered by type1
+        auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byType(type1));
+
         auditRecords = auditRecordCollection.getAuditRecords();
 
         // then there should be delivered only audit records with the requested type
-        allAuditRecordsFromSameType = true;
         Assert.assertTrue(auditRecords.length > 0);
         for (AuditRecord auditRecord : auditRecords) {
-            if (!auditRecord.getType().equals(testAuditRecord.getType())) {
-                allAuditRecordsFromSameType = false;
-            }
+            Assert.assertEquals(auditRecord.getType(), type1);
         }
-        Assert.assertTrue(allAuditRecordsFromSameType);
-    }
-
-    @Test
-    public void testMultipleAuditRecordsByDate() {
-        // given
-        final AuditApi auditApi = cotPlat.getAuditApi();
-
-        AuditRecord testAuditRecord = new AuditRecord();
-        testAuditRecord.setSource(testManagedObject);
-        testAuditRecord.setTime(new Date(new Date().getTime() - (1000 * 60)));
-        testAuditRecord.setType("mysuperspecialtype");
-        testAuditRecord.setText("new audit test record created");
-        testAuditRecord.setActivity("Create Test Audit Record");
-
-        auditApi.createAuditRecord(testAuditRecord);
-
-        // when you are searching for audit records created in the last five minutes
-        Date sinceAboutFiveMinutes = new Date(new Date().getTime() - (1000 * 60 * 5));
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byDate(sinceAboutFiveMinutes, new Date()));
-        AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there should be found at least one record
-        Assert.assertTrue(auditRecords.length > 0);
-
-        // when you are searching for audit records in the future
-        Date inOneMinute = new Date(new Date().getTime() + (1000 * 60 * 1));
-        Date inTwoMinutes = new Date(new Date().getTime() + (1000 * 60 * 2));
-        auditRecordCollection = auditApi.getAuditRecordCollection(Filter.build().byDate(inOneMinute, inTwoMinutes));
-        auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there should be found no records
-        Assert.assertEquals(auditRecords.length, 0);
-    }
-
-    @Test
-    public void testMultipleAuditRecordsByDateAndBySource() {
-        // given
-        final AuditApi auditApi = cotPlat.getAuditApi();
-
-        final AuditRecord testAuditRecord = new AuditRecord();
-        testAuditRecord.setSource(testManagedObject);
-        testAuditRecord.setTime(new Date(new Date().getTime() - (1000 * 60)));
-        testAuditRecord.setType("mysuperspecialtype");
-        testAuditRecord.setText("new audit test record created");
-        testAuditRecord.setActivity("Create Test Audit Record");
-
-        auditApi.createAuditRecord(testAuditRecord);
-
-        final Date sinceAboutFiveMinutes = new Date(new Date().getTime() - (1000 * 60 * 5));
-
-        // when you are searching for records with a specific source.id created in last five minutes
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(
-                Filter.build()
-                        .byDate(sinceAboutFiveMinutes, new Date())
-                        .bySource(testManagedObject.getId()));
-
-        AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there can only be found one record
-        Assert.assertEquals(auditRecords.length, 1);
-
-        // when you are searching for records with a specific source.id created in last ten to five minutes
-        final Date sinceAboutTenMinutes = new Date(new Date().getTime() - (1000 * 60 * 10));
-
-        auditRecordCollection = auditApi.getAuditRecordCollection(
-                Filter.build()
-                        .byDate(sinceAboutTenMinutes, sinceAboutFiveMinutes)
-                        .bySource(testManagedObject.getId()));
-        auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there should be found no records
-        Assert.assertEquals(auditRecords.length, 0);
-    }
-
-    @Test
-    public void testMultipleAuditRecordsByTypeAndBySource() {
-        // given
-        final AuditApi auditApi = cotPlat.getAuditApi();
-
-        AuditRecord testAuditRecord = new AuditRecord();
-
-        SampleTemperatureSensor sts = new SampleTemperatureSensor();
-        sts.setTemperature(100);
-        testAuditRecord.set(sts);
-
-        testAuditRecord.setSource(testManagedObject);
-        testAuditRecord.setTime(new Date(new Date().getTime() - (1000 * 60)));
-        testAuditRecord.setType("mysuperspecialtype" + System.currentTimeMillis());
-        testAuditRecord.setText("new audit test record created");
-        testAuditRecord.setActivity("Create Test Audit Record");
-
-        auditApi.createAuditRecord(testAuditRecord);
-
-        // when you are searching for records with a specific source.id and type
-        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(
-                Filter.build()
-                        .byType(testAuditRecord.getType())
-                        .bySource(testManagedObject.getId()));
-
-        AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there can only be found one record
-        Assert.assertEquals(auditRecords.length, 1);
-
-        // when you are searching for records with a type which does not exist
-        auditRecordCollection = auditApi.getAuditRecordCollection(
-                Filter.build()
-                        .byType("NOT_USED" + System.currentTimeMillis())
-                        .bySource(testManagedObject.getId()));
-        auditRecords = auditRecordCollection.getAuditRecords();
-
-        // then there should be found no records
-        Assert.assertEquals(auditRecords.length, 0);
     }
 }

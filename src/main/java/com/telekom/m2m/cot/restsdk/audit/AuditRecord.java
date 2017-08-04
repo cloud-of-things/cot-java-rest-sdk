@@ -154,10 +154,17 @@ public class AuditRecord extends ExtensibleObject {
     /**
      * Get the ManagedObject where the audit record originated from.
      *
+     * It concerns not only the id of a ManagedObject,
+     * but in case of "Operation" type - operation id
+     * and in case of Alarm type - alarm Id.
+     *
      * @return the originating {@link ManagedObject}
      */
     public ManagedObject getSource() {
         Object source = anyObject.get("source");
+        // since source value can be set as ManagedObject via setter in regular way
+        // and as ExtensibleObject via gson ExtensibleObjectSerializer.
+        // At first we need to check the type to avoid an unnecessary wrap into ManagedObject
         if(source instanceof ManagedObject) {
             return (ManagedObject)source;
         }
