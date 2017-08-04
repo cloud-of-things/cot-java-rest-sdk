@@ -4,6 +4,7 @@ package com.telekom.m2m.cot.restsdk.retentionrule;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
@@ -18,6 +19,7 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 public class RetentionRuleApiIT {
 
@@ -27,13 +29,122 @@ public class RetentionRuleApiIT {
 
 
     @Test
+    public void testCreateAllDataTypes() {
+        RetentionRule ruleIn = new RetentionRule();
+        ruleIn.setMaximumAge(365);
+
+        // The server should accept all these rules without giving us any errors.
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_EVENT);
+        retentionRuleApi.createRetentionRule(ruleIn);
+        retentionRuleApi.deleteRetentionRule(ruleIn);
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_MEASUREMENT);
+        retentionRuleApi.createRetentionRule(ruleIn);
+        retentionRuleApi.deleteRetentionRule(ruleIn);
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_ALARM);
+        retentionRuleApi.createRetentionRule(ruleIn);
+        retentionRuleApi.deleteRetentionRule(ruleIn);
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_AUDIT);
+        retentionRuleApi.createRetentionRule(ruleIn);
+        retentionRuleApi.deleteRetentionRule(ruleIn);
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_OPERATION);
+        retentionRuleApi.createRetentionRule(ruleIn);
+        retentionRuleApi.deleteRetentionRule(ruleIn);
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_ALL);
+        retentionRuleApi.createRetentionRule(ruleIn);
+        retentionRuleApi.deleteRetentionRule(ruleIn);
+    }
+
+
+    @Test
+    public void testCreateValidation() {
+        RetentionRule ruleIn = new RetentionRule();
+
+        // We try to create a RetentionRule for each validation rule. All should fail.
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_ALARM); // Missing maxAge
+        try {
+            retentionRuleApi.createRetentionRule(ruleIn);
+            fail();
+        } catch(CotSdkException ex) {
+            assertEquals(ex.getHttpStatus(), 0); // Because it comes from our local validation, not the server.
+        }
+
+        ruleIn.setMaximumAge(365);
+
+        ruleIn.setDataType("INVALID");
+        try {
+            retentionRuleApi.createRetentionRule(ruleIn);
+            fail();
+        } catch(CotSdkException ex) {
+            assertEquals(ex.getHttpStatus(), 0); // Because it comes from our local validation, not the server.
+        }
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_ALARM);
+        ruleIn.setFragmentType("not_allowed_for_alarm");
+        try {
+            retentionRuleApi.createRetentionRule(ruleIn);
+            fail();
+        } catch(CotSdkException ex) {
+            assertEquals(ex.getHttpStatus(), 0); // Because it comes from our local validation, not the server.
+        }
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_AUDIT);
+        ruleIn.setFragmentType("not_allowed_for_AUDIT");
+        try {
+            retentionRuleApi.createRetentionRule(ruleIn);
+            fail();
+        } catch(CotSdkException ex) {
+            assertEquals(ex.getHttpStatus(), 0); // Because it comes from our local validation, not the server.
+        }
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_OPERATION);
+        ruleIn.setFragmentType("*");
+        ruleIn.setType("not_allowed_for_operation");
+        try {
+            retentionRuleApi.createRetentionRule(ruleIn);
+            fail();
+        } catch(CotSdkException ex) {
+            assertEquals(ex.getHttpStatus(), 0); // Because it comes from our local validation, not the server.
+        }
+    }
+
+
+    @Test
+    public void testUpdateValidation() {
+        RetentionRule ruleIn = new RetentionRule();
+        ruleIn.setMaximumAge(365);
+
+        // We try one invalid update. No need to duplicate all the cases in testCreateValidation.
+
+        ruleIn.setDataType(RetentionRule.DATA_TYPE_ALARM);
+
+        retentionRuleApi.createRetentionRule(ruleIn);
+
+        ruleIn.setFragmentType("not_allowed_for_alarm");
+
+        try {
+            retentionRuleApi.update(ruleIn);
+            fail();
+        } catch(CotSdkException ex) {
+            assertEquals(ex.getHttpStatus(), 0); // Because it comes from our local validation, not the server.
+        }
+    }
+
+
+    @Test
     public void testCreateReadUpdateDeleteRule() throws Exception {
         // given
         RetentionRule ruleIn = new RetentionRule();
         String source = "source-" + (Math.random() * Integer.MAX_VALUE);
-        ruleIn.setType("*");
-        ruleIn.setDataType("EVENT");  // TODO: EVENT, MEASUREMENT are ok, ALARM, AUDIT, OPERATION are not: '"retention/Invalid Data"' HTTP status code:'422'
-        ruleIn.setFragmentType("RetentionRuleApiIT");
+        ruleIn.setType("RetentionRuleApiIT-type");
+        ruleIn.setDataType("EVENT");
+        ruleIn.setFragmentType("RetentionRuleApiIT-fragmentType");
         ruleIn.setSource(source);
         ruleIn.setMaximumAge(365);
 
@@ -68,7 +179,7 @@ public class RetentionRuleApiIT {
         assertEquals("newType", ruleOut.getType());
         assertEquals(31, ruleOut.getMaximumAge());
         assertEquals("EVENT", ruleOut.getDataType());
-        assertEquals("RetentionRuleApiIT", ruleOut.getFragmentType());
+        assertEquals("RetentionRuleApiIT-fragmentType", ruleOut.getFragmentType());
 
         // when
         retentionRuleApi.deleteRetentionRule(ruleIn);
