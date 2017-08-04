@@ -32,6 +32,8 @@ public class AuditRecordCollectionIT {
     final String type2 = "com_telekom_audit_TestType2" + System.currentTimeMillis();
     final String application2 = "test-app2-" + System.currentTimeMillis();
 
+    Date timeOfAuditRecording1;
+
     @BeforeMethod
     public void setUp() {
         auditApi = cotPlat.getAuditApi();
@@ -39,8 +41,6 @@ public class AuditRecordCollectionIT {
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
 
         String text = "new audit record was created";
-        Date timeOfAuditRecording = new Date();
-        timeOfAuditRecording.setTime(System.currentTimeMillis() - 1000*60*60*24*2);
         String activity = "Create Audit Record";
         String severity = AuditRecord.SEVERITY_INFORMATION;
 
@@ -50,7 +50,9 @@ public class AuditRecordCollectionIT {
         auditRecord1.setType(type1);
         auditRecord1.setApplication(application1);
         auditRecord1.setText(text);
-        auditRecord1.setTime(timeOfAuditRecording);
+        timeOfAuditRecording1 = new Date();
+        timeOfAuditRecording1.setTime(System.currentTimeMillis() - 1000*60*60*1);
+        auditRecord1.setTime(timeOfAuditRecording1);
         auditRecord1.setSource(testManagedObject);
         auditRecord1.setActivity(activity);
         auditRecord1.setSeverity(severity);
@@ -63,7 +65,9 @@ public class AuditRecordCollectionIT {
         auditRecord2.setType(type1);
         auditRecord2.setApplication(application2);
         auditRecord2.setText(text);
-        auditRecord2.setTime(timeOfAuditRecording);
+        Date timeOfAuditRecording2 = new Date();
+        timeOfAuditRecording2.setTime(System.currentTimeMillis() - 1000*60*60*2);
+        auditRecord2.setTime(timeOfAuditRecording2);
         auditRecord2.setSource(testManagedObject);
         auditRecord2.setActivity(activity);
         auditRecord2.setSeverity(severity);
@@ -76,7 +80,9 @@ public class AuditRecordCollectionIT {
         auditRecord3.setType(type2);
         auditRecord3.setApplication(application1);
         auditRecord3.setText(text);
-        auditRecord3.setTime(timeOfAuditRecording);
+        Date timeOfAuditRecording3 = new Date();
+        timeOfAuditRecording3.setTime(System.currentTimeMillis() - 1000*60*60*3);
+        auditRecord3.setTime(timeOfAuditRecording3);
         auditRecord3.setSource(testManagedObject);
         auditRecord3.setActivity(activity);
         auditRecord3.setSeverity(severity);
@@ -89,7 +95,9 @@ public class AuditRecordCollectionIT {
         auditRecord4.setType(type1);
         auditRecord4.setApplication(application1);
         auditRecord4.setText(text);
-        auditRecord4.setTime(timeOfAuditRecording);
+        Date timeOfAuditRecording4 = new Date();
+        timeOfAuditRecording4.setTime(System.currentTimeMillis() - 1000*60*60*4);
+        auditRecord4.setTime(timeOfAuditRecording4);
         auditRecord4.setSource(testManagedObject);
         auditRecord4.setActivity(activity);
         auditRecord4.setSeverity(severity);
@@ -406,6 +414,33 @@ public class AuditRecordCollectionIT {
         // then we should find still 1 entry
         Assert.assertNotNull(auditRecordCollection);
         Assert.assertEquals(auditRecordCollection.getAuditRecords().length, 1);
+    }
+
+    @Test
+    public void testAuditRecordCollectionWithDateFilter() throws Exception {
+        // given: four created audit records in setUp()-method
+        Date timeOfAuditRecording1To = new Date();
+        timeOfAuditRecording1To.setTime(timeOfAuditRecording1.getTime()+1); // dateTo is exclusive, so we add a millisecond
+        Filter.FilterBuilder filterBuilder = Filter.build().byDate(timeOfAuditRecording1, timeOfAuditRecording1To);
+
+        // when we search for audit records by timeOfAuditRecording1
+        AuditRecordCollection auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
+
+        // then there should be only one entry
+        Assert.assertNotNull(auditRecordCollection);
+
+        final AuditRecord[] auditRecords = auditRecordCollection.getAuditRecords();
+
+        checkAssertions(auditRecords, 1, user1, type1, application1);
+
+        // when we delete the entry with the same filter criteria: timeOfAuditRecording1
+        auditApi.deleteAuditRecords(filterBuilder);
+        // and search again for audit records by timeOfAuditRecording1
+        auditRecordCollection = auditApi.getAuditRecordCollection(filterBuilder);
+
+        // then no entries would be found
+        Assert.assertNotNull(auditRecordCollection);
+        Assert.assertEquals(auditRecordCollection.getAuditRecords().length, 0);
     }
 
 
