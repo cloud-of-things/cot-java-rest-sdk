@@ -9,13 +9,13 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * @author ozanarslan
  *
  */
-public class UsersApi {
+public class UserApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
 
     private final Gson gson = GsonUtils.createGson();
 
-    public UsersApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
+    public UserApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
@@ -122,7 +122,7 @@ public class UsersApi {
 
     public void updateCurrentUserPassword(String password) {
         User user = new User();
-        user.setLastName(password);
+        user.setPassword(password);
         String json = gson.toJson(user);
         cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
     }

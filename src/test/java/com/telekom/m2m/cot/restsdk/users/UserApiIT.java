@@ -5,7 +5,7 @@ import org.testng.annotations.Test;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 
-public class UsersAPIIT {
+public class UserApiIT {
 
     private String host = "https://nbiotdemo.int2-ram.m2m.telekom.com";
     private String userName = "telekom-nbiot@lists.tarent.de";
@@ -25,7 +25,7 @@ public class UsersAPIIT {
         user.setLastName("LName");
         user.setPassword("verysecret");
 
-        final UsersApi usersApi = cotPlat.getUsersApi();
+        final UserApi usersApi = cotPlat.getUserApi();
 
         // when
         final User storedUser = usersApi.createUser(user, tenant);
@@ -41,7 +41,7 @@ public class UsersAPIIT {
         /////////
 
         // when
-        UserCollection collection = cotPlat.getUsersApi().getUsers(tenant);
+        UserCollection collection = cotPlat.getUserApi().getUsers(tenant);
 
         // then
         Assert.assertNotNull(collection, "It cannot be empty.");
@@ -49,21 +49,21 @@ public class UsersAPIIT {
         Assert.assertTrue(collection.getUsers().length > 0, "We are logged in, there must be at least one user (us).");
 
         // when
-        GroupCollection groups = cotPlat.getUsersApi().getGroups(tenant);
+        GroupCollection groups = cotPlat.getUserApi().getGroups(tenant);
         // then
         Assert.assertNotNull(groups, "Groups object cannot be empty.");
         Assert.assertTrue(groups.getGroups().length > 0,
                 "There must be at least one group as long as at least one user is in the cloud (that would be the logged in user, which is us)");
 
         // when
-        Group group = cotPlat.getUsersApi().getGroupByName(tenant, exampleGroup);
+        Group group = cotPlat.getUserApi().getGroupByName(tenant, exampleGroup);
 
         // then
         Assert.assertNotNull(group, "The group that is retrieved from the cloud should exist.");
         Assert.assertEquals(group.getName(), "admins",
                 "The group name does not match to the name of the group that was retrieved from the cloud.");
         // when
-        RoleCollection roles = cotPlat.getUsersApi().getRoles();
+        RoleCollection roles = cotPlat.getUserApi().getRoles();
 
         // then
         Assert.assertNotNull(roles, "A list of roles should everytime exist in the cloud.");
@@ -77,21 +77,21 @@ public class UsersAPIIT {
         CurrentUser currentuser;
 
         // when
-        currentuser = cotPlat.getUsersApi().getCurrentUser();
+        currentuser = cotPlat.getUserApi().getCurrentUser();
 
         // then
         Assert.assertNotNull(currentuser,
                 "Current user must always exist, it is the logged in user who performs this operation, which is appearently you, do you exist?");
 
         // when
-        cotPlat.getUsersApi().updateCurrentUserFirstName("FirstNameUpdated");
-        currentuser.setFirstName(cotPlat.getUsersApi().getCurrentUserFirstName());
+        cotPlat.getUserApi().updateCurrentUserFirstName("FirstNameUpdated");
+        currentuser.setFirstName(cotPlat.getUserApi().getCurrentUserFirstName());
         // then
         Assert.assertEquals(currentuser.getFirstName(), "FirstNameUpdated",
                 "Current user  first name is not equal to the updated value, update failed.");
 
         // when
-        cotPlat.getUsersApi().updateCurrentUserLastName("LastNameUpdated");
+        cotPlat.getUserApi().updateCurrentUserLastName("LastNameUpdated");
         Assert.assertEquals(currentuser.getLastName(), "LastNameUpdated",
                 "Current user last name is not equal to the updated value, update failed.");
 
@@ -109,7 +109,7 @@ public class UsersAPIIT {
 
         // when
 
-        User testUser = cotPlat.getUsersApi().createUser(usertocreate, tenant);
+        User testUser = cotPlat.getUserApi().createUser(usertocreate, tenant);
 
         // then
         Assert.assertNotNull(testUser, "The user must exist.");
@@ -117,7 +117,7 @@ public class UsersAPIIT {
         Assert.assertEquals(testUser.getFirstName(), "FirstName", "User first name must match to the one in the cloud");
         Assert.assertEquals(testUser.getLastName(), "LastName", "User last name must match to the one in the cloud");
 
-        cotPlat.getUsersApi().deleteUser(testUser, tenant);
+        cotPlat.getUserApi().deleteUser(testUser, tenant);
 
         // given:
         // (testing the method that creates a user but does not return it)
@@ -128,35 +128,35 @@ public class UsersAPIIT {
         userForNoReturn.setUserName("UserforNoReturn");
 
         // when:
-        cotPlat.getUsersApi().createUserNoReturn(userForNoReturn, tenant);
+        cotPlat.getUserApi().createUserNoReturn(userForNoReturn, tenant);
 
         // then:
 
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("UserforNoReturn", tenant).getUserName(),
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("UserforNoReturn", tenant).getUserName(),
                 "UserforNoReturn", "Username should match to the user name of the object in the cloud.");
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("UserforNoReturn", tenant).getFirstName(), "firstName",
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("UserforNoReturn", tenant).getFirstName(), "firstName",
                 "First name should match to the first name of the user in the cloud.");
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("UserforNoReturn", tenant).getLastName(), "lastName",
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("UserforNoReturn", tenant).getLastName(), "lastName",
                 "Last name should match to the last name of the user in the cloud.");
 
-        Assert.assertNull(cotPlat.getUsersApi().getUserByName("UserforNoReturn", tenant).getPassword(),
+        Assert.assertNull(cotPlat.getUserApi().getUserByName("UserforNoReturn", tenant).getPassword(),
                 "Get operation on user password must return a null.");
-        cotPlat.getUsersApi().deleteUserByUserName("UserforNoReturn", tenant);
+        cotPlat.getUserApi().deleteUserByUserName("UserforNoReturn", tenant);
 
         // when
         // (testing the method that creates a user by taking user fields as
         // input)
 
-        cotPlat.getUsersApi().createUserNoReturn("NoReturnWithUserFields", tenant, "firstName", "lastName", "password");
+        cotPlat.getUserApi().createUserNoReturn("NoReturnWithUserFields", tenant, "firstName", "lastName", "password");
 
         // then:
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("NoReturnWithUserFields", tenant).getUserName(),
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("NoReturnWithUserFields", tenant).getUserName(),
                 "NoReturnWithUserFields", "Username should match to the user name of the object in the cloud.");
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("NoReturnWithUserFields", tenant).getLastName(),
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("NoReturnWithUserFields", tenant).getLastName(),
                 "lastName", "Username should match to the user name of the object in the cloud.");
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("NoReturnWithUserFields", tenant).getFirstName(),
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("NoReturnWithUserFields", tenant).getFirstName(),
                 "firstName", "Username should match to the user name of the object in the cloud.");
-        cotPlat.getUsersApi().deleteUserByUserName("NoReturnWithUserFields", tenant);
+        cotPlat.getUserApi().deleteUserByUserName("NoReturnWithUserFields", tenant);
 
         // given:
         // Testing the update methods of the user fields:
@@ -167,19 +167,19 @@ public class UsersAPIIT {
         userToUpdateFields.setPassword("InitialPassword1234");
 
         // when:
-        cotPlat.getUsersApi().createUserNoReturn(userToUpdateFields, tenant);
-        cotPlat.getUsersApi().updateUserFirstName(userToUpdateFields, tenant, "firstNameAfterUpdate");
-        cotPlat.getUsersApi().updateUserLastName(userToUpdateFields, tenant, "LastNameAfterUpdate");
+        cotPlat.getUserApi().createUserNoReturn(userToUpdateFields, tenant);
+        cotPlat.getUserApi().updateUserFirstName(userToUpdateFields, tenant, "firstNameAfterUpdate");
+        cotPlat.getUserApi().updateUserLastName(userToUpdateFields, tenant, "LastNameAfterUpdate");
 
         // then:
 
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("InitialUserName", tenant).getUserName(),
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("InitialUserName", tenant).getUserName(),
                 "InitialUserName");
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("InitialUserName", tenant).getFirstName(),
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("InitialUserName", tenant).getFirstName(),
                 "firstNameAfterUpdate");
-        Assert.assertEquals(cotPlat.getUsersApi().getUserByName("InitialUserName", tenant).getLastName(),
+        Assert.assertEquals(cotPlat.getUserApi().getUserByName("InitialUserName", tenant).getLastName(),
                 "LastNameAfterUpdate");
 
-        cotPlat.getUsersApi().deleteUserByUserName("InitialUserName", tenant);
+        cotPlat.getUserApi().deleteUserByUserName("InitialUserName", tenant);
     }
 }
