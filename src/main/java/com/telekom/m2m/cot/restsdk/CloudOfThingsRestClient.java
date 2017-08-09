@@ -146,10 +146,24 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    /**
+     * Do a SmartREST-request.
+     *
+     * @param xId the X-Id for which this request shall be made.
+     * @param lines array of individual lines for the request body.
+     * @return the response body as an array of individual lines
+     */
     public String[] doSmartRequest(String xId, String[] lines) {
         return doSmartRequest(xId, String.join("\n", lines));
     }
 
+    /**
+     * Do a SmartREST-request.
+     *
+     * @param xId the X-Id for which this request shall be made.
+     * @param lines one String with newline-separated lines for the request body
+     * @return the response body as an array of individual lines
+     */
     public String[] doSmartRequest(String xId, String lines) {
         RequestBody body = RequestBody.create(null, lines);
 
