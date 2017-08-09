@@ -41,7 +41,7 @@ public class SmartRestApi {
      * @return the GId of the templates, if they exist, null otherwise.
      */
     public String checkTemplateExistence(String xId) {
-        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, new String[0]);
+        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, "");
         if (response.length == 1) {
             String responseMsg = response[0].split(",")[0];
             switch (responseMsg) {

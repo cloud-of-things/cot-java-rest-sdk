@@ -167,7 +167,6 @@ public class CloudOfThingsRestClient {
     public String[] doSmartRequest(String xId, String lines) {
         RequestBody body = RequestBody.create(null, lines);
 
-        System.out.println("body:\n"+String.join("\n", lines)+"\n");
         Request.Builder builder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .url(host + "/s") // SmartRest-endpoint is always just "/s".

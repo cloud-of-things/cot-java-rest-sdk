@@ -16,7 +16,7 @@ import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRuleApi;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi;
-import com.telekom.m2m.cot.restsdk.users.UsersApi;
+import com.telekom.m2m.cot.restsdk.users.UserApi;
 
 import okhttp3.OkHttpClient;
 
