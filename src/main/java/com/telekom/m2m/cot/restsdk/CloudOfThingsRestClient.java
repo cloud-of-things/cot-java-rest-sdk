@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.Base64;
+import java.util.List;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
@@ -117,7 +118,7 @@ public class CloudOfThingsRestClient {
     /**
      * Proceedes a HTTP POST request and returns the response body as String.
      * Method will throw an exception if the response code is indicating
-     * a non successfull request.
+     * a non successful request.
      *
      * @param json Request body, needs to be a json object.
      * @param api  the REST API string.
@@ -145,11 +146,42 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    public String[] doSmartRequest(String xId, String[] lines) {
+        return doSmartRequest(xId, String.join("\n", lines));
+    }
+
+    public String[] doSmartRequest(String xId, String lines) {
+        RequestBody body = RequestBody.create(null, lines);
+
+        System.out.println("body:\n"+String.join("\n", lines)+"\n");
+        Request.Builder builder = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/s") // SmartRest-endpoint is always just "/s".
+                .post(body);
+        if (xId != null) {
+            builder = builder.addHeader("X-Id", xId);
+        }
+        Request request = builder.build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
+            }
+            return response.body().string().split("\\n");
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
 
     public String getResponse(String id, String api, String contentType) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
+                .url(host + "/" + api + id)
                 .build();
 
         Response response = null;
@@ -228,7 +260,7 @@ public class CloudOfThingsRestClient {
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
                 .addHeader("Accept", contentType)
-                .url(host + "/" + api + "/" + id)
+                .url(host + "/" + api + id)
                 .put(body)
                 .build();
         Response response = null;
@@ -245,7 +277,7 @@ public class CloudOfThingsRestClient {
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
+                .url(host + "/" + api + id)
                 .delete()
                 .build();
         Response response = null;
