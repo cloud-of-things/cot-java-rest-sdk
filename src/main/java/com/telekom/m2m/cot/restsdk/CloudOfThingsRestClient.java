@@ -146,33 +146,29 @@ public class CloudOfThingsRestClient {
         }
     }
 
-    /**
-     * Do a SmartREST-request.
-     *
-     * @param xId the X-Id for which this request shall be made.
-     * @param lines array of individual lines for the request body.
-     * @return the response body as an array of individual lines
-     */
-    public String[] doSmartRequest(String xId, String[] lines) {
-        return doSmartRequest(xId, String.join("\n", lines));
-    }
 
     /**
      * Do a SmartREST-request.
      *
      * @param xId the X-Id for which this request shall be made.
-     * @param lines one String with newline-separated lines for the request body
+     * @param lines a String with newline-separated lines for the request body
+     * @param transientMode whether to use "X-Cumulocity-Processing-Mode: TRANSIENT" (false: PERSISTENT).
+     *
      * @return the response body as an array of individual lines
      */
-    public String[] doSmartRequest(String xId, String lines) {
+    public String[] doSmartRequest(String xId, String lines, boolean transientMode) {
         RequestBody body = RequestBody.create(null, lines);
 
         Request.Builder builder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .url(host + "/s") // SmartRest-endpoint is always just "/s".
                 .post(body);
+        if (transientMode) {
+            // PERSISTENT is the default, so we don't specify it.
+            builder.addHeader("X-Cumulocity-Processing-Mode", "TRANSIENT");
+        }
         if (xId != null) {
-            builder = builder.addHeader("X-Id", xId);
+            builder.addHeader("X-Id", xId);
         }
         Request request = builder.build();
 

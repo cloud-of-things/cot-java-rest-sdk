@@ -41,7 +41,7 @@ public class SmartRestApi {
      * @return the GId of the templates, if they exist, null otherwise.
      */
     public String checkTemplateExistence(String xId) {
-        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, "");
+        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, "", false);
         if (response.length == 1) {
             String responseMsg = response[0].split(",")[0];
             switch (responseMsg) {
@@ -55,6 +55,20 @@ public class SmartRestApi {
         }
 
         throw new CotSdkException("Invalid response to smart template check: " + String.join("\n", response));
+    }
+
+
+    /**
+     * Do a SmartREST-request.
+     *
+     * @param xId the X-Id for which this request shall be made.
+     * @param lines a String with newline-separated lines for the request body
+     * @param transientMode whether to use "X-Cumulocity-Processing-Mode: TRANSIENT" (false: PERSISTENT).
+     *
+     * @return the response body as an array of individual lines
+     */
+    public String[] execute(String xId, String lines, boolean transientMode) {
+        return cloudOfThingsRestClient.doSmartRequest(xId, lines, transientMode);
     }
 
 
@@ -111,7 +125,7 @@ public class SmartRestApi {
             lines.append("11,").append(t).append("\n");
         }
 
-        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, lines.toString());
+        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, lines.toString(), false);
 
         if ((response == null) || (response.length == 0)) {
             throw new CotSdkException("Received empty response when trying to store SmartREST-templates.");
