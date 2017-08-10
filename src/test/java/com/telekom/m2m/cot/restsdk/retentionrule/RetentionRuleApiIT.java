@@ -134,6 +134,8 @@ public class RetentionRuleApiIT {
         } catch(CotSdkException ex) {
             assertEquals(ex.getHttpStatus(), 0); // Because it comes from our local validation, not the server.
         }
+
+        retentionRuleApi.deleteRetentionRule(ruleIn);
     }
 
 
