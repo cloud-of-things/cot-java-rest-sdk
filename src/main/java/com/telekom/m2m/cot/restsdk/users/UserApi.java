@@ -40,6 +40,22 @@ public class UserApi {
         return new GroupCollection(cloudOfThingsRestClient, "user/" + tenant + "/groups/", gson, null);
     }
 
+    public Group createGroup(Group group, String tenant) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.group+json; charset=UTF-8; ver=0.9";
+        String json = "{\"name\":\"" + group.getName() + "\"}";
+
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/groups", CONTENT);
+        group.setId(id);
+
+        return group;
+    }
+
+    public void deleteGroup(Group group, String tenant) {
+        String groupId = Long.toString(group.getId());
+        cloudOfThingsRestClient.delete(groupId, "user/" + tenant + "/groups");
+
+    }
+
     /**
      * Method to retrieve a collection of roles.
      * 
@@ -74,6 +90,17 @@ public class UserApi {
         String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/groupByName/" + groupName, CONTENT);
         Group group = new Group(gson.fromJson(result, ExtensibleObject.class));
         return group;
+    }
+
+    public Group getGroup(Group group, String tenant) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.group+json;ver=0.9";
+
+        String groupId = Long.toString(group.getId());
+        String result = cloudOfThingsRestClient.getResponse(groupId, "user/" + tenant + "/groups", CONTENT);
+
+        Group returnedgroup = new Group(gson.fromJson(result, ExtensibleObject.class));
+        return returnedgroup;
+
     }
 
     // Operations on Current User:
@@ -233,6 +260,36 @@ public class UserApi {
     public void updateUserPassword(User user, String tenant, String password) {
         String json = "{\"password\":\"" + password + "\"}";
         cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
+    }
+
+    public void addUserToGroup(User user, String tenant, Group group) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.userReference+json;ver=0.9";
+        String json = "{\"user\":{\"self\": \"" + user.getSelf(user, tenant) + "\" }}";
+        System.out.println(json);
+        cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/groups/" + group.getId() + "/users", CONTENT);
+    }
+
+    public void removeUserFromGroup(User user, String tenant, Group group) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.userReference+json;ver=0.9";
+        String groupId = Long.toString(group.getId());
+
+        cloudOfThingsRestClient.delete("user/" + tenant + "/groups/" + groupId + "/users/" + user.getUserName());
+
+    }
+
+    public UserReferenceCollection getUserReferencesOfGroup(String tenant, Group group) {
+        String groupId = Long.toString(group.getId());
+        String URL = "user/" + tenant + "/groups/" + groupId + "/users";
+        return new UserReferenceCollection(cloudOfThingsRestClient, URL, gson, null);
+
+    }
+
+    public GroupReferenceCollection getGroupReferencesOfUser(String tenant, User user) {
+        // GET /user/<<tenant>>/users/<<userName>>/groups
+
+        String URL = "user/" + tenant + "/users/" + user.getUserName() + "/groups";
+        return new GroupReferenceCollection(cloudOfThingsRestClient, URL, gson, null);
+
     }
 
 }

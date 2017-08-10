@@ -1,28 +1,61 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import java.util.ArrayList;
-import java.util.List;
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
- * Currently only a place holder. A class that represents a reference to a group
- * reference collection. Created by Ozan Arslan on 25.07.2017
+ * 
+ * Currently a place holder. Created by Ozan Arslan on 27.07.2017
  *
  */
 
-public class GroupReferenceCollection {
+public class GroupReferenceCollection extends JsonArrayPagination {
 
-	private List<GroupReference> references;
+    private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.groupReferenceCollection+json;ver=0.9";
+    private static final String COLLECTION_ELEMENT_NAME = "references";
 
-	public GroupReferenceCollection() {
-		references = new ArrayList();
-	}
+    /**
+     * Creates a GroupCollection. Use {@link GroupsApi} to get GroupCollections.
+     *
+     * @param cloudOfThingsRestClient
+     *            the necessary REST client to send requests to the CoT.
+     * @param relativeApiUrl
+     *            relative url of the REST API without leading slash.
+     * @param gson
+     *            the necessary json De-/serializer.
+     * @param filterBuilder
+     *            the build criteria or null if all items should be retrieved.
+     */
+    GroupReferenceCollection(final CloudOfThingsRestClient cloudOfThingsRestClient, final String relativeApiUrl,
+            final Gson gson, final Filter.FilterBuilder filterBuilder) {
+        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME,
+                filterBuilder);
+    }
 
-	public List<GroupReference> getReferences() {
-		return references;
-	}
+    /**
+     * Retrieves the Groups influenced by filters set in construction.
+     *
+     * @return array of found Groups
+     */
+    public GroupReference[] getGroupReferences() {
+        final JsonArray jsonGroupReferences = getJsonArray();
 
-	public void setReferences(List<GroupReference> references) {
-		this.references = references;
-	}
-
+        if (jsonGroupReferences != null) {
+            final GroupReference[] arrayOfGroupReferences = new GroupReference[jsonGroupReferences.size()];
+            for (int i = 0; i < jsonGroupReferences.size(); i++) {
+                JsonElement jsonGroup = jsonGroupReferences.get(i).getAsJsonObject();
+                final GroupReference groupreference = new GroupReference(
+                        gson.fromJson(jsonGroup, ExtensibleObject.class));
+                arrayOfGroupReferences[i] = groupreference;
+            }
+            return arrayOfGroupReferences;
+        } else {
+            return null;
+        }
+    }
 }

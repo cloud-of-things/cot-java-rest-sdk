@@ -1,11 +1,12 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import java.util.List;
-
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
  * 
@@ -13,27 +14,47 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  *
  */
 
-public class UserReferenceCollection {
+public class UserReferenceCollection extends JsonArrayPagination {
 
-	private Filter.FilterBuilder criteria = null;
-	private CloudOfThingsRestClient cloudOfThingsRestClient;
-	private int pageCursor = 1;
+    private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.userReferenceCollection+json;ver=0.9";
+    private static final String COLLECTION_ELEMENT_NAME = "references";
 
-	private Gson gson = GsonUtils.createGson();
+    /**
+     * Creates a GroupCollection. Use {@link UsersApi} to get GroupCollections.
+     *
+     * @param cloudOfThingsRestClient
+     *            the necessary REST client to send requests to the CoT.
+     * @param relativeApiUrl
+     *            relative url of the REST API without leading slash.
+     * @param gson
+     *            the necessary json De-/serializer.
+     * @param filterBuilder
+     *            the build criteria or null if all items should be retrieved.
+     */
+    UserReferenceCollection(final CloudOfThingsRestClient cloudOfThingsRestClient, final String relativeApiUrl,
+            final Gson gson, final Filter.FilterBuilder filterBuilder) {
+        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME,
+                filterBuilder);
+    }
 
-	private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.eventCollection+json;charset=UTF-8;ver=0.9";
-	private boolean nextAvailable = false;
-	private boolean previousAvailable = false;
-	private int pageSize = 5;
+    /**
+     * Retrieves the Groups influenced by filters set in construction.
+     *
+     * @return array of found Groups
+     */
+    public UserReference[] getUserReferences() {
+        final JsonArray jsonUserReferences = getJsonArray();
 
-	private List<UserReference> references;
-
-	public List<UserReference> getReferences() {
-		return references;
-	}
-
-	public void setReferences(List<UserReference> references) {
-		this.references = references;
-	}
-
+        if (jsonUserReferences != null) {
+            final UserReference[] arrayOfUserReferences = new UserReference[jsonUserReferences.size()];
+            for (int i = 0; i < jsonUserReferences.size(); i++) {
+                JsonElement jsonGroup = jsonUserReferences.get(i).getAsJsonObject();
+                final UserReference userreference = new UserReference(gson.fromJson(jsonGroup, ExtensibleObject.class));
+                arrayOfUserReferences[i] = userreference;
+            }
+            return arrayOfUserReferences;
+        } else {
+            return null;
+        }
+    }
 }

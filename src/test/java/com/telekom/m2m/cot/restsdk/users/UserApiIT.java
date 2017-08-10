@@ -13,6 +13,7 @@ public class UserApiIT {
     private String password = "nbiot-Test-Pw";
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(host, userName, password);
     private String exampleGroup = "admins";
+    private String exampleGroup2 = "business";
 
     @Test
     public void testGenericMethods() throws Exception {
@@ -48,20 +49,6 @@ public class UserApiIT {
         Assert.assertNotNull(collection.getUsers(), "It cannot be empty.");
         Assert.assertTrue(collection.getUsers().length > 0, "We are logged in, there must be at least one user (us).");
 
-        // when
-        GroupCollection groups = cotPlat.getUserApi().getGroups(tenant);
-        // then
-        Assert.assertNotNull(groups, "Groups object cannot be empty.");
-        Assert.assertTrue(groups.getGroups().length > 0,
-                "There must be at least one group as long as at least one user is in the cloud (that would be the logged in user, which is us)");
-
-        // when
-        Group group = cotPlat.getUserApi().getGroupByName(tenant, exampleGroup);
-
-        // then
-        Assert.assertNotNull(group, "The group that is retrieved from the cloud should exist.");
-        Assert.assertEquals(group.getName(), "admins",
-                "The group name does not match to the name of the group that was retrieved from the cloud.");
         // when
         RoleCollection roles = cotPlat.getUserApi().getRoles();
 
@@ -126,10 +113,9 @@ public class UserApiIT {
         userForNoReturn.setFirstName("firstName");
         userForNoReturn.setPassword("password1234");
         userForNoReturn.setUserName("UserforNoReturn");
-
         // when:
         cotPlat.getUserApi().createUserNoReturn(userForNoReturn, tenant);
-
+        // cotPlat.getUserApi().addUserToGroup(userForNoReturn, tenant, group);
         // then:
 
         Assert.assertEquals(cotPlat.getUserApi().getUserByName("UserforNoReturn", tenant).getUserName(),
@@ -182,4 +168,113 @@ public class UserApiIT {
 
         cotPlat.getUserApi().deleteUserByUserName("InitialUserName", tenant);
     }
+
+    @Test
+    public void testGroupMethods() throws Exception {
+        // given:
+        Group group = new Group();
+        group.setName("TestGroup");
+
+        // when:
+        Group returnedGroup = cotPlat.getUserApi().createGroup(group, tenant);
+
+        // then
+        Assert.assertEquals(group.getName(), returnedGroup.getName(),
+                "The group that is created in the cloud should have the same name as the group object created locally.");
+
+        // Now delete that group:
+        cotPlat.getUserApi().deleteGroup(returnedGroup, tenant);
+
+        // when
+        GroupCollection groups = cotPlat.getUserApi().getGroups(tenant);
+        // then
+        Assert.assertNotNull(groups, "Groups object cannot be empty.");
+        Assert.assertTrue(groups.getGroups().length > 0,
+                "There must be at least one group as long as at least one user is in the cloud (that would be the logged in user, which is us)");
+
+        // when (testing to get group by name)
+        group = cotPlat.getUserApi().getGroupByName(tenant, exampleGroup);
+
+        // then
+        Assert.assertNotNull(group, "The group that is retrieved from the cloud should exist.");
+        Assert.assertEquals(group.getName(), "admins",
+                "The group name does not match to the name of the group that was retrieved from the cloud.");
+
+        // when (testing to get group by a group object)
+        Group newgroup = cotPlat.getUserApi().getGroup(group, tenant);
+
+        // then
+        Assert.assertEquals(group.getId(), newgroup.getId(),
+                "The returned group name from the cloud should be the same as the group name of the group object created locally.");
+
+        // given: (Create a user and create two groups. Add this user to these
+        // groups and retrieve the groups that this user belongs to)
+        // cotPlat.getUserApi().deleteUserByUserName("userToCheckGroups",
+        // tenant);
+        User user = cotPlat.getUserApi().createUser("userToCheckGroups", tenant, "firstName", "lastName", password);
+        Group group1 = new Group();
+        group1.setName("testGroup1");
+        Group group2 = new Group();
+        group2.setName("testGroup2"); //
+
+        // cotPlat.getUserApi().deleteGroup(group2, tenant);
+        // cotPlat.getUserApi().deleteGroup(group1, tenant);
+
+        Group createdGroup1 = cotPlat.getUserApi().createGroup(group1, tenant);
+        Group createdGroup2 = cotPlat.getUserApi().createGroup(group2, tenant);
+
+        // when:
+
+        cotPlat.getUserApi().addUserToGroup(user, tenant, createdGroup1);
+        cotPlat.getUserApi().addUserToGroup(user, tenant, createdGroup2);
+
+        // then: (now check if this user is added to the groups)
+        GroupReferenceCollection groupCol = cotPlat.getUserApi().getGroupReferencesOfUser(tenant, user);
+        GroupReference[] arrayofGroups = groupCol.getGroupReferences();
+        GroupReference groupRef1 = arrayofGroups[0];
+        GroupReference groupRef2 = arrayofGroups[1];
+
+        Group gettedGroup1 = groupRef1.getGroup();
+        Group gettedGroup2 = groupRef2.getGroup();
+
+        Assert.assertEquals(gettedGroup1.getId(), createdGroup1.getId(),
+                "the group Id that the user is added to in the cloud should match to the group that is created locally.");
+        Assert.assertEquals(gettedGroup2.getId(), createdGroup2.getId(),
+                "the group Id that the user is added to in the cloud should match to the group that is created locally.");
+
+        System.out.println("GroupName= " + gettedGroup1.getName());
+        System.out.println("GroupName= " + gettedGroup2.getName());
+
+        // When: (now test the remove user from a group method)
+
+        cotPlat.getUserApi().removeUserFromGroup(user, tenant, gettedGroup2);
+        // then (now confirm that this group has no users anymore):
+        UserReferenceCollection UserCollectionOfGroup2 = cotPlat.getUserApi().getUserReferencesOfGroup(tenant,
+                gettedGroup2);
+        UserReference[] arrayOfRefOfGroup2 = UserCollectionOfGroup2.getUserReferences();
+
+        System.out.println(arrayOfRefOfGroup2.length);
+
+        // now delete that user and the groups:
+        cotPlat.getUserApi().deleteUserByUserName("userToCheckGroups", tenant);
+        cotPlat.getUserApi().deleteGroup(createdGroup1, tenant);
+        cotPlat.getUserApi().deleteGroup(createdGroup2, tenant);
+
+        /////////
+
+        // when: (testing to get)
+        // Group mygroup = cotPlat.getUserApi().getGroupByName(tenant,
+        ///////// "testGroupForUserRefs3");
+
+        // UserReferenceCollection collection =
+        // cotPlat.getUserApi().getUserReferencesOfGroup(tenant, mygroup);
+        // final UserReference[] arrayofref = collection.getUserReferences();
+        // final UserReference userRef = arrayofref[0];
+
+        // User user = userRef.getUser();
+
+        // System.out.println("SOMETHING:" + user.getUserName());
+
+    }
+
 }
