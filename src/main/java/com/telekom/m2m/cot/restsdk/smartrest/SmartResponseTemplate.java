@@ -22,7 +22,7 @@ public class SmartResponseTemplate extends SmartTemplate {
         this.msgId = msgId;
         this.base = base;
         this.condition = condition;
-        this.pattern = pattern;
+        this.pattern = pattern.clone();
     }
 
     public SmartResponseTemplate(String csv) {
@@ -57,11 +57,11 @@ public class SmartResponseTemplate extends SmartTemplate {
     }
 
     public String[] getPattern() {
-        return pattern;
+        return pattern.clone();
     }
 
     public void setPattern(String[] pattern) {
-        this.pattern = pattern;
+        this.pattern = pattern.clone();
     }
 
 }

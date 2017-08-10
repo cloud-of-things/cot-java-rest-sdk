@@ -1,25 +1,18 @@
 package com.telekom.m2m.cot.restsdk.smartrest;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectCollection;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
-import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
+
 
 public class SmartRestApiIT {
 

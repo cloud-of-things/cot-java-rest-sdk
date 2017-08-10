@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.smartrest;
 
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+
 public class SmartRequestTemplate extends SmartTemplate {
 
     private String accept;
@@ -30,7 +31,7 @@ public class SmartRequestTemplate extends SmartTemplate {
         this.placeholder = placeholder;
         this.resourceUri = resourceUri;
         this.templateString = templateString;
-        this.values = values;
+        this.values = values.clone();
     }
 
     public SmartRequestTemplate(String csv) {
@@ -96,11 +97,11 @@ public class SmartRequestTemplate extends SmartTemplate {
     }
 
     public String[] getValues() {
-        return values;
+        return values.clone();
     }
 
     public void setValues(String[] values) {
-        this.values = values;
+        this.values = values.clone();
     }
 
 }
