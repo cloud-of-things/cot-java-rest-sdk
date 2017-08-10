@@ -3,6 +3,10 @@ package com.telekom.m2m.cot.restsdk.smartrest;
 import java.util.regex.Pattern;
 
 
+/**
+ * Base class for SmartRequestTemplate and SmartResponseTemplate, both of which have an id and
+ * need the same kind of escaping for some of their parameters.
+ */
 public abstract class SmartTemplate {
 
     private static final Pattern NEED_QUOTES = Pattern.compile("[\",\\t\\n]|^\\s+|\\s+$");

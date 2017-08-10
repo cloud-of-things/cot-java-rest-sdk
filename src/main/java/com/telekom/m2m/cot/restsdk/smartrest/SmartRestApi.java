@@ -12,6 +12,13 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * The SmartResttApi is used to register and query SmartREST-templates and to execute requests against them.
+ *
+ * Note that templates for an X-Id can only be registered all in one go and cannot be modified.
+ *
+ * For examples see SmartRestApiIT.
+ */
 public class SmartRestApi {
 
     public static final String MSG_TEMPLATES_NOT_FOUND = "40";
@@ -162,6 +169,5 @@ public class SmartRestApi {
     void deleteByGId(String gId) {
         inventoryApi.delete(gId);
     }
-
 
 }

@@ -65,7 +65,7 @@ public class SmartRestApiIT {
         assertTrue(templates[1] instanceof SmartRequestTemplate);
         assertTrue(templates[2] instanceof SmartResponseTemplate);
         assertEquals(templates[0].toString(), "101,POST,/inventory/managedObjects,application/vnd.com.nsn.cumulocity.managedObject+json,application/vnd.com.nsn.cumulocity.managedObject+json,,STRING,\"{\"\"name\"\":\"\"foo\"\",\"\"type\"\":\"\"com_example_TestDevice\"\",\"\"c8y_IsDevice\"\":{}}\"");
-        assertEquals(templates[1].toString(), "999,DELETE,/inventory/managedObjects/&&,,,&&,,");
+        assertEquals(templates[1].toString(), "999,DELETE,/inventory/foo/managedObjects/&&,,,&&,,");
         assertEquals(templates[2].toString(), "102,$,$.c8y_IsDevice,$.id");
 
         smartRestApi.deleteByGId(gId);
@@ -151,6 +151,7 @@ public class SmartRestApiIT {
     }
 
 
+    // These templates do not necessary make any sense. They are just valid enough to be accepted by the server.
     public String storeSomeTestTemplates() {
         SmartRequestTemplate requestTemplate1 = new SmartRequestTemplate(
                 "101", "POST", "/inventory/managedObjects",
@@ -163,7 +164,7 @@ public class SmartRestApiIT {
         SmartRequestTemplate requestTemplate2 = new SmartRequestTemplate();
         requestTemplate2.setMsgId("999");
         requestTemplate2.setMethod("DELETE");
-        requestTemplate2.setResourceUri("/inventory/managedObjects/&&");
+        requestTemplate2.setResourceUri("/inventory/foo/managedObjects/&&");
         requestTemplate2.setPlaceholder("&&");
 
         SmartResponseTemplate responseTemplate1 = new SmartResponseTemplate(

@@ -16,6 +16,19 @@ public class SmartRequestTemplate extends SmartTemplate {
 
     public SmartRequestTemplate() {}
 
+    /**
+     * Construct a new SmartRequestTemplate from individual parameters.
+     * Parameters should be raw, unescaped.
+     *
+     * @param msgId the unique (for one X-Id) message-ID of this template
+     * @param method the HTTP-method that this request will be translated to
+     * @param resourceUri the URI of the REST-resource that this request will be sent to
+     * @param accept optional Accept-Header (can be null)
+     * @param contentType optional Content-Type (can be null)
+     * @param placeholder optional placeholder String (for use in resourceUri and/or templateString; can be null)
+     * @param values the types of the placeholders, in order (can be null (or empty))
+     * @param templateString the body template (can be null)
+     */
     public SmartRequestTemplate(String msgId,
                                 String method,
                                 String resourceUri,

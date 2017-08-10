@@ -15,6 +15,15 @@ public class SmartResponseTemplate extends SmartTemplate {
 
     public SmartResponseTemplate() {}
 
+    /**
+     * Construct a new SmartResponseTemplate from individual parameters.
+     * Parameters should be raw, unescaped.
+     *
+     * @param msgId the unique (for one X-Id) message-ID of this template
+     * @param base the JSONPath base that this template assumes
+     * @param condition the JSONPath that needs to match for this template to be evaluated by the server
+     * @param pattern the JSONPaths from which information is to be extracted
+     */
     public SmartResponseTemplate(String msgId,
                                  String base,
                                  String condition,
