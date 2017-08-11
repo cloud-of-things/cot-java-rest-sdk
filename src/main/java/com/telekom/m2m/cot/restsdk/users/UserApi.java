@@ -57,15 +57,6 @@ public class UserApi {
     }
 
     /**
-     * Method to retrieve a collection of roles.
-     * 
-     * @return an instance of RoleCollection
-     */
-    public RoleCollection getRoles() {
-        return new RoleCollection(cloudOfThingsRestClient);
-    }
-
-    /**
      * Method to retrieve a user by username, in a given tenant.
      * 
      * @param userName
@@ -262,18 +253,31 @@ public class UserApi {
         cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
     }
 
+    // Methods related to groups:
+
     public void addUserToGroup(User user, String tenant, Group group) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.userReference+json;ver=0.9";
         String json = "{\"user\":{\"self\": \"" + user.getSelf(user, tenant) + "\" }}";
-        System.out.println(json);
+        cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/groups/" + group.getId() + "/users", CONTENT);
+    }
+
+    public void addCurrentUserToGroup(CurrentUser user, String tenant, Group group) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.userReference+json;ver=0.9";
+        String json = "{\"user\":{\"self\": \"" + user.getSelf(user, tenant) + "\" }}";
         cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/groups/" + group.getId() + "/users", CONTENT);
     }
 
     public void removeUserFromGroup(User user, String tenant, Group group) {
-        String CONTENT = "application/vnd.com.nsn.cumulocity.userReference+json;ver=0.9";
         String groupId = Long.toString(group.getId());
 
-        cloudOfThingsRestClient.delete("user/" + tenant + "/groups/" + groupId + "/users/" + user.getUserName());
+        cloudOfThingsRestClient.delete(user.getId(), "user/" + tenant + "/groups/" + groupId + "/users");
+
+    }
+
+    public void removeCurrentUserFromGroup(CurrentUser user, String tenant, Group group) {
+        String groupId = Long.toString(group.getId());
+
+        cloudOfThingsRestClient.delete("user/" + tenant + "/groups/" + groupId + "/users/" + user.getUserName() + "/");
 
     }
 
@@ -285,10 +289,98 @@ public class UserApi {
     }
 
     public GroupReferenceCollection getGroupReferencesOfUser(String tenant, User user) {
-        // GET /user/<<tenant>>/users/<<userName>>/groups
 
         String URL = "user/" + tenant + "/users/" + user.getUserName() + "/groups";
         return new GroupReferenceCollection(cloudOfThingsRestClient, URL, gson, null);
+
+    }
+
+    /// Methods related to roles:
+
+    /**
+     * Method to retrieve a collection of roles.
+     * 
+     * @return an instance of RoleCollection
+     */
+    public RoleCollection getRoles() {
+        return new RoleCollection(cloudOfThingsRestClient, "user/roles", gson, null);
+    }
+
+    // TODO: it seems that the following two methods are not allowed by
+    // Cumilosity.
+    // Going to keep them for now just in case we might be wrong.
+    public Role createRole(Role role) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.role+json; charset=UTF-8; ver=0.9";
+        String json = "{\"name\":\"" + role.getName() + "\"}";
+
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/roles", CONTENT);
+        role.setId(id);
+
+        return role;
+    }
+
+    public void deleteRole(Role role, String tenant) {
+        cloudOfThingsRestClient.delete(role.getId(), "user/roles/");
+
+    }
+
+    public Role getRoleByName(String name) {
+
+        String CONTENT = "application/vnd.com.nsn.cumulocity.role+json;ver=0.9";
+
+        String result = cloudOfThingsRestClient.getResponse(name, "user/roles", CONTENT);
+
+        Role returnedrole = new Role(gson.fromJson(result, ExtensibleObject.class));
+        return returnedrole;
+
+    }
+
+    public void assignRoleToUser(User user, Role role, String tenant) {
+
+        String CONTENT = "application/vnd.com.nsn.cumulocity.roleReference+json; charset=UTF-8; ver=0.9";
+        String json = "{\"role\":{\"self\": \"user/roles/" + role.getId() + "\" }}";
+
+        System.out.println("JSON:" + json);
+        System.out.print("REQUEST: " + "user/" + tenant + "/users/" + user.getId() + "/roles");
+        cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/users/" + user.getId() + "/roles", CONTENT);
+
+    }
+
+    public void unassignRoleFromUser(User user, Role role, String tenant) {
+
+        cloudOfThingsRestClient.delete(role.getName(), "user/" + tenant + "/users/" + user.getUserName() + "/roles");
+
+    }
+
+    public RoleReferenceCollection getRolesReferencesOfUser(User user, String tenant) {
+
+        String URL = "user/" + tenant + "/users/" + user.getUserName() + "/roles";
+        return new RoleReferenceCollection(cloudOfThingsRestClient, URL, gson, null);
+
+    }
+
+    public void assignRoleToGroup(Group group, Role role, String tenant) {
+        String groupId = Long.toString(group.getId());
+
+        String CONTENT = "application/vnd.com.nsn.cumulocity.roleReference+json; charset=UTF-8; ver=0.9";
+        String json = "{\"role\":{\"self\": \"user/roles/" + role.getId() + "\" }}";
+
+        cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/groups/" + groupId + "/roles", CONTENT);
+
+    }
+
+    public RoleReferenceCollection getRolesReferencesOfGroup(Group group, String tenant) {
+        String groupId = Long.toString(group.getId());
+
+        String URL = "user/" + tenant + "/groups/" + groupId + "/roles";
+        return new RoleReferenceCollection(cloudOfThingsRestClient, URL, gson, null);
+
+    }
+
+    public void unassignRoleFromGroup(Group group, Role role, String tenant) {
+        String groupId = Long.toString(group.getId());
+
+        cloudOfThingsRestClient.delete(role.getName(), "user/" + tenant + "/groups/" + groupId + "/roles");
 
     }
 

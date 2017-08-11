@@ -150,4 +150,11 @@ public class CurrentUser extends ExtensibleObject {
 
         return (String) anyObject.get("groups");
     }
+
+    public String getSelf(CurrentUser user, String tenant) {
+
+        String self = "/user/" + tenant + "/users/" + user.getId();
+        return self;
+    }
+
 }

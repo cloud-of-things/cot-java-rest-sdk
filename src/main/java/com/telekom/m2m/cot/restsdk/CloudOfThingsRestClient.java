@@ -38,12 +38,17 @@ public class CloudOfThingsRestClient {
     }
 
     /**
-     * Proceedes a HTTP POST request and parses the response Header.
-     * Response header 'Location' will be split to get the ID of the object (mostly created).
+     * Proceedes a HTTP POST request and parses the response Header. Response
+     * header 'Location' will be split to get the ID of the object (mostly
+     * created).
      *
-     * @param json        Request body, needs to be a json object correlating to the contentType.
-     * @param api         the REST API string.
-     * @param contentType the Content-Type of the JSON Object.
+     * @param json
+     *            Request body, needs to be a json object correlating to the
+     *            contentType.
+     * @param api
+     *            the REST API string.
+     * @param contentType
+     *            the Content-Type of the JSON Object.
      * @return the id of the Object.
      */
     public String doRequestWithIdResponse(String json, String api, String contentType) {
@@ -51,14 +56,10 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-            Request request = new Request.Builder()
-                    .addHeader("Authorization", "Basic " + encodedAuthString)
-                    .addHeader("Content-Type", contentType)
-                    .addHeader("Accept", contentType)
-                    //.url(tenant + ".test-ram.m2m.telekom.com/" + api)
-                    .url(host + "/" + api)
-                    .post(body)
-                    .build();
+            Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                    .addHeader("Content-Type", contentType).addHeader("Accept", contentType)
+                    // .url(tenant + ".test-ram.m2m.telekom.com/" + api)
+                    .url(host + "/" + api).post(body).build();
             response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
                 final String err = getErrorMessage(response);
@@ -83,21 +84,21 @@ public class CloudOfThingsRestClient {
     /**
      * Proceedes a HTTP POST request and returns the response body as String.
      *
-     * @param json        Request body, needs to be a json object correlating to the contentType.
-     * @param api         the REST API string.
-     * @param contentType the Content-Type of the JSON Object.
+     * @param json
+     *            Request body, needs to be a json object correlating to the
+     *            contentType.
+     * @param api
+     *            the REST API string.
+     * @param contentType
+     *            the Content-Type of the JSON Object.
      * @return the received JSON response body.
      */
     public String doPostRequest(String json, String api, String contentType) {
 
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
-                .url(host + "/" + api)
-                .post(body)
-                .build();
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType).addHeader("Accept", contentType).url(host + "/" + api)
+                .post(body).build();
         Response response = null;
         try {
             response = client.newCall(request).execute();
@@ -116,21 +117,20 @@ public class CloudOfThingsRestClient {
 
     /**
      * Proceedes a HTTP POST request and returns the response body as String.
-     * Method will throw an exception if the response code is indicating
-     * a non successfull request.
+     * Method will throw an exception if the response code is indicating a non
+     * successfull request.
      *
-     * @param json Request body, needs to be a json object.
-     * @param api  the REST API string.
+     * @param json
+     *            Request body, needs to be a json object.
+     * @param api
+     *            the REST API string.
      * @return the received JSON response body.
      */
     public String doPostRequest(String json, String api) {
 
         RequestBody body = RequestBody.create(null, json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api)
-                .post(body)
-                .build();
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api).post(body).build();
         Response response = null;
         try {
             response = client.newCall(request).execute();
@@ -145,12 +145,9 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
     public String getResponse(String id, String api, String contentType) {
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
-                .build();
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api + "/" + id).build();
 
         Response response = null;
         try {
@@ -172,12 +169,11 @@ public class CloudOfThingsRestClient {
 
     }
 
-    // TODO: check why the contentType is not necessary, because experiments seemed to indicate that it is...
+    // TODO: check why the contentType is not necessary, because experiments
+    // seemed to indicate that it is...
     public String getResponse(String api, String contentType) {
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api)
-                .build();
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api).build();
 
         Response response = null;
         try {
@@ -200,20 +196,15 @@ public class CloudOfThingsRestClient {
 
     public void doPutRequest(String json, String api, String contentType) {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
-                .url(host + "/" + api)
-                .put(body)
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType).addHeader("Accept", contentType).url(host + "/" + api).put(body)
                 .build();
 
         Response response = null;
         try {
             response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(),
-                        "Requested returned error code");
+                throw new CotSdkException(response.code(), "Requested returned error code");
             }
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
@@ -224,13 +215,9 @@ public class CloudOfThingsRestClient {
 
     public void doPutRequest(String json, String id, String api, String contentType) {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
-                .url(host + "/" + api + "/" + id)
-                .put(body)
-                .build();
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType).addHeader("Accept", contentType)
+                .url(host + "/" + api + "/" + id).put(body).build();
         Response response = null;
         try {
             response = client.newCall(request).execute();
@@ -243,16 +230,14 @@ public class CloudOfThingsRestClient {
     }
 
     public void delete(String id, String api) {
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
-                .delete()
-                .build();
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api + "/" + id).delete().build();
         Response response = null;
         try {
             response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Error in delete with ID '" + id + "' (see https://http.cat/" + response.code() + ")");
+                throw new CotSdkException(response.code(),
+                        "Error in delete with ID '" + id + "' (see https://http.cat/" + response.code() + ")");
             }
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
@@ -262,11 +247,8 @@ public class CloudOfThingsRestClient {
     }
 
     public void deleteBy(final String filter, final String api) {
-        final Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "?" + filter)
-                .delete()
-                .build();
+        final Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api + "?" + filter).delete().build();
         Response response = null;
         try {
             response = client.newCall(request).execute();
@@ -283,16 +265,14 @@ public class CloudOfThingsRestClient {
     }
 
     public void delete(String url) {
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(url)
-                .delete()
-                .build();
+        Request request = new Request.Builder().addHeader("Authorization", "Basic " + encodedAuthString).url(url)
+                .delete().build();
         Response response = null;
         try {
             response = client.newCall(request).execute();
             if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Error in delete with URL '" + url + "' (see https://http.cat/" + response.code() + ")");
+                throw new CotSdkException(response.code(),
+                        "Error in delete with URL '" + url + "' (see https://http.cat/" + response.code() + ")");
             }
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
@@ -305,6 +285,7 @@ public class CloudOfThingsRestClient {
     private String getErrorMessage(final Response response) throws IOException {
         final JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
         String errorMessage = "Request failed.";
+        System.out.println("response body:" + response.body().string());
         if (o.has("error")) {
             errorMessage += " Platform provided details: '" + o.get("error") + "'";
         }
