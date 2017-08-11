@@ -232,7 +232,7 @@ public class InventoryManagedObjectCollectionIT {
     }
 
     private void verifyContainsNewChild(final ManagedObject parentDevice, final ManagedObject childDevice) {
-        for (ManagedObjectReference childDeviceReference : parentDevice.getChildDevices().get(5)) {
+        for (ManagedObjectReference childDeviceReference : parentDevice.getChildDevices().get()) {
             if (childDevice.getId().equals(childDeviceReference.getManagedObject().getId())) {
                 return;
             }

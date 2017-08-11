@@ -15,7 +15,7 @@ public class ManagedObjectReferenceCollection {
         this.self = self;
     }
 
-    public Iterable<ManagedObjectReference> get(int pageSize) {
+    public Iterable<ManagedObjectReference> get() {
         return mos;
     }
 

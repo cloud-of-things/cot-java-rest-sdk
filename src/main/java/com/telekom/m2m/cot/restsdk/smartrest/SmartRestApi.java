@@ -61,7 +61,7 @@ public class SmartRestApi {
             }
         }
 
-        throw new CotSdkException("Invalid response to smart template check: " + String.join("\n", response));
+        throw new CotSdkException("Invalid response to smart template check: " + String.join("\n", (CharSequence[])response));
     }
 
 

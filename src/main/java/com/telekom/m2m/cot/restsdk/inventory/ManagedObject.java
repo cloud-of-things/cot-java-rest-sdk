@@ -107,7 +107,7 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("childDevices")) {
             return (ManagedObjectReferenceCollection) anyObject.get("childDevices");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
 
@@ -120,7 +120,7 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("childAssets")) {
             return (ManagedObjectReferenceCollection) anyObject.get("childAssets");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
 
@@ -133,7 +133,7 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("deviceParents")) {
             return (ManagedObjectReferenceCollection) anyObject.get("deviceParents");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
 
@@ -146,7 +146,7 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("assetParents")) {
             return (ManagedObjectReferenceCollection) anyObject.get("assetParents");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
 }

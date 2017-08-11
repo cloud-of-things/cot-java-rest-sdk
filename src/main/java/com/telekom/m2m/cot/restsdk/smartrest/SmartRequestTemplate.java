@@ -57,7 +57,7 @@ public class SmartRequestTemplate extends SmartTemplate {
      * @return this template as a CSV-String, with fields escaped as necessary, ready to be sent to the server.
      */
     public String toString() {
-        return String.join(",", msgId, method, resourceUri, escape(contentType), escape(accept), escape(placeholder), (values == null) ? "" : String.join(" ", values), escape(templateString));
+        return String.join(",", msgId, method, resourceUri, escape(contentType), escape(accept), escape(placeholder), (values == null) ? "" : String.join(" ", (CharSequence[])values), escape(templateString));
     }
 
 

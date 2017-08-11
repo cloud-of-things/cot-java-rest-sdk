@@ -82,7 +82,7 @@ public class ManagedObjectTest {
 
 
         ManagedObjectReferenceCollection morc = mo.getChildDevices();
-        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterable<ManagedObjectReference> cMOs = morc.get();
         Assert.assertEquals(cMOs.iterator().hasNext(), false);
     }
 
@@ -109,7 +109,7 @@ public class ManagedObjectTest {
 
 
         ManagedObjectReferenceCollection morc = mo.getChildAssets();
-        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterable<ManagedObjectReference> cMOs = morc.get();
         Assert.assertEquals(cMOs.iterator().hasNext(), false);
     }
 
@@ -136,7 +136,7 @@ public class ManagedObjectTest {
 
 
         ManagedObjectReferenceCollection morc = mo.getParentDevices();
-        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterable<ManagedObjectReference> cMOs = morc.get();
         Assert.assertEquals(cMOs.iterator().hasNext(), false);
     }
 
@@ -175,7 +175,7 @@ public class ManagedObjectTest {
         ManagedObject mo = inventoryApi.get("abc");
 
         ManagedObjectReferenceCollection morc = mo.getChildDevices();
-        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
         Assert.assertEquals(iter.hasNext(), true);
         ManagedObjectReference mor = iter.next();
@@ -219,7 +219,7 @@ public class ManagedObjectTest {
         ManagedObject mo = inventoryApi.get("abc");
 
         ManagedObjectReferenceCollection morc = mo.getChildAssets();
-        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
         Assert.assertEquals(iter.hasNext(), true);
         ManagedObjectReference mor = iter.next();
@@ -263,7 +263,7 @@ public class ManagedObjectTest {
         ManagedObject mo = inventoryApi.get("abc");
 
         ManagedObjectReferenceCollection morc = mo.getParentDevices();
-        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
         Assert.assertEquals(iter.hasNext(), true);
         ManagedObjectReference mor = iter.next();
@@ -308,7 +308,7 @@ public class ManagedObjectTest {
         ManagedObject mo = inventoryApi.get("abc");
 
         ManagedObjectReferenceCollection morc = mo.getParentAssets();
-        Iterable<ManagedObjectReference> cMOs = morc.get(300);
+        Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
         Assert.assertEquals(iter.hasNext(), true);
         ManagedObjectReference mor = iter.next();
