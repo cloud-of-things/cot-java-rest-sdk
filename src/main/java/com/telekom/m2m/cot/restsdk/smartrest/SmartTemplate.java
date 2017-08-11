@@ -31,12 +31,11 @@ public abstract class SmartTemplate {
             return "";
         }
 
-        value = value.replace("\"", "\"\"");
         if (NEED_QUOTES.matcher(value).find()) {
-            value = "\"" + value + "\"";
+            return "\"" + value.replace("\"", "\"\"") + "\"";
+        } else {
+            return value;
         }
-
-        return value;
     }
 
     public String getMsgId() {

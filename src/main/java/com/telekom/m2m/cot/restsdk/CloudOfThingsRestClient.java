@@ -151,6 +151,7 @@ public class CloudOfThingsRestClient {
      * Do a SmartREST-request.
      *
      * @param xId the X-Id for which this request shall be made.
+     *            Can be null, omitting the X-Id header, to allow for multiple X-Id ("15,myxid").
      * @param lines a String with newline-separated lines for the request body
      * @param transientMode whether to use "X-Cumulocity-Processing-Mode: TRANSIENT" (false: PERSISTENT).
      *
