@@ -528,4 +528,27 @@ public class UserApi {
         cloudOfThingsRestClient.delete(role.getName(), "user/" + tenant + "/groups/" + groupId + "/roles");
     }
 
+    /**
+     * The method to update the fields of a user in the cloud.
+     * 
+     * @param user
+     * @param tenant
+     */
+    public void updateUser(User user, String tenant) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
+        String json = gson.toJson(user);
+        cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT);
+    }
+
+    /**
+     * The method to update the fields of a group in the cloud.
+     * 
+     * @param user
+     * @param tenant
+     */
+    public void updateGroup(Group group, String tenant) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.group+json;ver=0.9";
+        String json = gson.toJson(group);
+        cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + group.getId(), CONTENT);
+    }
 }
