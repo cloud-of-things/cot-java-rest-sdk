@@ -10,7 +10,9 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
  * 
- * Currently a place holder. Created by Ozan Arslan on 27.07.2017
+ * The class that defines methods related to the role reference collections.
+ * Role reference collections are a group of references to the roles. Created by
+ * Ozan Arslan on 27.07.2017
  *
  */
 

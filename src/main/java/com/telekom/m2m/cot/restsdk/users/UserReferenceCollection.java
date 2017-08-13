@@ -10,7 +10,8 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
  * 
- * Currently a place holder. Created by Ozan Arslan on 27.07.2017
+ * The class that defines the operations on a collection of user references.
+ * Created by Ozan Arslan on 27.07.2017
  *
  */
 
@@ -20,7 +21,8 @@ public class UserReferenceCollection extends JsonArrayPagination {
     private static final String COLLECTION_ELEMENT_NAME = "references";
 
     /**
-     * Creates a GroupCollection. Use {@link UsersApi} to get GroupCollections.
+     * Creates a UserReferenceCollection. Use {@link UsersApi} to get
+     * UserCollections.
      *
      * @param cloudOfThingsRestClient
      *            the necessary REST client to send requests to the CoT.
@@ -38,9 +40,9 @@ public class UserReferenceCollection extends JsonArrayPagination {
     }
 
     /**
-     * Retrieves the Groups influenced by filters set in construction.
+     * Retrieves the Users influenced by filters set in construction.
      *
-     * @return array of found Groups
+     * @return array of found Users
      */
     public UserReference[] getUserReferences() {
         final JsonArray jsonUserReferences = getJsonArray();

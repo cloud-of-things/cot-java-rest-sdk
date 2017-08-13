@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
- * Currently only a place holder. A class that represents a reference to a user.
- * Created by Ozan Arslan on 25.07.2017
+ * A class that represents a reference to a user. A reference holds the URL of a
+ * given user. Created by Ozan Arslan on 25.07.2017
  *
  */
 
@@ -21,7 +21,7 @@ public class UserReference extends ExtensibleObject {
     }
 
     /**
-     * Default construction to create a new user.
+     * Default construction to create a new user reference.
      */
     public UserReference() {
         super();
@@ -37,19 +37,29 @@ public class UserReference extends ExtensibleObject {
         super(extensibleObject);
     }
 
+    /**
+     * The method to retrieve the user that the reference points to.
+     * 
+     * @return the user which the reference refers.
+     */
     public User getUser() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("user");
         User user = new User(obj);
         return user;
     }
 
+    /**
+     * The method to retrieve the URL of the user that the reference holds.
+     * 
+     * @return the URL of the user.
+     */
     public String getSelf() {
 
         return (String) anyObject.get("self");
 
     }
 
-    // TODO: below method is not complete
+    // TODO: finalize the below method.
     public void setUser(User user) {
         anyObject.put("user", user);
 

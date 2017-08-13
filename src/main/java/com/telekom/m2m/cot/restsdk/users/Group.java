@@ -4,7 +4,8 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 /**
- * Class that defines the methods of group. Created by Ozan Arslan on 13.07.2017
+ * Class that defines the methods of group. Groups are categories of users.
+ * Created by Ozan Arslan on 13.07.2017
  */
 
 public class Group extends ExtensibleObject {

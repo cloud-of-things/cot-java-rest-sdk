@@ -9,8 +9,9 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
- * Class that defines the methods of group collection. Created by Ozan Arslan on
- * 13.07.2017
+ * Class that defines the methods of group collection. Group collections are
+ * objects that hold several groups. They define methods on a collection of
+ * groups.Created by Ozan Arslan on 13.07.2017
  */
 
 public class GroupCollection extends JsonArrayPagination {

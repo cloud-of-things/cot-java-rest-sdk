@@ -9,8 +9,8 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
- * Class that defines the methods of role collection. Created by Ozan Arslan on
- * 13.07.2017
+ * Class that defines the methods of role collection. A role collection is a
+ * group of roles. Created by Ozan Arslan on 13.07.2017
  */
 
 public class RoleCollection extends JsonArrayPagination {

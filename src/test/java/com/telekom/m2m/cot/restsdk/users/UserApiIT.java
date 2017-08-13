@@ -106,6 +106,7 @@ public class UserApiIT {
                 "User first name must match to the one in the cloud");
         Assert.assertEquals(testUser.getLastName(), "LastName007", "User last name must match to the one in the cloud");
 
+        // now delete that user.
         cotPlat.getUserApi().deleteUser(testUser, tenant);
 
         // given:
@@ -124,12 +125,12 @@ public class UserApiIT {
                 userForNoReturn.getFirstName(), "First name should match to the first name of the user in the cloud.");
         Assert.assertEquals(cotPlat.getUserApi().getUserByName("UserforNoReturn12", tenant).getLastName(),
                 userForNoReturn.getLastName(), "Last name should match to the last name of the user in the cloud.");
-
         Assert.assertNull(cotPlat.getUserApi().getUserByName("UserforNoReturn12", tenant).getPassword(),
                 "Get operation on user password must return a null.");
 
         // Now delete that user.
         cotPlat.getUserApi().deleteUser(userForNoReturn, tenant);
+
         // when
         // (testing the method that creates a user by taking user fields as
         // input)
@@ -145,6 +146,8 @@ public class UserApiIT {
                 "lastName22", "Username should match to the user name of the object in the cloud.");
         Assert.assertEquals(cotPlat.getUserApi().getUserByName("NoReturnWithUserFields12", tenant).getFirstName(),
                 "firstName22", "Username should match to the user name of the object in the cloud.");
+
+        // now delete that user:
         cotPlat.getUserApi().deleteUserByUserName("NoReturnWithUserFields12", tenant);
 
         // given:
@@ -169,6 +172,7 @@ public class UserApiIT {
         Assert.assertEquals(cotPlat.getUserApi().getUserByName("InitialUserName", tenant).getLastName(),
                 "LastNameAfterUpdate");
 
+        // now delete that user.
         cotPlat.getUserApi().deleteUserByUserName("InitialUserName", tenant);
     }
 
@@ -181,32 +185,33 @@ public class UserApiIT {
         // when:
         Group returnedGroup = cotPlat.getUserApi().createGroup(group, tenant);
 
-        // then
+        // then:
         Assert.assertEquals(group.getName(), returnedGroup.getName(),
                 "The group that is created in the cloud should have the same name as the group object created locally.");
 
         // Now delete that group:
         cotPlat.getUserApi().deleteGroup(returnedGroup, tenant);
 
-        // when
+        // when:
         GroupCollection groups = cotPlat.getUserApi().getGroups(tenant);
-        // then
+
+        // then:
         Assert.assertNotNull(groups, "Groups object cannot be empty.");
         Assert.assertTrue(groups.getGroups().length > 0,
                 "There must be at least one group as long as at least one user is in the cloud (that would be the logged in user, which is us)");
 
-        // when (testing to get group by name)
+        // when (testing to get group by name):
         group = cotPlat.getUserApi().getGroupByName(tenant, exampleGroup);
 
-        // then
+        // then:
         Assert.assertNotNull(group, "The group that is retrieved from the cloud should exist.");
         Assert.assertEquals(group.getName(), "admins",
                 "The group name does not match to the name of the group that was retrieved from the cloud.");
 
-        // when (testing to get group by a group object)
+        // when (testing to get group by a group object):
         Group newgroup = cotPlat.getUserApi().getGroup(group, tenant);
 
-        // then
+        // then:
         Assert.assertEquals(group.getId(), newgroup.getId(),
                 "The returned group name from the cloud should be the same as the group name of the group object created locally.");
 
@@ -265,7 +270,7 @@ public class UserApiIT {
     @Test
     public void testRoleMethods() throws Exception {
         /*
-         * Cumulosity has four pre-defined roles that can be assigned. RoleName
+         * The cloud has four pre-defined roles that can be assigned. RoleName
          * and Roleid are identical. The roles are as follows:
          * 
          * 1. ROLE_TENANT_STATISTICS_READ 2. ROLE_OPTION_MANAGEMENT_ADMIN 3.
@@ -274,50 +279,42 @@ public class UserApiIT {
          * future tests)
          */
 
-        // when (testing getRoles method)
+        // when (testing getRoles method):
 
         RoleCollection roles = cotPlat.getUserApi().getRoles();
 
-        // then
+        // then:
         Assert.assertNotNull(roles, "Roles object cannot be empty.");
         Assert.assertTrue(roles.getRoles().length > 0, "There must be at least one role.");
-
         Assert.assertNotEquals(roles.getRoles().length, 0,
                 "By default the roles exist therefore the number of pre-defined roles cannot be zero.");
 
-        // when (testing getting a role by its name)
+        // when (testing getting a role by its name):
 
         Role returnedRole = cotPlat.getUserApi().getRoleByName("ROLE_OPTION_MANAGEMENT_READ");
 
-        // then
-
+        // then:
         Assert.assertEquals(returnedRole.getName(), "ROLE_OPTION_MANAGEMENT_READ",
                 "Returned role name does not match to the requested role name.");
 
-        // when (testing assigning a role to a user)
-
+        // when (testing assigning a role to a user):
         User userForRole = cotPlat.getUserApi().createUser("TestUserForRole25", tenant, "firstName", "lastName",
                 password);
-
         cotPlat.getUserApi().assignRoleToUser(userForRole, returnedRole, tenant);
-
         RoleReferenceCollection roleRefCol = cotPlat.getUserApi().getRolesReferencesOfUser(userForRole, tenant);
-
         RoleReference[] arrayofRoles2 = roleRefCol.getRoleReferences();
         System.out.println("Array size of roles:" + arrayofRoles2.length);
-
         RoleReference roleRef1 = arrayofRoles2[0];
-
         Role testNameRole = roleRef1.getRole();
 
+        // then:
         Assert.assertEquals(testNameRole.getName(), returnedRole.getName(),
                 "The role name should be the same as the role name that is intended to be assigned to the user");
 
+        // when:
         cotPlat.getUserApi().unassignRoleFromUser(userForRole, returnedRole, tenant);
 
-        System.out.println("number of roles NOW:"
-                + cotPlat.getUserApi().getRolesReferencesOfUser(userForRole, tenant).getRoleReferences().length);
-
+        // then:
         Assert.assertEquals(
                 cotPlat.getUserApi().getRolesReferencesOfUser(userForRole, tenant).getRoleReferences().length, 2,
                 "After unassigning a role from the user, the number of roles the user has should be two because when a user is created it has by default two roles.");
@@ -325,19 +322,23 @@ public class UserApiIT {
         cotPlat.getUserApi().deleteUser(userForRole, tenant);
 
         // Now assign roles to groups:
-
+        // given:
         Group groupForRoles = new Group();
         groupForRoles.setName("GroupForRoles5");
-
         Group returnedGroup = cotPlat.getUserApi().createGroup(groupForRoles, tenant);
+
+        // when:
         cotPlat.getUserApi().assignRoleToGroup(returnedGroup, returnedRole, tenant);
 
+        // then:
         Assert.assertEquals(
                 cotPlat.getUserApi().getRolesReferencesOfGroup(returnedGroup, tenant).getRoleReferences().length, 1,
                 "After assigning a role to a newly created group, the number of roles that this group has should be 1 because a new group has zero roles.");
 
+        // when:
         cotPlat.getUserApi().unassignRoleFromGroup(returnedGroup, returnedRole, tenant);
 
+        // then:
         Assert.assertEquals(
                 cotPlat.getUserApi().getRolesReferencesOfGroup(returnedGroup, tenant).getRoleReferences().length, 0,
                 "After removing the only role that a group has, the remaining number of roles should be zero.");

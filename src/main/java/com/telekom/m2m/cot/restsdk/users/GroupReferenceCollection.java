@@ -10,7 +10,8 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
  * 
- * Currently a place holder. Created by Ozan Arslan on 27.07.2017
+ * The class that defines the methods on a collection of group references.
+ * Created by Ozan Arslan on 27.07.2017
  *
  */
 
@@ -40,7 +41,7 @@ public class GroupReferenceCollection extends JsonArrayPagination {
     /**
      * Retrieves the Groups influenced by filters set in construction.
      *
-     * @return array of found Groups
+     * @return array of found Group references.
      */
     public GroupReference[] getGroupReferences() {
         final JsonArray jsonGroupReferences = getJsonArray();

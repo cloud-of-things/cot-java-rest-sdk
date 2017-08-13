@@ -3,14 +3,14 @@ package com.telekom.m2m.cot.restsdk.users;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 /**
- * Class that defines the methods of current user. Created by Ozan Arslan on
- * 13.07.2017
+ * Class that defines the methods of current user. Current user is the user that
+ * is logged in. Created by Ozan Arslan on 13.07.2017
  */
 
 public class CurrentUser extends ExtensibleObject {
 
     /**
-     * Default construction to create a new user.
+     * Default constructor to create a new user.
      */
     public CurrentUser() {
         super();
@@ -27,7 +27,7 @@ public class CurrentUser extends ExtensibleObject {
     }
 
     /**
-     * Constructer with a username
+     * Constructor with a userNßame
      */
     public CurrentUser(ExtensibleObject extensibleObject, String Username) {
         super();
@@ -151,6 +151,13 @@ public class CurrentUser extends ExtensibleObject {
         return (String) anyObject.get("groups");
     }
 
+    /**
+     * The method to return the URL of the current user.
+     * 
+     * @param user
+     * @param tenant
+     * @return the URL of the current user as a String.
+     */
     public String getSelf(CurrentUser user, String tenant) {
 
         String self = "/user/" + tenant + "/users/" + user.getId();
