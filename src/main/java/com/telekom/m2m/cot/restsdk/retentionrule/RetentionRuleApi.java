@@ -163,7 +163,7 @@ public class RetentionRuleApi {
                 }
                 break;
             case RetentionRule.DATA_TYPE_OPERATION :
-                if ((rule.getFragmentType() != null) && (!rule.getType().equals("*"))) {
+                if ((rule.getType() != null) && (!rule.getType().equals("*"))) {
                     throw new CotSdkException("RetentionRule of dataType " + RetentionRule.DATA_TYPE_OPERATION + " cannot have a type.");
                 }
                 break;

@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class Filter {
 
-    private HashMap<String, String> arguments = new HashMap<String, String>();
+    private HashMap<String, String> arguments = new HashMap<>();
 
     private Filter() {
     }
