@@ -8,18 +8,18 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
+
 /**
  * Class that defines the methods of role collection. A role collection is a
  * group of roles. Created by Ozan Arslan on 13.07.2017
  */
-
 public class RoleCollection extends JsonArrayPagination {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.roleCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "roles";
 
     /**
-     * Creates a RoleCollection. Use {@link UsersApi} to get RoleCollections.
+     * Creates a RoleCollection. Use {@link UserApi} to get RoleCollections.
      *
      * @param cloudOfThingsRestClient
      *            the necessary REST client to send requests to the CoT.

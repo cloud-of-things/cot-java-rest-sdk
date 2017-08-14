@@ -3,19 +3,14 @@ package com.telekom.m2m.cot.restsdk.users;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
+
 /**
  * Class that defines the methods of group. Groups are categories of users.
  * Created by Ozan Arslan on 13.07.2017
  */
-
 public class Group extends ExtensibleObject {
 
-    /**
-     * Default construction to create a new group.
-     */
-    public Group() {
-        super();
-    }
+    public Group() {}
 
     /**
      * Internal constructor to create groups from base class.
@@ -26,6 +21,7 @@ public class Group extends ExtensibleObject {
     public Group(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }
+
 
     /**
      * Get the unique identifier of the group. If the group was retrieved from
@@ -49,7 +45,7 @@ public class Group extends ExtensibleObject {
         try {
             return (Long) id;
         } catch (ClassCastException ex) {
-            throw new CotSdkException("RetentionRule has invalid id in json.", ex);
+            throw new CotSdkException("Group has invalid id in json.", ex);
         }
     }
 

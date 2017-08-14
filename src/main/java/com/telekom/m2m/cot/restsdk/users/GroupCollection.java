@@ -8,19 +8,19 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
+
 /**
  * Class that defines the methods of group collection. Group collections are
  * objects that hold several groups. They define methods on a collection of
  * groups.Created by Ozan Arslan on 13.07.2017
  */
-
 public class GroupCollection extends JsonArrayPagination {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.groupCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "groups";
 
     /**
-     * Creates a GroupCollection. Use {@link UsersApi} to get GroupCollections.
+     * Creates a GroupCollection. Use {@link UserApi} to get GroupCollections.
      *
      * @param cloudOfThingsRestClient
      *            the necessary REST client to send requests to the CoT.
@@ -40,7 +40,7 @@ public class GroupCollection extends JsonArrayPagination {
     /**
      * Retrieves the Groups influenced by filters set in construction.
      *
-     * @return array of found Groups
+     * @return array of found Groups, or null if there are no Groups.
      */
     public Group[] getGroups() {
         final JsonArray jsonGroups = getJsonArray();

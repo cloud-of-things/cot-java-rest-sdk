@@ -8,21 +8,19 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
+
 /**
- * 
  * The class that defines methods related to the role reference collections.
  * Role reference collections are a group of references to the roles. Created by
  * Ozan Arslan on 27.07.2017
- *
  */
-
 public class RoleReferenceCollection extends JsonArrayPagination {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.roleReferenceCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "references";
 
     /**
-     * Creates a RoleCollection. Use {@link RolesApi} to get RoleCollections.
+     * Creates a RoleCollection. Use {@link UserApi} to get RoleCollections.
      *
      * @param cloudOfThingsRestClient
      *            the necessary REST client to send requests to the CoT.

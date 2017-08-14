@@ -2,18 +2,13 @@ package com.telekom.m2m.cot.restsdk.users;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
+
 /**
  * Class that defines the methods of user. Created by Ozan Arslan on 13.07.2017
  */
-
 public class User extends ExtensibleObject {
 
-    /**
-     * Default construction to create a new user.
-     */
-    public User() {
-        super();
-    }
+    public User() {}
 
     /**
      * Internal constructor to create users from base class.
@@ -25,12 +20,6 @@ public class User extends ExtensibleObject {
         super(extensibleObject);
     }
 
-    /**
-     * Constructor with a userName
-     */
-    public User(ExtensibleObject extensibleObject, String Username) {
-        super();
-    }
 
     /**
      * Get the unique identifier of the user.
@@ -59,7 +48,6 @@ public class User extends ExtensibleObject {
      * @return URL of the user
      */
     public String getSelf(User user, String tenant) {
-
         String self = "/user/" + tenant + "/users/" + user.getId();
         return self;
     }
@@ -125,7 +113,6 @@ public class User extends ExtensibleObject {
      * @return lastName
      */
     public String getLastName() {
-
         return (String) anyObject.get("lastName");
     }
 
@@ -163,7 +150,6 @@ public class User extends ExtensibleObject {
      * @return the URL of the groups
      */
     public String getGroupsOfUser() {
-
         return (String) anyObject.get("groups");
     }
 

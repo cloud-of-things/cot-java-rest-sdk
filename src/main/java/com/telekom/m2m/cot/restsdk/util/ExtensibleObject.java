@@ -12,8 +12,12 @@ import java.util.Map;
 public class ExtensibleObject {
     protected final HashMap<String, Object> anyObject = new HashMap<>();
 
+
+    public ExtensibleObject() {
+    }
+
     /**
-     * Constructur for use in sub classes.
+     * Constructor that uses all the objects from an existing ExtensibleObject.
      *
      * @param extensibleObject
      */
@@ -22,11 +26,6 @@ public class ExtensibleObject {
             anyObject.putAll(extensibleObject.anyObject);
     }
 
-    /**
-     * Default constructor.
-     */
-    public ExtensibleObject() {
-    }
 
     /**
      * Set a custom attribute of the object. Setting the same property again will override the old value.

@@ -7,13 +7,14 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
  * Use the UserApi to work with users. Created by Ozan Arslan on 13.07.2017
- *
  */
 public class UserApi {
+
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
 
     private final Gson gson = GsonUtils.createGson();
+
 
     /**
      * Internal Constructor.
@@ -24,6 +25,7 @@ public class UserApi {
     public UserApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
+
 
     /**
      * Method to return the collection of users in a given tenant.
@@ -365,7 +367,7 @@ public class UserApi {
     }
 
     /**
-     * The method to remove a user from a group.
+     * The method to remove a user from a group.6
      * 
      * @param user
      * @param tenant
@@ -523,7 +525,7 @@ public class UserApi {
     }
 
     /**
-     * The method to unassign a group from a role.
+     * The method to unassign a role from a group.
      * 
      * @param group
      * @param role
@@ -549,7 +551,7 @@ public class UserApi {
     /**
      * The method to update the fields of a group in the cloud.
      * 
-     * @param user
+     * @param group
      * @param tenant
      */
     public void updateGroup(Group group, String tenant) {

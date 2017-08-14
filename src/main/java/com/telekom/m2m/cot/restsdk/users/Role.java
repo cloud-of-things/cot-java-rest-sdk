@@ -2,21 +2,16 @@ package com.telekom.m2m.cot.restsdk.users;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
+
 /**
  * Class that defines the methods of a role. Roles are categories of users and
  * groups. In other words, they are types of users and group of users. The users
  * and group of users can be assigned to new roles or they can be unassigned
  * from their roles. Created by Ozan Arslan on 13.07.2017
  */
-
 public class Role extends ExtensibleObject {
 
-    /**
-     * Default construction to create a new user.
-     */
-    public Role() {
-        super();
-    }
+    public Role() {}
 
     /**
      * Internal constructor to create roles from base class.
@@ -27,6 +22,7 @@ public class Role extends ExtensibleObject {
     public Role(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }
+
 
     /**
      * Get the unique identifier of the role.

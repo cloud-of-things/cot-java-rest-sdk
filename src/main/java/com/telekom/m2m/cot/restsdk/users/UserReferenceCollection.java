@@ -8,20 +8,18 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
+
 /**
- * 
  * The class that defines the operations on a collection of user references.
  * Created by Ozan Arslan on 27.07.2017
- *
  */
-
 public class UserReferenceCollection extends JsonArrayPagination {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.userReferenceCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "references";
 
     /**
-     * Creates a UserReferenceCollection. Use {@link UsersApi} to get
+     * Creates a UserReferenceCollection. Use {@link UserApi} to get
      * UserCollections.
      *
      * @param cloudOfThingsRestClient
@@ -38,6 +36,7 @@ public class UserReferenceCollection extends JsonArrayPagination {
         super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME,
                 filterBuilder);
     }
+
 
     /**
      * Retrieves the Users influenced by filters set in construction.

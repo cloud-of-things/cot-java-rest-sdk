@@ -9,19 +9,16 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
- * 
  * The class that defines the methods on a collection of group references.
  * Created by Ozan Arslan on 27.07.2017
- *
  */
-
 public class GroupReferenceCollection extends JsonArrayPagination {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.groupReferenceCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "references";
 
     /**
-     * Creates a GroupCollection. Use {@link GroupsApi} to get GroupCollections.
+     * Creates a GroupCollection. Use {@link UserApi} to get GroupCollections.
      *
      * @param cloudOfThingsRestClient
      *            the necessary REST client to send requests to the CoT.
@@ -50,9 +47,9 @@ public class GroupReferenceCollection extends JsonArrayPagination {
             final GroupReference[] arrayOfGroupReferences = new GroupReference[jsonGroupReferences.size()];
             for (int i = 0; i < jsonGroupReferences.size(); i++) {
                 JsonElement jsonGroup = jsonGroupReferences.get(i).getAsJsonObject();
-                final GroupReference groupreference = new GroupReference(
+                final GroupReference groupReference = new GroupReference(
                         gson.fromJson(jsonGroup, ExtensibleObject.class));
-                arrayOfGroupReferences[i] = groupreference;
+                arrayOfGroupReferences[i] = groupReference;
             }
             return arrayOfGroupReferences;
         } else {

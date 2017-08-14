@@ -199,7 +199,7 @@ public class CloudOfThingsRestClient {
     public String getResponse(String id, String api, String contentType) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + id)
+                .url(host + "/" + api + "/" + id)
                 .build();
 
         Response response = null;
@@ -277,7 +277,7 @@ public class CloudOfThingsRestClient {
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
                 .addHeader("Accept", contentType)
-                .url(host + "/" + api + id)
+                .url(host + "/" + api + "/" + id)
                 .put(body)
                 .build();
         Response response = null;
@@ -294,7 +294,7 @@ public class CloudOfThingsRestClient {
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + id)
+                .url(host + "/" + api + "/" + id)
                 .delete()
                 .build();
         Response response = null;

@@ -1,9 +1,7 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import com.google.gson.Gson;
-import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
 
 /**
  * A class that represents a reference to a role. A reference hold the URL of
@@ -11,22 +9,12 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * 25.07.2017
  *
  */
-
 public class RoleReference extends ExtensibleObject {
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
-    private Gson gson = GsonUtils.createGson();
+
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.role+json; charset=UTF-8; ver=0.9";
 
-    public RoleReference(CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-    }
 
-    /**
-     * Default construction to create a new role.
-     */
-    public RoleReference() {
-        super();
-    }
+    public RoleReference() {}
 
     /**
      * Internal constructor to create RoleReference from base class.

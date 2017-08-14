@@ -328,7 +328,7 @@ public class UserApiIT {
                 "Returned role name does not match to the requested role name.");
 
         // when (testing assigning a role to a user):
-        User userForRole = cotPlat.getUserApi().createUser("TestUserForRole25", tenant, "firstName", "lastName",
+        User userForRole = cotPlat.getUserApi().createUser("TestUserForRole27", tenant, "firstName", "lastName",
                 password);
         cotPlat.getUserApi().assignRoleToUser(userForRole, returnedRole, tenant);
         RoleReferenceCollection roleRefCol = cotPlat.getUserApi().getRolesReferencesOfUser(userForRole, tenant);

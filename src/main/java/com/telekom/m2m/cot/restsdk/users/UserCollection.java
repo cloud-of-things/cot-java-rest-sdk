@@ -1,7 +1,5 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import java.util.List;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -11,13 +9,15 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+
 /**
  * Class to retrieve and define sets of users (collection of users.)
  * 
  * Created by Ozan Arslan on 31.07.2017
- *
  */
 public class UserCollection {
+
+    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.userCollection+json;ver=0.9";
 
     private Filter.FilterBuilder criteria = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -25,11 +25,11 @@ public class UserCollection {
 
     private Gson gson = GsonUtils.createGson();
 
-    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.userCollection+json;ver=0.9";
     private boolean nextAvailable = false;
     private boolean previousAvailable = false;
     private int pageSize = 5;
-    String tenant;
+    private String tenant;
+
 
     /**
      * Creates a UserCollection.
@@ -56,6 +56,7 @@ public class UserCollection {
         this.tenant = tenant;
     }
 
+
     /**
      * The method to return the users in a collection as an array
      * 
@@ -79,15 +80,6 @@ public class UserCollection {
             return null;
     }
 
-    /**
-     * The method to set a collection from a list of users. This method is
-     * likely to be never used. Currently a placeholder.
-     * 
-     * @param users
-     */
-    public void setUsers(List<User> users) {
-
-    }
 
     private JsonObject getJsonObject(int page, String tenant) {
         String response;
@@ -102,8 +94,6 @@ public class UserCollection {
 
     /**
      * Moves cursor to the next page.
-     *
-     * @since 0.2.0
      */
     public void next() {
         pageCursor += 1;
@@ -111,8 +101,6 @@ public class UserCollection {
 
     /**
      * Moves cursor to the previous page.
-     *
-     * @since 0.2.0
      */
     public void previous() {
         pageCursor -= 1;
@@ -120,16 +108,15 @@ public class UserCollection {
 
     /**
      * Checks if the next page has elements. <b>Use with caution, it does a
-     * seperate HTTP request, so it is considered as slow</b>
+     * separate HTTP request, so it is considered as slow</b>
      *
      * @return true if next page has events, otherwise false.
-     * @since 0.2.0
      */
     public boolean hasNext() {
         JsonObject object = getJsonObject(pageCursor + 1, tenant);
         if (object.has("events")) {
             JsonArray jsonEvents = object.get("events").getAsJsonArray();
-            nextAvailable = jsonEvents.size() > 0 ? true : false;
+            nextAvailable = (jsonEvents.size() > 0);
         }
         return nextAvailable;
     }
