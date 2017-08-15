@@ -203,9 +203,9 @@ public class UserApi {
      * A method to create a user in the cloud from a pre-defined user object and
      * return it.
      * 
-     * @param user
+     * @param user the user to create/persist in the cloud
      * @param tenant
-     * @return an instance of a User
+     * @return the same input user object
      */
     public User createUser(User user, String tenant) {
         String json = gson.toJson(user);
