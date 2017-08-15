@@ -1,11 +1,11 @@
 package com.telekom.m2m.cot.restsdk.users;
 
+import java.util.Map;
+
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-
-import java.util.Map;
 
 /**
  * Use the UserApi to work with users. Created by Ozan Arslan on 13.07.2017
@@ -566,8 +566,18 @@ public class UserApi {
      * @param tenant
      */
     public void updateGroup(Group group, String tenant) {
-        String CONTENT = "application/vnd.com.nsn.cumulocity.group+json;ver=0.9";
-        String json = gson.toJson(group);
-        cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + group.getId(), CONTENT);
+        String CONTENT = "application/vnd.com.nsn.cumulocity.group+json; charset=UTF-8; ver=0.9";
+        
+        Map<String, Object> attributes = group.getAttributes();
+        attributes.remove("self");
+        attributes.remove("roles");
+        attributes.remove("id");
+
+        ExtensibleObject extensibleObject = new ExtensibleObject();
+        extensibleObject.setAttributes(attributes);
+
+        String json = gson.toJson(extensibleObject);
+        String groupId = Long.toString(group.getId());
+        cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/groups/" + groupId, CONTENT);
     }
 }
