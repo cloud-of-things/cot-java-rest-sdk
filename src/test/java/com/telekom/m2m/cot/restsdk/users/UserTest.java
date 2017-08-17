@@ -5,6 +5,7 @@ import org.testng.Assert;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 public class UserTest {
@@ -32,6 +33,14 @@ public class UserTest {
 		Assert.assertEquals(o.get("lastName").getAsString(), "LName");
 		Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
 		Assert.assertEquals(o.get("password").getAsString(), "verysecret");
-
+		
+		String[] forbidden= {" ","$","\\","//","+",":","$"};
+		for(String x : forbidden){
+		    try{
+		        user.setUserName(x);
+		        Assert.fail("Restricted characters should not be allowed in  userName. Failed character is "+x);
+		       }catch (CotSdkException ex  ){
+		       }
+		}
 	}
 }
