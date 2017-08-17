@@ -31,16 +31,6 @@ public class UserApiTest {
         RoleCollection roles = platform.getUserApi().getRoles();
         System.out.println(roles.getRoles().length);
 
-        // Test operations on current user:
-        CurrentUser currentuser = platform.getUserApi().getCurrentUser();
-        platform.getUserApi().updateCurrentUserFirstName("FirstNameFirstUpdate");
-
-        System.out.println("Current user first name first update: " + currentuser.getFirstName());
-        platform.getUserApi().updateCurrentUserFirstName("FirstNameSecondUpdate");
-        System.out.println("Current user first name second update: " + currentuser.getFirstName());
-        // Now switch the current user name to the first value:
-        platform.getUserApi().updateCurrentUserFirstName("FirstNameFirstUpdate");
-
         // Test operations on a generic user:
 
         // Create a user in the cloud by using a User object:
@@ -99,18 +89,7 @@ public class UserApiTest {
         // check if that worked:
         System.out.println("User first name before update: "
                 + platform.getUserApi().getUserByName("InitialUserName", "nbiotdemo").getFirstName());
-        // update its first name:
-        platform.getUserApi().updateUserFirstName(userToUpdateFields, "nbiotdemo", "firstNameAfterUpdate");
-        // check if that worked:
-        System.out.println("First Name after Update:"
-                + platform.getUserApi().getUserByName("InitialUserName", "nbiotdemo").getFirstName());
-        // update its last name:
-        platform.getUserApi().updateUserLastName(userToUpdateFields, "nbiotdemo", "LastNameAfterUpdate");
-        // check if that worked:
-        System.out.println("Last Name after Update:"
-                + platform.getUserApi().getUserByName("InitialUserName", "nbiotdemo").getLastName());
-        // update its password:
-        platform.getUserApi().updateUserPassword(userToUpdateFields, "nbiotdemo", "passwordAfterUpdate");
+
         // check if that worked:
         System.out.println("Password before update (should be null):"
                 + platform.getUserApi().getUserByName("InitialUserName", "nbiotdemo").getPassword());

@@ -89,18 +89,6 @@ public class UserApiIT {
         Assert.assertNotNull(currentuser,
                 "Current user must always exist, it is the logged in user who performs this operation, which is appearently you, do you exist?");
 
-        // when
-        userApi.updateCurrentUserFirstName("FirstNameUpdated");
-        currentuser.setFirstName(userApi.getCurrentUserFirstName());
-        // then
-        assertEquals(currentuser.getFirstName(), "FirstNameUpdated",
-                "Current user  first name is not equal to the updated value, update failed.");
-
-        // when
-        userApi.updateCurrentUserLastName("LastNameUpdated");
-        currentuser.setLastName(userApi.getCurrentUserLastName());
-        assertEquals(currentuser.getLastName(), "LastNameUpdated",
-                "Current user last name is not equal to the updated value, update failed.");
 
     }
 
@@ -181,14 +169,11 @@ public class UserApiIT {
 
         // when:
         userApi.createUserNoReturn(userToUpdateFields, tenant);
-        userApi.updateUserFirstName(userToUpdateFields, tenant, "firstNameAfterUpdate");
-        userApi.updateUserLastName(userToUpdateFields, tenant, "LastNameAfterUpdate");
         returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
         assertEquals(returnedUser.getUserName(), testUserName);
-        assertEquals(returnedUser.getFirstName(), "firstNameAfterUpdate");
-        assertEquals(returnedUser.getLastName(), "LastNameAfterUpdate");
+
 
         // now delete that user.
         userApi.deleteUserByUserName(testUserName, tenant);

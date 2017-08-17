@@ -124,73 +124,6 @@ public class UserApi {
         return currentuser;
     }
 
-    /**
-     * The method to retrieve the first name of the user.
-     * 
-     * @return first name of the current user.
-     */
-    public String getCurrentUserFirstName() {
-        String firstname = getCurrentUser().getFirstName();
-        return firstname;
-    }
-
-    /**
-     * The method to retrieve the last name of the user.
-     * 
-     * @return first name of the current user.
-     */
-    public String getCurrentUserLastName() {
-        String lastname = getCurrentUser().getLastName();
-        return lastname;
-    }
-
-    // The below method should be allowed, currentuser is you, you can get
-    // request your own
-    // password.
-    /**
-     * @return the password of the current user.
-     */
-    public String getCurrentUserPassword() {
-        String password = getCurrentUser().getPassword();
-        return password;
-    }
-
-    /**
-     * The method to update the first name of the current user.
-     * 
-     * @param firstName
-     */
-    public void updateCurrentUserFirstName(String firstName) {
-        User user = new User();
-        user.setFirstName(firstName);
-        String json = gson.toJson(user);
-        cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
-    }
-
-    /**
-     * The method to update the last name of the current user.
-     * 
-     * @param lastName
-     */
-    public void updateCurrentUserLastName(String lastName) {
-        User user = new User();
-        user.setLastName(lastName);
-        String json = gson.toJson(user);
-        cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
-    }
-
-    /**
-     * The method to update the password of the current user.
-     * 
-     * @param password
-     */
-    public void updateCurrentUserPassword(String password) {
-        User user = new User();
-        user.setPassword(password);
-        String json = gson.toJson(user);
-        cloudOfThingsRestClient.doPutRequest(json, "user/currentUser", CONTENT_TYPE);
-    }
-
     // Operations on a generic User:
     /**
      * A method to create a user in the cloud from a pre-defined user object and
@@ -295,42 +228,6 @@ public class UserApi {
     public void deleteUserByUserName(String userName, String tenant) {
         User user = getUserByName(userName, tenant);
         cloudOfThingsRestClient.delete(user.getId(), "user/" + tenant + "/users");
-    }
-
-    /**
-     * The method to update the first name of a specific user.
-     * 
-     * @param user
-     * @param tenant
-     * @param firstName
-     */
-    public void updateUserFirstName(User user, String tenant, String firstName) {
-        String json = "{\"firstName\":\"" + firstName + "\"}";
-        cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
-    }
-
-    /**
-     * The method to update the last name of a specific user.
-     * 
-     * @param user
-     * @param tenant
-     * @param lastName
-     */
-    public void updateUserLastName(User user, String tenant, String lastName) {
-        String json = "{\"lastName\":\"" + lastName + "\"}";
-        cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
-    }
-
-    /**
-     * The method to update the password of a specific user.
-     * 
-     * @param user
-     * @param tenant
-     * @param password
-     */
-    public void updateUserPassword(User user, String tenant, String password) {
-        String json = "{\"password\":\"" + password + "\"}";
-        cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT_TYPE);
     }
 
     // Methods related to groups:
