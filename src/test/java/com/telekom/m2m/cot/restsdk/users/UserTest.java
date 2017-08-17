@@ -33,7 +33,5 @@ public class UserTest {
 		Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
 		Assert.assertEquals(o.get("password").getAsString(), "verysecret");
 
-		
-user.setUserName("bbbb/");
 	}
 }
