@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk.users;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotEquals;
 
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -289,6 +290,26 @@ public class UserApiIT {
         userApi.deleteGroup(createdGroup1, tenant);
         userApi.deleteGroup(createdGroup2, tenant);
 
+        //given: (now test updateGroup method):
+        Group groupToUpdate= new Group();
+        groupToUpdate.setName("InitialGroupName108");
+        
+        //Create the group in the cloud:
+        Group groupInCloud=  userApi.createGroup(groupToUpdate, tenant);
+        
+        //when: (Update the name of the group)
+        groupInCloud.setName("FinalGroupName108");
+        System.out.println("groupInCloud ID "+ groupInCloud.getId());
+
+        userApi.updateGroup(groupInCloud, tenant); 
+ 
+        //then: (now return this group from the cloud and check if its name is correctly updated)
+        Group returnedGroup3 =userApi.getGroupById(groupInCloud.getId(), tenant);
+        assertNotEquals("InitialGroupName108",returnedGroup3.getName(), "updateGroup method failed.");
+
+        // Now delete that group:
+        userApi.deleteGroup(groupInCloud, tenant);
+    
     }
 
     @Test

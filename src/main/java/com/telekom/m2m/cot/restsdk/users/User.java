@@ -11,7 +11,7 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class User extends ExtensibleObject {
     
-   private static final Pattern AllowedChars = Pattern.compile("[a-zA-Z0-9\\._\\-]{3,}"); 
+   private static final Pattern AllowedChars = Pattern.compile("[a-zA-Z0-9\\._@\\-]{3,}"); 
    private static final int MAX_SIZE=1000;
    private static final int EMAIL_SIZE=254;
   
@@ -52,20 +52,10 @@ public class User extends ExtensibleObject {
         return self;
     }
 
-    /**
-     * The method to return the username.
-     * 
-     * @return userName
-     */
     public String getUserName() {
         return (String) anyObject.get("userName");
     }
 
-    /**
-     * The method to set userName.
-     * 
-     * @param InputUserName
-     */
     public void setUserName(String InputUserName) {
         if(InputUserName.length()>MAX_SIZE){
         throw new CotSdkException("userName cannot contain more than 1000 characters.");
@@ -74,20 +64,10 @@ public class User extends ExtensibleObject {
         }else anyObject.put("userName", InputUserName);
     }
 
-    /**
-     * The method to retrieve the password of the user.
-     * 
-     * @return password
-     */
     public String getPassword() {
         return (String) anyObject.get("password");
     }
 
-    /**
-     * The method to set the password of the user.
-     * 
-     * @param password
-     */
     public void setPassword(String password) {
         if(password.length()>1000){
         throw new CotSdkException("Password cannot contain more than 1000 characters.");
@@ -96,20 +76,10 @@ public class User extends ExtensibleObject {
         }else anyObject.put("password", password);
     }
 
-    /**
-     * The method to retrieve the first name of the user.
-     * 
-     * @return firstName
-     */
     public String getFirstName() {
         return (String) anyObject.get("firstName");
     }
 
-    /**
-     * The method to set the first name of the user.
-     * 
-     * @param firstName
-     */
     public void setFirstName(String firstName) {
         if(firstName.length()>1000){
         throw new CotSdkException("firstName cannot contain more than 1000 characters.");
@@ -118,20 +88,10 @@ public class User extends ExtensibleObject {
         }else anyObject.put("firstName", firstName);
     }
 
-    /**
-     * The method to retrieve the last name of the user.
-     * 
-     * @return lastName
-     */
     public String getLastName() {
         return (String) anyObject.get("lastName");
     }
 
-    /**
-     * The method to set the last name of the user.
-     * 
-     * @param lastName
-     */
     public void setLastName(String lastName) {
         if(lastName.length()>1000){
         throw new CotSdkException("lastName cannot contain more than 1000 characters.");
@@ -140,21 +100,10 @@ public class User extends ExtensibleObject {
         }else anyObject.put("lastName", lastName);
     }
 
-    /**
-     * The method to retrieve the email address of the user.
-     * 
-     * @return email
-     */
     public String getEmail() {
         return (String) anyObject.get("email");
     }
 
-    /**
-     * The method to set the email address of a user.
-     * 
-     * @param email
-     * 
-     */
     public void setEmail(String email) {
         if(email.length()>EMAIL_SIZE){
         throw new CotSdkException("Email address cannot contain more than 254 characters.");

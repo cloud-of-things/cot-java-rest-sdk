@@ -29,26 +29,6 @@ public class Role extends ExtensibleObject {
     }
 
     /**
-     * Set the unique identifier of the user. Just used internally.
-     *
-     * @param id
-     *            the new identifier.
-     */
-    void setId(String id) {
-        anyObject.put("id", id);
-    }
-
-    /**
-     * Give a name to the role
-     * 
-     * @param name
-     *            of a role.
-     */
-    public void setName(String name) {
-        anyObject.put("name", name);
-    }
-
-    /**
      * Return the name of the role
      * 
      * @return name of the role.
