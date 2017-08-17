@@ -21,34 +21,14 @@ public class UserApi {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
-
-    /**
-     * Method to return the collection of users in a given tenant.
-     * 
-     * @param tenant
-     * @return an instance of UserCollection
-     */
     public UserCollection getUsers(String tenant) {
         return new UserCollection(cloudOfThingsRestClient, tenant);
     }
 
-    /**
-     * Method to retrieve collection of groups in a given tenant.
-     * 
-     * @param tenant
-     * @return an instance of GroupCollection
-     */
     public GroupCollection getGroups(String tenant) {
         return new GroupCollection(cloudOfThingsRestClient, "user/" + tenant + "/groups/", gson, null);
     }
 
-    /**
-     * The method to create a group in the cloud.
-     * 
-     * @param group
-     * @param tenant
-     * @return the group that is created.
-     */
     public Group createGroup(Group group, String tenant) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.group+json; charset=UTF-8; ver=0.9";
         String json = "{\"name\":\"" + group.getName() + "\"}";
@@ -58,37 +38,17 @@ public class UserApi {
         return group;
     }
 
-    /**
-     * The method to delete a group from the cloud.
-     * 
-     * @param group
-     * @param tenant
-     */
     public void deleteGroup(Group group, String tenant) {
         String groupId = Long.toString(group.getId());
         cloudOfThingsRestClient.delete(groupId, "user/" + tenant + "/groups");
     }
 
-    /**
-     * Method to retrieve a user by username, in a given tenant.
-     * 
-     * @param userName
-     * @param tenant
-     * @return an instance of a user.
-     */
     public User getUserByName(String userName, String tenant) {
         String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/users/" + userName, CONTENT_TYPE);
         User user = new User(gson.fromJson(result, ExtensibleObject.class));
         return user;
     }
 
-    /**
-     * Method to retrieve a group by its name.
-     * 
-     * @param tenant
-     * @param groupName
-     * @return an instance of a Group.
-     */
     public Group getGroupByName(String tenant, String groupName) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.group+json;ver=0.9";
         String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/groupByName/" + groupName, CONTENT);
@@ -96,13 +56,6 @@ public class UserApi {
         return group;
     }
 
-    /**
-     * The method to retrieve a specific group from the cloud.
-     * 
-     * @param group
-     * @param tenant
-     * @return the group that is requested.
-     */
     public Group getGroupById(Long id, String tenant) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.group+json;ver=0.9";
         String groupId = Long.toString(id);
@@ -207,50 +160,22 @@ public class UserApi {
         cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/groups/" + group.getId() + "/users", CONTENT);
     }
 
-    /**
-     * The method to add the current user to a group.
-     * 
-     * @param user
-     * @param tenant
-     * @param group
-     */
     public void addCurrentUserToGroup(CurrentUser user, String tenant, Group group) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.userReference+json;ver=0.9";
         String json = "{\"user\":{\"self\": \"" + user.getSelf(user, tenant) + "\" }}";
         cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/groups/" + group.getId() + "/users", CONTENT);
     }
 
-    /**
-     * The method to remove a user from a group.6
-     * 
-     * @param user
-     * @param tenant
-     * @param group
-     */
     public void removeUserFromGroup(User user, String tenant, Group group) {
         String groupId = Long.toString(group.getId());
         cloudOfThingsRestClient.delete(user.getId(), "user/" + tenant + "/groups/" + groupId + "/users");
     }
 
-    /**
-     * The method to remove the current user from a group.
-     * 
-     * @param user
-     * @param tenant
-     * @param group
-     */
     public void removeCurrentUserFromGroup(CurrentUser user, String tenant, Group group) {
         String groupId = Long.toString(group.getId());
         cloudOfThingsRestClient.delete("user/" + tenant + "/groups/" + groupId + "/users/" + user.getUserName() + "/");
     }
 
-    /**
-     * The method to get the user references of the group
-     * 
-     * @param tenant
-     * @param group
-     * @return the set of references (URLs) of users in the group
-     */
     public UserReferenceCollection getUserReferencesOfGroup(String tenant, Group group) {
         String groupId = Long.toString(group.getId());
         String URL = "user/" + tenant + "/groups/" + groupId + "/users";
@@ -265,7 +190,7 @@ public class UserApi {
     /// Methods related to roles:
 
     /**
-     * Method to retrieve a collection of roles.
+     * Method to retrieve all the available, pre-defined roles in the cloud.
      * 
      * @return an instance of RoleCollection
      */
@@ -273,39 +198,6 @@ public class UserApi {
         return new RoleCollection(cloudOfThingsRestClient, "user/roles", gson, null);
     }
 
-    // TODO: it seems that the following two methods are not allowed by
-    // the cloud.
-    // Going to keep them for now just in case we might be wrong.
-    /**
-     * The method to create a role in the cloud.
-     * 
-     * @param role
-     * @return the created role
-     */
-    public Role createRole(Role role) {
-        String CONTENT = "application/vnd.com.nsn.cumulocity.role+json; charset=UTF-8; ver=0.9";
-        String json = "{\"name\":\"" + role.getName() + "\"}";
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/roles", CONTENT);
-        role.setId(id);
-        return role;
-    }
-
-    /**
-     * The method to delete a role.
-     * 
-     * @param role
-     * @param tenant
-     */
-    public void deleteRole(Role role, String tenant) {
-        cloudOfThingsRestClient.delete(role.getId(), "user/roles/");
-    }
-
-    /**
-     * The method to retrieve a role by providing its name
-     * 
-     * @param name
-     * @return the requested role
-     */
     public Role getRoleByName(String name) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.role+json;ver=0.9";
         String result = cloudOfThingsRestClient.getResponse(name, "user/roles", CONTENT);
@@ -313,26 +205,12 @@ public class UserApi {
         return returnedrole;
     }
 
-    /**
-     * The method to assign a role to a user.
-     * 
-     * @param user
-     * @param role
-     * @param tenant
-     */
     public void assignRoleToUser(User user, Role role, String tenant) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.roleReference+json; charset=UTF-8; ver=0.9";
         String json = "{\"role\":{\"self\": \"user/roles/" + role.getId() + "\" }}";
         cloudOfThingsRestClient.doPostRequest(json, "user/" + tenant + "/users/" + user.getId() + "/roles", CONTENT);
     }
 
-    /**
-     * The method to unassign a user from a role.
-     * 
-     * @param user
-     * @param role
-     * @param tenant
-     */
     public void unassignRoleFromUser(User user, Role role, String tenant) {
         cloudOfThingsRestClient.delete(role.getName(), "user/" + tenant + "/users/" + user.getUserName() + "/roles");
     }
@@ -350,13 +228,6 @@ public class UserApi {
         return new RoleReferenceCollection(cloudOfThingsRestClient, URL, gson, null);
     }
 
-    /**
-     * The method to assign a role to a group of users.
-     * 
-     * @param group
-     * @param role
-     * @param tenant
-     */
     public void assignRoleToGroup(Group group, Role role, String tenant) {
         String groupId = Long.toString(group.getId());
         String CONTENT = "application/vnd.com.nsn.cumulocity.roleReference+json; charset=UTF-8; ver=0.9";
@@ -378,13 +249,6 @@ public class UserApi {
         return new RoleReferenceCollection(cloudOfThingsRestClient, URL, gson, null);
     }
 
-    /**
-     * The method to unassign a role from a group.
-     * 
-     * @param group
-     * @param role
-     * @param tenant
-     */
     public void unassignRoleFromGroup(Group group, Role role, String tenant) {
         String groupId = Long.toString(group.getId());
         cloudOfThingsRestClient.delete(role.getName(), "user/" + tenant + "/groups/" + groupId + "/roles");
@@ -411,12 +275,6 @@ public class UserApi {
         cloudOfThingsRestClient.doPutRequest(json, "user/" + tenant + "/users/" + user.getId(), CONTENT);
     }
 
-    /**
-     * The method to update the fields of a group in the cloud.
-     * 
-     * @param group
-     * @param tenant
-     */
     public void updateGroup(Group group, String tenant) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.group+json; charset=UTF-8; ver=0.9";
         

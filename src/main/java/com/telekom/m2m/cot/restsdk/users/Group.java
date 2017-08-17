@@ -1,5 +1,7 @@
 package com.telekom.m2m.cot.restsdk.users;
 
+import java.util.regex.Pattern;
+
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
@@ -10,6 +12,10 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class Group extends ExtensibleObject {
 
+    
+   private static final Pattern AllowedChars = Pattern.compile("[a-zA-Z0-9\\._\\-]{3,}"); 
+   private static final int MAX_SIZE=1000;
+    
     public Group() {}
 
     public Group(ExtensibleObject extensibleObject) {
@@ -69,7 +75,11 @@ public class Group extends ExtensibleObject {
      */
     public void setName(String name) {
 
-        anyObject.put("name", name);
+        if(name.length()>1000){
+        throw new CotSdkException("Field cannot contain more than 1000 characters.");
+        }else if(name.contains(" ")||name.contains("+")||name.contains("$")||name.contains(":")){
+            throw new CotSdkException("field cannot contain whitespace, slashes nor any of (+$:) characters.");
+        }else anyObject.put("name", name);
     }
 
     /**

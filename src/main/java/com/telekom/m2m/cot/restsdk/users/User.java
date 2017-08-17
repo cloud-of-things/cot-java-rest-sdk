@@ -1,5 +1,8 @@
 package com.telekom.m2m.cot.restsdk.users;
 
+import java.util.regex.Pattern;
+
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 
@@ -7,13 +10,16 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  * Class that defines the methods of user. Created by Ozan Arslan on 13.07.2017
  */
 public class User extends ExtensibleObject {
-
+    
+   private static final Pattern AllowedChars = Pattern.compile("[a-zA-Z0-9\\._\\-]{3,}"); 
+   private static final int MAX_SIZE=1000;
+   private static final int EMAIL_SIZE=254;
+  
     public User() {}
 
     public User(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }
-
 
     /**
      * Get the unique identifier of the user.
@@ -61,8 +67,11 @@ public class User extends ExtensibleObject {
      * @param InputUserName
      */
     public void setUserName(String InputUserName) {
-
-        anyObject.put("userName", InputUserName);
+        if(InputUserName.length()>MAX_SIZE){
+        throw new CotSdkException("userName cannot contain more than 1000 characters.");
+        }else if(!AllowedChars.matcher(InputUserName).matches()){
+            throw new CotSdkException("User name cannot contain whitespace, slashes nor any of (+$:) characters.");
+        }else anyObject.put("userName", InputUserName);
     }
 
     /**
@@ -80,7 +89,11 @@ public class User extends ExtensibleObject {
      * @param password
      */
     public void setPassword(String password) {
-        anyObject.put("password", password);
+        if(password.length()>1000){
+        throw new CotSdkException("Password cannot contain more than 1000 characters.");
+        }else if(!AllowedChars.matcher(password).matches()){
+            throw new CotSdkException("Password cannot contain whitespace, slashes nor any of (+$:) characters.");
+        }else anyObject.put("password", password);
     }
 
     /**
@@ -98,7 +111,11 @@ public class User extends ExtensibleObject {
      * @param firstName
      */
     public void setFirstName(String firstName) {
-        anyObject.put("firstName", firstName);
+        if(firstName.length()>1000){
+        throw new CotSdkException("firstName cannot contain more than 1000 characters.");
+        }else if(!AllowedChars.matcher(firstName).matches()){
+            throw new CotSdkException("firstName cannot contain whitespace, slashes nor any of (+$:) characters.");
+        }else anyObject.put("firstName", firstName);
     }
 
     /**
@@ -116,7 +133,11 @@ public class User extends ExtensibleObject {
      * @param lastName
      */
     public void setLastName(String lastName) {
-        anyObject.put("lastName", lastName);
+        if(lastName.length()>1000){
+        throw new CotSdkException("lastName cannot contain more than 1000 characters.");
+        }else if(!AllowedChars.matcher(lastName).matches()){
+            throw new CotSdkException("lastName cannot contain whitespace, slashes nor any of (+$:) characters.");
+        }else anyObject.put("lastName", lastName);
     }
 
     /**
@@ -135,7 +156,11 @@ public class User extends ExtensibleObject {
      * 
      */
     public void setEmail(String email) {
-        anyObject.put("email", email);
+        if(email.length()>EMAIL_SIZE){
+        throw new CotSdkException("Email address cannot contain more than 254 characters.");
+        }else if(!AllowedChars.matcher(email).matches()){
+            throw new CotSdkException("Email address cannot contain whitespace, slashes nor any of (+$:) characters.");
+        }else anyObject.put("email", email);
     }
 
     /**
