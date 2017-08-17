@@ -34,11 +34,12 @@ public class UserTest {
 		Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
 		Assert.assertEquals(o.get("password").getAsString(), "verysecret");
 		
-		String[] forbidden= {" ","$","\\","//","+",":","$"};
+		String[] forbidden= {" ","$","\\","/","+",":","nameWith Space", "DollarSign$Name",
+		        "Back\\SlashName", "Slash/Name", "NameWith+Sign","NameWith:Symbol","Mixture$\\/+: Name"};
 		for(String x : forbidden){
 		    try{
 		        user.setUserName(x);
-		        Assert.fail("Restricted characters should not be allowed in  userName. Failed character is "+x);
+		        Assert.fail("Restricted characters should not be allowed in  userName. Failed name is "+x);
 		       }catch (CotSdkException ex  ){
 		       }
 		}
