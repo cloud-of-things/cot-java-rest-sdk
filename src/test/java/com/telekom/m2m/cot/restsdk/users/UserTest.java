@@ -18,6 +18,7 @@ public class UserTest {
 	public void testUserMethods() {
 
 		User user = new User();
+		user.setUserName("RandomName");
 		user.setId("667");
 		user.setEmail("mail@mail.com");
 		user.setFirstName("FName");
@@ -28,6 +29,7 @@ public class UserTest {
 		String json = gson.toJson(user);
 
 		JsonObject o = gson.fromJson(json, JsonObject.class);
+		Assert.assertEquals(o.get("userName").getAsString(), "RandomName");
 		Assert.assertEquals(o.get("id").getAsString(), "667");
 		Assert.assertEquals(o.get("firstName").getAsString(), "FName");
 		Assert.assertEquals(o.get("lastName").getAsString(), "LName");
