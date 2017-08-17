@@ -66,6 +66,9 @@ public class CloudOfThingsPlatform {
                 new String(Base64.getDecoder().decode(REGISTERDEVICE_PASSWORD)));
     }
 
+ public    CloudOfThingsRestClient getRestClient(){
+     return cloudOfThingsRestClient;}
+    
     /**
      * Get a platform object to register new devices through a proxy server.
      * This should be used for retrieving the credentials.

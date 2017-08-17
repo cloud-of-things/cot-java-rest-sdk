@@ -2,66 +2,39 @@ package com.telekom.m2m.cot.restsdk.users;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
-/**
- * Class that defines the methods of a role. Created by Ozan Arslan on
- * 13.07.2017
- */
 
+/**
+ * Class that defines the methods of a role. Roles are categories of users and
+ * groups. In other words, they are types of users and group of users. The users
+ * and group of users can be assigned to new roles or they can be unassigned
+ * from their roles. Created by Ozan Arslan on 13.07.2017
+ */
 public class Role extends ExtensibleObject {
 
-	/**
-	 * Default construction to create a new user.
-	 */
-	public Role() {
-		super();
-	}
+    public Role() {}
 
-	/**
-	 * Internal constructor to create roles from base class.
-	 *
-	 * @param extensibleObject
-	 *            object from base class.
-	 */
-	public Role(ExtensibleObject extensibleObject) {
-		super(extensibleObject);
-	}
+    public Role(ExtensibleObject extensibleObject) {
+        super(extensibleObject);
+    }
 
-	/**
-	 * Get the unique identifier of the role.
-	 *
-	 * @return String the unique identifier of the user or null if not
-	 *         available.
-	 */
-	public String getId() {
-		return (String) anyObject.get("id");
-	}
 
-	/**
-	 * Set the unique identifier of the user. Just used internally.
-	 *
-	 * @param id
-	 *            the new identifier.
-	 */
-	void setId(String id) {
-		anyObject.put("id", id);
-	}
+    /**
+     * Get the unique identifier of the role.
+     *
+     * @return String the unique identifier of the user or null if not
+     *         available.
+     */
+    public String getId() {
+        return (String) anyObject.get("id");
+    }
 
-	/**
-	 * Give a name to the role
-	 * 
-	 * @param name
-	 */
-	public void setName(String name) {
-		anyObject.put("name", name);
-	}
-
-	/**
-	 * Return the name of the role
-	 * 
-	 * @return name
-	 */
-	public String getName() {
-		return (String) anyObject.get("name");
-	}
+    /**
+     * Return the name of the role
+     * 
+     * @return name of the role.
+     */
+    public String getName() {
+        return (String) anyObject.get("name");
+    }
 
 }
