@@ -73,24 +73,6 @@ public class Group extends ExtensibleObject {
     }
 
     /**
-     * Return the group description
-     * 
-     * @return description
-     */
-    public String getDescription() {
-        return (String) anyObject.get("description");
-    }
-
-    /**
-     * Set the description of the group
-     * 
-     * @param description
-     */
-    public void setDescription(String description) {
-        anyObject.put("description", description);
-    }
-
-    /**
      * Return the users of the group
      * 
      * @return
