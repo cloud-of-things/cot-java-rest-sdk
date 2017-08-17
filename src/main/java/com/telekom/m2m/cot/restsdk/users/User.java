@@ -10,12 +10,6 @@ public class User extends ExtensibleObject {
 
     public User() {}
 
-    /**
-     * Internal constructor to create users from base class.
-     *
-     * @param extensibleObject
-     *            object from base class.
-     */
     public User(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }

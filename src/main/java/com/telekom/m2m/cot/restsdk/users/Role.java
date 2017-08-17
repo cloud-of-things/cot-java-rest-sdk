@@ -13,12 +13,6 @@ public class Role extends ExtensibleObject {
 
     public Role() {}
 
-    /**
-     * Internal constructor to create roles from base class.
-     *
-     * @param extensibleObject
-     *            object from base class.
-     */
     public Role(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }

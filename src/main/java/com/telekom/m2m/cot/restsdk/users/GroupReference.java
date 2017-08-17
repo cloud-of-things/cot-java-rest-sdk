@@ -12,12 +12,6 @@ public class GroupReference extends ExtensibleObject {
 
     public GroupReference() {}
 
-    /**
-     * Internal constructor to create GroupReference from base class.
-     *
-     * @param extensibleObject
-     *            object from base class.
-     */
     public GroupReference(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }

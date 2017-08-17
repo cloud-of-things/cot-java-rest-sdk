@@ -14,12 +14,6 @@ public class UserReference extends ExtensibleObject {
 
     public UserReference() {}
 
-    /**
-     * Internal constructor to create UserReference from base class.
-     *
-     * @param extensibleObject
-     *            object from base class.
-     */
     public UserReference(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }

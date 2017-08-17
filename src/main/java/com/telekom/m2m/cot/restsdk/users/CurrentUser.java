@@ -11,12 +11,6 @@ public class CurrentUser extends ExtensibleObject {
 
     public CurrentUser() {}
 
-    /**
-     * Internal constructor to create users from base class.
-     *
-     * @param extensibleObject
-     *            object from base class.
-     */
     public CurrentUser(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }

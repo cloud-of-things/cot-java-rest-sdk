@@ -16,12 +16,6 @@ public class RoleReference extends ExtensibleObject {
 
     public RoleReference() {}
 
-    /**
-     * Internal constructor to create RoleReference from base class.
-     *
-     * @param extensibleObject
-     *            object from base class.
-     */
     public RoleReference(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }

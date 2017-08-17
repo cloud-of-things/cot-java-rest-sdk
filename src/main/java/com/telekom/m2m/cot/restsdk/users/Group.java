@@ -12,12 +12,6 @@ public class Group extends ExtensibleObject {
 
     public Group() {}
 
-    /**
-     * Internal constructor to create groups from base class.
-     *
-     * @param extensibleObject
-     *            object from base class.
-     */
     public Group(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }

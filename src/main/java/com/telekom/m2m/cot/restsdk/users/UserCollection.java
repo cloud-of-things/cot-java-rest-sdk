@@ -114,8 +114,8 @@ public class UserCollection {
      */
     public boolean hasNext() {
         JsonObject object = getJsonObject(pageCursor + 1, tenant);
-        if (object.has("events")) {
-            JsonArray jsonEvents = object.get("events").getAsJsonArray();
+        if (object.has("users")) {
+            JsonArray jsonEvents = object.get("users").getAsJsonArray();
             nextAvailable = (jsonEvents.size() > 0);
         }
         return nextAvailable;

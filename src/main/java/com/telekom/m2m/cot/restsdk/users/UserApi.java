@@ -17,13 +17,6 @@ public class UserApi {
 
     private final Gson gson = GsonUtils.createGson();
 
-
-    /**
-     * Internal Constructor.
-     *
-     * @param cloudOfThingsRestClient
-     *            the configured rest client.
-     */
     public UserApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
