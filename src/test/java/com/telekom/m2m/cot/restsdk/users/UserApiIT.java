@@ -1,14 +1,14 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import com.telekom.m2m.cot.restsdk.util.CotSdkException;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import static org.testng.Assert.assertEquals;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-
-import static org.testng.Assert.assertEquals;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
 public class UserApiIT {
 
@@ -258,7 +258,7 @@ public class UserApiIT {
                 "The group name does not match to the name of the group that was retrieved from the cloud.");
 
         // when (testing to get group by a group object):
-        Group newgroup = userApi.getGroup(group, tenant);
+        Group newgroup = userApi.getGroupById(group.getId(), tenant);
 
         // then:
         assertEquals(group.getId(), newgroup.getId(),

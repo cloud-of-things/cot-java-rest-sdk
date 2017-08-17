@@ -103,9 +103,9 @@ public class UserApi {
      * @param tenant
      * @return the group that is requested.
      */
-    public Group getGroup(Group group, String tenant) {
+    public Group getGroupById(Long id, String tenant) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.group+json;ver=0.9";
-        String groupId = Long.toString(group.getId());
+        String groupId = Long.toString(id);
         String result = cloudOfThingsRestClient.getResponse(groupId, "user/" + tenant + "/groups", CONTENT);
         Group returnedgroup = new Group(gson.fromJson(result, ExtensibleObject.class));
         return returnedgroup;

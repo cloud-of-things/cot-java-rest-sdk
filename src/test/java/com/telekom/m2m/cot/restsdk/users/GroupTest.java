@@ -18,7 +18,6 @@ public class GroupTest {
         Group group = new Group();
         group.setId("667");
         group.setName("testgroup");
-        group.setDescription("group description");
 
         Gson gson = GsonUtils.createGson();
         String json = gson.toJson(group);
