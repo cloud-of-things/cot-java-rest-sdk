@@ -141,18 +141,6 @@ public class UserApi {
         return user;
     }
 
-    /**
-     * A method to create a user in the cloud from a pre-defined user object.
-     * 
-     * @param user
-     * @param tenant
-     */
-    public void createUserNoReturn(User user, String tenant) {
-        String json = gson.toJson(user);
-        // post request:
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/users", CONTENT_TYPE);
-        user.setId(id);
-    }
 
     /**
      * A method to create a user in the cloud and return it by providing a
@@ -180,32 +168,6 @@ public class UserApi {
         String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/users", CONTENT_TYPE);
         user.setId(id);
         return user;
-    }
-
-    /**
-     * A method to create a user in the cloud and return it by providing a
-     * userName, password, firstName, lastName and a tenant.
-     * 
-     * @param userName
-     *            of the user.
-     * @param tenant
-     *            of the tenant where the user resides.
-     * @param firstName
-     *            of the user.
-     * @param lastName
-     *            of the user.
-     * @param password
-     *            of the user.
-     */
-    public void createUserNoReturn(String userName, String tenant, String firstName, String lastName, String password) {
-        User user = new User();
-        user.setUserName(userName);
-        user.setFirstName(firstName);
-        user.setLastName(lastName);
-        user.setPassword(password);
-        String json = gson.toJson(user);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "user/" + tenant + "/users", CONTENT_TYPE);
-        user.setId(id);
     }
 
     /**

@@ -61,7 +61,7 @@ public class UserApiTest {
         userForNoReturn.setFirstName("firstName");
         userForNoReturn.setPassword("password1234");
         userForNoReturn.setUserName("UserforNoReturn");
-        platform.getUserApi().createUserNoReturn(userForNoReturn, "nbiotdemo");
+        platform.getUserApi().createUser(userForNoReturn, "nbiotdemo");
         // Now check if this user has successfully been created in the cloud by
         // calling it back:
         System.out.println("The name of the user created by no return method: "
@@ -70,7 +70,7 @@ public class UserApiTest {
         platform.getUserApi().deleteUserByUserName("UserforNoReturn", "nbiotdemo");
 
         // Create a user with no return by providing user information:
-        platform.getUserApi().createUserNoReturn("NoReturnWithUserName", "nbiotdemo", "firstname", "lastname",
+        platform.getUserApi().createUser("NoReturnWithUserName", "nbiotdemo", "firstname", "lastname",
                 "password");
         // Now check if this user has been created in the cloud:
         System.out.println("The name of the user created by no return method: "
@@ -85,7 +85,7 @@ public class UserApiTest {
         userToUpdateFields.setFirstName("InitialFirstName");
         userToUpdateFields.setLastName("InitialLastName");
         userToUpdateFields.setPassword("InitialPassword1234");
-        platform.getUserApi().createUserNoReturn(userToUpdateFields, "nbiotdemo");
+        platform.getUserApi().createUser(userToUpdateFields, "nbiotdemo");
         // check if that worked:
         System.out.println("User first name before update: "
                 + platform.getUserApi().getUserByName("InitialUserName", "nbiotdemo").getFirstName());

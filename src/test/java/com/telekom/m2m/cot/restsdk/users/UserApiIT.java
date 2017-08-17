@@ -124,7 +124,7 @@ public class UserApiIT {
         userForNoReturn.setUserName(testUserName);
 
         // when:
-        userApi.createUserNoReturn(userForNoReturn, tenant);
+        userApi.createUser(userForNoReturn, tenant);
         User returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
@@ -143,7 +143,7 @@ public class UserApiIT {
 
         // when:
         // (testing the method that creates a user by taking user fields as input)
-        userApi.createUserNoReturn(testUserName, tenant, "firstName22", "lastName22", "password22");
+        userApi.createUser(testUserName, tenant, "firstName22", "lastName22", "password22");
         returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
@@ -168,7 +168,7 @@ public class UserApiIT {
         userToUpdateFields.setPassword("InitialPassword1234");
 
         // when:
-        userApi.createUserNoReturn(userToUpdateFields, tenant);
+        userApi.createUser(userToUpdateFields, tenant);
         returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
