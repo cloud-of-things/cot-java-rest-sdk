@@ -155,7 +155,23 @@ public class CloudOfThingsRestClient {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
-  
+
+
+    /**
+     * Do a SmartREST-request.
+     * Default processing mode will be used (i.e. PERSISTENT).
+     *
+     * @param xId the X-Id for which this request shall be made.
+     *            Can be null, omitting the X-Id header, to allow for multiple X-Id ("15,myxid").
+     * @param lines a String with newline-separated lines for the request body
+     *
+     * @return the response body as an array of individual lines
+     */
+    public String[] doSmartRequest(String xId, String lines) {
+        return doSmartRequest(xId, lines, false);
+    }
+
+
     /**
      * Do a SmartREST-request.
      *

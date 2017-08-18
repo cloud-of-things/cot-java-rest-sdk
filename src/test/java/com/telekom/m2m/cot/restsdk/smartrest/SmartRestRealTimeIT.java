@@ -34,6 +34,48 @@ public class SmartRestRealTimeIT {
     }
 
     @Test
+    public void testX() throws InterruptedException {
+        SmartRequestTemplate requestTemplate1 = new SmartRequestTemplate(
+                "101", "POST", "/inventory/managedObjects",
+                "application/vnd.com.nsn.cumulocity.managedObject+json",
+                "application/vnd.com.nsn.cumulocity.managedObject+json",
+                null,
+                new String[]{"STRING"},
+                "{\"name\":\"foo\",\"type\":\"com_example_TestDevice\",\"c8y_IsDevice\":{}}");
+
+        SmartRequestTemplate requestTemplate2 = new SmartRequestTemplate();
+        requestTemplate2.setMsgId("999");
+        requestTemplate2.setMethod("DELETE");
+        requestTemplate2.setResourceUri("/inventory/foo/managedObjects/&&");
+        requestTemplate2.setPlaceholder("&&");
+
+        SmartResponseTemplate responseTemplate1 = new SmartResponseTemplate(
+                "102", "$", "$.c8y_IsDevice", new String[]{"$.id"});
+
+        smartRestApi.storeTemplates(
+                xId,
+                new SmartRequestTemplate[]{requestTemplate1, requestTemplate2},
+                new SmartResponseTemplate[]{responseTemplate1});
+
+
+        SmartCepConnector c = smartRestApi.getNotificationsConnector(xId);
+        c.subscribe("/alarms/*", new SmartSubscriptionListener() {
+            @Override
+            public void onNotification(SmartSubscription subscription, SmartNotification notification) {
+            }
+
+            @Override
+            public void onError(SmartSubscription subscription, Throwable error) {
+
+            }
+        });
+        c.connect();
+        for (int i=0; i<3000; i++) {
+            Thread.sleep(1000);
+        }
+    }
+
+    @Test
     public void testConnectAndSubscribe() throws InterruptedException {
         CloudOfThingsRestClient client = cotPlat.getRestClient();
 
