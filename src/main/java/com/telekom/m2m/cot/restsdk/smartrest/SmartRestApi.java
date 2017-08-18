@@ -167,8 +167,14 @@ public class SmartRestApi {
      *
      * @param gId the GId to delete.
      */
-    void deleteByGId(String gId) {
+    public void deleteByGId(String gId) {
         inventoryApi.delete(gId);
+    }
+
+
+
+    public SmartCepConnector getNotificationsConnector(String xId) {
+        return new SmartCepConnector(cloudOfThingsRestClient, xId);
     }
 
 }
