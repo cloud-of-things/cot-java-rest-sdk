@@ -79,7 +79,7 @@ public class CloudOfThingsRestClient {
         } catch (CotSdkException e) {
             throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Problem", e);
+            throw new CotSdkException("Problem: " + e.getMessage(), e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
@@ -158,19 +158,36 @@ public class CloudOfThingsRestClient {
 
 
     /**
-     * Do a SmartREST-request.
-     * Default processing mode will be used (i.e. PERSISTENT).
+     * Do a SmartREST real time request.
      *
-     * @param xId the X-Id for which this request shall be made.
-     *            Can be null, omitting the X-Id header, to allow for multiple X-Id ("15,myxid").
+     * @param xId the X-Id for which this request shall be made. Cannot be null, because it's used by the server to
+     *            detect that it is a SmartREST request in the first place.
      * @param lines a String with newline-separated lines for the request body
      *
      * @return the response body as an array of individual lines
-     */
-    public String[] doSmartRequest(String xId, String lines) {
-        return doSmartRequest(xId, lines, false);
-    }
+     */    public String[] doSmartRealTimeRequest(String xId, String lines) {
+        RequestBody body = RequestBody.create(null, lines);
 
+        Request.Builder builder = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("X-Id", xId)
+                .url(host + "/cep/realtime") // Same real time endpoint handles smart and regular requests.
+                .post(body);
+
+        Request request = builder.build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
+            }
+            return response.body().string().split("\\r\\n|\\n");
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }    }
 
     /**
      * Do a SmartREST-request.
@@ -187,14 +204,12 @@ public class CloudOfThingsRestClient {
 
         Request.Builder builder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("X-Id", xId)
                 .url(host + "/s") // SmartRest-endpoint is always just "/s".
                 .post(body);
         if (transientMode) {
             // PERSISTENT is the default, so we don't specify it.
             builder.addHeader("X-Cumulocity-Processing-Mode", "TRANSIENT");
-        }
-        if (xId != null) {
-            builder.addHeader("X-Id", xId);
         }
         Request request = builder.build();
 
@@ -204,7 +219,7 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
-            return response.body().string().split("\\n");
+            return response.body().string().split("\\r\\n|\\n");
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {

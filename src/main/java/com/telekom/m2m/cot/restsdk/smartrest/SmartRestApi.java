@@ -147,7 +147,7 @@ public class SmartRestApi {
         String[] responseParts = response[0].split(",");
         switch (responseParts[0]) {
             case MSG_TEMPLATES_OK:
-                return responseParts[1];
+                return responseParts[1].trim();
             case MSG_TEMPLATE_CREATION_ERROR:
             default:
                 int lineNumber = 0;

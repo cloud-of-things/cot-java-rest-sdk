@@ -6,7 +6,11 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 
@@ -49,25 +53,48 @@ public class SmartCepConnector implements Runnable {
     /**
      * Subscribe to a notification channel.
      * The actual subscription isn't sent to the server until {@link #connect()} is called.
+     * Simpler convenience variant of {@link #subscribe(String, Set, SmartSubscriptionListener, Set)}
      *
      * @param channel Can also contain a wildcard, e.g. to subscribe to all channels in a module (like "/alarms/*").
+     * @param messageId ID of the SmartREST message (i.e. SmartResponseTemplate) that this subscriber wants to receive.
+     * @param listener The {@link SmartSubscriptionListener} that is to evaluate the notifications from this channel.
+     * @return the subscription object (can be used to unsubscribe)
+     */
+    public SmartSubscription subscribe(String channel,
+                                       int messageId,
+                                       SmartSubscriptionListener listener) {
+
+        Set<Integer> messageIds = new HashSet<>();
+        messageIds.add(messageId);
+        return subscribe(channel, messageIds, listener, null);
+    }
+
+    /**
+     * Subscribe to a notification channel.
+     * The actual subscription isn't sent to the server until {@link #connect()} is called.
+     *
+     * @param channel Can also contain a wildcard, e.g. to subscribe to all channels in a module (like "/alarms/*").
+     * @param messageIds Set of IDs of all the SmartREST messages that this subscriber wants to receive.
      * @param listener The {@link SmartSubscriptionListener} that is to evaluate the notifications from this channel.
      * @param additionalXIds X-Ids of any additional {@link SmartResponseTemplate} that shall be used to evaluate
      *                       the responses for this subscription.
-     * @return
+     * @return the subscription object (can be used to unsubscribe)
      */
     public SmartSubscription subscribe(String channel,
+                                       Set<Integer> messageIds,
                                        SmartSubscriptionListener listener,
-                                       String... additionalXIds) {
+                                       Set<String> additionalXIds) {
 
         if (channel == null) {
             throw new CotSdkException("Subscription must not have null as it's channel.");
         }
 
-        List<String> xIds = new ArrayList<>();
+        SortedSet<String> xIds = new TreeSet<>();
         xIds.add(xId);
-        xIds.addAll(Arrays.asList(additionalXIds));
-        SmartSubscription subscription = new SmartSubscription(this, channel, listener, xIds);
+        if (additionalXIds != null) {
+            xIds.addAll(additionalXIds);
+        }
+        SmartSubscription subscription = new SmartSubscription(this, channel, messageIds, listener, xIds);
         subscriptions.add(subscription);
         return subscription;
     }
@@ -125,7 +152,7 @@ public class SmartCepConnector implements Runnable {
 
 
     protected String[] doConnect() {
-        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, MSG_REALTIME_CONNECT + "," + clientId);
+        String[] response = cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_CONNECT + "," + clientId);
         if (response.length > 0) {
             // The first line can contain leading spaces, periodically sent by the server as a keep-alive signal.
             response[0] = response[0].trim();
@@ -135,10 +162,11 @@ public class SmartCepConnector implements Runnable {
 
 
     protected String doHandshake() {
-        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, MSG_REALTIME_HANDSHAKE);
+        String[] response = cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_HANDSHAKE);
         switch (response.length) {
             case 1:
-                return response[0];
+                // TODO: 43,1,Invalid Message Identifier?!?
+                return response[0].trim();
             case 0:
                 throw new CotSdkException("SmartREST notification handshake failed: empty response => no clientId.");
             default:
@@ -152,20 +180,20 @@ public class SmartCepConnector implements Runnable {
             throw new CotSdkException("Cannot subscribe to SmartREST notification because we don't have a clientId yet.");
         }
 
-        // We need to subscribe to each unique channel only once.
-        // TODO: this doesn't take care of subsets of channels (e.g. "/myModule/*" and "/myModule/channel1"). Is that ok?
+        // We need to subscribe to each unique channel only once. (Not that SmartREST doesn't support wildcards in
+        // channel names, so there is no possible issue of a channel including other channels, as in the normal CEP case.)
         List<String> lines = subscriptions.stream()
                                           .map(SmartSubscription::getChannel)
                                           .distinct()
                                           .map(channel -> MSG_REALTIME_SUBSCRIBE + "," + clientId + "," + channel)
                                           .collect(Collectors.toList());
 
-        cloudOfThingsRestClient.doSmartRequest(xId, String.join("\n", lines));
+        cloudOfThingsRestClient.doSmartRealTimeRequest(xId, String.join("\n", lines));
     }
 
 
     protected void doUnsubscribe(SmartSubscription subscription) {
-        cloudOfThingsRestClient.doSmartRequest(xId, MSG_REALTIME_UNSUBSCRIBE + "," + clientId + "," + subscription.getChannel());
+        cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_UNSUBSCRIBE + "," + clientId + "," + subscription.getChannel());
     }
 
 
@@ -174,20 +202,33 @@ public class SmartCepConnector implements Runnable {
         connected = true;
         do {
             String response[] = doConnect();
-            System.out.println("SmartREST-real-time-response:");
+            //System.out.println("SmartREST-real-time-response:");
             for (String line : response) {
-                System.out.println("- "+line);
-                // TODO: distribute response to subscribers.
+               // System.out.println("- "+line);
+                // TODO: check for errors
+                // 40,No template for this X-ID (wenn es noch keine responsetemplates gibt)
+                // 40,,/alarms/177595925,Could not find any templates subscribed for the channel
+                // 43,1,Invalid Message Identifier (cep-messages an /s geschickt)
+                // more ?
+                // TODO: wait after error? Break after error?
+
+                // TODO: really send errors to all listeners?
+
+                SmartNotification notification = new SmartNotification(line);
+                int messageId = notification.getMessageId();
+
+                for (SmartSubscription subscription : subscriptions) {
+                    if (subscription.appliesTo(messageId)) {
+                        subscription.getListener().onNotification(subscription, notification);
+                    }
+                }
                 // TODO: Consider advice sent from the server.
 
-                // 40,No template for this X-ID
-                // 43,1,Invalid Message Identifier
+                // TODO timeout?
             }
         } while (!shallDisconnect);
 
         connected = false;
-        // Send connect request, wait for response, distribute response to subscribers, connect again...
-        // Break on disconnect. Consider advice sent from the server.
     }
 
 }
