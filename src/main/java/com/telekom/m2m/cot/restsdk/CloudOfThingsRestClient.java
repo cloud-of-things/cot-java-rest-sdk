@@ -79,7 +79,7 @@ public class CloudOfThingsRestClient {
         } catch (CotSdkException e) {
             throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Problem", e);
+            throw new CotSdkException("Problem: " + e.getMessage(), e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }

@@ -76,8 +76,9 @@ public class UserCollection {
                 arrayOfUsers[i] = user;
             }
             return arrayOfUsers;
-        } else
+        } else {
             return null;
+        }
     }
 
 
@@ -116,7 +117,7 @@ public class UserCollection {
         JsonObject object = getJsonObject(pageCursor + 1, tenant);
         if (object.has("users")) {
             JsonArray jsonEvents = object.get("users").getAsJsonArray();
-            nextAvailable = (jsonEvents.size() > 0);
+            nextAvailable = jsonEvents.size() > 0;
         }
         return nextAvailable;
     }
