@@ -215,9 +215,11 @@ public class JsonArrayPaginationTest {
         final String jsonResultPageSize2 = "{\"auditRecords\":[{\"id\":\"1\"},{\"id\":\"2\"}]}";
         final String urlPageSize1 = relativeApiUrl + "?currentPage=1&pageSize=1";
         final String urlPageSize2 = relativeApiUrl + "?currentPage=1&pageSize=2";
+        final String urlPageSize5 = relativeApiUrl + "?currentPage=1&pageSize=5";
 
         Mockito.when(cotRestClientMock.getResponse(urlPageSize1, contentType)).thenReturn(jsonResultPageSize1);
         Mockito.when(cotRestClientMock.getResponse(urlPageSize2, contentType)).thenReturn(jsonResultPageSize2);
+        Mockito.when(cotRestClientMock.getResponse(urlPageSize5, contentType)).thenReturn(jsonResultPageSize2);
 
         // when
         jsonArrayPagination.setPageSize(-1);
@@ -225,7 +227,7 @@ public class JsonArrayPaginationTest {
 
         // then
         Assert.assertNotNull(jsonArray);
-        Assert.assertEquals(jsonArray.size(), 1);
+        Assert.assertEquals(jsonArray.size(), 2);
 
         // when
         jsonArrayPagination.setPageSize(0);
@@ -233,7 +235,7 @@ public class JsonArrayPaginationTest {
 
         // then
         Assert.assertNotNull(jsonArray);
-        Assert.assertEquals(jsonArray.size(), 1);
+        Assert.assertEquals(jsonArray.size(), 2);
 
         // when
         jsonArrayPagination.setPageSize(1);

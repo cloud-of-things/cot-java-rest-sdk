@@ -10,9 +10,10 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
  */
 public class JsonArrayPagination {
 
+    public static final int DEFAULT_PAGE_SIZE = 5;
+
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private final String relativeApiUrl;
-    protected final Gson gson;
     private final String contentType;
     private final String collectionElementName;
 
@@ -22,6 +23,8 @@ public class JsonArrayPagination {
     private int pageSize = 5;
 
     private Filter.FilterBuilder criteria = null;
+
+    protected final Gson gson;
 
     /**
      * Creates a JsonArrayPagination.
@@ -121,7 +124,7 @@ public class JsonArrayPagination {
      * Moves cursor to the previous page.
      */
     public void previous() {
-        if(pageCursor > 1) {
+        if (pageCursor > 1) {
             pageCursor -= 1;
         }
     }
@@ -155,13 +158,13 @@ public class JsonArrayPagination {
      * There is a maximum number of elements, currently 2,000 elements.
      * <i>Default is 5</i>
      *
-     * @param pageSize the new page size as positive integer.
+     * @param pageSize the new page size as positive integer. If pageSize is  less than 1MO then it will be reset to it's default.
      */
     public void setPageSize(final int pageSize) {
         if (pageSize > 0) {
             this.pageSize = pageSize;
         } else {
-            this.pageSize = 1;
+            this.pageSize = DEFAULT_PAGE_SIZE;
         }
     }
 }

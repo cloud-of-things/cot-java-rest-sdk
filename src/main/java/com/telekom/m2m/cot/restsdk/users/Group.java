@@ -10,7 +10,9 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class Group extends ExtensibleObject {
     
-    public Group() {}
+    public Group() {
+        super();
+    }
 
     public Group(ExtensibleObject extensibleObject) {
         super(extensibleObject);
