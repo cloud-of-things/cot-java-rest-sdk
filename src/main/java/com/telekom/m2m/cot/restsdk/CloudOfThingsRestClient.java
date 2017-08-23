@@ -165,7 +165,8 @@ public class CloudOfThingsRestClient {
      * @param lines a String with newline-separated lines for the request body
      *
      * @return the response body as an array of individual lines
-     */    public String[] doSmartRealTimeRequest(String xId, String lines) {
+     */
+    public String[] doSmartRealTimeRequest(String xId, String lines) {
         RequestBody body = RequestBody.create(null, lines);
 
         Request.Builder builder = new Request.Builder()
@@ -182,7 +183,8 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
-            return response.body().string().split("\\r\\n|\\n");
+            String responseBody = response.body().string();
+            return responseBody.split("\\r\\n|\\n");
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -219,7 +221,8 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
-            return response.body().string().split("\\r\\n|\\n");
+            String responseBody = response.body().string();
+            return responseBody.split("\\r\\n|\\n");
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
