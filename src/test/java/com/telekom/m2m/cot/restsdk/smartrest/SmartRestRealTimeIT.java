@@ -10,7 +10,9 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
@@ -34,6 +36,7 @@ public class SmartRestRealTimeIT {
     private ManagedObject alarmSource3;
 
     private String gId = null;
+    private String gId2 = null;
     private String xId = null;
 
 
@@ -50,6 +53,10 @@ public class SmartRestRealTimeIT {
         if (gId != null) {
             cotPlat.getInventoryApi().delete(gId);
             gId = null;
+        }
+        if (gId2 != null) {
+            cotPlat.getInventoryApi().delete(gId2);
+            gId2 = null;
         }
         TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource1);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource2);
@@ -114,7 +121,6 @@ public class SmartRestRealTimeIT {
     }
 
 
-
     // This test switches subscriptions between two alarm sources and checks that at each time only the
     // currently subscribed notifications are received.
     @Test
@@ -152,7 +158,7 @@ public class SmartRestRealTimeIT {
         // though it has a source to which we will subscribe and receive notifications later.
         // The queueing starts with the subscription and continues over individual connect-response-cycles.
         // That's why it is possible to reconnect without losing data in the meantime.
-        // (It cann't continue over new handshakes though (i.e. new clientId))
+        // (It can't continue over new handshakes though (i.e. new clientId))
         alarmApi.create(makeAlarm("com_telekom_TestType0", Alarm.SEVERITY_MINOR, alarmSource1));
 
 
@@ -259,9 +265,10 @@ public class SmartRestRealTimeIT {
 
 
     @Test
-    // TODO: turn into unittest
+    // TODO: turn into unittest because the server doesn't know anything about our listeners
     public void testMultiListeners() throws InterruptedException {
     }
+
 
     @Test
     public void testMultiTemplates() throws InterruptedException {
@@ -316,9 +323,76 @@ public class SmartRestRealTimeIT {
     }
 
 
+    // Similar to #testMultiTemplates but here the templates belong to different X-IDs, and we subscribe first
+    // to one and then to both of them.
     @Test
-    public void testMultiXIds() {
-// TODO
+    public void testMultiXIds() throws InterruptedException {
+        // Create templates to parse the notification:
+        gId = smartRestApi.storeTemplates(
+                xId,
+                new SmartRequestTemplate[0],
+                new SmartResponseTemplate[]{new SmartResponseTemplate(
+                        "200", "$", "$", new String[]{"$.id", "$.text", "$.type", "$.severity", "$.count"})});
+        gId2 = smartRestApi.storeTemplates(
+                "Xid2",
+                new SmartRequestTemplate[0],
+                new SmartResponseTemplate[]{new SmartResponseTemplate(
+                        "300", "$", "$", new String[]{"$.type", "$.id"})});
+
+
+        SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
+
+        // Prepare subscription (at first, only for xId):
+        connector.subscribe("/alarms/" + alarmSource1.getId(), null);
+
+        // The asynchronously received alarms will be stored in this list:
+        final List<SmartNotification> notedAlarms = new ArrayList<>();
+
+        // Prepare listener for the channel of our test device:
+        connector.addListener(new SmartListener() {
+            @Override
+            public void onNotification(SmartNotification notification) {
+                notedAlarms.add(notification);
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        Thread.sleep(DELAY_MILLIS);
+
+        alarmApi.create(makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmSource1));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        // We receive only one notification (i.e. "template-response-line") because we are not yet subscribed to
+        // the second X-Id.
+        assertEquals(notedAlarms.size(), 1);
+        assertEquals(notedAlarms.get(0).getMessageId(), 200);
+
+        connector.subscribe("/alarms/" + alarmSource1.getId(), new HashSet<>(Arrays.asList("Xid2")));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        alarmApi.create(makeAlarm("com_telekom_TestType2", Alarm.SEVERITY_MINOR, alarmSource1));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        // Now we received two more notifications, one for each template:
+        assertEquals(notedAlarms.size(), 3);
+        assertEquals(notedAlarms.get(1).getMessageId(), 200);
+        assertEquals(notedAlarms.get(2).getMessageId(), 300);
+    }
+
+
+    @Test
+    public void testDisconnect() {
+        // TODO. Should stop the loop and after another handshake we should not be connected to any old subscriptions
     }
 
 

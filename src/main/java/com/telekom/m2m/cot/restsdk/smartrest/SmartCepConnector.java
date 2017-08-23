@@ -31,7 +31,7 @@ public class SmartCepConnector implements Runnable {
     private boolean connected = false;
     private boolean shallDisconnect = false;
 
-    // Have to be thread safe because they will be used from the polling thread too_
+    // Have to be thread safe because they will be used from the polling thread too:
     private Map<String, Set<String>> subscriptions = new ConcurrentHashMap<>();
     private Set<SmartListener> listeners = new CopyOnWriteArraySet<>();
 
@@ -41,7 +41,7 @@ public class SmartCepConnector implements Runnable {
      * Additional X-Ids can be specified for each subscription.
      *
      * @param cloudOfThingsRestClient the client to use for connection to the cloud
-     * @param xId default X-Id for all subscriptions.
+     * @param xId default X-Id for all requests. Additional X-Ids are possible per subscription.
      */
     public SmartCepConnector(CloudOfThingsRestClient cloudOfThingsRestClient, String xId) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -52,7 +52,6 @@ public class SmartCepConnector implements Runnable {
     /**
      * Subscribe to a notification channel. Will take effect immediately, even for currently running connect requests.
      * Subscribing to the same channel twice will just add any additional X-Ids.
-     * TODO: test if updated additional X-Ids are really recognized without unsubscribing first.
      *
      * @param channel the name of the channel. No wildcards are allowed for SmartREST.
      * @param additionalXIds additionalXIds that are to be registered for this channel.
@@ -93,7 +92,6 @@ public class SmartCepConnector implements Runnable {
         if (clientId != null) {
             cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_UNSUBSCRIBE + "," + clientId + "," + channel);
         }
-        // TODO: test if unsubscribing from a channel, that wasn't yet really subscribed, causes errors. If so we might need to update subscriptions only after postSubscriptions
     }
 
 
