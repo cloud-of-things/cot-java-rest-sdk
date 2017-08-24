@@ -14,12 +14,12 @@ public interface SmartListener {
      *
      * @param notification the {@link SmartNotification} that contains all the matching response lines.
      */
-    public void onNotification(SmartNotification notification);
+    void onNotification(SmartNotification notification);
 
 
     /**
      * If the SmartCepConnector receives an error then it will pass it on to all it's listeners by calling this method.
      */
-    public void onError(Throwable error);
+    void onError(Throwable error);
 
 }

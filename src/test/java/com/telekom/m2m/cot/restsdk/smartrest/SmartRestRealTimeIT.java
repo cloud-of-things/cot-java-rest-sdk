@@ -102,15 +102,13 @@ public class SmartRestRealTimeIT {
 
         Thread.sleep(DELAY_MILLIS);
 
-        Alarm alarm = makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmSource1);
-        alarmApi.create(alarm);
+        alarmApi.create(makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmSource1));
 
         Thread.sleep(DELAY_MILLIS);
 
         // We need a different type, otherwise our alarm would be de-duplicated by the server (just increasing
         // the count of the first one, but not updating the content):
-        alarm = makeAlarm("com_telekom_TestType2", Alarm.SEVERITY_MAJOR, alarmSource1);
-        alarmApi.create(alarm);
+        alarmApi.create(makeAlarm("com_telekom_TestType2", Alarm.SEVERITY_MAJOR, alarmSource1));
 
         Thread.sleep(DELAY_MILLIS);
 
@@ -265,12 +263,6 @@ public class SmartRestRealTimeIT {
 
 
     @Test
-    // TODO: turn into unittest because the server doesn't know anything about our listeners
-    public void testMultiListeners() throws InterruptedException {
-    }
-
-
-    @Test
     public void testMultiTemplates() throws InterruptedException {
         // Create templates to parse the notification:
         SmartResponseTemplate responseTemplate1 = new SmartResponseTemplate(
@@ -308,8 +300,7 @@ public class SmartRestRealTimeIT {
 
         Thread.sleep(DELAY_MILLIS);
 
-        Alarm alarm = makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmSource1);
-        alarmApi.create(alarm);
+        alarmApi.create(makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmSource1));
 
         Thread.sleep(DELAY_MILLIS);
 
@@ -385,8 +376,8 @@ public class SmartRestRealTimeIT {
 
         // Now we received two more notifications, one for each template:
         assertEquals(notedAlarms.size(), 3);
-        assertEquals(notedAlarms.get(1).getMessageId(), 200);
-        assertEquals(notedAlarms.get(2).getMessageId(), 300);
+        // Shortcut because we can't be sure about the ordering (first 200, then 300, or the opposite) ;-)
+        assertEquals(notedAlarms.get(1).getMessageId() + notedAlarms.get(2).getMessageId(), 500);
     }
 
 

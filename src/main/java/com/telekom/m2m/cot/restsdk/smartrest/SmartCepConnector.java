@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_ADVICE;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_HANDSHAKE;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_SUBSCRIBE;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_UNSUBSCRIBE;
@@ -28,8 +29,20 @@ public class SmartCepConnector implements Runnable {
 
     private String clientId;
 
+
+    // Read timeout in milliseconds for the connect request:
+    private int timeout = 60000;
+
+    // Interval in milliseconds between connect requests:
+    private int interval = 100;
+
+    //
     private boolean connected = false;
-    private boolean shallDisconnect = false;
+
+    private volatile boolean shallDisconnect = false; // Volatile to be synced with the polling thread.
+
+    private Thread pollingThread;
+
 
     // Have to be thread safe because they will be used from the polling thread too:
     private Map<String, Set<String>> subscriptions = new ConcurrentHashMap<>();
@@ -113,12 +126,10 @@ public class SmartCepConnector implements Runnable {
      * class and build your own connection handling using the protected do*-methods.
      */
     public void connect() {
+        shallDisconnect = false;
+
         if (connected || (clientId != null)) {
             throw new CotSdkException("Already connected. Please disconnect first.");
-        }
-
-        if (subscriptions.size() == 0) {
-            throw new CotSdkException("Create at least one subscription before connecting.");
         }
 
         // If there's no connection possible at all we want to fail fast, synchronously:
@@ -128,23 +139,119 @@ public class SmartCepConnector implements Runnable {
             throw new CotSdkException("Handshake failed, could not get clientId.");
         }
 
-        new Thread(this).start();
+        pollingThread = new Thread(this);
+        pollingThread.start();
     }
 
 
     /**
      * Break the polling loop and disconnect from the cloud server.
-     * Will not disconnect immediately, but only at the next iteration of the polling loop.
+     * Will try to interrupt the polling thread.
      */
     public void disconnect() {
         shallDisconnect = true;
-        // TODO: kill the thread after some time?
+        pollingThread.interrupt();
+        try {
+            pollingThread.join(1000); // One second should be more than enough to end the loop.
+        } catch (InterruptedException ex) {
+            throw new CotSdkException("Real time polling thread didn't finish properly when asked to disconnect.", ex);
+        }
     }
 
 
+    /**
+     * Get the clientId that was assigned by the server during handshake.
+     * @return the clientId or null, if we are not currently connected.
+     */
+    public String getClientId() {
+        return clientId;
+    }
+
+
+    /**
+     * Whether there is currently a polling thread connected to the server.
+     * @return true = yes; false = no
+     */
+    public boolean isConnected() {
+        return connected;
+    }
+
+
+    public int getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Set the read timeout for the polling connect request.
+     * Can also be overwritten by advice messages sent from the server.
+     * Default is 60000.
+     * @param timeout the timeout in milliseconds
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    public int getInterval() {
+        return interval;
+    }
+
+    /**
+     * Set the time that the polling thread waits before it reconnects, after receiving a response.
+     * Can also be overwritten by advice messages sent from the server.
+     * Default is 100.
+     * @param interval the waiting interval in milliseconds
+     */
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
+
+    @Override
+    public void run() {
+        connected = true;
+        try {
+            postInitialSubscriptions();
+            do {
+                String response[] = doConnect();
+                for (String line : response) {
+                    // TODO: check for errors
+                    // 40,No template for this X-ID (wenn es noch keine responsetemplates gibt)
+                    // 40,,/alarms/177595925,Could not find any templates subscribed for the channel
+                    // 43,1,Invalid Message Identifier (cep-messages an /s geschickt)
+                    // more ?
+                    // TODO: break after error? Handle errors?
+                    // TODO: send errors to all listeners?
+
+                    SmartNotification notification = new SmartNotification(line);
+
+                    // System-messages (<100) are not passed on to any listeners:
+                    if (notification.getMessageId() >= 100) {
+                        for (SmartListener listener : listeners) {
+                            listener.onNotification(notification);
+                        }
+                    }
+
+                    if (MSG_REALTIME_ADVICE.equals(notification.getMessageId()+"")) {
+                        handleAdvice(notification);
+                    }
+                }
+                try {
+                    if (!shallDisconnect) {
+                        Thread.sleep(interval);
+                    }
+                } catch (InterruptedException e) {
+                    shallDisconnect = true;
+                }
+            } while (!shallDisconnect);
+        } finally {
+            connected = false;
+            clientId = null;
+        }
+    }
+
 
     protected String[] doConnect() {
-        String[] response = cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_CONNECT + "," + clientId);
+        String[] response = cloudOfThingsRestClient.doSmartRealTimePollingRequest(xId, MSG_REALTIME_CONNECT + "," + clientId, timeout);
         if (response.length > 0) {
             // The first line can contain leading spaces, periodically sent by the server as a keep-alive signal.
             response[0] = response[0].trim();
@@ -174,52 +281,61 @@ public class SmartCepConnector implements Runnable {
 
         for (Map.Entry<String, Set<String>> entry: subscriptions.entrySet()) {
             String xIds = String.join(",", entry.getValue());
-            cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_SUBSCRIBE +
-                                                                "," + clientId +
-                                                                "," + entry.getKey() +
-                                                                ((xIds.length() == 0) ? "" : "," + xIds));
+            cloudOfThingsRestClient.doSmartRealTimeRequest(xId,
+                    MSG_REALTIME_SUBSCRIBE + ","
+                            + clientId + ","
+                            + entry.getKey()
+                            + ((xIds.length() == 0) ? "" : "," + xIds));
         }
     }
 
 
-    @Override
-    public void run() {
-        connected = true;
-        try {
-            postInitialSubscriptions();
-            do {
-                String response[] = doConnect();
-                //System.out.println("SmartREST-real-time-response:");
-                for (String line : response) {
-                    //System.out.println("- " + line);
-                    // TODO: check for errors
-                    // 40,No template for this X-ID (wenn es noch keine responsetemplates gibt)
-                    // 40,,/alarms/177595925,Could not find any templates subscribed for the channel
-                    // 43,1,Invalid Message Identifier (cep-messages an /s geschickt)
-                    // more ?
-                    // TODO: break after error? Handle errors?
+    /**
+     * Override this method if You don't want the server advice to automatically change the read timeout for the
+     * connect request.
+     * @param timeout the timeout, that the server recommended
+     */
+    protected void setTimeoutByAdvice(int timeout) {
+        setTimeout(timeout);
+    }
 
-                    // TODO: send errors to all listeners?
+    /**
+     * Override this method if You don't want the server advice to automatically change the interval.
+     * @param interval the interval, that the server recommended
+     */
+    protected void setIntervalByAdvice(int interval) {
+        setInterval(interval);
+    }
 
-                    SmartNotification notification = new SmartNotification(line);
-                    // System-messages (<100) are not passed on to any listeners:
-                    if (notification.getMessageId() >= 100) {
-                        for (SmartListener listener : listeners) {
-                            listener.onNotification(notification);
-                        }
-                    }
-                    // TODO: Consider advice sent from the server.
 
-                    // TODO timeout?
+    protected void handleAdvice(SmartNotification notification) {
+        String[] parts = notification.getData().split(",");
 
-                    // TODO: reconnect policy
-                }
-            } while (!shallDisconnect);
-        } finally {
-            connected = false;
-            clientId = null;
+        // For unknown reasons the advice line seems to have an additional undocumented first field too:
+        // e.g. "86,,<timeout>,<interval>,<reconnect policy>"
+        // instead of "86,<timeout>,<interval>,<reconnect policy>"
+
+        if (!parts[1].isEmpty()) {
+            setTimeoutByAdvice(Integer.parseInt(parts[1]));
         }
 
+        if (!parts[2].isEmpty()) {
+            setIntervalByAdvice(Integer.parseInt(parts[2]));
+        }
+
+        String reconnectPolicy = parts[3];
+        switch (reconnectPolicy) {
+            case "none" :
+                shallDisconnect = true;
+                break;
+            case "handshake" :
+                clientId = doHandshake();
+                postInitialSubscriptions();
+                break;
+            case "retry" :
+            default:
+                // Nothing to do, just continue with the next iteration.
+        }
     }
 
 }

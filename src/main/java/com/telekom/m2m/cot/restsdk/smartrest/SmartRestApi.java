@@ -21,14 +21,15 @@ import java.util.List;
  */
 public class SmartRestApi {
 
-    public static final String MSG_TEMPLATES_NOT_FOUND = "40";
+    public static final String MSG_TEMPLATES_NOT_FOUND     = "40";
     public static final String MSG_TEMPLATE_CREATION_ERROR = "41";
-    public static final String MSG_TEMPLATES_OK = "20";
+    public static final String MSG_TEMPLATES_OK            = "20";
 
-    public static final String MSG_REALTIME_HANDSHAKE = "80";
-    public static final String MSG_REALTIME_SUBSCRIBE = "81";
+    public static final String MSG_REALTIME_HANDSHAKE   = "80";
+    public static final String MSG_REALTIME_SUBSCRIBE   = "81";
     public static final String MSG_REALTIME_UNSUBSCRIBE = "82";
-    public static final String MSG_REALTIME_CONNECT = "83";
+    public static final String MSG_REALTIME_CONNECT     = "83";
+    public static final String MSG_REALTIME_ADVICE      = "86";
 
     private static final String JSON_TEMPLATE_ATTRIBUTE = "com_cumulocity_model_smartrest_SmartRestTemplate";
 
