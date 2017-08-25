@@ -6,7 +6,7 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 /**
  * RetentionRules govern after what time old data is to be removed from the cloud.
- * Each type of document can have it's own rule, so that some types can be kept longer,
+ * Each type of document can have its own rule, so that some types can be kept longer,
  * while others get cleaned up faster.
  */
 public class RetentionRule extends ExtensibleObject {
@@ -156,7 +156,7 @@ public class RetentionRule extends ExtensibleObject {
 
 
     /**
-     * Get the maximumAge of the rule.
+     * Get the maximumAge of the rule in days.
      *
      * @return an int with the maximumAge
      */
@@ -181,7 +181,7 @@ public class RetentionRule extends ExtensibleObject {
     }
 
     /**
-     * Setting the rule maximumAge.
+     * Setting the rule maximumAge in days.
      *
      * @param maximumAge an int with the rule maximumAge.
      */
