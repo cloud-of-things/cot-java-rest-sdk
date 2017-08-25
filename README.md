@@ -45,7 +45,7 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 
 **Partly Implemented**
 * **Device control**: Completely implemented, except BulkOperations
-* **SmartREST**: Completely implemented, except Realtime-Notifications
+* **SmartREST**: Completely implemented, including Realtime-Notifications, but not Realtime-Statements
 
 **Not Implemented**
 * **Device management library**: Not implemented
@@ -60,6 +60,7 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 ## Examples
 
 See examples folder. (Needs improvements ;) )
+Also see integration tests (*IT).
 
 ## Release Notes
 

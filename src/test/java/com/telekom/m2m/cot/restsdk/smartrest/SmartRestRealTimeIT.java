@@ -333,8 +333,6 @@ public class SmartRestRealTimeIT {
                 new SmartRequestTemplate[0],
                 new SmartResponseTemplate[]{new SmartResponseTemplate(
                         "300", "$", "$", new String[]{"$.type", "$.id"})});
-        System.out.println("gId = "+gId+", xId = "+xId);
-        System.out.println("gId2 = "+gId2+", xId2 = "+xId2);
 
         SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
 
