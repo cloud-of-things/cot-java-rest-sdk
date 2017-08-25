@@ -51,8 +51,7 @@ public class InventoryApi {
         String response = cloudOfThingsRestClient.getResponse(id, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
-            ManagedObject mo = new ManagedObject(extensibleObject);
-            return mo;
+            return new ManagedObject(extensibleObject);
         } else {
             return null;
         }
@@ -69,8 +68,7 @@ public class InventoryApi {
         String response = cloudOfThingsRestClient.getResponse(id + "?withParents=" + Boolean.toString(withParents), RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
-            ManagedObject mo = new ManagedObject(extensibleObject);
-            return mo;
+            return new ManagedObject(extensibleObject);
         } else {
             return null;
         }

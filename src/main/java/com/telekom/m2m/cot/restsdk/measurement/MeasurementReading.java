@@ -7,6 +7,7 @@ public class MeasurementReading {
     private float value;
 
     public MeasurementReading() {
+        super();
     }
 
     public MeasurementReading(float value, String unit) {
