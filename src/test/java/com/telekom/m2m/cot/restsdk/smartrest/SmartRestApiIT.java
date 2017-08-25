@@ -26,7 +26,6 @@ public class SmartRestApiIT {
     @BeforeMethod
     public void setUp() {
         xId = "test-xId" + System.currentTimeMillis();
-        System.out.println("Running integration test with X-Id = " + xId);
     }
 
     @AfterMethod
