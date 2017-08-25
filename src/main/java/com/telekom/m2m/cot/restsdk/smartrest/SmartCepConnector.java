@@ -109,11 +109,23 @@ public class SmartCepConnector implements Runnable {
     }
 
 
+    /**
+     * Add a {@link SmartListener} that will from then on be called for all the notifications that this connector
+     * receives.
+     * Adding the same listener multiple times has no additional effect.
+     *
+     * @param listener
+     */
     public void addListener(SmartListener listener) {
         listeners.add(listener);
     }
 
 
+    /**
+     * Remove a previously registered {@link SmartListener}.
+     * Trying to remove a listener that doesn't exist is ok.
+     * @param listener
+     */
     public void removeListener(SmartListener listener) {
         listeners.remove(listener);
     }
@@ -162,6 +174,7 @@ public class SmartCepConnector implements Runnable {
 
     /**
      * Get the clientId that was assigned by the server during handshake.
+     *
      * @return the clientId or null, if we are not currently connected.
      */
     public String getClientId() {
@@ -171,6 +184,7 @@ public class SmartCepConnector implements Runnable {
 
     /**
      * Whether there is currently a polling thread connected to the server.
+     *
      * @return true = yes; false = no
      */
     public boolean isConnected() {
@@ -178,28 +192,44 @@ public class SmartCepConnector implements Runnable {
     }
 
 
+    /**
+     * The current read timeout.
+     *
+     * @return the timeout in milliseconds
+     */
     public int getTimeout() {
         return timeout;
     }
 
     /**
      * Set the read timeout for the polling connect request.
-     * Can also be overwritten by advice messages sent from the server.
+     * <br>
+     * Can also be overwritten by advice messages sent from the server while the connector is connected.
+     * <br>
      * Default is 60000.
+     *
      * @param timeout the timeout in milliseconds
      */
     public void setTimeout(int timeout) {
         this.timeout = timeout;
     }
 
+    /**
+     * The current interval, which is the time that the polling thread waits before it reconnects, after receiving a response.
+     *
+     * @return the waiting interval in milliseconds
+     */
     public int getInterval() {
         return interval;
     }
 
     /**
      * Set the time that the polling thread waits before it reconnects, after receiving a response.
-     * Can also be overwritten by advice messages sent from the server.
+     * <br>
+     * Can also be overwritten by advice messages sent from the server while the connector is connected.
+     * <br>
      * Default is 100.
+     *
      * @param interval the waiting interval in milliseconds
      */
     public void setInterval(int interval) {
@@ -207,6 +237,10 @@ public class SmartCepConnector implements Runnable {
     }
 
 
+    /**
+     * Don't call this method. It will be called by the system when the polling thread is started.
+     * Use {@link #connect()} instead.
+     */
     @Override
     public void run() {
         connected = true;

@@ -183,7 +183,12 @@ public class SmartRestApi {
     }
 
 
-
+    /**
+     * Get the {@link SmartCepConnector} which can be used to subscribe to channels for real time notifications.
+     *
+     * @param xId the base X-Id to use for the connection.
+     * @return the new connector
+     */
     public SmartCepConnector getNotificationsConnector(String xId) {
         return new SmartCepConnector(cloudOfThingsRestClient, xId);
     }
