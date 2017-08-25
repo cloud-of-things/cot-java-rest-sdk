@@ -13,11 +13,15 @@ import java.util.List;
 
 
 /**
- * The SmartResttApi is used to register and query SmartREST-templates and to execute requests against them.
+ * The SmartRestApi is used to register and query SmartREST-templates and to execute requests against them.
  *
+ * <p>
  * Note that templates for an X-Id can only be registered all in one go and cannot be modified.
+ * </p>
  *
+ * <p>
  * For examples see SmartRestApiIT.
+ * </p>
  */
 public class SmartRestApi {
 
