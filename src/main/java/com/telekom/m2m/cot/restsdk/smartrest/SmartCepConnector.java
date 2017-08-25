@@ -41,6 +41,11 @@ public class SmartCepConnector implements Runnable {
 
     private static final List<Integer> KNOWN_ERROR_MESSAGES = Arrays.asList(40, 41, 42, 43, 45, 50);
 
+    private static final int DEFAULT_READ_TIMEOUT_MILLIS = 60000;
+    private static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 100;
+
+    private static final int THREAD_JOIN_GRACE_MILLIS = 1000;
+
 
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
@@ -50,10 +55,10 @@ public class SmartCepConnector implements Runnable {
 
 
     // Read timeout in milliseconds for the connect request:
-    private int timeout = 60000;
+    private int timeout = DEFAULT_READ_TIMEOUT_MILLIS;
 
     // Interval in milliseconds between connect requests:
-    private int interval = 100;
+    private int interval = DEFAULT_RECONNECT_INTERVAL_MILLIS;
 
     //
     private boolean connected = false;
@@ -194,7 +199,7 @@ public class SmartCepConnector implements Runnable {
         shallDisconnect = true;
         pollingThread.interrupt();
         try {
-            pollingThread.join(1000); // One second should be more than enough to end the loop.
+            pollingThread.join(THREAD_JOIN_GRACE_MILLIS); // One second should be more than enough to end the loop.
         } catch (InterruptedException ex) {
             throw new CotSdkException("Real time polling thread didn't finish properly when asked to disconnect.", ex);
         }
@@ -355,11 +360,16 @@ public class SmartCepConnector implements Runnable {
     }
 
 
+    /**
+     * Post all the subscriptions that we have to the server. Necessary for reconnects and when there already were
+     * subscriptions before we were connected.
+     */
     protected void postInitialSubscriptions() {
         if (clientId == null) {
             throw new CotSdkException("Cannot subscribe to SmartREST notification because we don't have a clientId yet.");
         }
 
+        // TODO: check whether all of them can be sent in one batch with one request
         for (Map.Entry<String, Set<String>> entry: subscriptions.entrySet()) {
             String xIds = String.join(",", entry.getValue());
             cloudOfThingsRestClient.doSmartRealTimeRequest(xId,
