@@ -21,7 +21,9 @@ public class SmartRequestTemplate extends SmartTemplate {
     private String[] values; // i.e. <PARAMS>
 
 
-    public SmartRequestTemplate() {}
+    public SmartRequestTemplate() {
+        super();
+    }
 
     /**
      * Construct a new SmartRequestTemplate from individual parameters.
@@ -63,8 +65,9 @@ public class SmartRequestTemplate extends SmartTemplate {
     /**
      * @return this template as a CSV-String, with fields escaped as necessary, ready to be sent to the server.
      */
+    @Override
     public String toString() {
-        return String.join(",", msgId, method, resourceUri, escape(contentType), escape(accept), escape(placeholder), (values == null) ? "" : String.join(" ", (CharSequence[])values), escape(templateString));
+        return String.join(",", msgId, method, resourceUri, escape(contentType), escape(accept), escape(placeholder), (values == null) ? "" : String.join(" ", values), escape(templateString));
     }
 
 
