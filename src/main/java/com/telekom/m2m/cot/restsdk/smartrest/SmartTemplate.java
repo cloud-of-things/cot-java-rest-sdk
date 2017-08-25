@@ -16,9 +16,9 @@ public abstract class SmartTemplate {
 
 
     /**
-     * If a value contains double-quotes ("), commas (,), leading or trailing whitespace,
-     * line-breaks or tab stops, it must be surrounded by quotes (").
-     * Contained double-quotes (") must be escaped by prepending another double-quote ("").
+     * If a value contains double quotes ("), commas (,), leading or trailing whitespace,
+     * line-breaks or tab stops, it must be surrounded by double quotes (").
+     * Contained double quotes (") must be escaped by prepending another double quote ("").
      *
      * Also, null is represented as "".
      *

@@ -6,6 +6,18 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 
+/**
+ * A SmartResponseTemplate is used server side to transform a REST response into one line of a SmartREST response.
+ *
+ * <p>
+ * All templates for the given X-Id are matched against the response. Each template, if it does match, can extract
+ * data from the JSON, turning it into a CSV line.
+ * </p>
+ *
+ * <p>
+ * See SmartRestApiIT for examples.
+ * </p>
+ */
 public class SmartResponseTemplate extends SmartTemplate {
 
     private String base;
