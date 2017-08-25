@@ -40,6 +40,10 @@
  * </p>
  *
  * <p>
+ * For real time notifications (CEP) see {@link com.telekom.m2m.cot.restsdk.smartrest.SmartCepConnector}.
+ * </p>
+ *
+ * <p>
  * More explanations about the concepts can be found at http://cumulocity.com/guides/reference/smartrest/
  * </p>
  */

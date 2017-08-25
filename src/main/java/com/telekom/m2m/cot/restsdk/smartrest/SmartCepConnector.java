@@ -21,7 +21,21 @@ import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_XI
 
 /**
  * The SmartCepConnector handles subscriptions and holds the connection to the CEP notification service.
+ * <br>
  * It passes on notifications to {@link SmartListener}s.
+ * <br>
+ * Basic usage is like this:
+ * <ul>
+ *     <li>store at least one {@link SmartResponseTemplate}, that can extract data from the notifications that you are interested in.</li>
+ *     <li>call {@link SmartCepConnector#subscribe(String, Set)} to subscribe to a channel.</li>
+ *     <li>extend {@link SmartListener} and do something with {@link SmartNotification}s passed to {@link SmartListener#onNotification(SmartNotification)}.</li>
+ *     <li>add the {@link SmartListener} via {@link SmartCepConnector#addListener(SmartListener)}.</li>
+ *     <li>call {@link SmartCepConnector#connect()} to establish the connection and start the background polling thread.</li>
+ * </ul>
+ *
+ * <p>
+ * See SmartCepConnectorTest and SmartRestRealTimeIT for examples.
+ * </p>
  */
 public class SmartCepConnector implements Runnable {
 
