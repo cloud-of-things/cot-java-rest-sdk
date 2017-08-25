@@ -35,7 +35,7 @@ public class InventoryApiCrudIT {
         ManagedObjectReferenceCollection childs = mo.getChildDevices();
         Assert.assertNotNull(childs.getSelf());
 
-        Iterable<ManagedObjectReference> children = childs.get(5);
+        Iterable<ManagedObjectReference> children = childs.get();
         Iterator<ManagedObjectReference> iter = children.iterator();
 
         Assert.assertTrue(iter.hasNext());

@@ -3,11 +3,10 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
  * Represents a pageable ManagedObject collection.
@@ -18,134 +17,49 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  *
  * @since 0.3.0
  */
-public class ManagedObjectCollection {
+public class ManagedObjectCollection extends JsonArrayPagination {
 
-    private Filter.FilterBuilder criteria = null;
-
-    private final CloudOfThingsRestClient cloudOfThingsRestClient;
-    private int pageCursor = 1;
-
-    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.managedObjectCollection+json;charset=UTF-8;ver=0.9";
-    private boolean nextAvailable = false;
-    private boolean previousAvailable = false;
-    private int pageSize = 5;
-
-    private Gson gson = GsonUtils.createGson();
-
+    private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.managedObjectCollection+json;charset=UTF-8;ver=0.9";
+    private static final String COLLECTION_ELEMENT_NAME = "managedObjects";
 
     /**
-     * Internal constructor to create a ManagedObjectCollection.
-     * Use {@link InventoryApi} to get a ManagedObjectCollection.
+     * Internal contstructor to create an ManagedObjectCollection.
+     * Use {@link InventoryApi} to get ManagedObjectCollection.
      *
-     * @param resultSize
-     * @param cloudOfThingsRestClient
-     */
-    ManagedObjectCollection(int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.pageCursor = resultSize;
-        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-    }
-
-
-    /**
-     * Internal constructor to create a ManagedObjectCollection.
-     * Use {@link InventoryApi} to get a ManagedObjectCollection.
-     *
-     * @param resultSize
-     * @param cloudOfThingsRestClient
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
+     * @param relativeApiUrl          relative url of the REST API without leading slash.
+     * @param gson                    the necessary json De-/serializer.
+     * @param filterBuilder           the build criteria or null if all items should be retrieved.
+     * @param pageSize                max number of retrieved elements per page.
      */
-    ManagedObjectCollection(Filter.FilterBuilder filters, int resultSize, CloudOfThingsRestClient cloudOfThingsRestClient) {
-        this.criteria = filters;
-        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-        this.pageSize = resultSize;
+    ManagedObjectCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
+                         final String relativeApiUrl,
+                         final Gson gson,
+                         final Filter.FilterBuilder filterBuilder,
+                         final int pageSize) {
+        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
     }
 
     /**
      * Retrieves the current page.
+     * <p>
+     * Retrieves the ManagedObjects influenced by filters set in construction.
      *
-     * @return array of found ManagedObjects.
+     * @return array of found ManagedObjects
      */
     public ManagedObject[] getManagedObjects() {
-        JsonObject object = getJsonObject(pageCursor);
+        final JsonArray jsonManagedObjects = getJsonArray();
 
-        previousAvailable = object.has("prev");
-
-        if (object.has("managedObjects")) {
-            JsonArray jsonManagedObjects = object.get("managedObjects").getAsJsonArray();
-            ManagedObject[] arrayOfManagedObjects = new ManagedObject[jsonManagedObjects.size()];
+        if (jsonManagedObjects != null) {
+            final ManagedObject[] arrayOfManagedObjects = new ManagedObject[jsonManagedObjects.size()];
             for (int i = 0; i < jsonManagedObjects.size(); i++) {
-                JsonElement jsonMeasurement = jsonManagedObjects.get(i).getAsJsonObject();
-                ManagedObject managedObject = new ManagedObject(gson.fromJson(jsonMeasurement, ExtensibleObject.class));
+                JsonElement jsonManagedObject = jsonManagedObjects.get(i).getAsJsonObject();
+                final ManagedObject managedObject = new ManagedObject(gson.fromJson(jsonManagedObject, ExtensibleObject.class));
                 arrayOfManagedObjects[i] = managedObject;
             }
             return arrayOfManagedObjects;
-        } else
-            return null;
-    }
-
-    private JsonObject getJsonObject(int page) {
-        String response;
-        String url = "/inventory/managedObjects?" +
-                "currentPage=" + page +
-                "&pageSize=" + pageSize;
-        if (criteria != null) {
-            url += "&" + criteria.buildFilter();
-        }
-        response = cloudOfThingsRestClient.getResponse(url, CONTENT_TYPE);
-
-        return gson.fromJson(response, JsonObject.class);
-    }
-
-    /**
-     * Moves cursor to the next page.
-     */
-    public void next() {
-        pageCursor += 1;
-    }
-
-    /**
-     * Moves cursor to the previous page.
-     */
-    public void previous() {
-        pageCursor -= 1;
-    }
-
-    /**
-     * Checks if the next page has elements. <b>Use with caution, it does a seperate HTTP request, so it is considered as slow</b>
-     *
-     * @return true if next page has managedObjects, otherwise false.
-     */
-    public boolean hasNext() {
-        JsonObject object = getJsonObject(pageCursor + 1);
-        if (object.has("managedObjects")) {
-            JsonArray jsonManagedObjects = object.get("managedObjects").getAsJsonArray();
-            nextAvailable = jsonManagedObjects.size() > 0 ? true : false;
-        }
-        return nextAvailable;
-    }
-
-    /**
-     * Checks if there is a previous page.
-     *
-     * @return true if next page has managedObjects, otherwise false.
-     */
-    public boolean hasPrevious() {
-        return previousAvailable;
-    }
-
-    /**
-     * Sets the page size for page queries.
-     * The queries uses page size as a limit of elements to retrieve.
-     * There is a maximum number of elements, currently 2,000 elements.
-     * <i>Default is 5</i>
-     *
-     * @param pageSize the new page size as positive integer.
-     */
-    public void setPageSize(int pageSize) {
-        if (pageSize > 0) {
-            this.pageSize = pageSize;
         } else {
-            this.pageSize = 0;
+            return null;
         }
     }
 }

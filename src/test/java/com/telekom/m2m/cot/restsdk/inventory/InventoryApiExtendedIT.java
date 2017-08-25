@@ -47,7 +47,7 @@ public class InventoryApiExtendedIT {
         inventoryApi.addChildDeviceToManagedObject(moFromPlatform, managedObjectReference);
 
         ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
-        Iterator<ManagedObjectReference> iter = reloadedMo.getChildDevices().get(1).iterator();
+        Iterator<ManagedObjectReference> iter = reloadedMo.getChildDevices().get().iterator();
         Assert.assertTrue(iter.hasNext());
         ManagedObjectReference next = iter.next();
         Assert.assertEquals(next.getManagedObject().getId(), createdChildMo.getId());
@@ -56,7 +56,7 @@ public class InventoryApiExtendedIT {
         inventoryApi.removeManagedObjectReference(next);
 
         reloadedMo = inventoryApi.get(testManagedObject.getId());
-        iter = reloadedMo.getChildDevices().get(1).iterator();
+        iter = reloadedMo.getChildDevices().get().iterator();
         Assert.assertFalse(iter.hasNext());
         try {
             next = iter.next();
@@ -89,17 +89,17 @@ public class InventoryApiExtendedIT {
         childMo = inventoryApi.get(childMo.getId(), true);
         parentMo = inventoryApi.get(parentMo.getId(), true);
 
-        Iterator<ManagedObjectReference> iter = childMo.getParentDevices().get(1).iterator();
+        Iterator<ManagedObjectReference> iter = childMo.getParentDevices().get().iterator();
         Assert.assertTrue(iter.hasNext());
         ManagedObjectReference next = iter.next();
         Assert.assertEquals(next.getManagedObject().getId(), parentMo.getId());
         Assert.assertTrue(next.getSelf().startsWith("http"));
 
-        ManagedObjectReference del = parentMo.getChildDevices().get(1).iterator().next();
+        ManagedObjectReference del = parentMo.getChildDevices().get().iterator().next();
         inventoryApi.removeManagedObjectReference(del);
 
         childMo = inventoryApi.get(childMo.getId());
-        iter = childMo.getParentDevices().get(1).iterator();
+        iter = childMo.getParentDevices().get().iterator();
         Assert.assertFalse(iter.hasNext());
         try {
             next = iter.next();
@@ -132,17 +132,17 @@ public class InventoryApiExtendedIT {
         childMo = inventoryApi.get(childMo.getId(), true);
         parentMo = inventoryApi.get(parentMo.getId(), true);
 
-        Iterator<ManagedObjectReference> iter = childMo.getParentAssets().get(1).iterator();
+        Iterator<ManagedObjectReference> iter = childMo.getParentAssets().get().iterator();
         Assert.assertTrue(iter.hasNext());
         ManagedObjectReference next = iter.next();
         Assert.assertEquals(next.getManagedObject().getId(), parentMo.getId());
         Assert.assertTrue(next.getSelf().startsWith("http"));
 
-        ManagedObjectReference del = parentMo.getChildAssets().get(1).iterator().next();
+        ManagedObjectReference del = parentMo.getChildAssets().get().iterator().next();
         inventoryApi.removeManagedObjectReference(del);
 
         childMo = inventoryApi.get(childMo.getId());
-        iter = childMo.getParentAssets().get(1).iterator();
+        iter = childMo.getParentAssets().get().iterator();
         Assert.assertFalse(iter.hasNext());
         try {
             next = iter.next();
@@ -170,7 +170,7 @@ public class InventoryApiExtendedIT {
         inventoryApi.addChildAssetToManagedObject(moFromPlatform, managedObjectReference);
 
         ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
-        Iterator<ManagedObjectReference> iter = reloadedMo.getChildAssets().get(1).iterator();
+        Iterator<ManagedObjectReference> iter = reloadedMo.getChildAssets().get().iterator();
         Assert.assertTrue(iter.hasNext());
         ManagedObjectReference next = iter.next();
         Assert.assertEquals(next.getManagedObject().getId(), createdChildMo.getId());
@@ -179,7 +179,7 @@ public class InventoryApiExtendedIT {
         inventoryApi.removeManagedObjectReference(next);
 
         reloadedMo = inventoryApi.get(testManagedObject.getId());
-        iter = reloadedMo.getChildAssets().get(1).iterator();
+        iter = reloadedMo.getChildAssets().get().iterator();
         Assert.assertFalse(iter.hasNext());
         try {
             next = iter.next();

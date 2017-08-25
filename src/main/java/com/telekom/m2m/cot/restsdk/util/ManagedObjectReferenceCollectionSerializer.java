@@ -15,7 +15,7 @@ public class ManagedObjectReferenceCollectionSerializer implements
         JsonDeserializer<ManagedObjectReferenceCollection> {
 
     public ManagedObjectReferenceCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
-        ArrayList<ManagedObjectReference> mos = new ArrayList<ManagedObjectReference>();
+        ArrayList<ManagedObjectReference> mos = new ArrayList<>();
         String selfRef = null;
         /*
          * To Check:
@@ -49,7 +49,7 @@ public class ManagedObjectReferenceCollectionSerializer implements
             // TODO: This needs more work!
             JsonArray references = new JsonArray();
 
-            Iterable<ManagedObjectReference> mors = src.get(1);
+            Iterable<ManagedObjectReference> mors = src.get();
             for (ManagedObjectReference mor : mors) {
                 references.add(context.serialize(mor));
             }

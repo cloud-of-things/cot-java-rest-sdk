@@ -4,7 +4,7 @@
 
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>0.5.0</version>
+    <version>0.5.1-SNAPSHOT</version>
 
     <name>Cloud of Things Java REST SDK</name>
     <description>This is an SDK to interfere with the Cloud of Things by
@@ -66,7 +66,7 @@
         <dependency>
             <groupId>com.squareup.okhttp3</groupId>
             <artifactId>okhttp</artifactId>
-            <version>3.0.1</version>
+            <version>3.8.1</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
@@ -183,7 +183,7 @@
                     <!-- Keep your maven submodules at the same version as the parent POM -->
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                     <!--
-                      Pusing in-development features to origin allows all devs to see what each other
+                      Pushing in-development features to origin allows all devs to see what each other
                       are working on
                     -->
                     <pushFeatures>true</pushFeatures>

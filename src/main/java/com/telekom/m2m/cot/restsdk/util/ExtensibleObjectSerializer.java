@@ -8,38 +8,36 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
  */
 public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObject>, JsonDeserializer<ExtensibleObject> {
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 
     public JsonElement serialize(ExtensibleObject src, Type typeOfSrc,
                                  JsonSerializationContext context) {
-        if (src == null)
+        if (src == null) {
             return null;
-        else {
-            JsonObject object = new JsonObject();
-            Map<String, Object> attributes = src.getAttributes();
-            Set<String> keys = attributes.keySet();
-            for (String key : keys) {
-                if (key.equals("source")) {
-                    Object source = attributes.get(key);
-                    if (source instanceof ManagedObject) {
-                        JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) source).getId());
-                        JsonObject sourceObject = new JsonObject();
-                        sourceObject.add("id", primitive);
-                        object.add(key, sourceObject);
-                        continue;
-                    }
-                }
-                object.add(key, context.serialize(attributes.get(key)));
-            }
-            return object;
         }
+
+        JsonObject object = new JsonObject();
+        Map<String, Object> attributes = src.getAttributes();
+        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            if ("source".equals(key) && (value instanceof ManagedObject)) {
+                JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) value).getId());
+                JsonObject sourceObject = new JsonObject();
+                sourceObject.add("id", primitive);
+                object.add(key, sourceObject);
+                continue;
+            }
+            object.add(key, context.serialize(value));
+        }
+        return object;
+
     }
 
     public ExtensibleObject deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -77,9 +75,9 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                     converted = tmp.getAsNumber();
                 }
                 mo.set(element.getKey(), converted);
-            } else if (element.getValue().isJsonObject())
-                mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
-
+            } else if (element.getValue().isJsonObject()) {
+                mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), type));
+            }
         }
 
         return mo;
