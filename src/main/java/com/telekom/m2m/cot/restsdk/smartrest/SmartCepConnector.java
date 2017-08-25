@@ -5,6 +5,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -23,6 +24,9 @@ import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_XI
  * It passes on notifications to {@link SmartListener}s.
  */
 public class SmartCepConnector implements Runnable {
+
+    private static final List<Integer> KNOWN_ERROR_MESSAGES = Arrays.asList(40, 41, 42, 43, 45, 50);
+
 
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
@@ -52,6 +56,7 @@ public class SmartCepConnector implements Runnable {
 
     /**
      * Construct a new SmartCepConnector with a default X-Id. That Id determines which response templates will be used.
+     * <br>
      * Additional X-Ids can be specified for each subscription.
      *
      * @param cloudOfThingsRestClient the client to use for connection to the cloud
@@ -65,6 +70,7 @@ public class SmartCepConnector implements Runnable {
 
     /**
      * Subscribe to a notification channel. Will take effect immediately, even for currently running connect requests.
+     * <br>
      * Subscribing to the same channel twice will just add any additional X-Ids.
      *
      * @param channel the name of the channel. No wildcards are allowed for SmartREST.
@@ -112,6 +118,7 @@ public class SmartCepConnector implements Runnable {
     /**
      * Add a {@link SmartListener} that will from then on be called for all the notifications that this connector
      * receives.
+     * <br>
      * Adding the same listener multiple times has no additional effect.
      *
      * @param listener
@@ -123,7 +130,9 @@ public class SmartCepConnector implements Runnable {
 
     /**
      * Remove a previously registered {@link SmartListener}.
+     * <br>
      * Trying to remove a listener that doesn't exist is ok.
+     *
      * @param listener
      */
     public void removeListener(SmartListener listener) {
@@ -133,10 +142,16 @@ public class SmartCepConnector implements Runnable {
 
     /**
      * Connect to the cloud server and start the asynchronous polling loop.
+     * <br>
      * To stop it call {@link #disconnect()}.
-     *
+     * <p>
+     * The connector doesn't stop on most errors. There should probably be a {@link SmartListener} which can handle
+     * errors and trigger a disconnect, if necessary.
+     * </p>
+     * <p>
      * This convenience method should be sufficient for most simple cases. If not, then you can extend the this
      * class and build your own connection handling using the protected do*-methods.
+     * </p>
      */
     public void connect() {
         shallDisconnect = false;
@@ -159,7 +174,7 @@ public class SmartCepConnector implements Runnable {
 
     /**
      * Break the polling loop and disconnect from the cloud server.
-     * Will try to interrupt the polling thread.
+     * Will try to interrupt the polling thread too.
      */
     public void disconnect() {
         shallDisconnect = true;
@@ -251,14 +266,6 @@ public class SmartCepConnector implements Runnable {
                 String activeXId = xId;
                 int alternativeXIdCounter = 0;
                 for (String line : response) {
-                    // TODO: check for errors
-                    // 40,No template for this X-ID (wenn es noch keine responsetemplates gibt)
-                    // 40,,/alarms/177595925,Could not find any templates subscribed for the channel
-                    // 43,1,Invalid Message Identifier (cep-messages an /s geschickt)
-                    // more ?
-                    // TODO: break after error? Handle errors?
-                    // TODO: send errors to all listeners?
-
                     String messageId = line.split(",", 2)[0];
 
                     // Handle new alternative X-Id:
@@ -281,9 +288,19 @@ public class SmartCepConnector implements Runnable {
                         }
                     }
 
+                    // Defined error messages in the response are passed to our listeners as exceptions:
+                    if (KNOWN_ERROR_MESSAGES.contains(notification.getMessageId())) {
+                        CotSdkException exception = new CotSdkException("Smart real time response contained an error: "+line);
+                        for (SmartListener listener : listeners) {
+                            listener.onError(exception);
+                        }
+                    }
+
                     if (MSG_REALTIME_ADVICE.equals(notification.getMessageId()+"")) {
                         handleAdvice(notification);
                     }
+
+                    // TODO: check for errors that should cause us to abort the loop or connection.
                 }
                 try {
                     if (!shallDisconnect) {

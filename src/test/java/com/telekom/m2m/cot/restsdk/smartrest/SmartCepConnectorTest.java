@@ -116,6 +116,46 @@ public class SmartCepConnectorTest {
     }
 
 
+    @Test
+    public void testErrors() throws InterruptedException {
+        SmartCepConnector connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
+
+        when(cloudOfThingsRestClient.doSmartRealTimeRequest("My-X-Id", MSG_REALTIME_HANDSHAKE)).
+                thenReturn(new String[]{"My-Client-Id"});
+        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(eq("My-X-Id"), eq(MSG_REALTIME_CONNECT + "," + "My-Client-Id"), anyInt())).
+                thenReturn(new String[]{"40,No template for this X-ID"}).
+                thenAnswer(new Answer<String[]>() { // This is for the second polling loop iteration.
+                    @Override
+                    public String[] answer(InvocationOnMock invocation) throws InterruptedException {
+                        Thread.sleep(100); // We just delay the mock server response, until the test finishes.
+                        return null;
+                    }
+                });
+
+        // The asynchronously received exceptions will be stored in this list:
+        final List<Throwable> notedExceptions = new ArrayList<>();
+
+        // Prepare listener for the channel of our test device:
+        connector.addListener(new SmartListener() {
+            @Override
+            public void onNotification(SmartNotification notification) {
+                fail("There should have been no notifications.");
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                notedExceptions.add(error);
+            }
+        });
+        connector.connect();
+
+        Thread.sleep(50);
+
+        assertEquals(notedExceptions.size(), 1);
+        assertTrue(notedExceptions.get(0).getMessage().contains("40,No template for this X-ID"));
+    }
+
+
     // This test will disconnect a running connect loop, first while it is waiting for a response and then while it
     // is sleeping between connect requests. In both situations a clean shutdown must be possible.
     @Test
