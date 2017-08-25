@@ -7,7 +7,7 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
  */
 public class ExternalId {
     private ManagedObject managedObject;
-    private String externId;
+    private String externalId;
     private String type;
 
     public void setManagedObject(ManagedObject managedObject) {
@@ -15,7 +15,7 @@ public class ExternalId {
     }
 
     public void setExternalId(String externalId) {
-        this.externId = externalId;
+        this.externalId = externalId;
     }
 
     public void setType(String type) {
@@ -27,7 +27,7 @@ public class ExternalId {
     }
 
     public String getExternalId() {
-        return externId;
+        return externalId;
     }
 
     public ManagedObject getManagedObject() {

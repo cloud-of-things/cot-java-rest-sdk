@@ -27,13 +27,16 @@ public class CloudOfThingsRestClient {
     private final String encodedAuthString;
     private final String host;
 
+    // It seems that not all responses from the server use the same style of line breaks.
+    private static final String LINE_BREAK_PATTERN = "\\r\\n|\\n";
+
     protected OkHttpClient client;
 
     // This is an automatic clone of {@link #client}, which can have it's own timeouts, because we don't want
     // a real time server advice to change timeout behaviour for the whole application:
     protected OkHttpClient realTimeClient;
-    // The read timeout for the realTimeClient:
-    protected int realTimeTimeout = 10000;
+    // The read timeout for the realTimeClient. It will always be set by the caller, but we store it to detect changes:
+    protected Integer realTimeTimeout = null;
 
 
     public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
@@ -192,7 +195,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             String responseBody = response.body().string();
-            return responseBody.split("\\r\\n|\\n");
+            return responseBody.split(LINE_BREAK_PATTERN);
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -223,7 +226,7 @@ public class CloudOfThingsRestClient {
         Request request = builder.build();
 
         // For the first request, or any subsequent request that wants to change the timeout, we need to get a new client:
-        if ((realTimeClient == null) || ((timeout != null) && (timeout != realTimeTimeout))) {
+        if ((realTimeClient == null) || ((timeout != null) && (!timeout.equals(realTimeTimeout)))) {
             realTimeTimeout = timeout;
             realTimeClient = client.newBuilder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
         }
@@ -235,7 +238,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             String responseBody = response.body().string();
-            return responseBody.split("\\r\\n|\\n");
+            return responseBody.split(LINE_BREAK_PATTERN);
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -274,7 +277,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             String responseBody = response.body().string();
-            return responseBody.split("\\r\\n|\\n");
+            return responseBody.split(LINE_BREAK_PATTERN);
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -282,6 +285,7 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    // TODO: check why the contentType is not necessary, because experiments seemed to indicate that it is...
     public String getResponse(String id, String api, String contentType) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)

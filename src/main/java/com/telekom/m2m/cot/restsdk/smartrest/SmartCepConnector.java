@@ -114,7 +114,7 @@ public class SmartCepConnector implements Runnable {
             cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_SUBSCRIBE +
                                                                 "," + clientId +
                                                                 "," + channel +
-                                                                ((xIds.size() == 0) ? "" : "," + String.join(",", xIds)));
+                                                                (xIds.isEmpty() ? "" : "," + String.join(",", xIds)));
         }
     }
 
