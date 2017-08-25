@@ -38,11 +38,13 @@ public class SmartRestRealTimeIT {
     private String gId = null;
     private String gId2 = null;
     private String xId = null;
+    private String xId2 = null;
 
 
     @BeforeMethod
     public void setUp() {
-        xId = "test-xId" + System.currentTimeMillis();
+        xId = "test-xId1-" + System.currentTimeMillis();
+        xId2 = "test-xId2-" + System.currentTimeMillis();
         alarmSource1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name1");
         alarmSource2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name2");
         alarmSource3 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name3");
@@ -306,7 +308,9 @@ public class SmartRestRealTimeIT {
 
         assertEquals(notedAlarms.size(), 2);
         assertEquals(notedAlarms.get(0).getMessageId(), 200);
+        assertEquals(notedAlarms.get(0).getxId(), xId);
         assertEquals(notedAlarms.get(1).getMessageId(), 300);
+        assertEquals(notedAlarms.get(1).getxId(), xId);
         assertTrue(notedAlarms.get(0).getData().endsWith("MINOR,1"), "Unexpected data at [0]: "+notedAlarms.get(0).getData());
         // Note: the meaning of the first field (1) is unclear. Normally it should be the number of the request.
         //       But a real time connect request doesn't have multiple lines, so it might just always be 1 in this case.
@@ -325,11 +329,12 @@ public class SmartRestRealTimeIT {
                 new SmartResponseTemplate[]{new SmartResponseTemplate(
                         "200", "$", "$", new String[]{"$.id", "$.text", "$.type", "$.severity", "$.count"})});
         gId2 = smartRestApi.storeTemplates(
-                "Xid2",
+                xId2,
                 new SmartRequestTemplate[0],
                 new SmartResponseTemplate[]{new SmartResponseTemplate(
                         "300", "$", "$", new String[]{"$.type", "$.id"})});
-
+        System.out.println("gId = "+gId+", xId = "+xId);
+        System.out.println("gId2 = "+gId2+", xId2 = "+xId2);
 
         SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
 
@@ -365,8 +370,9 @@ public class SmartRestRealTimeIT {
         // the second X-Id.
         assertEquals(notedAlarms.size(), 1);
         assertEquals(notedAlarms.get(0).getMessageId(), 200);
+        assertEquals(notedAlarms.get(0).getxId(), xId);
 
-        connector.subscribe("/alarms/" + alarmSource1.getId(), new HashSet<>(Arrays.asList("Xid2")));
+        connector.subscribe("/alarms/" + alarmSource1.getId(), new HashSet<>(Arrays.asList(xId2)));
 
         Thread.sleep(DELAY_MILLIS);
 
@@ -376,8 +382,17 @@ public class SmartRestRealTimeIT {
 
         // Now we received two more notifications, one for each template:
         assertEquals(notedAlarms.size(), 3);
-        // Shortcut because we can't be sure about the ordering (first 200, then 300, or the opposite) ;-)
-        assertEquals(notedAlarms.get(1).getMessageId() + notedAlarms.get(2).getMessageId(), 500);
+        // We can't be sure about the ordering, unfortunately:
+        if (notedAlarms.get(1).getMessageId() == 200) {
+            assertEquals(notedAlarms.get(1).getxId(), xId);
+            assertEquals(notedAlarms.get(2).getMessageId(), 300);
+            assertEquals(notedAlarms.get(2).getxId(), xId2);
+        } else {
+            assertEquals(notedAlarms.get(1).getMessageId(), 300);
+            assertEquals(notedAlarms.get(1).getxId(), xId2);
+            assertEquals(notedAlarms.get(2).getMessageId(), 200);
+            assertEquals(notedAlarms.get(2).getxId(), xId);
+        }
     }
 
 

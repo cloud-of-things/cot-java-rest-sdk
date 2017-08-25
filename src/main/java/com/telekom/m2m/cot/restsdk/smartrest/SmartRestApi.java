@@ -34,6 +34,7 @@ public class SmartRestApi {
     public static final String MSG_REALTIME_UNSUBSCRIBE = "82";
     public static final String MSG_REALTIME_CONNECT     = "83";
     public static final String MSG_REALTIME_ADVICE      = "86";
+    public static final String MSG_REALTIME_XID         = "87";
 
     private static final String JSON_TEMPLATE_ATTRIBUTE = "com_cumulocity_model_smartrest_SmartRestTemplate";
 

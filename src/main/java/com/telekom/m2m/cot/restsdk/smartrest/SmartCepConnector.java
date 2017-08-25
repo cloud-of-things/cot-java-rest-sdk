@@ -15,6 +15,7 @@ import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_HA
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_SUBSCRIBE;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_UNSUBSCRIBE;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_CONNECT;
+import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_XID;
 
 
 /**
@@ -45,7 +46,7 @@ public class SmartCepConnector implements Runnable {
 
 
     // Have to be thread safe because they will be used from the polling thread too:
-    private Map<String, Set<String>> subscriptions = new ConcurrentHashMap<>();
+    private Map<String, Set<String>> subscriptions = new ConcurrentHashMap<>(); // mapping channel names to sets of X-Ids.
     private Set<SmartListener> listeners = new CopyOnWriteArraySet<>();
 
 
@@ -213,6 +214,8 @@ public class SmartCepConnector implements Runnable {
             postInitialSubscriptions();
             do {
                 String response[] = doConnect();
+                String activeXId = xId;
+                int alternativeXIdCounter = 0;
                 for (String line : response) {
                     // TODO: check for errors
                     // 40,No template for this X-ID (wenn es noch keine responsetemplates gibt)
@@ -222,12 +225,25 @@ public class SmartCepConnector implements Runnable {
                     // TODO: break after error? Handle errors?
                     // TODO: send errors to all listeners?
 
-                    SmartNotification notification = new SmartNotification(line);
+                    String messageId = line.split(",", 2)[0];
+
+                    // Handle new alternative X-Id:
+                    if (MSG_REALTIME_XID.equals(messageId)) {
+                        String[] messageParts = line.split(",");
+                        alternativeXIdCounter = Integer.parseInt(messageParts[1]);
+                        activeXId = messageParts[2];
+                    }
+
+                    SmartNotification notification = new SmartNotification(line, activeXId);
 
                     // System-messages (<100) are not passed on to any listeners:
                     if (notification.getMessageId() >= 100) {
                         for (SmartListener listener : listeners) {
                             listener.onNotification(notification);
+                        }
+                        // When we have processed all the announced alternative X-Id lines we fall back to the default:
+                        if (--alternativeXIdCounter == 0) {
+                            activeXId = xId;
                         }
                     }
 
@@ -300,7 +316,8 @@ public class SmartCepConnector implements Runnable {
     }
 
     /**
-     * Override this method if You don't want the server advice to automatically change the interval.
+     * Override this method if You don't want the server advice to automatically change the interval between
+     * response and reconnect.
      * @param interval the interval, that the server recommended
      */
     protected void setIntervalByAdvice(int interval) {
