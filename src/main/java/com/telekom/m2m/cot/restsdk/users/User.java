@@ -53,8 +53,7 @@ public class User extends ExtensibleObject {
      * @return URL of the user
      */
     public String getSelf(User user, String tenant) {
-        String self = "/user/" + tenant + "/users/" + user.getId();
-        return self;
+        return "/user/" + tenant + "/users/" + user.getId();
     }
 
     public String getUserName() {

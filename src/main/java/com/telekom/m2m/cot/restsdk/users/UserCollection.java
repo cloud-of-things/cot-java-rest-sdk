@@ -18,16 +18,17 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 public class UserCollection {
 
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.userCollection+json;ver=0.9";
-
+    private static final int  defaultPageSize=5;
+    
     private Filter.FilterBuilder criteria = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
     private int pageCursor = 1;
-
+    
     private Gson gson = GsonUtils.createGson();
 
     private boolean nextAvailable = false;
     private boolean previousAvailable = false;
-    private int pageSize = 5;
+    private int pageSize = defaultPageSize;
     private String tenant;
 
 

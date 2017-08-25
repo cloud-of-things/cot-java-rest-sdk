@@ -26,8 +26,7 @@ public class RoleReference extends ExtensibleObject {
      */
     public Role getRole() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("role");
-        Role role = new Role(obj);
-        return role;
+        return new Role(obj);
     }
 
     /**
@@ -41,7 +40,6 @@ public class RoleReference extends ExtensibleObject {
 
     }
 
-    // TODO: Finalize the below method.
     public void setRole(Role role) {
         anyObject.put("role", role);
 

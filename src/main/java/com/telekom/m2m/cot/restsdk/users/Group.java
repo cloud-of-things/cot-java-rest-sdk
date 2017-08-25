@@ -21,8 +21,8 @@ public class Group extends ExtensibleObject {
 
     /**
      * Get the unique identifier of the group. If the group was retrieved from
-     * the platform, it has an ID. If just created, there is no ID. TODO: verify
-     * whether/why this is a number and not a String as in other entities.
+     * the platform, it has an ID. If just created, there is no ID. The returned groupId 
+     * here is a number instead of a string unlike other ids such as users' or roles'.
      *
      * @return Long the unique identifier of the group or null if not available.
      */

@@ -25,8 +25,7 @@ public class UserReference extends ExtensibleObject {
      */
     public User getUser() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("user");
-        User user = new User(obj);
-        return user;
+        return new User(obj);
     }
 
     /**
@@ -38,7 +37,6 @@ public class UserReference extends ExtensibleObject {
         return (String) anyObject.get("self");
     }
 
-    // TODO: finalize the below method.
     public void setUser(User user) {
         anyObject.put("user", user);
     }

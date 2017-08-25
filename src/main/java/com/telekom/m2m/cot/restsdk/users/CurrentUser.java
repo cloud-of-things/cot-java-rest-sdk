@@ -143,8 +143,7 @@ public class CurrentUser extends ExtensibleObject {
      */
     public String getSelf(CurrentUser user, String tenant) {
 
-        String self = "/user/" + tenant + "/users/" + user.getId();
-        return self;
+        return  "/user/" + tenant + "/users/" + user.getId();
     }
 
 }

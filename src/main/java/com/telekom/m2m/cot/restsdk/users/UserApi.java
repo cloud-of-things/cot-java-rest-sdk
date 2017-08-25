@@ -48,21 +48,18 @@ public class UserApi {
 
     public User getUserByName(String userName, String tenant) {
         String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/users/" + userName, CONTENT_TYPE_USER);
-        User user = new User(gson.fromJson(result, ExtensibleObject.class));
-        return user;
+        return new User(gson.fromJson(result, ExtensibleObject.class));
     }
 
     public Group getGroupByName(String tenant, String groupName) {
         String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/groupByName/" + groupName, CONTENT_TYPE_GROUP);
-        Group group = new Group(gson.fromJson(result, ExtensibleObject.class));
-        return group;
+        return new Group(gson.fromJson(result, ExtensibleObject.class));
     }
 
     public Group getGroupById(Long id, String tenant) {
         String groupId = Long.toString(id);
         String result = cloudOfThingsRestClient.getResponse(groupId, "user/" + tenant + "/groups", CONTENT_TYPE_GROUP);
-        Group returnedgroup = new Group(gson.fromJson(result, ExtensibleObject.class));
-        return returnedgroup;
+        return new Group(gson.fromJson(result, ExtensibleObject.class));
     }
 
     // Operations on Current User:
@@ -74,8 +71,7 @@ public class UserApi {
      */
     public CurrentUser getCurrentUser() {
         String result = cloudOfThingsRestClient.getResponse("user/currentUser", CONTENT_TYPE_USER);
-        CurrentUser currentuser = new CurrentUser(gson.fromJson(result, ExtensibleObject.class));
-        return currentuser;
+        return new CurrentUser(gson.fromJson(result, ExtensibleObject.class));
     }
 
     // Operations on a generic User:
