@@ -14,6 +14,7 @@ import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
+import com.telekom.m2m.cot.restsdk.realtime.CepApi;
 import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRuleApi;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi;
 import com.telekom.m2m.cot.restsdk.users.UserApi;
@@ -194,6 +195,10 @@ public class CloudOfThingsPlatform {
         return new UserApi(cloudOfThingsRestClient);
     }
 
+    public CepApi getCepApi() {
+        return new CepApi(cloudOfThingsRestClient);
+    }
+    
     /**
      * Returns the object to work with the measurements API.
      *

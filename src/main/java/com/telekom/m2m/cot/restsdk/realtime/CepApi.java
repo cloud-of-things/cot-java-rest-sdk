@@ -1,7 +1,8 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
+import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+
 /**
- * TODO: currently the class is merely a placeholder.
  * The class that defines the CepApi. CEP stands for Complex-Event-Processing.
  * CepApi returns a URL to a collection of modules.
  * 
@@ -9,5 +10,22 @@ package com.telekom.m2m.cot.restsdk.realtime;
  *
  */
 public class CepApi {
+
+    
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
+
+    public CepApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
+        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+    }
+    
+           
+    /**
+     * Returns the connector that establishes the communications with the notifications service.
+     * @return CepConnector
+     */
+    public CepConnector getCepConnector() {
+        return new CepConnector(cloudOfThingsRestClient);
+    }
+       
     
 }
