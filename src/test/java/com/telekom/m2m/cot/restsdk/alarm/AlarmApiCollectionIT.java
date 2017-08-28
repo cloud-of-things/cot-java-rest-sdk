@@ -169,7 +169,7 @@ public class AlarmApiCollectionIT {
 
         alarmApi.create(testAlarm2);
 
-        AlarmCollection alarms = alarmApi.getAlarms(50);
+        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
         Alarm[] as = alarms.getAlarms();
         Assert.assertTrue(as.length > 0);
         boolean allAlarmsFromSameStatus = true;
@@ -180,16 +180,12 @@ public class AlarmApiCollectionIT {
         }
         Assert.assertFalse(allAlarmsFromSameStatus);
 
-        alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE), 50);
+        alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE), 5);
         as = alarms.getAlarms();
-        allAlarmsFromSameStatus = true;
         Assert.assertTrue(as.length > 0);
         for (Alarm a : as) {
-            if (!a.getStatus().equals(Alarm.STATE_ACTIVE)) {
-                allAlarmsFromSameStatus = false;
-            }
+            Assert.assertEquals(a.getStatus(), Alarm.STATE_ACTIVE);
         }
-        Assert.assertTrue(allAlarmsFromSameStatus);
     }
 
     @Test
