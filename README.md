@@ -2,7 +2,7 @@
 
 This is an SDK to interface with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
-_Current version is: 0.5.0_
+_Current version is: 0.6.0_
 
 ## Usage
 
@@ -42,15 +42,15 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 * **Auditing**: Completely implemented
 * **Retention rules**: Completely implemented
 * **Users**: Completely implemented
+* **SmartREST**: Completely implemented
 
 **Partly Implemented**
 * **Device control**: Completely implemented, except BulkOperations
-* **SmartREST**: Completely implemented, including Realtime-Notifications, but not Realtime-Statements
+* **Real-time notifications**: only for SmartREST
 
 **Not Implemented**
 * **Device management library**: Not implemented
 * **Sensor library**: Not implemented
-* **Real-time notifications**: Not implemented
 * **Real-time statements**: Not implemented
 * **Cumulocity Event Language**: Not implemented
 * **Tenants**: Not implemented
@@ -65,6 +65,11 @@ Also see integration tests (*IT).
 ## Release Notes
 
 Short information about what has changed between releases.
+
+### Release 0.6.0
+* Complete Users API
+* Complete Retention Rule API
+* Complete SmartREST API
 
 ### Release 0.5.1-SNAPSHOT
 * Complete Audit API
