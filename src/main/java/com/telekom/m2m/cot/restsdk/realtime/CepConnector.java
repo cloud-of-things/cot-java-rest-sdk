@@ -11,6 +11,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+
 /**
  * The class that establishes the connection to the notification services. It is
  * based on the SmartCepConnect class that is in the smartrest package. It
@@ -19,24 +20,35 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * notification services.
  * 
  * Created by Ozan Arslan on 18.08.2017
- *
+ * TODO: allow changing of timeout/interval
  */
 public class CepConnector implements Runnable {
 
+    public static final String CONTENT_TYPE = "application/json";
+
+    public static final String REST_ENDPOINT = "/cep/realtime";
+
+    // TODO: find out what versions exist and which ones we can support:
+    public static final String PROTOCOL_VERSION_REQUESTED = "1.0";
+    public static final String PROTOCOL_VERSION_MINIMUM = "1.0";
+
+
     private CloudOfThingsRestClient cloudOfThingsRestClient;
-    private final Gson gson = GsonUtils.createGson();
 
     private boolean connected = false;
     private boolean shallDisconnect = false;
+
     private String clientId;
-    private Set<String> channels = new CopyOnWriteArraySet<>();;
+
+    private Set<String> channels = new CopyOnWriteArraySet<>();
     private Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
 
-    public CepConnector() {
-    }
+    private Gson gson = GsonUtils.createGson();
+
+
 
     /**
-     * Construct a new CepConnector with a default CloudOfThingsRestClient.
+     * Construct a new CepConnector.
      *
      * @param cloudOfThingsRestClient
      *            the client to use for connection to the cloud
@@ -45,29 +57,29 @@ public class CepConnector implements Runnable {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
 
+
     /**
      * The method that is used to subscribe to a given channel.
      * 
      * @param channel
-     *            to be subscribed to
+     *            to be subscribed to. Can include * as a wildcard (e.g. "/alarms/*").
      */
     public String subscribe(String channel) {
-
         if (channel == null) {
-            throw new CotSdkException("Subscription must not have null as it's channel.");
+            throw new CotSdkException("Subscription must not have null as its channel.");
         }
 
         channels.add(channel);
 
         if (clientId != null) {
-            String CONTENT = "application/json";
             JsonArray body = new JsonArray();
             JsonObject obj = new JsonObject();
             obj.addProperty("channel", "/meta/subscribe");
             obj.addProperty("clientId", clientId);
             obj.addProperty("subscription", channel);
             body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), "/cep/realtime", CONTENT);
+            cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
+            // TODO: check response
         }
         return channel;
     }
@@ -80,91 +92,17 @@ public class CepConnector implements Runnable {
      *            to unsubscribe from
      */
     public void unsubscribe(String channel) {
-        channels.remove(channel);
-        doUnsubscribe(channel);
-
-    }
-
-    private void doHandShake() {
-        JsonArray body = new JsonArray();
-        JsonObject obj = new JsonObject();
-        obj.addProperty("channel", "/meta/handshake");
-        obj.addProperty("version", "1");
-        obj.addProperty("mininumVersion", "1.0beta");
-        JsonArray inner = new JsonArray();
-        inner.add("long-polling");
-        inner.add("callback-polling");
-        obj.add("supportedConnectionTypes", inner);
-        body.add(obj);
-
-        String CONTENT = "application/json";
-        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), "/cep/realtime", CONTENT);
-System.out.println("HANDSHAKE RESULT:"+result);
-        JsonArray r = new Gson().fromJson(result, JsonArray.class);
-        clientId = r.get(0).getAsJsonObject().get("clientId").getAsString();
-
-    }
-
-    /**
-     * The connection can be established only if there is(are) already
-     * channel(s) to subscribe to. The following method does the post requrest
-     * to subscribe these channels before the connection is established.
-     * 
-     */
-    private void doInitialSubscribtions() {
-        if (clientId == null) {
-            throw new CotSdkException("Subscription failed because we don't have a clientId yet.");
-        }
-        for (String channel : channels) {
-
-            String CONTENT = "application/json";
+        if (channels.remove(channel)) {
             JsonArray body = new JsonArray();
             JsonObject obj = new JsonObject();
-            obj.addProperty("channel", "/meta/subscribe");
+            obj.addProperty("channel", "/meta/unsubscribe");
             obj.addProperty("clientId", clientId);
             obj.addProperty("subscription", channel);
             body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), "/cep/realtime", CONTENT);
+            cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
         }
     }
 
-    /**
-     * The method that does the post request to unsubscribe from a channel.
-     * 
-     * @param channel
-     *            to unsubscribe from.
-     */
-    public void doUnsubscribe(String channel) {
-
-        String CONTENT = "application/json";
-        JsonArray body = new JsonArray();
-        JsonObject obj = new JsonObject();
-        obj.addProperty("channel", "/meta/unsubscribe");
-        obj.addProperty("clientId", clientId);
-        obj.addProperty("subscription", channel);
-        body.add(obj);
-        cloudOfThingsRestClient.doPostRequest(body.toString(), "/cep/realtime", CONTENT);
-        channels.remove(channel);
-
-    }
-
-    /**
-     * The method that does the post request to establish a connection.
-     * 
-     * @return the response of the cloud as a string.
-     */
-    protected String doConnect() {
-
-        String CONTENT = "application/json";
-        JsonArray body = new JsonArray();
-        JsonObject obj = new JsonObject();
-        obj.addProperty("channel", "/meta/connect");
-        obj.addProperty("clientId", clientId);
-        obj.addProperty("connectionType", "long-polling");
-        body.add(obj);
-        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), "/cep/realtime", CONTENT);
-        return result;
-    }
 
     /**
      * The method to initiate the connection. It checks the pre-requisite
@@ -202,44 +140,98 @@ System.out.println("HANDSHAKE RESULT:"+result);
         listeners.remove(listener);
     }
 
+
+    /**
+     * The method that does the post request to establish a connection.
+     *
+     * @return the response of the cloud as a string.
+     */
+    protected String doConnect() {
+        JsonArray body = new JsonArray();
+        JsonObject obj = new JsonObject();
+        obj.addProperty("channel", "/meta/connect");
+        obj.addProperty("clientId", clientId);
+        obj.addProperty("connectionType", "long-polling");
+        body.add(obj);
+        // TODO: use real-time-client
+        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
+        return result;
+    }
+
+
+    protected void doHandShake() {
+        JsonArray body = new JsonArray();
+        JsonObject obj = new JsonObject();
+        obj.addProperty("channel", "/meta/handshake");
+        obj.addProperty("version", PROTOCOL_VERSION_REQUESTED);
+        obj.addProperty("mininumVersion", PROTOCOL_VERSION_MINIMUM);
+        JsonArray supportedConnectionTypes = new JsonArray();
+        supportedConnectionTypes.add("long-polling");
+        obj.add("supportedConnectionTypes", supportedConnectionTypes);
+        body.add(obj);
+
+        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
+        // TODO: check result for errors
+        JsonArray r = gson.fromJson(result, JsonArray.class);
+        clientId = r.get(0).getAsJsonObject().get("clientId").getAsString();
+    }
+
+
+    /**
+     * The connection can be established only if there is(are) already
+     * channel(s) to subscribe to. The following method does the post request
+     * to subscribe these channels before the connection is established.
+     * TODO: verify if that is really true. Maybe it is possible to subscibe later (seems to work with SmartREST).
+     */
+    protected void doInitialSubscriptions() {
+        if (clientId == null) {
+            throw new CotSdkException("Subscription failed because we don't have a clientId yet.");
+        }
+        for (String channel : channels) {
+            JsonArray body = new JsonArray();
+            JsonObject obj = new JsonObject();
+            obj.addProperty("channel", "/meta/subscribe");
+            obj.addProperty("clientId", clientId);
+            obj.addProperty("subscription", channel);
+            body.add(obj);
+            // TODO: check if we can do multiple subscriptions in one request
+            cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
+        }
+    }
+
+
     @Override
     public void run() {
         connected = true;
         try {
-            doInitialSubscribtions();
+            doInitialSubscriptions();
 
             do {
-                String response = doConnect();
-                JsonArray r = new Gson().fromJson(response, JsonArray.class);
+                String responseString = doConnect();
+                JsonArray response = gson.fromJson(responseString, JsonArray.class);
 
-                for (JsonElement element : r) {
+                for (JsonElement element : response) {
+                    // TODO: evaluate advice
 
-                    String notificationChannel = element.getAsJsonObject().get("channel").getAsString();
+                    JsonObject jsonObject = element.getAsJsonObject();
 
-                    for (String channel : channels) {
+                    String notificationChannel = jsonObject.get("channel").getAsString();
 
-                        if (channel.equals(notificationChannel)) {
+                    // We don't pass on failures and meta data to the listeners.
+                    if (!notificationChannel.startsWith("/meta/")) {
 
+                        for (SubscriptionListener listener : listeners) {
                             // Now filter out the unnecessary fields from
                             // the JsonElement and pass the required
                             // information to the notification object:
-                            JsonObject ObjectToPass = new JsonObject();
-                            ObjectToPass.add("data", element.getAsJsonObject().get("data"));
-                            ObjectToPass.add("channel", element.getAsJsonObject().get("channel"));
+                            JsonObject jsonNotification = new JsonObject();
+                            jsonNotification.add("data", jsonObject.get("data"));
+                            jsonNotification.add("channel", jsonObject.get("channel"));
 
-                            Notification notification = new Notification(ObjectToPass.toString());
-
-                            for (SubscriptionListener listener : listeners) {
-                                listener.onNotification(channel, notification);
-
-                            }
-
+                            listener.onNotification(notificationChannel, new Notification(jsonObject));
                         }
-
                     }
-
                 }
-
             } while (!shallDisconnect);
         } finally {
             clientId = null;

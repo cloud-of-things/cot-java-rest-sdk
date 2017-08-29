@@ -7,11 +7,10 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
  * CepApi returns a URL to a collection of modules.
  * 
  * Created by Ozan Arslan on 14.08.2017.
- *
+ * TODO: we might want to rename this, to avoid confusion with the CoT-entity "CepApi".
  */
 public class CepApi {
 
-    
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
     public CepApi(CloudOfThingsRestClient cloudOfThingsRestClient) {

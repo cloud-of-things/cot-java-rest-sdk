@@ -50,7 +50,7 @@ public class TestHelper {
             TEST_HOST = prop.getProperty("cot.connection.host");
             TEST_USERNAME = prop.getProperty("cot.connection.user");
             TEST_PASSWORD = prop.getProperty("cot.connection.password");
-            TEST_TENANT = prop.getProperty("cot.connecion.tenant");
+            TEST_TENANT = prop.getProperty("cot.connection.tenant");
 
             inputStream.close();
         } catch (Exception e) {
