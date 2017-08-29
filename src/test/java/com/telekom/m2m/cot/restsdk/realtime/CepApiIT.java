@@ -16,10 +16,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.realtime.CepApi;
-import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
-import com.telekom.m2m.cot.restsdk.realtime.Notification;
-import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
+
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
 public class CepApiIT {
@@ -66,7 +63,7 @@ public class CepApiIT {
         connector.addListener(new SubscriptionListener() {
             @Override
             public void onNotification(String channel, Notification notification) {
-                notedAlarms.add(notification.getData());
+                notedAlarms.add(notification.getData().toString());
             }
 
             @Override
@@ -118,7 +115,7 @@ public class CepApiIT {
         connector.addListener(new SubscriptionListener() {
             @Override
             public void onNotification(String channel, Notification notification) {
-                notedAlarms.add(notification.getData());
+                notedAlarms.add(notification.getData().toString());
             }
 
             @Override
@@ -203,7 +200,7 @@ public class CepApiIT {
         connector.addListener(new SubscriptionListener() {
             @Override
             public void onNotification(String channel, Notification notification) {
-                notedAlarms.add(notification.getData());
+                notedAlarms.add(notification.getData().toString());
             }
 
             @Override

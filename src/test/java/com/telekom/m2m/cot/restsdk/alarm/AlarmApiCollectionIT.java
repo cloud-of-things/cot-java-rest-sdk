@@ -149,17 +149,27 @@ public class AlarmApiCollectionIT {
     public void testMultipleAlarmsByStatus() throws Exception {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
-        Alarm testAlarm = new Alarm();
-        testAlarm.setSource(testManagedObject);
-        testAlarm.setTime(new Date(new Date().getTime() - (2 * 5000)));
-        testAlarm.setType("mytype");
-        testAlarm.setText("Test");
-        testAlarm.setStatus(Alarm.STATE_ACTIVE);
-        testAlarm.setSeverity(Alarm.SEVERITY_MAJOR);
+        Alarm testAlarm1 = new Alarm();
+        testAlarm1.setSource(testManagedObject);
+        testAlarm1.setTime(new Date(new Date().getTime() - (2 * 5000)));
+        testAlarm1.setType("mytype");
+        testAlarm1.setText("Test");
+        testAlarm1.setStatus(Alarm.STATE_ACTIVE);
+        testAlarm1.setSeverity(Alarm.SEVERITY_MAJOR);
 
-        alarmApi.create(testAlarm);
+        alarmApi.create(testAlarm1);
 
-        AlarmCollection alarms = alarmApi.getAlarms(50);
+        Alarm testAlarm2 = new Alarm();
+        testAlarm2.setSource(testManagedObject);
+        testAlarm2.setTime(new Date(new Date().getTime() - (2 * 5000)));
+        testAlarm2.setType("mytype");
+        testAlarm2.setText("Test");
+        testAlarm2.setStatus(Alarm.STATE_ACKNOWLEDGED);
+        testAlarm2.setSeverity(Alarm.SEVERITY_MAJOR);
+
+        alarmApi.create(testAlarm2);
+
+        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
         Alarm[] as = alarms.getAlarms();
         Assert.assertTrue(as.length > 0);
         boolean allAlarmsFromSameStatus = true;
@@ -170,16 +180,12 @@ public class AlarmApiCollectionIT {
         }
         Assert.assertFalse(allAlarmsFromSameStatus);
 
-        alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE), 50);
+        alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE), 5);
         as = alarms.getAlarms();
-        allAlarmsFromSameStatus = true;
         Assert.assertTrue(as.length > 0);
         for (Alarm a : as) {
-            if (!a.getStatus().equals(Alarm.STATE_ACTIVE)) {
-                allAlarmsFromSameStatus = false;
-            }
+            Assert.assertEquals(a.getStatus(), Alarm.STATE_ACTIVE);
         }
-        Assert.assertTrue(allAlarmsFromSameStatus);
     }
 
     @Test

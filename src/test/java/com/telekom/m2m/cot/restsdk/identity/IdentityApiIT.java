@@ -68,7 +68,7 @@ public class IdentityApiIT {
 
         ExternalId newExtId = idApi.create(externalId);
 
-        ExternalIdCollection externalIdCollection = idApi.getGlobalIds(extId, 5);
+        ExternalIdCollection externalIdCollection = idApi.getGlobalIds(testManagedObject.getId(), 5);
         Assert.assertEquals(externalIdCollection.getExternalIds().length, 1);
     }
 }
