@@ -18,7 +18,9 @@ public class User extends ExtensibleObject {
    private static final int MIN_PASSWORD_SIZE = 6;
 
   
-    public User() {}
+    public User() {
+        super();
+    }
 
     public User(ExtensibleObject extensibleObject) {
         super(extensibleObject);
@@ -51,20 +53,21 @@ public class User extends ExtensibleObject {
      * @return URL of the user
      */
     public String getSelf(User user, String tenant) {
-        String self = "/user/" + tenant + "/users/" + user.getId();
-        return self;
+        return "/user/" + tenant + "/users/" + user.getId();
     }
 
     public String getUserName() {
         return (String) anyObject.get("userName");
     }
 
-    public void setUserName(String InputUserName) {
-        if (InputUserName.length() > MAX_USERNAME_SIZE){
-        throw new CotSdkException("userName cannot contain more than 1000 characters.");
-        } else if (!USERNAME_RULE.matcher(InputUserName).matches()){
-            throw new CotSdkException("User name cannot contain whitespace, slashes nor any of (+$:) characters.");
-        } else anyObject.put("userName", InputUserName);
+    public void setUserName(String inputUserName) {
+        if (inputUserName.length() > MAX_USERNAME_SIZE) {
+            throw new CotSdkException("UserName cannot contain more than "+MAX_USERNAME_SIZE+" characters.");
+        } else if (!USERNAME_RULE.matcher(inputUserName).matches()) {
+            throw new CotSdkException("UserName cannot contain whitespace, slashes nor any of (+$:) characters.");
+        } else {
+            anyObject.put("userName", inputUserName);
+        }
     }
 
     public String getPassword() {
@@ -72,9 +75,11 @@ public class User extends ExtensibleObject {
     }
 
     public void setPassword(String password) {
-        if  (password.length() > MAX_PASSWORD_SIZE || password.length() < MIN_PASSWORD_SIZE){
-        throw new CotSdkException("Password should contain at least 6 and at most 32 characters.");
-        } else anyObject.put("password", password);
+        if (password.length() > MAX_PASSWORD_SIZE || password.length() < MIN_PASSWORD_SIZE) {
+            throw new CotSdkException("Password must contain at least "+MIN_PASSWORD_SIZE+" and at most "+MAX_PASSWORD_SIZE+" characters.");
+        } else {
+            anyObject.put("password", password);
+        }
     }
 
     public String getFirstName() {
@@ -98,9 +103,11 @@ public class User extends ExtensibleObject {
     }
 
     public void setEmail(String email) {
-        if (email.length() > EMAIL_SIZE){
-        throw new CotSdkException("Email address cannot contain more than 254 characters.");
-        } else anyObject.put("email", email);
+        if (email.length() > EMAIL_SIZE) {
+            throw new CotSdkException("Email address cannot contain more than "+EMAIL_SIZE+" characters.");
+        } else {
+            anyObject.put("email", email);
+        }
     }
 
     /**

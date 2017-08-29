@@ -1,8 +1,8 @@
 # Cloud of Things Java Rest SDK
 
-This is an SDK to interfere with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
+This is an SDK to interface with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
-_Recent version is: 0.5.0_
+_Current version is: 0.6.0_
 
 ## Usage
 
@@ -33,25 +33,26 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 ## Completenes of API
 
 **Completed Implemented**
-* **Measurements**: Complete implemented
-* **Events**: Complete implemented
-* **Alarms**: Complete implemented
-* **Inventory**: Complete implemented
-* **Device credentials**: Complete implemented
-* **Identity**: Complete implemented
-* **Auditing**: Complete implemented
+* **Measurements**: Completely implemented
+* **Events**: Completely implemented
+* **Alarms**: Completely implemented
+* **Inventory**: Completely implemented
+* **Device credentials**: Completely implemented
+* **Identity**: Completely implemented
+* **Auditing**: Completely implemented
+* **Retention rules**: Completely implemented
+* **Users**: Completely implemented
+* **SmartREST**: Completely implemented
 
 **Partly Implemented**
-* **Device control**: Complete implemented, except BulkOperations
+* **Device control**: Completely implemented, except BulkOperations
+* **Real-time notifications**: only for SmartREST
 
 **Not Implemented**
-* **SmartREST**: Not implemented
-* **Users**: Not implemented
 * **Device management library**: Not implemented
 * **Sensor library**: Not implemented
 * **Real-time statements**: Not implemented
 * **Cumulocity Event Language**: Not implemented
-* **Real-time notifications**: Not implemented
 * **Tenants**: Not implemented
 * **Applications**: Not implemented
 * **Binaries**: Not implemented
@@ -59,10 +60,16 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 ## Examples
 
 See examples folder. (Needs improvements ;) )
+Also see integration tests (*IT).
 
 ## Release Notes
 
 Short information about what has changed between releases.
+
+### Release 0.6.0
+* Complete Users API
+* Complete Retention Rule API
+* Complete SmartREST API
 
 ### Release 0.5.1-SNAPSHOT
 * Complete Audit API

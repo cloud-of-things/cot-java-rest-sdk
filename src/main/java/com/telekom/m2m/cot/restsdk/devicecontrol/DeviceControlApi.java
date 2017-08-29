@@ -70,8 +70,7 @@ public class DeviceControlApi {
      */
     public Operation getOperation(String operationId) {
         String response = cloudOfThingsRestClient.getResponse(operationId, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION);
-        Operation operation = new Operation(gson.fromJson(response, ExtensibleObject.class));
-        return operation;
+        return new Operation(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
@@ -154,7 +153,6 @@ public class DeviceControlApi {
     public BulkOperation getBulkOperation(String id) {
         String response = cloudOfThingsRestClient.getResponse(id, "/devicecontrol/bulkoperations/",
                 CONTENT_TYPE_BULK_OPERATION);
-        BulkOperation bulkOperation = new BulkOperation(gson.fromJson(response, ExtensibleObject.class));
-        return bulkOperation;
+        return new BulkOperation(gson.fromJson(response, ExtensibleObject.class));
     }
 }

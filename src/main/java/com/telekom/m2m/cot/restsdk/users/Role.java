@@ -11,7 +11,9 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class Role extends ExtensibleObject {
 
-    public Role() {}
+    public Role() {
+        super();
+    }
 
     public Role(ExtensibleObject extensibleObject) {
         super(extensibleObject);
