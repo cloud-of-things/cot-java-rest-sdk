@@ -9,7 +9,9 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 public class CurrentUser extends ExtensibleObject {
 
 
-    public CurrentUser() {}
+    public CurrentUser() {
+        super();
+    }
 
     public CurrentUser(ExtensibleObject extensibleObject) {
         super(extensibleObject);
@@ -48,11 +50,11 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to set userName.
      * 
-     * @param InputUserName
+     * @param inputUserName
      */
-    public void setUserName(String InputUserName) {
+    public void setUserName(String inputUserName) {
 
-        anyObject.put("userName", InputUserName);
+        anyObject.put("userName", inputUserName);
     }
 
     /**
@@ -141,8 +143,7 @@ public class CurrentUser extends ExtensibleObject {
      */
     public String getSelf(CurrentUser user, String tenant) {
 
-        String self = "/user/" + tenant + "/users/" + user.getId();
-        return self;
+        return  "/user/" + tenant + "/users/" + user.getId();
     }
 
 }

@@ -5,6 +5,7 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 import org.testng.asserts.SoftAssert;
 
@@ -21,7 +22,12 @@ public class InventoryManagedObjectCollectionIT {
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private SoftAssert softAssert = new SoftAssert();
 
-    private List<ManagedObject> toBeDeleted = new ArrayList<ManagedObject>();
+    private List<ManagedObject> toBeDeleted = new ArrayList<>();
+
+    @BeforeMethod
+    public void setup() {
+        toBeDeleted.clear();
+    }
 
     @AfterMethod
     public void tearDown() {
@@ -59,60 +65,49 @@ public class InventoryManagedObjectCollectionIT {
     public void testMultipleManagedObjectsWithPaging() throws Exception {
         // Expects a tenant with already multiple measurements
 
-        // !!! Important !!!
-        // Test assumes pageSize default is 5.
-
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
-        ArrayList<ManagedObject> list = new ArrayList<ManagedObject>();
 
+        String type = "my_special_test_type2";
         for (int i = 0; i < 6; i++) {
             ManagedObject testMo = new ManagedObject();
-            testMo.setType("my_special_test_type");
+            testMo.setType(type);
+            toBeDeleted.add(testMo);
 
-            list.add(inventoryApi.create(testMo));
-
+            inventoryApi.create(testMo);
         }
 
-        ManagedObjectCollection moCollection = inventoryApi.getManagedObjects(Filter.build().byType("my_special_test_type"), 5);
-
+        ManagedObjectCollection moCollection = inventoryApi.getManagedObjects(Filter.build().byType(type), 5);
 
         ManagedObject[] managedObjects = moCollection.getManagedObjects();
 
-
-        softAssert.assertEquals(managedObjects.length, 5, "length should be 5");
-        softAssert.assertTrue(moCollection.hasNext(), "should have next");
-        softAssert.assertFalse(moCollection.hasPrevious(), "should not have prev because is first");
+        softAssert.assertEquals(managedObjects.length, 5, "1: length should be 5");
+        softAssert.assertTrue(moCollection.hasNext(), "2: should have next");
+        softAssert.assertFalse(moCollection.hasPrevious(), "3: should not have prev because is first");
 
         moCollection.next();
 
         managedObjects = moCollection.getManagedObjects();
-        softAssert.assertEquals(managedObjects.length, 1, "length should be 1");
+        softAssert.assertEquals(managedObjects.length, 1, "4: length should be 1");
 
-        softAssert.assertFalse(moCollection.hasNext(), "should not have nextbecause is last");
-        softAssert.assertTrue(moCollection.hasPrevious(), "should have prev");
+        softAssert.assertFalse(moCollection.hasNext(), "5: should not have next because is last");
+        softAssert.assertTrue(moCollection.hasPrevious(), "6: should have prev");
 
         moCollection.previous();
         managedObjects = moCollection.getManagedObjects();
 
-        softAssert.assertEquals(managedObjects.length, 5, "length should be 5");
+        softAssert.assertEquals(managedObjects.length, 5, "7: length should be 5");
 
-        softAssert.assertTrue(moCollection.hasNext(), "should have next");
-        softAssert.assertFalse(moCollection.hasPrevious(), "should not have prev because is first");
+        softAssert.assertTrue(moCollection.hasNext(), "8: should have next");
+        softAssert.assertFalse(moCollection.hasPrevious(), "9: should not have prev because is first");
 
         moCollection.setPageSize(10);
         managedObjects = moCollection.getManagedObjects();
 
-        softAssert.assertEquals(managedObjects.length, 6, "length should be 6");
-        softAssert.assertFalse(moCollection.hasNext(), "should not have next because contains all");
-        softAssert.assertFalse(moCollection.hasPrevious(), "should not have next because contains all");
-
-        // Cleanup
-        for (ManagedObject mo : list) {
-            inventoryApi.delete(mo.getId());
-        }
+        softAssert.assertEquals(managedObjects.length, 6, "10: length should be 6");
+        softAssert.assertFalse(moCollection.hasNext(), "11: should not have next because contains all");
+        softAssert.assertFalse(moCollection.hasPrevious(), "12: should not have next because contains all");
 
         softAssert.assertAll();
-
     }
 
 //    @Test

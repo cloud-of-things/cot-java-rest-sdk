@@ -38,8 +38,7 @@ public class DeviceCredentialsApi {
         deviceCredentials.setId(deviceId);
         String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(deviceCredentials), "devicecontrol/deviceCredentials", CONTENT_TYPE);
 
-        DeviceCredentials retrievedDeviceCredentials = gson.fromJson(response, DeviceCredentials.class);
-        return retrievedDeviceCredentials;
+        return gson.fromJson(response, DeviceCredentials.class);
     }
 
     /**

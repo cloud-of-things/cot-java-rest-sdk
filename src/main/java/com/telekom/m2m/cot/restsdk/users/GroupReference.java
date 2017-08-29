@@ -10,7 +10,9 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 public class GroupReference extends ExtensibleObject {
 
 
-    public GroupReference() {}
+    public GroupReference() {
+        super();
+    }
 
     public GroupReference(ExtensibleObject extensibleObject) {
         super(extensibleObject);
@@ -23,8 +25,7 @@ public class GroupReference extends ExtensibleObject {
      */
     public Group getGroup() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("group");
-        Group group = new Group(obj);
-        return group;
+        return new Group(obj);
     }
 
     /**
@@ -37,7 +38,6 @@ public class GroupReference extends ExtensibleObject {
 
     }
 
-    // TODO: Finalise the following method.
     /**
      * The method to set the reference to a group.
      * 

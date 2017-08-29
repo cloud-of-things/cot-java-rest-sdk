@@ -11,10 +11,9 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class RoleReference extends ExtensibleObject {
 
-    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.role+json; charset=UTF-8; ver=0.9";
-
-
-    public RoleReference() {}
+    public RoleReference() {
+        super();
+    }
 
     public RoleReference(ExtensibleObject extensibleObject) {
         super(extensibleObject);
@@ -27,8 +26,7 @@ public class RoleReference extends ExtensibleObject {
      */
     public Role getRole() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("role");
-        Role role = new Role(obj);
-        return role;
+        return new Role(obj);
     }
 
     /**
@@ -42,7 +40,6 @@ public class RoleReference extends ExtensibleObject {
 
     }
 
-    // TODO: Finalize the below method.
     public void setRole(Role role) {
         anyObject.put("role", role);
 

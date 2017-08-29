@@ -1,11 +1,23 @@
 package com.telekom.m2m.cot.restsdk.smartrest;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
+
+/**
+ * A SmartResponseTemplate is used server side to transform a REST response into one line of a SmartREST response.
+ *
+ * <p>
+ * All templates for the given X-Id are matched against the response. Each template, if it does match, can extract
+ * data from the JSON, turning it into a CSV line.
+ * </p>
+ *
+ * <p>
+ * See SmartRestApiIT for examples.
+ * </p>
+ */
 public class SmartResponseTemplate extends SmartTemplate {
 
     private String base;
@@ -13,7 +25,9 @@ public class SmartResponseTemplate extends SmartTemplate {
     private String[] pattern;  // i.e. <VALUE>
 
 
-    public SmartResponseTemplate() {}
+    public SmartResponseTemplate() {
+        super();
+    }
 
     /**
      * Construct a new SmartResponseTemplate from individual parameters.
@@ -43,6 +57,7 @@ public class SmartResponseTemplate extends SmartTemplate {
     /**
      * @return this template as a CSV-String, with fields escaped as necessary, ready to be sent to the server.
      */
+    @Override
     public String toString() {
         String patterns = Arrays.stream(pattern).map(this::escape).collect(Collectors.joining(", "));
         return String.join(",", msgId, escape(base), escape(condition), patterns);

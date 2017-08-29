@@ -5,8 +5,10 @@ package com.telekom.m2m.cot.restsdk.measurement;
  */
 public class MeasurementReading {
     private float value;
-
+    private String unit;
+    
     public MeasurementReading() {
+        super();
     }
 
     public MeasurementReading(float value, String unit) {
@@ -14,8 +16,6 @@ public class MeasurementReading {
         this.value = value;
         this.unit = unit;
     }
-
-    private String unit;
 
     public MeasurementReading(String unit) {
         this.unit = unit;

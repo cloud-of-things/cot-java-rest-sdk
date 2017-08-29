@@ -9,10 +9,9 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class UserReference extends ExtensibleObject {
 
-    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
-
-
-    public UserReference() {}
+    public UserReference() {
+        super();
+    }
 
     public UserReference(ExtensibleObject extensibleObject) {
         super(extensibleObject);
@@ -26,8 +25,7 @@ public class UserReference extends ExtensibleObject {
      */
     public User getUser() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("user");
-        User user = new User(obj);
-        return user;
+        return new User(obj);
     }
 
     /**
@@ -39,7 +37,6 @@ public class UserReference extends ExtensibleObject {
         return (String) anyObject.get("self");
     }
 
-    // TODO: finalize the below method.
     public void setUser(User user) {
         anyObject.put("user", user);
     }
