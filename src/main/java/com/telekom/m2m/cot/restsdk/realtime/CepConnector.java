@@ -99,7 +99,7 @@ public class CepConnector implements Runnable {
 
         String CONTENT = "application/json";
         String result = cloudOfThingsRestClient.doPostRequest(body.toString(), "/cep/realtime", CONTENT);
-
+System.out.println("HANDSHAKE RESULT:"+result);
         JsonArray r = new Gson().fromJson(result, JsonArray.class);
         clientId = r.get(0).getAsJsonObject().get("clientId").getAsString();
 
