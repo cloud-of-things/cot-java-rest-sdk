@@ -58,7 +58,7 @@ public class IdentityApiIT {
     @Test
     public void testGetMultipleGlobalIds() throws Exception {
         IdentityApi idApi = cotPlat.getIdentityApi();
-        String extId = "142300";
+        String extId = "extId-" + (Math.random() * Integer.MAX_VALUE);
 
         ExternalId externalId = new ExternalId();
         externalId.setExternalId(extId);
