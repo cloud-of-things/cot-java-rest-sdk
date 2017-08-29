@@ -20,7 +20,8 @@ public class UserApiIT {
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     final UserApi userApi = cotPlat.getUserApi();
 
-
+    private String tenant = TestHelper.TEST_TENANT; // This has to be a tenant, for which the account from TestHelper has the necessary permissions!
+                                                    // Be carefully by using of delete functionality to avoid a deletion of the "main" user configured in TestHelper.TEST_USERNAME
     private String password = "test-password";
 
     private String exampleGroup = "admins";
@@ -33,7 +34,7 @@ public class UserApiIT {
     public void tearDown() {
         try {
             // We need this in case a test failed in the middle, causing it to skip the delete call.
-            userApi.deleteUserByUserName(testUserName, TestHelper.TEST_TENANT);
+            userApi.deleteUserByUserName(testUserName, tenant);
         } catch (CotSdkException ex) {
             // This exception is ok, because then the test method managed to delete it's own user (should be the norm):
             assertEquals(ex.getCause().getMessage(), "Request failed. Platform provided details: '\"users/Not Found\"' HTTP status code:'404' (see https://http.cat/404)");
@@ -52,7 +53,7 @@ public class UserApiIT {
         user.setPassword("verysecret2233");
 
         // when
-        final User storedUser = userApi.createUser(user, TestHelper.TEST_TENANT);
+        final User storedUser = userApi.createUser(user, tenant);
 
         // then
         Assert.assertNotNull(storedUser.getId(), "Should now have an Id!");
@@ -60,12 +61,12 @@ public class UserApiIT {
         assertEquals(storedUser.getFirstName(), "FName2233", "Should still have the firstName");
         assertEquals(storedUser.getLastName(), "LName2233", "Should still have the lastName");
 
-        userApi.deleteUserByUserName(testUserName, TestHelper.TEST_TENANT);
+        userApi.deleteUserByUserName(testUserName, tenant);
 
         /////////
 
         // when
-        UserCollection collection = userApi.getUsers(TestHelper.TEST_TENANT);
+        UserCollection collection = userApi.getUsers(tenant);
 
         // then
         Assert.assertNotNull(collection, "It cannot be empty.");
@@ -107,7 +108,7 @@ public class UserApiIT {
         usertocreate.setPassword("password1234007");
 
         // when:
-        User testUser = userApi.createUser(usertocreate, TestHelper.TEST_TENANT);
+        User testUser = userApi.createUser(usertocreate, tenant);
 
         // then:
         Assert.assertNotNull(testUser, "The user must exist.");
@@ -117,7 +118,7 @@ public class UserApiIT {
         assertEquals(testUser.getLastName(), "LastName007", "User last name must match to the one in the cloud");
 
         // now delete that user.
-        userApi.deleteUser(testUser, TestHelper.TEST_TENANT);
+        userApi.deleteUser(testUser, tenant);
 
         // given:
         // (testing the method that creates a user but does not return it)
@@ -128,8 +129,8 @@ public class UserApiIT {
         userForNoReturn.setUserName(testUserName);
 
         // when:
-        userApi.createUser(userForNoReturn, TestHelper.TEST_TENANT);
-        User returnedUser = userApi.getUserByName(testUserName, TestHelper.TEST_TENANT);
+        userApi.createUser(userForNoReturn, tenant);
+        User returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
         assertEquals(returnedUser.getUserName(),
@@ -142,13 +143,13 @@ public class UserApiIT {
                 "Get operation on user password must return a null.");
 
         // Now delete that user.
-        userApi.deleteUser(userForNoReturn, TestHelper.TEST_TENANT);
+        userApi.deleteUser(userForNoReturn, tenant);
 
 
         // when:
         // (testing the method that creates a user by taking user fields as input)
-        userApi.createUser(testUserName, TestHelper.TEST_TENANT, "firstName22", "lastName22", "password22");
-        returnedUser = userApi.getUserByName(testUserName, TestHelper.TEST_TENANT);
+        userApi.createUser(testUserName, tenant, "firstName22", "lastName22", "password22");
+        returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
         assertEquals(returnedUser.getUserName(),
@@ -160,7 +161,7 @@ public class UserApiIT {
 
 
         // now delete that user:
-        userApi.deleteUserByUserName(testUserName, TestHelper.TEST_TENANT);
+        userApi.deleteUserByUserName(testUserName, tenant);
 
 
         // given:
@@ -172,15 +173,15 @@ public class UserApiIT {
         userToUpdateFields.setPassword("InitialPassword1234");
 
         // when:
-        userApi.createUser(userToUpdateFields, TestHelper.TEST_TENANT);
-        returnedUser = userApi.getUserByName(testUserName, TestHelper.TEST_TENANT);
+        userApi.createUser(userToUpdateFields, tenant);
+        returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
         assertEquals(returnedUser.getUserName(), testUserName);
 
 
         // now delete that user.
-        userApi.deleteUserByUserName(testUserName, TestHelper.TEST_TENANT);
+        userApi.deleteUserByUserName(testUserName, tenant);
 
 
         // given (testing the updateUser method):
@@ -192,16 +193,16 @@ public class UserApiIT {
         userForUpdate.setEmail(email);
 
         // Now create this user in the cloud and update its fields:
-        User userInCloud = userApi.createUser(userForUpdate, TestHelper.TEST_TENANT);
+        User userInCloud = userApi.createUser(userForUpdate, tenant);
         userInCloud.setFirstName("FirstNameAfterUpdate");
         userInCloud.setLastName("LastNameAfterUpdate");
         userInCloud.setEmail("emailAfterUpdate@something.com");
 
         // when: (now update the user):
-        userApi.updateUser(userInCloud, TestHelper.TEST_TENANT);
+        userApi.updateUser(userInCloud, tenant);
 
         // now return that user from the cloud:
-        returnedUser = userApi.getUserByName(testUserName, TestHelper.TEST_TENANT);
+        returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then (now check whether the update worked as expected):
         Assert.assertNotEquals(returnedUser.getFirstName(), "FirstNameBeforeUpdate", "FirstName of the user was not successfully updated.");
@@ -209,7 +210,7 @@ public class UserApiIT {
         Assert.assertNotEquals(returnedUser.getEmail(), email, "email of the user was not successfully updated.");
 
         // now delete that user from the cloud:
-        userApi.deleteUser(returnedUser, TestHelper.TEST_TENANT);
+        userApi.deleteUser(returnedUser, tenant);
     }
 
 
@@ -221,17 +222,17 @@ public class UserApiIT {
         group.setName("TestGroup");
 
         // when:
-        Group returnedGroup = userApi.createGroup(group, TestHelper.TEST_TENANT);
+        Group returnedGroup = userApi.createGroup(group, tenant);
 
         // then:
         assertEquals(group.getName(), returnedGroup.getName(),
                 "The group that is created in the cloud should have the same name as the group object created locally.");
 
         // Now delete that group:
-        userApi.deleteGroup(returnedGroup, TestHelper.TEST_TENANT);
+        userApi.deleteGroup(returnedGroup, tenant);
 
         // when:
-        GroupCollection groups = userApi.getGroups(TestHelper.TEST_TENANT);
+        GroupCollection groups = userApi.getGroups(tenant);
 
         // then:
         Assert.assertNotNull(groups, "Groups object cannot be empty.");
@@ -239,7 +240,7 @@ public class UserApiIT {
                 "There must be at least one group as long as at least one user is in the cloud (that would be the logged in user, which is us)");
 
         // when (testing to get group by name):
-        group = userApi.getGroupByName(TestHelper.TEST_TENANT, exampleGroup);
+        group = userApi.getGroupByName(tenant, exampleGroup);
 
         // then:
         Assert.assertNotNull(group, "The group that is retrieved from the cloud should exist.");
@@ -247,7 +248,7 @@ public class UserApiIT {
                 "The group name does not match to the name of the group that was retrieved from the cloud.");
 
         // when (testing to get group by a group object):
-        Group newgroup = userApi.getGroupById(group.getId(), TestHelper.TEST_TENANT);
+        Group newgroup = userApi.getGroupById(group.getId(), tenant);
 
         // then:
         assertEquals(group.getId(), newgroup.getId(),
@@ -255,20 +256,20 @@ public class UserApiIT {
 
         // given: (Create a user and create two groups. Add this user to these
         // groups and retrieve the groups that this user belongs to)
-        User user = userApi.createUser("userToCheckGrp", TestHelper.TEST_TENANT, "firstName33", "lastName33", password);
+        User user = userApi.createUser("userToCheckGrp", tenant, "firstName33", "lastName33", password);
         Group group1 = new Group();
         group1.setName("testGroup00001");
         Group group2 = new Group();
         group2.setName("testGroup00002");
-        Group createdGroup1 = userApi.createGroup(group1, TestHelper.TEST_TENANT);
-        Group createdGroup2 = userApi.createGroup(group2, TestHelper.TEST_TENANT);
+        Group createdGroup1 = userApi.createGroup(group1, tenant);
+        Group createdGroup2 = userApi.createGroup(group2, tenant);
 
         // when:
-        userApi.addUserToGroup(user, TestHelper.TEST_TENANT, createdGroup1);
-        userApi.addUserToGroup(user, TestHelper.TEST_TENANT, createdGroup2);
+        userApi.addUserToGroup(user, tenant, createdGroup1);
+        userApi.addUserToGroup(user, tenant, createdGroup2);
 
         // then: (now check if this user is added to the groups)
-        GroupReferenceCollection groupCol = userApi.getGroupReferencesOfUser(TestHelper.TEST_TENANT, user);
+        GroupReferenceCollection groupCol = userApi.getGroupReferencesOfUser(tenant, user);
         GroupReference[] arrayofGroups = groupCol.getGroupReferences();
         GroupReference groupRef1 = arrayofGroups[0];
         GroupReference groupRef2 = arrayofGroups[1];
@@ -280,36 +281,36 @@ public class UserApiIT {
                 "the group Id that the user is added to in the cloud should match to the group that is created locally.");
 
         // When: (now test the remove user from a group method)
-        userApi.removeUserFromGroup(user, TestHelper.TEST_TENANT, gettedGroup2);
+        userApi.removeUserFromGroup(user, tenant, gettedGroup2);
         // then (now confirm that this group has no users anymore):
-        UserReferenceCollection UserCollectionOfGroup2 = userApi.getUserReferencesOfGroup(TestHelper.TEST_TENANT,
+        UserReferenceCollection UserCollectionOfGroup2 = userApi.getUserReferencesOfGroup(tenant,
                 gettedGroup2);
         UserReference[] arrayOfRefOfGroup2 = UserCollectionOfGroup2.getUserReferences();
 
         assertEquals(arrayOfRefOfGroup2.length, 0,
                 "After removing the only user in the group, the group should have zero users.");
         // now delete that user and the groups:
-        userApi.deleteUserByUserName("userToCheckGrp", TestHelper.TEST_TENANT);
-        userApi.deleteGroup(createdGroup1, TestHelper.TEST_TENANT);
-        userApi.deleteGroup(createdGroup2, TestHelper.TEST_TENANT);
+        userApi.deleteUserByUserName("userToCheckGrp", tenant);
+        userApi.deleteGroup(createdGroup1, tenant);
+        userApi.deleteGroup(createdGroup2, tenant);
 
         //given: (now test updateGroup method):
         Group groupToUpdate= new Group();
         groupToUpdate.setName("InitialGroupName108");
         
         //Create the group in the cloud:
-        groupToUpdate=  userApi.createGroup(groupToUpdate, TestHelper.TEST_TENANT);
+        groupToUpdate=  userApi.createGroup(groupToUpdate, tenant);
         
         //when: (Update the name of the group)
         groupToUpdate.setName("FinalGroupName108");
-        userApi.updateGroup(groupToUpdate, TestHelper.TEST_TENANT);
+        userApi.updateGroup(groupToUpdate, tenant);
  
         //then: (now return this group from the cloud and check if its name is correctly updated)
-        groupToUpdate =userApi.getGroupById(groupToUpdate.getId(), TestHelper.TEST_TENANT);
+        groupToUpdate =userApi.getGroupById(groupToUpdate.getId(), tenant);
         assertEquals("FinalGroupName108",groupToUpdate.getName(), "updateGroup method failed.");
 
         // Now delete that group:
-        userApi.deleteGroup(groupToUpdate, TestHelper.TEST_TENANT);
+        userApi.deleteGroup(groupToUpdate, tenant);
     
     }
 
@@ -344,10 +345,10 @@ public class UserApiIT {
                 "Returned role name does not match to the requested role name.");
 
         // when (testing assigning a role to a user):
-        User userForRole = userApi.createUser("TestUserForRole27", TestHelper.TEST_TENANT, "firstName", "lastName",
+        User userForRole = userApi.createUser("TestUserForRole27", tenant, "firstName", "lastName",
                 password);
-        userApi.assignRoleToUser(userForRole, returnedRole, TestHelper.TEST_TENANT);
-        RoleReferenceCollection roleRefCol = userApi.getRolesReferencesOfUser(userForRole, TestHelper.TEST_TENANT);
+        userApi.assignRoleToUser(userForRole, returnedRole, tenant);
+        RoleReferenceCollection roleRefCol = userApi.getRolesReferencesOfUser(userForRole, tenant);
         RoleReference[] arrayOfRoles2 = roleRefCol.getRoleReferences();
 
         long numOfFoundRoles = Arrays.stream(arrayOfRoles2).filter(roleReference -> roleReference.getRole().getName().equals(returnedRole.getName())).count();
@@ -357,39 +358,39 @@ public class UserApiIT {
                 "The role name should be the same as the role name that is intended to be assigned to the user");
 
         // when:
-        userApi.unassignRoleFromUser(userForRole, returnedRole, TestHelper.TEST_TENANT);
+        userApi.unassignRoleFromUser(userForRole, returnedRole, tenant);
 
         // then:
         assertEquals(
-                userApi.getRolesReferencesOfUser(userForRole, TestHelper.TEST_TENANT).getRoleReferences().length, 2,
+                userApi.getRolesReferencesOfUser(userForRole, tenant).getRoleReferences().length, 2,
                 "After unassigning a role from the user, the number of roles the user has should be two because when a user is created it has by default two roles.");
 
-        userApi.deleteUser(userForRole, TestHelper.TEST_TENANT);
+        userApi.deleteUser(userForRole, tenant);
 
         // Now assign roles to groups:
         // given:
         Group groupForRoles = new Group();
         groupForRoles.setName("GroupForRoles5");
-        Group returnedGroup = userApi.createGroup(groupForRoles, TestHelper.TEST_TENANT);
+        Group returnedGroup = userApi.createGroup(groupForRoles, tenant);
 
         // when:
-        userApi.assignRoleToGroup(returnedGroup, returnedRole, TestHelper.TEST_TENANT);
+        userApi.assignRoleToGroup(returnedGroup, returnedRole, tenant);
 
         // then:
         assertEquals(
-                userApi.getRolesReferencesOfGroup(returnedGroup, TestHelper.TEST_TENANT).getRoleReferences().length, 1,
+                userApi.getRolesReferencesOfGroup(returnedGroup, tenant).getRoleReferences().length, 1,
                 "After assigning a role to a newly created group, the number of roles that this group has should be 1 because a new group has zero roles.");
 
         // when:
-        userApi.unassignRoleFromGroup(returnedGroup, returnedRole, TestHelper.TEST_TENANT);
+        userApi.unassignRoleFromGroup(returnedGroup, returnedRole, tenant);
 
         // then:
         assertEquals(
-                userApi.getRolesReferencesOfGroup(returnedGroup, TestHelper.TEST_TENANT).getRoleReferences().length, 0,
+                userApi.getRolesReferencesOfGroup(returnedGroup, tenant).getRoleReferences().length, 0,
                 "After removing the only role that a group has, the remaining number of roles should be zero.");
 
         // now delete that group:
-        userApi.deleteGroup(returnedGroup, TestHelper.TEST_TENANT);
+        userApi.deleteGroup(returnedGroup, tenant);
 
     }
 
