@@ -23,7 +23,7 @@ import okhttp3.Response;
  */
 public class CloudOfThingsRestClient {
 
-    private Gson gson = GsonUtils.createGson();
+    private final Gson gson = GsonUtils.createGson();
     private final String encodedAuthString;
     private final String host;
 

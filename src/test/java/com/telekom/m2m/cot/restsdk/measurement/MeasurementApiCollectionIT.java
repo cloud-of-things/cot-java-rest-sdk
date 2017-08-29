@@ -21,23 +21,30 @@ import java.util.Date;
 public class MeasurementApiCollectionIT {
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
+    private MeasurementApi measurementApi;
 
     @BeforeMethod
     public void setUp() {
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
+
+        measurementApi = cotPlat.getMeasurementApi();
     }
 
     @AfterMethod
     public void tearDown() {
+        measurementApi.deleteMeasurements(Filter.build().bySource(testManagedObject.getId()));
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
 
 
     @Test
     public void testMultipleMeasurements() throws Exception {
-        // Expects a tenant with already multiple measurements
+        final Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(testManagedObject);
+        testMeasurement.setTime(new Date());
+        testMeasurement.setType("mytype");
 
-        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
+        measurementApi.createMeasurement(testMeasurement);
 
         MeasurementCollection measurementCollection = measurementApi.getMeasurements(5);
 
@@ -60,13 +67,6 @@ public class MeasurementApiCollectionIT {
 
     @Test
     public void testMultipleMeasurementsWithPaging() throws Exception {
-        // Expects a tenant with already multiple measurements
-
-        // !!! Important !!!
-        // Test assumes pageSize default is 5.
-
-        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
-
         for (int i = 0; i < 6; i++) {
             Measurement testMeasurement = new Measurement();
             testMeasurement.setSource(testManagedObject);
@@ -111,108 +111,109 @@ public class MeasurementApiCollectionIT {
 
     @Test
     public void testDeleteMultipleMeasurementsBySource() throws Exception {
-        MeasurementApi mApi = cotPlat.getMeasurementApi();
-
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date());
         testMeasurement.setType("mytype");
 
-        mApi.createMeasurement(testMeasurement);
+        measurementApi.createMeasurement(testMeasurement);
 
 
-        //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
-        MeasurementCollection measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
+        //measurements = measurementApi.getMeasurementsBySource(testManagedObject.getId());
+        MeasurementCollection measurements = measurementApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
         Measurement[] ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 1);
 
-        mApi.deleteMeasurements(Filter.build().bySource(testManagedObject.getId()));
-        measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
+        measurementApi.deleteMeasurements(Filter.build().bySource(testManagedObject.getId()));
+        measurements = measurementApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
         ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 0);
     }
 
     @Test
     public void testMultipleMeasurementsBySource() throws Exception {
-        MeasurementApi mApi = cotPlat.getMeasurementApi();
-
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date());
         testMeasurement.setType("mytype");
-        mApi.createMeasurement(testMeasurement);
+        measurementApi.createMeasurement(testMeasurement);
 
-        MeasurementCollection measurements = mApi.getMeasurements(5);
+        ManagedObject testManagedObject2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
+
+        Measurement testMeasurement2 = new Measurement();
+        testMeasurement2.setSource(testManagedObject2);
+        testMeasurement2.setTime(new Date());
+        testMeasurement2.setType("mytype");
+        measurementApi.createMeasurement(testMeasurement2);
+
+        MeasurementCollection measurements = measurementApi.getMeasurements(5);
         Measurement[] ms = measurements.getMeasurements();
         Assert.assertTrue(ms.length > 0);
-        boolean allMeasuremntsFromSource = true;
+        boolean allMeasurementsFromSource = true;
         for (Measurement m : ms) {
             ExtensibleObject source = (ExtensibleObject) m.get("source");
             if (!source.get("id").equals(testManagedObject.getId())) {
-                allMeasuremntsFromSource = false;
+                allMeasurementsFromSource = false;
             }
         }
-        Assert.assertFalse(allMeasuremntsFromSource);
+        Assert.assertFalse(allMeasurementsFromSource);
 
-        //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
-        measurements = mApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
+        measurements = measurementApi.getMeasurements(Filter.build().bySource(testManagedObject.getId()), 5);
         ms = measurements.getMeasurements();
-        allMeasuremntsFromSource = true;
         Assert.assertTrue(ms.length > 0);
         for (Measurement m : ms) {
             ExtensibleObject source = (ExtensibleObject) m.get("source");
-            if (!source.get("id").equals(testManagedObject.getId())) {
-                allMeasuremntsFromSource = false;
-            }
+            Assert.assertEquals(source.get("id"), testManagedObject.getId());
         }
-        Assert.assertTrue(allMeasuremntsFromSource);
+
+        // cleanup
+        measurementApi.deleteMeasurements(Filter.build().bySource(testManagedObject2.getId()));
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject2);
     }
 
     @Test
     public void testMultipleMeasurementsByType() throws Exception {
-        MeasurementApi mApi = cotPlat.getMeasurementApi();
-
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date());
         testMeasurement.setType("mysuperspecialtype");
-        mApi.createMeasurement(testMeasurement);
+        measurementApi.createMeasurement(testMeasurement);
 
-        MeasurementCollection measurements = mApi.getMeasurements(5);
+        Measurement testMeasurement2 = new Measurement();
+        testMeasurement2.setSource(testManagedObject);
+        testMeasurement2.setTime(new Date());
+        testMeasurement2.setType("mytype");
+        measurementApi.createMeasurement(testMeasurement2);
+
+        MeasurementCollection measurements = measurementApi.getMeasurements(5);
         Measurement[] ms = measurements.getMeasurements();
         Assert.assertTrue(ms.length > 0);
-        boolean allMeasuremntsFromSameType = true;
+        boolean allMeasurementsFromSameType = true;
         for (Measurement m : ms) {
             if (!m.getType().equals(testManagedObject.getType())) {
-                allMeasuremntsFromSameType = false;
+                allMeasurementsFromSameType = false;
             }
         }
-        Assert.assertFalse(allMeasuremntsFromSameType);
+        Assert.assertFalse(allMeasurementsFromSameType);
 
-        measurements = mApi.getMeasurements(Filter.build().byType(testMeasurement.getType()), 5);
+        measurements = measurementApi.getMeasurements(Filter.build().byType(testMeasurement.getType()), 5);
         ms = measurements.getMeasurements();
-        allMeasuremntsFromSameType = true;
         Assert.assertTrue(ms.length > 0);
         for (Measurement m : ms) {
-            if (!m.getType().equals(testMeasurement.getType())) {
-                allMeasuremntsFromSameType = false;
-            }
+            Assert.assertEquals(m.getType(), testMeasurement.getType());
         }
-        Assert.assertTrue(allMeasuremntsFromSameType);
     }
 
     @Test
     public void testMultipleMeasurementsByDate() throws Exception {
-        MeasurementApi mApi = cotPlat.getMeasurementApi();
-
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testMeasurement.setType("mysuperspecialtype");
-        mApi.createMeasurement(testMeasurement);
+        measurementApi.createMeasurement(testMeasurement);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-        MeasurementCollection measurements = mApi.getMeasurements(Filter.build().byDate(yesterday, new Date()), 5);
+        MeasurementCollection measurements = measurementApi.getMeasurements(Filter.build().byDate(yesterday, new Date()), 5);
 
 
         Measurement[] ms = measurements.getMeasurements();
@@ -220,7 +221,7 @@ public class MeasurementApiCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        measurements = mApi.getMeasurements(Filter.build().byDate(beforeYesterday, yesterday), 5);
+        measurements = measurementApi.getMeasurements(Filter.build().byDate(beforeYesterday, yesterday), 5);
         ms = measurements.getMeasurements();
         Assert.assertEquals(ms.length, 0);
     }
@@ -228,16 +229,14 @@ public class MeasurementApiCollectionIT {
 
     @Test
     public void testMultipleMeasurementsByDateAndBySource() throws Exception {
-        MeasurementApi mApi = cotPlat.getMeasurementApi();
-
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testMeasurement.setType("mysuperspecialtype");
-        mApi.createMeasurement(testMeasurement);
+        measurementApi.createMeasurement(testMeasurement);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-        MeasurementCollection measurements = mApi.getMeasurements(
+        MeasurementCollection measurements = measurementApi.getMeasurements(
                 Filter.build()
                         .byDate(yesterday, new Date())
                         .bySource(testManagedObject.getId()), 5);
@@ -248,7 +247,7 @@ public class MeasurementApiCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        measurements = mApi.getMeasurements(
+        measurements = measurementApi.getMeasurements(
                 Filter.build()
                         .byDate(beforeYesterday, yesterday)
                         .bySource(testManagedObject.getId()), 5);
@@ -259,8 +258,6 @@ public class MeasurementApiCollectionIT {
 
     @Test
     public void testMultipleMeasurementsByTypeAndBySource() throws Exception {
-        MeasurementApi mApi = cotPlat.getMeasurementApi();
-
         SampleTemperatureSensor sts = new SampleTemperatureSensor();
         sts.setTemperature(100);
         Measurement testMeasurement = new Measurement();
@@ -268,9 +265,9 @@ public class MeasurementApiCollectionIT {
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testMeasurement.setType("mysuperspecialtype");
         testMeasurement.set(sts);
-        mApi.createMeasurement(testMeasurement);
+        measurementApi.createMeasurement(testMeasurement);
 
-        MeasurementCollection measurements = mApi.getMeasurements(
+        MeasurementCollection measurements = measurementApi.getMeasurements(
                 Filter.build()
                         .byType("mysuperspecialtype")
                         .bySource(testManagedObject.getId()), 5);
@@ -280,7 +277,7 @@ public class MeasurementApiCollectionIT {
         Assert.assertEquals(ms.length, 1);
 
 
-        measurements = mApi.getMeasurements(
+        measurements = measurementApi.getMeasurements(
                 Filter.build()
                         .byType("NOT_USED")
                         .bySource(testManagedObject.getId()), 5);
@@ -291,8 +288,6 @@ public class MeasurementApiCollectionIT {
 
     @Test
     public void testMultipleMeasurementsByFragmentTypeAndBySource() throws Exception {
-        MeasurementApi mApi = cotPlat.getMeasurementApi();
-
         SampleTemperatureSensor sts = new SampleTemperatureSensor();
         sts.setTemperature(100);
         Measurement testMeasurement = new Measurement();
@@ -300,9 +295,9 @@ public class MeasurementApiCollectionIT {
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testMeasurement.setType("mysuperspecialtype");
         testMeasurement.set(sts);
-        mApi.createMeasurement(testMeasurement);
+        measurementApi.createMeasurement(testMeasurement);
 
-        MeasurementCollection measurements = mApi.getMeasurements(
+        MeasurementCollection measurements = measurementApi.getMeasurements(
                 Filter.build()
                         .byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor")
                         .bySource(testManagedObject.getId()), 5);
@@ -312,7 +307,7 @@ public class MeasurementApiCollectionIT {
         Assert.assertEquals(ms.length, 1);
 
 
-        measurements = mApi.getMeasurements(
+        measurements = measurementApi.getMeasurements(
                 Filter.build()
                         .byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor_not")
                         .bySource(testManagedObject.getId()), 5);

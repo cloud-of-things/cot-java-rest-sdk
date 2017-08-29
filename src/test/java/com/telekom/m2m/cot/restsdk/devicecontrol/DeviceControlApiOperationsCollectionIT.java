@@ -23,6 +23,7 @@ public class DeviceControlApiOperationsCollectionIT {
     private ManagedObject testManagedObjectParent;
     private ManagedObject testManagedObject;
 
+    final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
     private static JsonObject jsonObject = new JsonObject();
 
     static {
@@ -54,6 +55,8 @@ public class DeviceControlApiOperationsCollectionIT {
 
     @AfterMethod
     public void tearDown() {
+        deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject.getId()));
+
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObjectParent);
     }
@@ -64,8 +67,6 @@ public class DeviceControlApiOperationsCollectionIT {
         final Operation operation = new Operation();
         operation.setDeviceId(testManagedObject.getId());
         operation.set("com_telekom_m2m_cotcommand", jsonObject);
-
-        final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
 
         deviceControlApi.create(operation);
 
@@ -96,8 +97,6 @@ public class DeviceControlApiOperationsCollectionIT {
 
     @Test
     public void testDeleteMultipleOperationsBySource() throws Exception {
-        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-
         for (int i = 0; i < 6; i++) {
             Operation testOperation = new Operation();
             testOperation.setDeviceId(testManagedObject.getId());
@@ -118,14 +117,19 @@ public class DeviceControlApiOperationsCollectionIT {
 
     @Test
     public void testMultipleOperationsBySource() throws Exception {
-        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
-
         Operation testOperation = new Operation();
         testOperation.setDeviceId(testManagedObject.getId());
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-        dcApi.create(testOperation);
+        deviceControlApi.create(testOperation);
 
-        OperationCollection operations = dcApi.getOperations(5);
+        ManagedObject testManagedObject2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
+
+        Operation testOperation2 = new Operation();
+        testOperation2.setDeviceId(testManagedObject2.getId());
+        testOperation2.set("com_telekom_m2m_cotcommand", jsonObject);
+        deviceControlApi.create(testOperation2);
+
+        OperationCollection operations = deviceControlApi.getOperations(5);
         Operation[] os = operations.getOperations();
         Assert.assertTrue(os.length > 0);
         boolean allOperationsFromSource = true;
@@ -136,7 +140,7 @@ public class DeviceControlApiOperationsCollectionIT {
         }
         Assert.assertFalse(allOperationsFromSource);
 
-        operations = dcApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 20);
+        operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 20);
         os = operations.getOperations();
         allOperationsFromSource = true;
         Assert.assertTrue(os.length > 0);
@@ -146,55 +150,38 @@ public class DeviceControlApiOperationsCollectionIT {
             }
         }
         Assert.assertTrue(allOperationsFromSource);
+
+        // cleanup
+        deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject2.getId()));
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject2);
     }
 
     @Test
-    public void testMultipleOpearationByStatus() throws Exception {
-        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
-
+    public void testMultipleOperationByStatus() throws Exception {
         Operation testOperation = new Operation();
         testOperation.setDeviceId(testManagedObject.getId());
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-        dcApi.create(testOperation);
+        deviceControlApi.create(testOperation);
 
-        // Test could be flaky, because can't predict if first 50
-        // operations can not have same status
-        OperationCollection operations = dcApi.getOperations(50);
+        OperationCollection operations = deviceControlApi.getOperations(Filter.build().byStatus(OperationStatus.PENDING), 5);
         Operation[] os = operations.getOperations();
         Assert.assertTrue(os.length > 0);
-        boolean allOperationWithSameStatus = true;
         for (Operation o : os) {
-            if (!o.getStatus().equals(OperationStatus.FAILED)) {
-                allOperationWithSameStatus = false;
-            }
+            Assert.assertTrue(o.getStatus().toString().equalsIgnoreCase(OperationStatus.PENDING.toString()));
         }
-        Assert.assertFalse(allOperationWithSameStatus);
-
-        operations = dcApi.getOperations(Filter.build().byStatus(OperationStatus.SUCCESSFUL), 5);
-        os = operations.getOperations();
-        allOperationWithSameStatus = true;
-        Assert.assertTrue(os.length > 0);
-        for (Operation o : os) {
-            if (!o.getStatus().toString().equalsIgnoreCase(OperationStatus.SUCCESSFUL.toString())) {
-                allOperationWithSameStatus = false;
-            }
-        }
-        Assert.assertTrue(allOperationWithSameStatus);
     }
 
     @Test
     public void testMultipleOperationsByDateAndByDeviceId() throws Exception {
-        DeviceControlApi dcApi = cotPlat.getDeviceControlApi();
-
         Operation testOperation = new Operation();
         testOperation.setDeviceId(testManagedObject.getId());
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-        dcApi.create(testOperation);
+        deviceControlApi.create(testOperation);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
         Date now = new Date();
         now.setSeconds(now.getSeconds() + 60);
-        OperationCollection operations = dcApi.getOperations(
+        OperationCollection operations = deviceControlApi.getOperations(
                 Filter.build()
                         .byDate(yesterday, now)
                         .byDeviceId(testManagedObject.getId()), 5);
@@ -205,7 +192,7 @@ public class DeviceControlApiOperationsCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        operations = dcApi.getOperations(
+        operations = deviceControlApi.getOperations(
                 Filter.build()
                         .byDate(beforeYesterday, yesterday)
                         .byDeviceId(testManagedObject.getId()), 5);
