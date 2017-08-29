@@ -2,6 +2,8 @@ package com.telekom.m2m.cot.restsdk.users;
 
 import static org.testng.Assert.assertEquals;
 
+import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRule;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -10,13 +12,16 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
+import java.util.Arrays;
+import java.util.stream.StreamSupport;
+
 public class UserApiIT {
 
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     final UserApi userApi = cotPlat.getUserApi();
 
-
-    private String tenant = "testing"; // This has to be a tenant, for which the account from TestHelper has the necessary permissions!
+    private String tenant = TestHelper.TEST_TENANT; // This has to be a tenant, for which the account from TestHelper has the necessary permissions!
+                                                    // Be carefully by using of delete functionality to avoid a deletion of the "main" user configured in TestHelper.TEST_USERNAME
     private String password = "test-password";
 
     private String exampleGroup = "admins";
@@ -298,7 +303,7 @@ public class UserApiIT {
         
         //when: (Update the name of the group)
         groupToUpdate.setName("FinalGroupName108");
-        userApi.updateGroup(groupToUpdate, tenant); 
+        userApi.updateGroup(groupToUpdate, tenant);
  
         //then: (now return this group from the cloud and check if its name is correctly updated)
         groupToUpdate =userApi.getGroupById(groupToUpdate.getId(), tenant);
@@ -344,12 +349,12 @@ public class UserApiIT {
                 password);
         userApi.assignRoleToUser(userForRole, returnedRole, tenant);
         RoleReferenceCollection roleRefCol = userApi.getRolesReferencesOfUser(userForRole, tenant);
-        RoleReference[] arrayofRoles2 = roleRefCol.getRoleReferences();
-        RoleReference roleRef1 = arrayofRoles2[0];
-        Role testNameRole = roleRef1.getRole();
+        RoleReference[] arrayOfRoles2 = roleRefCol.getRoleReferences();
+
+        long numOfFoundRoles = Arrays.stream(arrayOfRoles2).filter(roleReference -> roleReference.getRole().getName().equals(returnedRole.getName())).count();
 
         // then:
-        assertEquals(testNameRole.getName(), returnedRole.getName(),
+        assertEquals(numOfFoundRoles, 1,
                 "The role name should be the same as the role name that is intended to be assigned to the user");
 
         // when:
