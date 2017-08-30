@@ -71,7 +71,7 @@ public class DeviceControlApiOperationsCollectionIT {
         deviceControlApi.create(operation);
 
         // when
-        final OperationCollection operationCollection = deviceControlApi.getOperations(5);
+        final OperationCollection operationCollection = deviceControlApi.getOperationCollection(5);
 
         // then
         Assert.assertNotNull(operationCollection);
@@ -105,12 +105,12 @@ public class DeviceControlApiOperationsCollectionIT {
             deviceControlApi.create(testOperation);
         }
 
-        OperationCollection operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
+        OperationCollection operations = deviceControlApi.getOperationCollection(Filter.build().byDeviceId(testManagedObject.getId()), 5);
         Operation[] os = operations.getOperations();
         Assert.assertEquals(os.length, 5);
 
         deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject.getId()));
-        operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
+        operations = deviceControlApi.getOperationCollection(Filter.build().byDeviceId(testManagedObject.getId()), 5);
         os = operations.getOperations();
         Assert.assertEquals(os.length, 0);
     }
@@ -129,7 +129,7 @@ public class DeviceControlApiOperationsCollectionIT {
         testOperation2.set("com_telekom_m2m_cotcommand", jsonObject);
         deviceControlApi.create(testOperation2);
 
-        OperationCollection operations = deviceControlApi.getOperations(5);
+        OperationCollection operations = deviceControlApi.getOperationCollection(5);
         Operation[] os = operations.getOperations();
         Assert.assertTrue(os.length > 0);
         boolean allOperationsFromSource = true;
@@ -140,7 +140,7 @@ public class DeviceControlApiOperationsCollectionIT {
         }
         Assert.assertFalse(allOperationsFromSource);
 
-        operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 20);
+        operations = deviceControlApi.getOperationCollection(Filter.build().byDeviceId(testManagedObject.getId()), 20);
         os = operations.getOperations();
         allOperationsFromSource = true;
         Assert.assertTrue(os.length > 0);
@@ -163,7 +163,7 @@ public class DeviceControlApiOperationsCollectionIT {
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
         deviceControlApi.create(testOperation);
 
-        OperationCollection operations = deviceControlApi.getOperations(Filter.build().byStatus(OperationStatus.PENDING), 5);
+        OperationCollection operations = deviceControlApi.getOperationCollection(Filter.build().byStatus(OperationStatus.PENDING), 5);
         Operation[] os = operations.getOperations();
         Assert.assertTrue(os.length > 0);
         for (Operation o : os) {
@@ -181,7 +181,7 @@ public class DeviceControlApiOperationsCollectionIT {
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
         Date now = new Date();
         now.setSeconds(now.getSeconds() + 60);
-        OperationCollection operations = deviceControlApi.getOperations(
+        OperationCollection operations = deviceControlApi.getOperationCollection(
                 Filter.build()
                         .byDate(yesterday, now)
                         .byDeviceId(testManagedObject.getId()), 5);
@@ -192,7 +192,7 @@ public class DeviceControlApiOperationsCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        operations = deviceControlApi.getOperations(
+        operations = deviceControlApi.getOperationCollection(
                 Filter.build()
                         .byDate(beforeYesterday, yesterday)
                         .byDeviceId(testManagedObject.getId()), 5);
@@ -214,7 +214,7 @@ public class DeviceControlApiOperationsCollectionIT {
         final String agentId = testManagedObjectParent.getId();
 
         // when
-        OperationCollection operationCollection = deviceControlApi.getOperations(
+        OperationCollection operationCollection = deviceControlApi.getOperationCollection(
                 Filter.build()
                         .byAgentId(agentId), 5);
 

@@ -5,8 +5,7 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import java.util.Date;
 
 /**
- * An Operation is used to send operations to the device (or Thing in IoT
- * terms).
+ * An Operation is used to send operations to the device (or Thing in IoT terms).
  * <p>
  * Created by Patrick Steinert on 31.01.16.
  */
@@ -30,7 +29,7 @@ public class Operation extends ExtensibleObject {
     }
 
     /**
-     * Internal constructor to create an Operation by base class.
+     * Internal constructor to create an operation by base class.
      *
      * @param extensibleObject the base class object.
      */
@@ -48,11 +47,11 @@ public class Operation extends ExtensibleObject {
     }
 
     /**
-     * Getting the unique identifier of the event.
-     * If the Event was retrieved from the platform, it has an ID. If just
+     * Getting the unique identifier of the operation.
+     * If the operation was retrieved from the platform, it has an ID. If just
      * created, there is no ID.
      *
-     * @return String with the unique identifier of the event or null if not available.
+     * @return String with the unique identifier of the operation or null if not available.
      */
     public String getId() {
         return (String) anyObject.get("id");
@@ -94,7 +93,7 @@ public class Operation extends ExtensibleObject {
 
     /**
      * Getting the deviceId of the target device.
-     * The given device should execute the device.
+     * The given device should execute the operation.
      *
      * @return a String with the unique identifier of the device.
      */
@@ -104,7 +103,7 @@ public class Operation extends ExtensibleObject {
 
     /**
      * Setting the deviceId of the target device.
-     * The given device should execute the device.
+     * The given device should execute the operation.
      *
      * @param deviceId the unique identifier of the target device.
      */
@@ -113,7 +112,7 @@ public class Operation extends ExtensibleObject {
     }
 
     /**
-     * Setting the device Id.
+     * Setting the operation Id.
      * Just for internal purpose, unique identifier is set by platform, no
      * manipulation possible.
      *

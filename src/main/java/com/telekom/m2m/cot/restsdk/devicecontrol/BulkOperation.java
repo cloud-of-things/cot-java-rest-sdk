@@ -29,7 +29,7 @@ public class BulkOperation extends ExtensibleObject {
     /**
      * Get the unique identifier for the bulk operation.
      *
-     * @return String with the unique identifier of the alarm or null if not
+     * @return String with the unique identifier of the bulk operation or null if not
      * available.
      */
     public String getId() {
