@@ -59,7 +59,6 @@ public class CepApiIT {
 
         final List<String> notedAlarms = new ArrayList<>();
 
-        
         // Create the subscriptions and listeners:
         connector.subscribe("/alarms/" + testManagedObject.getId());
         connector.addListener(new SubscriptionListener() {
@@ -247,11 +246,33 @@ public class CepApiIT {
     @Test
     public void testGenericCepApiMethods() throws InterruptedException {
 
-        //testing getModules:
-        ModuleCollection collection=   cepApi.getModules();
+        // given (testing getModules)
+        ModuleCollection collection = cepApi.getModules();
+
+        // TODO: the below tests does not work yet, as currently our user cannot
+        // access /cep or /cep/modules.
+
+        // when:
+        Module[] arrayOfModules = collection.getModules();
+
+        // then:
+        assertTrue(arrayOfModules.length > 1, "There must be quite many of modules.");
+
+        // We demanded the moduleCollection (arrayOfModules) from the cloud
+        // without filters which means that the arrayOfModules should contain
+        // all modules in the cloud. Now let's access one of the modules in the
+        // array:
+
+        Module module = arrayOfModules[0];
+        String id=module.getId();
+        //Now, let's try to retrieve the same module individually from the cloud using the getModule() method. Then we can compare both modules. This way we can prove both methods (getModule() and getModules()) at the same time.
+        Module ModuleFromCloud =cepApi.getModule(id);
        
         
-       //  Module[] arrayOfModules = collection.getModules();
-        
+        //Now let's compare some of their fields:
+        assertEquals(ModuleFromCloud.getName(), module.getName(), "The module in the collection should be same as the module retrieved individually.");
+        assertEquals(ModuleFromCloud.getId(), module.getId(), "The module in the collection should be same as the module retrieved individually.");
+        assertEquals(ModuleFromCloud.getStatus(), module.getStatus(), "The module in the collection should be same as the module retrieved individually.");
+
     }
 }
