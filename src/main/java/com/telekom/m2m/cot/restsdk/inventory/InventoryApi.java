@@ -190,8 +190,7 @@ public class InventoryApi {
                 parentDevice.getId()
         );
 
-        cloudOfThingsRestClient.doPostRequest(json, api);
+        cloudOfThingsRestClient.doPostRequest(json, api, CONTENT_TYPE_MANAGEDOBJECTREF);
     }
-
 
 }
