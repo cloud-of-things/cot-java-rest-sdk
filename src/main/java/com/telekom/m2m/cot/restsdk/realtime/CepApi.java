@@ -11,8 +11,8 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * The class that defines the CepApi. CEP stands for Complex-Event-Processing.
  * CepApi returns a URL to a collection of modules.
  * 
- * Created by Ozan Arslan on 14.08.2017.
- * TODO: we might want to rename this, to avoid confusion with the CoT-entity "CepApi".
+ * Created by Ozan Arslan on 14.08.2017. TODO: we might want to rename this, to
+ * avoid confusion with the CoT-entity "CepApi".
  */
 public class CepApi {
 
@@ -31,6 +31,11 @@ public class CepApi {
      */
     public CepConnector getCepConnector() {
         return new CepConnector(cloudOfThingsRestClient);
+    }
+
+    public ModuleCollection getModules() {
+        return new ModuleCollection(cloudOfThingsRestClient, "cep/modules", gson, null);
+
     }
 
     // TODO: to be tested with the new userName.
@@ -83,11 +88,6 @@ public class CepApi {
      * 
      * String result = cloudOfThingsRestClient.getResponse("cep", null); return
      * new CepApiRepresentation(gson.fromJson(result, ExtensibleObject.class));
-     * }
-     * 
-     * public ModuleCollection getModules() { return new
-     * ModuleCollection(cloudOfThingsRestClient, "cep/modules", gson, null);
-     * 
      * }
      */
 

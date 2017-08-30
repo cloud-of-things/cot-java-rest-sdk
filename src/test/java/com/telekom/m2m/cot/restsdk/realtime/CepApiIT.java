@@ -16,7 +16,6 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
 public class CepApiIT {
@@ -45,6 +44,9 @@ public class CepApiIT {
     @AfterClass
     public void tearDownClass() {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
+        alarmSource1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name1");
+        alarmSource2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name2");
+        alarmSource3 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name3");
     }
 
     // This test will create one subscriber, then create two alarms (for the
@@ -242,4 +244,14 @@ public class CepApiIT {
         return alarm;
     }
 
+    @Test
+    public void testGenericCepApiMethods() throws InterruptedException {
+
+        //testing getModules:
+        ModuleCollection collection=   cepApi.getModules();
+       
+        
+       //  Module[] arrayOfModules = collection.getModules();
+        
+    }
 }
