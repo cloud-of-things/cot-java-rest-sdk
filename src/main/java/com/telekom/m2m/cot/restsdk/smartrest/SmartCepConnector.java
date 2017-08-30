@@ -369,7 +369,7 @@ public class SmartCepConnector implements Runnable {
             throw new CotSdkException("Cannot subscribe to SmartREST notification because we don't have a clientId yet.");
         }
 
-        // TODO: check whether all of them can be sent in one batch with one request
+        // Unfortunately we need one request for each channel.
         for (Map.Entry<String, Set<String>> entry: subscriptions.entrySet()) {
             String xIds = String.join(",", entry.getValue());
             cloudOfThingsRestClient.doSmartRealTimeRequest(xId,

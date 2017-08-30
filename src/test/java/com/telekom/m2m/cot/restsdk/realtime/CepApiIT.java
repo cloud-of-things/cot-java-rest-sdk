@@ -105,7 +105,8 @@ public class CepApiIT {
         CepConnector connector = cepApi.getCepConnector();
 
         // Prepare initial subscription:
-        String channel1 = connector.subscribe("/alarms/" + alarmSource1.getId());
+        String channel1 = "/alarms/" + alarmSource1.getId();
+        connector.subscribe(channel1);
 
         // The asynchronously received alarms will be stored in this list:
         final List<String> notedAlarms = new ArrayList<>();
@@ -155,8 +156,9 @@ public class CepApiIT {
         // unnecessary sub-/unsub-requests don't cause problems:
         connector.unsubscribe(channel1);
         connector.unsubscribe(channel1);
-        String channel2 = connector.subscribe("/alarms/" + alarmSource2.getId());
-        connector.subscribe("/alarms/" + alarmSource2.getId());
+        String channel2 = "/alarms/" + alarmSource2.getId();
+        connector.subscribe(channel2);
+        connector.subscribe(channel2);
 
         Thread.sleep(DELAY_MILLIS);
 
