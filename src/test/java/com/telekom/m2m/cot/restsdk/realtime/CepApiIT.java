@@ -18,6 +18,8 @@ import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.measurement.Measurement;
+import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
 public class CepApiIT {
@@ -28,7 +30,11 @@ public class CepApiIT {
     private CepApi cepApi = cotPlat.getCepApi();
     private AlarmApi alarmApi = cotPlat.getAlarmApi();
     private EventApi eventApi = cotPlat.getEventApi();
+    private MeasurementApi meaApi = cotPlat.getMeasurementApi();
+
     private ManagedObject testObjectForEvent;
+
+    private ManagedObject testObjectForMeasurement;
 
     private ManagedObject testManagedObject;
 
@@ -45,16 +51,18 @@ public class CepApiIT {
         alarmSource2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name2");
         alarmSource3 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name3");
         testObjectForEvent = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_event_name");
+        testObjectForMeasurement = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_measurement_name");
 
     }
 
     @AfterClass
     public void tearDownClass() {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
-        alarmSource1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name1");
-        alarmSource2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name2");
-        alarmSource3 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name3");
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource1);
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource2);
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource3);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForEvent);
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForMeasurement);
 
     }
 
@@ -242,7 +250,6 @@ public class CepApiIT {
         assertTrue(notedAlarms.get(1).contains("com_telekom_TestType2"));
     }
 
-    
     // This test creates two events and a subscriber. The subscriber then
     // subscribes to these events successively. The tests checks whether the
     // subscriber received the correct notification from each event.
@@ -282,6 +289,45 @@ public class CepApiIT {
 
         assertTrue(notedEvents.get(0).contains(testObjectForEvent.getId()));
         assertTrue(notedEvents.get(1).contains(testObjectForEvent.getId()));
+
+    }
+
+    @Test
+    public void testSimpleRealTimeMeasurements() throws InterruptedException {
+
+        CepConnector connector = cepApi.getCepConnector();
+
+        final List<String> notedMeasurements = new ArrayList<>();
+
+        connector.subscribe("/measurements/" + testObjectForMeasurement.getId());
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedMeasurements.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        Thread.sleep(DELAY_MILLIS);
+        meaApi.createMeasurement(makeMeasurement("com_telekom_TestType01", testObjectForMeasurement));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        meaApi.createMeasurement(makeMeasurement("com_telekom_TestType02", testObjectForMeasurement));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        assertEquals(notedMeasurements.size(), 2);
+
+        assertTrue(notedMeasurements.get(0).contains(testObjectForMeasurement.getId()));
+        assertTrue(notedMeasurements.get(1).contains(testObjectForMeasurement.getId()));
 
     }
 
@@ -346,4 +392,12 @@ public class CepApiIT {
         return event;
     }
 
+    private Measurement makeMeasurement(String type, ManagedObject source) {
+        Measurement mea = new Measurement();
+        mea.setTime(new Date());
+        mea.setSource(source);
+        mea.set("foo", "{ \"alt\": " + Math.random() + ", \"lng\": 8.55436, \"lat\": 50.02868 }");
+        mea.setType(type);
+        return mea;
+    }
 }
