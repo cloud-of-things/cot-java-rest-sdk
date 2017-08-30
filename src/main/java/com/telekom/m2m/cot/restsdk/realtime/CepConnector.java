@@ -64,7 +64,7 @@ public class CepConnector implements Runnable {
      * @param channel
      *            to be subscribed to. Can include * as a wildcard (e.g. "/alarms/*").
      */
-    public String subscribe(String channel) {
+    public void subscribe(String channel) {
         if (channel == null) {
             throw new CotSdkException("Subscription must not have null as its channel.");
         }
@@ -81,7 +81,6 @@ public class CepConnector implements Runnable {
             cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
             // TODO: check response
         }
-        return channel;
     }
 
     /**
@@ -114,9 +113,6 @@ public class CepConnector implements Runnable {
             throw new CotSdkException("Already connected. Please disconnect first.");
         }
 
-        if (channels.size() == 0) {
-            throw new CotSdkException("Create at least one subscription before connecting.");
-        }
         if (clientId == null) {
             doHandShake();
         }
@@ -178,25 +174,27 @@ public class CepConnector implements Runnable {
 
 
     /**
-     * The connection can be established only if there is(are) already
-     * channel(s) to subscribe to. The following method does the post request
-     * to subscribe these channels before the connection is established.
-     * TODO: verify if that is really true. Maybe it is possible to subscibe later (seems to work with SmartREST).
+     * Post the subscriptions for all channels that were added before we were connected.
      */
     protected void doInitialSubscriptions() {
         if (clientId == null) {
             throw new CotSdkException("Subscription failed because we don't have a clientId yet.");
         }
+        if (channels.isEmpty()) {
+            return;
+        }
+
+        JsonArray body = new JsonArray();
+        // We can request multiple subscriptions in one go.
+        // (unlike with SmartREST, where we need one request for each channel).
         for (String channel : channels) {
-            JsonArray body = new JsonArray();
             JsonObject obj = new JsonObject();
             obj.addProperty("channel", "/meta/subscribe");
             obj.addProperty("clientId", clientId);
             obj.addProperty("subscription", channel);
             body.add(obj);
-            // TODO: check if we can do multiple subscriptions in one request
-            cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
         }
+        cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
     }
 
 
@@ -211,7 +209,7 @@ public class CepConnector implements Runnable {
                 JsonArray response = gson.fromJson(responseString, JsonArray.class);
 
                 for (JsonElement element : response) {
-                    // TODO: evaluate advice
+                    // TODO: evaluate advice?
 
                     JsonObject jsonObject = element.getAsJsonObject();
 
