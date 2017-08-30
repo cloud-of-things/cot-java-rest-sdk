@@ -4,11 +4,15 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.junit.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -17,6 +21,8 @@ public class DeviceControlApiIT {
 
     CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
+    private DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+
 
     @BeforeClass
     public void setUp() {
@@ -25,13 +31,13 @@ public class DeviceControlApiIT {
 
     @AfterClass
     public void tearDown() {
+        deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject.getId()));
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
 
     @Test
     public void testCreateAndGetOperation() throws Exception {
-        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-
+        // given
         JsonObject parameters = new JsonObject();
         parameters.add("param1", new JsonPrimitive("1"));
 
@@ -43,20 +49,24 @@ public class DeviceControlApiIT {
         operation.setDeviceId(testManagedObject.getId());
         operation.set("com_telekom_m2m_cotcommand", jsonObject);
 
+        // when
         Operation createdOperation = deviceControlApi.create(operation);
 
-        Assert.assertNotNull("Should now have an Id", createdOperation.getId());
+        // then
+        assertNotNull(createdOperation.getId(), "Should now have an Id");
+        assertEquals(createdOperation.getId(), operation.getId());
 
+        // when
         Operation retrievedOperation = deviceControlApi.getOperation(createdOperation.getId());
 
-        Assert.assertEquals(retrievedOperation.getDeviceId(), testManagedObject.getId());
-        Assert.assertNotNull(retrievedOperation.get("com_telekom_m2m_cotcommand"));
+        // then
+        assertEquals(retrievedOperation.getDeviceId(), testManagedObject.getId());
+        assertNotNull(retrievedOperation.get("com_telekom_m2m_cotcommand"));
     }
 
     @Test
     public void testCreateAndUpdateOperation() throws Exception {
-        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-
+        // given
         JsonObject parameters = new JsonObject();
         parameters.add("param1", new JsonPrimitive("1"));
 
@@ -68,21 +78,25 @@ public class DeviceControlApiIT {
         operation.setDeviceId(testManagedObject.getId());
         operation.set("com_telekom_m2m_cotcommand", jsonObject);
 
+        // when
         Operation createdOperation = deviceControlApi.create(operation);
 
-        Assert.assertNotNull("Should now have an Id", createdOperation.getId());
+        // then
+        assertNotNull(createdOperation.getId(), "Should now have an Id");
+        assertEquals(createdOperation.getStatus(), null);
 
+        // when
         createdOperation.setStatus(OperationStatus.EXECUTING);
 
         Operation updatedOperation = deviceControlApi.update(createdOperation);
 
+        // then
+        assertEquals(updatedOperation.getStatus(), OperationStatus.EXECUTING);
     }
 
     @Test
-    public void testGetBulkOperations() throws Exception {
-        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+    public void testGetBulkOperation() throws Exception {
         deviceControlApi.getBulkOperation("1");
+        // TODO: complete the test when createBulkOperation is implemented
     }
-
-
 }
