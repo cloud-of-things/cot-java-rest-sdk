@@ -66,7 +66,7 @@ public class CepApiIT {
 
     }
 
-    // This test will create one subscriber, then create two alarms (for the
+    // This test will create one subscriber, then creates two alarms (for the
     // same device/channel), then check if
     // the listener got the correct notification for each of them.
     @Test
@@ -292,6 +292,9 @@ public class CepApiIT {
 
     }
 
+    // This test creates two measurements and a subscriber. The subscriber then
+    // subscribes to these measurements successively. The tests checks whether the
+    // subscriber received the correct notification from each measurement.
     @Test
     public void testSimpleRealTimeMeasurements() throws InterruptedException {
 
