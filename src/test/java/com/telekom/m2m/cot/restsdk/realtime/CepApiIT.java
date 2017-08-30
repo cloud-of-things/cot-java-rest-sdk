@@ -15,6 +15,8 @@ import org.testng.annotations.Test;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
+import com.telekom.m2m.cot.restsdk.event.Event;
+import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
@@ -25,6 +27,9 @@ public class CepApiIT {
 
     private CepApi cepApi = cotPlat.getCepApi();
     private AlarmApi alarmApi = cotPlat.getAlarmApi();
+    private EventApi eventApi = cotPlat.getEventApi();
+    private ManagedObject testObjectForEvent;
+
     private ManagedObject testManagedObject;
 
     private ManagedObject alarmSource1;
@@ -39,6 +44,8 @@ public class CepApiIT {
         alarmSource1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name1");
         alarmSource2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name2");
         alarmSource3 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name3");
+        testObjectForEvent = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_event_name");
+
     }
 
     @AfterClass
@@ -47,6 +54,8 @@ public class CepApiIT {
         alarmSource1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name1");
         alarmSource2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name2");
         alarmSource3 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name3");
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForEvent);
+
     }
 
     // This test will create one subscriber, then create two alarms (for the
@@ -231,16 +240,47 @@ public class CepApiIT {
         assertTrue(notedAlarms.get(1).contains("com_telekom_TestType2"));
     }
 
-    private Alarm makeAlarm(String type, String severity, ManagedObject source) {
-        Alarm alarm = new Alarm();
-        alarm.setText("Strange thing happened!");
-        alarm.setTime(new Date());
-        alarm.setSource(source);
-        alarm.set("foo", "{ \"alt\": " + Math.random() + ", \"lng\": 8.55436, \"lat\": 50.02868 }");
-        alarm.setStatus(Alarm.STATE_ACTIVE);
-        alarm.setType(type);
-        alarm.setSeverity(severity);
-        return alarm;
+    
+    // This test creates two events and a subscriber. The subscriber then
+    // subscribes to these events successively. The tests checks whether the
+    // subscriber received the correct notification from each event.
+    @Test
+    public void testSimpleRealTimeEvents() throws InterruptedException {
+
+        CepConnector connector = cepApi.getCepConnector();
+
+        final List<String> notedEvents = new ArrayList<>();
+
+        connector.subscribe("/events/" + testObjectForEvent.getId());
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedEvents.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        Thread.sleep(DELAY_MILLIS);
+        eventApi.createEvent(makeEvent("com_telekom_TestType1", testObjectForEvent));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        eventApi.createEvent(makeEvent("com_telekom_TestType2", testObjectForEvent));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        assertEquals(notedEvents.size(), 2);
+
+        assertTrue(notedEvents.get(0).contains(testObjectForEvent.getId()));
+        assertTrue(notedEvents.get(1).contains(testObjectForEvent.getId()));
+
     }
 
     @Test
@@ -253,26 +293,55 @@ public class CepApiIT {
         // access /cep or /cep/modules.
 
         // when:
-        Module[] arrayOfModules = collection.getModules();
-
-        // then:
-        assertTrue(arrayOfModules.length > 1, "There must be quite many of modules.");
-
-        // We demanded the moduleCollection (arrayOfModules) from the cloud
-        // without filters which means that the arrayOfModules should contain
-        // all modules in the cloud. Now let's access one of the modules in the
-        // array:
-
-        Module module = arrayOfModules[0];
-        String id=module.getId();
-        //Now, let's try to retrieve the same module individually from the cloud using the getModule() method. Then we can compare both modules. This way we can prove both methods (getModule() and getModules()) at the same time.
-        Module ModuleFromCloud =cepApi.getModule(id);
-       
-        
-        //Now let's compare some of their fields:
-        assertEquals(ModuleFromCloud.getName(), module.getName(), "The module in the collection should be same as the module retrieved individually.");
-        assertEquals(ModuleFromCloud.getId(), module.getId(), "The module in the collection should be same as the module retrieved individually.");
-        assertEquals(ModuleFromCloud.getStatus(), module.getStatus(), "The module in the collection should be same as the module retrieved individually.");
-
+        /*
+         * Module[] arrayOfModules = collection.getModules();
+         * 
+         * // then: assertTrue(arrayOfModules.length > 1,
+         * "There must be quite many of modules.");
+         * 
+         * // We demanded the moduleCollection (arrayOfModules) from the cloud
+         * // without filters which means that the arrayOfModules should contain
+         * // all modules in the cloud. Now let's access one of the modules in
+         * the // array:
+         * 
+         * Module module = arrayOfModules[0]; String id=module.getId(); //Now,
+         * let's try to retrieve the same module individually from the cloud
+         * using the getModule() method. Then we can compare both modules. This
+         * way we can prove both methods (getModule() and getModules()) at the
+         * same time. Module ModuleFromCloud =cepApi.getModule(id);
+         * 
+         * 
+         * //Now let's compare some of their fields:
+         * assertEquals(ModuleFromCloud.getName(), module.getName(),
+         * "The module in the collection should be same as the module retrieved individually."
+         * ); assertEquals(ModuleFromCloud.getId(), module.getId(),
+         * "The module in the collection should be same as the module retrieved individually."
+         * ); assertEquals(ModuleFromCloud.getStatus(), module.getStatus(),
+         * "The module in the collection should be same as the module retrieved individually."
+         * );
+         */
     }
+
+    private Alarm makeAlarm(String type, String severity, ManagedObject source) {
+        Alarm alarm = new Alarm();
+        alarm.setText("Strange thing happened!");
+        alarm.setTime(new Date());
+        alarm.setSource(source);
+        alarm.set("foo", "{ \"alt\": " + Math.random() + ", \"lng\": 8.55436, \"lat\": 50.02868 }");
+        alarm.setStatus(Alarm.STATE_ACTIVE);
+        alarm.setType(type);
+        alarm.setSeverity(severity);
+        return alarm;
+    }
+
+    private Event makeEvent(String type, ManagedObject source) {
+        Event event = new Event();
+        event.setText("This is a test event.");
+        event.setTime(new Date());
+        event.setSource(source);
+        event.set("foo", "{ \"alt\": " + Math.random() + ", \"lng\": 8.55436, \"lat\": 50.02868 }");
+        event.setType(type);
+        return event;
+    }
+
 }
