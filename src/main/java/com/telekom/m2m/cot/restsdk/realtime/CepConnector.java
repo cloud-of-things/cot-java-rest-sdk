@@ -35,6 +35,8 @@ public class CepConnector implements Runnable {
     private static final int DEFAULT_READ_TIMEOUT_MILLIS = 60000;
     private static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 100;
 
+    private static final int THREAD_JOIN_GRACE_MILLIS = 1000;
+
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
     private boolean connected = false;
@@ -52,6 +54,8 @@ public class CepConnector implements Runnable {
     private Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
 
     private Gson gson = GsonUtils.createGson();
+
+    private Thread pollingThread;
 
 
     /**
@@ -116,6 +120,8 @@ public class CepConnector implements Runnable {
      * it starts the run cycle.
      */
     public void connect() {
+        shallDisconnect = false;
+
         if (connected) {
             throw new CotSdkException("Already connected. Please disconnect first.");
         }
@@ -128,11 +134,19 @@ public class CepConnector implements Runnable {
             throw new CotSdkException("Handshake failed, could not get clientId.");
         }
 
-        new Thread(this).start();
+        pollingThread = new Thread(this);
+        pollingThread.start();
     }
+
 
     public void disconnect() {
         shallDisconnect = true;
+        pollingThread.interrupt();
+        try {
+            pollingThread.join(THREAD_JOIN_GRACE_MILLIS); // One second should be more than enough to end the loop.
+        } catch (InterruptedException ex) {
+            throw new CotSdkException("Real time polling thread didn't finish properly when asked to disconnect.", ex);
+        }
     }
 
     public void addListener(SubscriptionListener listener) {
@@ -179,6 +193,26 @@ public class CepConnector implements Runnable {
      */
     public void setInterval(int interval) {
         this.interval = interval;
+    }
+
+
+    /**
+     * Get the clientId that was assigned by the server during handshake.
+     *
+     * @return the clientId or null, if we are not currently connected.
+     */
+    public String getClientId() {
+        return clientId;
+    }
+
+
+    /**
+     * Whether there is currently a polling thread connected to the server.
+     *
+     * @return true = yes; false = no
+     */
+    public boolean isConnected() {
+        return connected;
     }
 
 
