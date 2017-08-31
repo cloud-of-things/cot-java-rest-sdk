@@ -12,9 +12,13 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
+import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
+import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
@@ -31,13 +35,12 @@ public class CepApiIT {
     private AlarmApi alarmApi = cotPlat.getAlarmApi();
     private EventApi eventApi = cotPlat.getEventApi();
     private MeasurementApi meaApi = cotPlat.getMeasurementApi();
-
+    private DeviceControlApi devApi = cotPlat.getDeviceControlApi();
+    
+    private ManagedObject testObjectForOperation;
     private ManagedObject testObjectForEvent;
-
     private ManagedObject testObjectForMeasurement;
-
     private ManagedObject testManagedObject;
-
     private ManagedObject alarmSource1;
     private ManagedObject alarmSource2;
     private ManagedObject alarmSource3;
@@ -52,6 +55,7 @@ public class CepApiIT {
         alarmSource3 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name3");
         testObjectForEvent = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_event_name");
         testObjectForMeasurement = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_measurement_name");
+        testObjectForOperation = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_operation_name");
 
     }
 
@@ -63,6 +67,7 @@ public class CepApiIT {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource3);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForEvent);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForMeasurement);
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForOperation);
 
     }
 
@@ -334,6 +339,48 @@ public class CepApiIT {
 
     }
 
+    // This test creates two operations and a subscriber. The subscriber then
+    // subscribes to these operations successively. The tests checks whether the
+    // subscriber received the correct notification from each operations.
+    @Test
+    public void testSimpleRealTimeOperation() throws InterruptedException {
+
+        CepConnector connector = cepApi.getCepConnector();
+
+        final List<String> notedOperations = new ArrayList<>();
+
+        connector.subscribe("/operations/" + testObjectForOperation.getId());
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedOperations.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        Thread.sleep(DELAY_MILLIS);
+        devApi.create(makeOperation("first_operation_attribute", testObjectForOperation));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        devApi.create(makeOperation("second_operation_attribute", testObjectForOperation));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        assertEquals(notedOperations.size(), 2);
+
+        assertTrue(notedOperations.get(0).contains("first_operation_attribute"));
+        assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
+
+    }
+    
     @Test
     public void testGenericCepApiMethods() throws InterruptedException {
 
@@ -402,5 +449,15 @@ public class CepApiIT {
         mea.set("foo", "{ \"alt\": " + Math.random() + ", \"lng\": 8.55436, \"lat\": 50.02868 }");
         mea.setType(type);
         return mea;
+    }
+    
+    private Operation makeOperation(String attribute, ManagedObject source) {
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("name", new JsonPrimitive("example"));
+        Operation operation = new Operation();
+        operation.setDeviceId(source.getId());
+        operation.set(attribute, jsonObject);
+        return operation;
+        
     }
 }
