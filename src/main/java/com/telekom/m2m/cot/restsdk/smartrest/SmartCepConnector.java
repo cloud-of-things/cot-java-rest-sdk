@@ -240,7 +240,7 @@ public class SmartCepConnector implements Runnable {
      * <br>
      * Can also be overwritten by advice messages sent from the server while the connector is connected.
      * <br>
-     * Default is 60000.
+     * Default is {@value DEFAULT_READ_TIMEOUT_MILLIS}.
      *
      * @param timeout the timeout in milliseconds
      */
@@ -262,7 +262,7 @@ public class SmartCepConnector implements Runnable {
      * <br>
      * Can also be overwritten by advice messages sent from the server while the connector is connected.
      * <br>
-     * Default is 100.
+     * Default is {@value DEFAULT_RECONNECT_INTERVAL_MILLIS}.
      *
      * @param interval the waiting interval in milliseconds
      */

@@ -32,11 +32,11 @@ public class CloudOfThingsRestClient {
 
     protected OkHttpClient client;
 
-    // This is an automatic clone of {@link #client}, which can have it's own timeouts, because we don't want
-    // a real time server advice to change timeout behaviour for the whole application:
+    // This is an automatic clone of {@link #client}, which can have it's own, much longer, timeouts, and because we
+    // don't want a real time server advice to change timeout behaviour for the whole application:
     protected OkHttpClient realTimeClient;
-    // The read timeout for the realTimeClient. It will always be set by the caller, but we store it to detect changes:
-    protected Integer realTimeTimeout = null;
+    // The read timeout for the realTimeClient. It should always be set by the caller, but we store it to detect changes:
+    protected Integer realTimeTimeout = 60000;
 
 
     public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
@@ -135,6 +135,57 @@ public class CloudOfThingsRestClient {
     }
 
     /**
+     * Do a real time polling request, i.e. the connect call. We use a different client for this call,
+     * because it's supposed to have very long timeouts, unsuitable for regular requests.
+     * Regular real time polling and smart rest real time polling share the same client (and therefore timeout)
+     * because it is to be expected that a client will probably use either one of them, but not both.
+     *
+     * @param json
+     *            Request body, needs to be a json object correlating to the
+     *            contentType.
+     * @param api
+     *            the REST API string.
+     * @param contentType
+     *            the Content-Type of the JSON Object.
+     * @param timeout the new timeout for real time requests. null = don't change the current timeout
+     *
+     * @return the received JSON response body.
+     */
+    public String doRealTimePollingRequest(String json, String api, String contentType, Integer timeout) {
+
+        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType)
+                .addHeader("Accept", contentType)
+                .url(host + "/" + api)
+                .post(body)
+                .build();
+
+        // For the first request, or any subsequent request that wants to change the timeout, we need to get a new client:
+        if ((realTimeClient == null) || ((timeout != null) && (!timeout.equals(realTimeTimeout)))) {
+            realTimeTimeout = (timeout != null) ? timeout : realTimeTimeout;
+            realTimeClient = client.newBuilder().readTimeout(realTimeTimeout, TimeUnit.MILLISECONDS).build();
+        }
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
+
+            return response.body().string();
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
+
+    /**
      * Proceedes a HTTP POST request and returns the response body as String.
      * Method will throw an exception if the response code is indicating
      * an unsuccessful request.
@@ -206,6 +257,8 @@ public class CloudOfThingsRestClient {
     /**
      * Do a SmartREST real time polling request, i.e. the connect call. We use a different client for this call,
      * because it's supposed to have very long timeouts, unsuitable for regular requests.
+     * Regular real time polling and smart rest real time polling share the same client (and therefore timeout)
+     * because it is to be expected that a client will probably use either one of them, but not both.
      *
      * @param xId the X-Id for which this request shall be made. Cannot be null, because it's used by the server to
      *            detect that it is a SmartREST request in the first place.
@@ -217,18 +270,17 @@ public class CloudOfThingsRestClient {
     public String[] doSmartRealTimePollingRequest(String xId, String lines, Integer timeout) {
         RequestBody body = RequestBody.create(null, lines);
 
-        Request.Builder builder = new Request.Builder()
+        Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("X-Id", xId)
                 .url(host + "/cep/realtime") // Same real time endpoint handles smart and regular requests.
-                .post(body);
-
-        Request request = builder.build();
+                .post(body)
+                .build();
 
         // For the first request, or any subsequent request that wants to change the timeout, we need to get a new client:
         if ((realTimeClient == null) || ((timeout != null) && (!timeout.equals(realTimeTimeout)))) {
-            realTimeTimeout = timeout;
-            realTimeClient = client.newBuilder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
+            realTimeTimeout = (timeout != null) ? timeout : realTimeTimeout;
+            realTimeClient = client.newBuilder().readTimeout(realTimeTimeout, TimeUnit.MILLISECONDS).build();
         }
 
         Response response = null;

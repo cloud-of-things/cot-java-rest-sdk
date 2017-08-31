@@ -26,12 +26,14 @@ public class CepConnector implements Runnable {
 
     public static final String CONTENT_TYPE = "application/json";
 
-    public static final String REST_ENDPOINT = "/cep/realtime";
+    public static final String REST_ENDPOINT = "cep/realtime";
 
     // TODO: find out what versions exist and which ones we can support:
     public static final String PROTOCOL_VERSION_REQUESTED = "1.0";
     public static final String PROTOCOL_VERSION_MINIMUM = "1.0";
 
+    private static final int DEFAULT_READ_TIMEOUT_MILLIS = 60000;
+    private static final int DEFAULT_RECONNECT_INTERVAL_MILLIS = 100;
 
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
@@ -40,11 +42,16 @@ public class CepConnector implements Runnable {
 
     private String clientId;
 
+    // Read timeout in milliseconds for the connect request:
+    private int timeout = DEFAULT_READ_TIMEOUT_MILLIS;
+
+    // Interval in milliseconds between connect requests:
+    private int interval = DEFAULT_RECONNECT_INTERVAL_MILLIS;
+
     private Set<String> channels = new CopyOnWriteArraySet<>();
     private Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
 
     private Gson gson = GsonUtils.createGson();
-
 
 
     /**
@@ -136,6 +143,44 @@ public class CepConnector implements Runnable {
         listeners.remove(listener);
     }
 
+    /**
+     * The current read timeout.
+     *
+     * @return the timeout in milliseconds
+     */
+    public int getTimeout() {
+        return timeout;
+    }
+
+    /**
+     * Set the read timeout for the polling connect request.
+     * Default is {@value DEFAULT_READ_TIMEOUT_MILLIS}.
+     *
+     * @param timeout the timeout in milliseconds
+     */
+    public void setTimeout(int timeout) {
+        this.timeout = timeout;
+    }
+
+    /**
+     * The current interval, which is the time that the polling thread waits before it reconnects, after receiving a response.
+     *
+     * @return the waiting interval in milliseconds
+     */
+    public int getInterval() {
+        return interval;
+    }
+
+    /**
+     * Set the time that the polling thread waits before it reconnects, after receiving a response.
+     * Default is {@value DEFAULT_RECONNECT_INTERVAL_MILLIS}.
+     *
+     * @param interval the waiting interval in milliseconds
+     */
+    public void setInterval(int interval) {
+        this.interval = interval;
+    }
+
 
     /**
      * The method that does the post request to establish a connection.
@@ -149,23 +194,29 @@ public class CepConnector implements Runnable {
         obj.addProperty("clientId", clientId);
         obj.addProperty("connectionType", "long-polling");
         body.add(obj);
-        // TODO: use real-time-client
-        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
+        String result = cloudOfThingsRestClient.doRealTimePollingRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE, timeout);
         return result;
     }
 
 
     protected void doHandShake() {
-        JsonArray body = new JsonArray();
         JsonObject obj = new JsonObject();
         obj.addProperty("channel", "/meta/handshake");
         obj.addProperty("version", PROTOCOL_VERSION_REQUESTED);
-        obj.addProperty("mininumVersion", PROTOCOL_VERSION_MINIMUM);
+        obj.addProperty("minimumVersion", PROTOCOL_VERSION_MINIMUM);
+
         JsonArray supportedConnectionTypes = new JsonArray();
         supportedConnectionTypes.add("long-polling");
         obj.add("supportedConnectionTypes", supportedConnectionTypes);
-        body.add(obj);
 
+        // TODO: find out what this advice even does...
+        JsonObject advice = new JsonObject();
+        advice.addProperty("timeout", timeout);
+        advice.addProperty("interval", interval);
+        obj.add("advice", advice);
+
+        JsonArray body = new JsonArray();
+        body.add(obj);
         String result = cloudOfThingsRestClient.doPostRequest(body.toString(), REST_ENDPOINT, CONTENT_TYPE);
         // TODO: check result for errors
         JsonArray r = gson.fromJson(result, JsonArray.class);
@@ -229,6 +280,13 @@ public class CepConnector implements Runnable {
                             listener.onNotification(notificationChannel, new Notification(jsonObject));
                         }
                     }
+                }
+                try {
+                    if (!shallDisconnect) {
+                        Thread.sleep(interval);
+                    }
+                } catch (InterruptedException e) {
+                    shallDisconnect = true;
                 }
             } while (!shallDisconnect);
         } finally {
