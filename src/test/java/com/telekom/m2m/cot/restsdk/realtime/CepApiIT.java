@@ -49,6 +49,7 @@ public class CepApiIT {
     private ManagedObject alarmSource3;
     private ManagedObject testObjectForInventory1;
     private ManagedObject testObjectForInventory2;
+    private ManagedObject alarmObjectForCreateUpdateDelete;
 
     private static final int DELAY_MILLIS = 100;
 
@@ -65,6 +66,7 @@ public class CepApiIT {
         testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
         testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
         testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
+        alarmObjectForCreateUpdateDelete = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_alarm_for_createUpdateDelete");
 
     }
 
@@ -79,7 +81,7 @@ public class CepApiIT {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForOperation);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory1);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory2);
-
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmObjectForCreateUpdateDelete);
     }
 
     // This test will create one subscriber, then creates two alarms (for the
@@ -443,6 +445,71 @@ public class CepApiIT {
         assertFalse(notedInventoryObjects.get(0).contains("cot_managed_object2"));
     }
 
+    
+    // This test will create one subscriber, and an alarm. It will check if a
+    // notification is received upon creation, update and deletion of the alarm.
+    @Test
+    public void testNotificationsForCreateUpdateDelete() throws InterruptedException {
+
+        CepConnector connector = cepApi.getCepConnector();
+
+        final List<String> notedAlarms = new ArrayList<>();
+
+        // Create the subscriptions and listeners:
+        connector.subscribe("/alarms/" + alarmObjectForCreateUpdateDelete.getId());
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedAlarms.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        Thread.sleep(DELAY_MILLIS);
+        Alarm alarm = alarmApi
+                .create(makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmObjectForCreateUpdateDelete));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        Thread.sleep(DELAY_MILLIS);
+
+        // Now test if we got a notification for creation of the alarm:
+        assertEquals(notedAlarms.size(), 1);
+        assertTrue(notedAlarms.get(0).contains(alarmObjectForCreateUpdateDelete.getId()));
+        assertTrue(notedAlarms.get(0).contains("MINOR"));
+
+        // Now let's update the alarm and see if we will get notified:
+        alarm.setSeverity(Alarm.SEVERITY_MAJOR);
+        alarm.setStatus(Alarm.STATE_ACKNOWLEDGED);
+        alarmApi.update(alarm);
+
+        Thread.sleep(DELAY_MILLIS);
+
+        assertEquals(notedAlarms.size(), 2);
+
+        assertTrue(notedAlarms.get(1).contains("MAJOR"));
+        assertTrue(notedAlarms.get(1).contains("ACKNOWLEDGED"));
+
+        // Now let's delete the alarm and see what happens:
+        // this part should wait until we can delete an alarm without deleting
+        // all the alarms in cloud.
+        // invApi.delete(alarmObjectForCreateUpdateDelete.getId());
+        // Thread.sleep(DELAY_MILLIS);
+
+        // System.out.println("size 3:"+notedAlarms.size());
+        // System.out.println("alarm notification after
+        // delete:"+notedAlarms.get(0));
+
+    }
+    
+    
     @Test
     public void testGenericCepApiMethods() throws InterruptedException {
 
