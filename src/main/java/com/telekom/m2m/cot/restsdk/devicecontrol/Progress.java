@@ -2,8 +2,6 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
-import java.util.Date;
-
 /**
  * It represents the progress and contains number of processed bulk operations.
  * <p>
