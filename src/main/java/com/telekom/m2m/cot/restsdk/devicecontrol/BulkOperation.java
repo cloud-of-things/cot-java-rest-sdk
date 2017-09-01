@@ -18,6 +18,11 @@ public class BulkOperation extends ExtensibleObject {
     public static final String STATUS_ACTIVE = "ACTIVE";
 
     /**
+     *  Status IN_PROGRESS: when bulk operation is performing on all devices.
+     */
+    public static final String STATUS_IN_PROGRESS = "IN_PROGRESS";
+
+    /**
      * Status COMPLETED: when the operation was performed on all devices.
      */
     public static final String STATUS_COMPLETED = "COMPLETED";
