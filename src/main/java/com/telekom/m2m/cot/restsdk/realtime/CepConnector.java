@@ -310,8 +310,7 @@ public class CepConnector implements Runnable {
                             JsonObject jsonNotification = new JsonObject();
                             jsonNotification.add("data", jsonObject.get("data"));
                             jsonNotification.add("channel", jsonObject.get("channel"));
-
-                            listener.onNotification(notificationChannel, new Notification(jsonObject));
+                            listener.onNotification(notificationChannel, new Notification(jsonNotification));
                         }
                     }
                 }
