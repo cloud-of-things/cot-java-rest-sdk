@@ -4,7 +4,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.audit.AuditRecord;
+import com.telekom.m2m.cot.restsdk.devicecontrol.BulkOperation;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
+import com.telekom.m2m.cot.restsdk.devicecontrol.Progress;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReference;
@@ -36,6 +38,8 @@ public class GsonUtils {
 				.registerTypeAdapter(CurrentUser.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(Role.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(RetentionRule.class, new ExtensibleObjectSerializer())
+				.registerTypeAdapter(BulkOperation.class, new ExtensibleObjectSerializer())
+				.registerTypeAdapter(Progress.class, new ExtensibleObjectSerializer())
 
 				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").create();
 	}
