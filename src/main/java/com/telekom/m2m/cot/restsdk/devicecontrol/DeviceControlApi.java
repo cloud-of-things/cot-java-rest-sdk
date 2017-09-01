@@ -24,7 +24,7 @@ public class DeviceControlApi {
 
     private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
     private static final String RELATIVE_OPERATION_API_URL = "devicecontrol/operations/";
-    private static final String RELATIVE_BULK_OPERATION_API_URL = "/devicecontrol/bulkoperations/";
+    private static final String RELATIVE_BULK_OPERATION_API_URL = "devicecontrol/bulkoperations/";
 
     /**
      * Internal used constructor.
@@ -184,4 +184,15 @@ public class DeviceControlApi {
         return extensibleObject != null ?
                 new BulkOperation(extensibleObject) : null;
     }
+
+    /**
+     * Deletes a bulk operation by provided id.
+     * Note: it deletes only bulk operations with statuses ACTIVE or IN_PROGRESS
+     *
+     * @param bulkOperationId the unique identifier.
+     */
+    public void deleteBulkOperation(String bulkOperationId) {
+        cloudOfThingsRestClient.delete(bulkOperationId, RELATIVE_BULK_OPERATION_API_URL);
+    }
+
 }

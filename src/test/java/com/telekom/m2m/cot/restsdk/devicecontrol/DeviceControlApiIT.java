@@ -84,17 +84,8 @@ public class DeviceControlApiIT {
     public void testCreateAndRetrieveBulkOperation() throws Exception {
         // given
         ManagedObject deviceGroup = createDeviceGroup();
-        Operation operation = createOperation();
-        Operation createdOperation = deviceControlApi.create(operation);
-        Operation retrievedOperation = deviceControlApi.getOperation(createdOperation.getId());
-
-        BulkOperation bulkOperation = new BulkOperation();
         Date startDate = new Date(System.currentTimeMillis() + 500);
-
-        bulkOperation.setGroupId(deviceGroup.getId());
-        bulkOperation.setStartDate(startDate);
-        bulkOperation.setCreationRamp(1);
-        bulkOperation.setOperation(retrievedOperation);
+        BulkOperation bulkOperation = createBulkOperation(deviceGroup, startDate);
 
         // when
         BulkOperation createdBulkOperation = deviceControlApi.create(bulkOperation);
@@ -131,7 +122,7 @@ public class DeviceControlApiIT {
         assertEquals(retrievedBulkOperation.getProgress().getNumberOfPendingDevices().intValue(), 1);
         assertEquals(retrievedBulkOperation.getProgress().getNumberOfFailedDevices().intValue(), 0);
         assertEquals(retrievedBulkOperation.getProgress().getNumberOfExecutingDevices().intValue(), 0);
-        assertEquals(retrievedBulkOperation.getStatus(), "IN_PROGRESS");
+        assertEquals(retrievedBulkOperation.getStatus(), BulkOperation.STATUS_IN_PROGRESS);
 
         // when we wail until bulk operation completes
         Thread.sleep(1000);
@@ -144,6 +135,33 @@ public class DeviceControlApiIT {
         assertEquals(retrievedBulkOperation.getProgress().getNumberOfFailedDevices().intValue(), 0);
         assertEquals(retrievedBulkOperation.getProgress().getNumberOfExecutingDevices().intValue(), 0);
         assertEquals(retrievedBulkOperation.getStatus(), BulkOperation.STATUS_COMPLETED);
+
+        // cleanup
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        inventoryApi.delete(deviceGroup.getId());
+    }
+
+    @Test
+    public void testDeleteActivBulkOperation() throws Exception {
+        // given
+        ManagedObject deviceGroup = createDeviceGroup();
+        Date startDate = new Date(System.currentTimeMillis() + 500);
+        BulkOperation bulkOperation = createBulkOperation(deviceGroup, startDate);
+
+        // when
+        BulkOperation createdBulkOperation = deviceControlApi.create(bulkOperation);
+        BulkOperation retrievedBulkOperation = deviceControlApi.getBulkOperation(createdBulkOperation.getId());
+
+        // then
+        assertNotNull(retrievedBulkOperation.getId());
+
+        // when
+        deviceControlApi.deleteBulkOperation(retrievedBulkOperation.getId());
+        BulkOperation retrievedAgainBulkOperation = deviceControlApi.getBulkOperation(retrievedBulkOperation.getId());
+
+        // then
+        assertNotNull(retrievedAgainBulkOperation);
+        assertEquals(retrievedAgainBulkOperation.getStatus(), BulkOperation.STATUS_DELETED);
 
         // cleanup
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
@@ -181,5 +199,20 @@ public class DeviceControlApiIT {
         operation.set("com_telekom_m2m_cotcommand", jsonObject);
 
         return operation;
+    }
+
+    private BulkOperation createBulkOperation(ManagedObject deviceGroup, Date startDate) {
+        Operation operation = createOperation();
+        Operation createdOperation = deviceControlApi.create(operation);
+        Operation retrievedOperation = deviceControlApi.getOperation(createdOperation.getId());
+
+        BulkOperation bulkOperation = new BulkOperation();
+
+        bulkOperation.setGroupId(deviceGroup.getId());
+        bulkOperation.setStartDate(startDate);
+        bulkOperation.setCreationRamp(1);
+        bulkOperation.setOperation(retrievedOperation);
+
+        return bulkOperation;
     }
 }
