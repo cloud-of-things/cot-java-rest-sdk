@@ -3,12 +3,16 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReference;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.Date;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
@@ -38,16 +42,7 @@ public class DeviceControlApiIT {
     @Test
     public void testCreateAndGetOperation() throws Exception {
         // given
-        JsonObject parameters = new JsonObject();
-        parameters.add("param1", new JsonPrimitive("1"));
-
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("name", new JsonPrimitive("example"));
-        jsonObject.add("parameters", parameters);
-
-        Operation operation = new Operation();
-        operation.setDeviceId(testManagedObject.getId());
-        operation.set("com_telekom_m2m_cotcommand", jsonObject);
+        Operation operation = createOperation();
 
         // when
         Operation createdOperation = deviceControlApi.create(operation);
@@ -67,16 +62,7 @@ public class DeviceControlApiIT {
     @Test
     public void testCreateAndUpdateOperation() throws Exception {
         // given
-        JsonObject parameters = new JsonObject();
-        parameters.add("param1", new JsonPrimitive("1"));
-
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.add("name", new JsonPrimitive("example"));
-        jsonObject.add("parameters", parameters);
-
-        Operation operation = new Operation();
-        operation.setDeviceId(testManagedObject.getId());
-        operation.set("com_telekom_m2m_cotcommand", jsonObject);
+        Operation operation = createOperation();
 
         // when
         Operation createdOperation = deviceControlApi.create(operation);
@@ -95,8 +81,105 @@ public class DeviceControlApiIT {
     }
 
     @Test
-    public void testGetBulkOperation() throws Exception {
-        deviceControlApi.getBulkOperation("1");
-        // TODO: complete the test when createBulkOperation is implemented
+    public void testCreateAndRetrieveBulkOperation() throws Exception {
+        // given
+        ManagedObject deviceGroup = createDeviceGroup();
+        Operation operation = createOperation();
+        Operation createdOperation = deviceControlApi.create(operation);
+        Operation retrievedOperation = deviceControlApi.getOperation(createdOperation.getId());
+
+        BulkOperation bulkOperation = new BulkOperation();
+        Date startDate = new Date(System.currentTimeMillis() + 500);
+
+        bulkOperation.setGroupId(deviceGroup.getId());
+        bulkOperation.setStartDate(startDate);
+        bulkOperation.setCreationRamp(1);
+        bulkOperation.setOperation(retrievedOperation);
+
+        // when
+        BulkOperation createdBulkOperation = deviceControlApi.create(bulkOperation);
+
+        // then
+        assertNotNull(createdBulkOperation);
+        assertNotNull(createdBulkOperation.getId());
+
+        // when
+        BulkOperation retrievedBulkOperation = deviceControlApi.getBulkOperation(createdBulkOperation.getId());
+
+        // then
+        assertEquals(retrievedBulkOperation.getId(), createdBulkOperation.getId());
+        assertEquals(retrievedBulkOperation.getCreationRamp().intValue(), 1);
+        assertEquals(retrievedBulkOperation.getGroupId(), deviceGroup.getId());
+        assertNotNull(retrievedBulkOperation.getOperation().get("com_telekom_m2m_cotcommand"));
+        assertNotNull(retrievedBulkOperation.getProgress());
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfDevices().intValue(), 1);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfSuccessfulDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfPendingDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfFailedDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfExecutingDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getStartDate().getTime(), startDate.getTime());
+        assertEquals(retrievedBulkOperation.getStatus(), BulkOperation.STATUS_ACTIVE);
+        assertNotNull(retrievedBulkOperation.get("self"));
+
+        // when we wait until bulk operation starts
+        Thread.sleep(500);
+        retrievedBulkOperation = deviceControlApi.getBulkOperation(createdBulkOperation.getId());
+
+        // then
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfDevices().intValue(), 1);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfSuccessfulDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfPendingDevices().intValue(), 1);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfFailedDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfExecutingDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getStatus(), "IN_PROGRESS");
+
+        // when we wail until bulk operation completes
+        Thread.sleep(1000);
+        retrievedBulkOperation = deviceControlApi.getBulkOperation(createdBulkOperation.getId());
+
+        // then
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfDevices().intValue(), 1);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfSuccessfulDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfPendingDevices().intValue(), 1);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfFailedDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getProgress().getNumberOfExecutingDevices().intValue(), 0);
+        assertEquals(retrievedBulkOperation.getStatus(), BulkOperation.STATUS_COMPLETED);
+
+        // cleanup
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        inventoryApi.delete(deviceGroup.getId());
+    }
+
+    private ManagedObject createDeviceGroup() {
+        ManagedObject deviceGroup = new ManagedObject();
+        deviceGroup.setName("deviceGroup");
+        deviceGroup.set("c8y_IsDeviceGroup", new JsonObject());
+        deviceGroup.setType("c8y_DeviceGroup");
+
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+
+        inventoryApi.create(deviceGroup);
+
+        ManagedObject deviceGroupFromCoT = inventoryApi.get(deviceGroup.getId());
+        ManagedObjectReference managedObjectReference = new ManagedObjectReference(testManagedObject);
+
+        inventoryApi.addChildAssetToManagedObject(deviceGroupFromCoT, managedObjectReference);
+
+        return deviceGroupFromCoT;
+    }
+
+    private Operation createOperation() {
+        JsonObject parameters = new JsonObject();
+        parameters.add("param1", new JsonPrimitive("1"));
+
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.add("name", new JsonPrimitive("example"));
+        jsonObject.add("parameters", parameters);
+
+        Operation operation = new Operation();
+        operation.setDeviceId(testManagedObject.getId());
+        operation.set("com_telekom_m2m_cotcommand", jsonObject);
+
+        return operation;
     }
 }

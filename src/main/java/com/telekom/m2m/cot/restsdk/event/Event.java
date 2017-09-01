@@ -91,7 +91,7 @@ public class Event extends ExtensibleObject {
 
     /**
      * Get the creation time of the event in the CoT.
-     * Just setted by platform on creation, not manipulatable.
+     * Just set by platform on creation, not manipulatable.
      *
      * @return Date object representing the timestamp when event was created in
      * CoT.

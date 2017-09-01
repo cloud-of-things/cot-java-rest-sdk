@@ -13,8 +13,11 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class DeviceControlApi {
+
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
+
     protected Gson gson = GsonUtils.createGson();
+
     private static final String CONTENT_TYPE_NEW_DEVICE_REQUEST = "application/vnd.com.nsn.cumulocity.newDeviceRequest+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_BULK_OPERATION = "application/vnd.com.nsn.cumulocity.bulkoperation+json;charset=UTF-8;ver=0.9";
@@ -148,6 +151,23 @@ public class DeviceControlApi {
      */
     public void deleteOperations(Filter.FilterBuilder filters) {
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_OPERATION_API_URL);
+    }
+
+
+    /**
+     * Creates a bulk operation.
+     *
+     * @param bulkOperation bulk operation object with the necessary data (w/o Id).
+     * @return the bulk operation stored in CoT with the created Id.
+     * @since 0.1.0
+     */
+    public BulkOperation create(BulkOperation bulkOperation) {
+        String json = gson.toJson(bulkOperation);
+
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_BULK_OPERATION_API_URL, CONTENT_TYPE_BULK_OPERATION);
+        bulkOperation.setId(id);
+
+        return bulkOperation;
     }
 
     /**

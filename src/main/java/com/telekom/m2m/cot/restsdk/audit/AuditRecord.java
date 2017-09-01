@@ -115,7 +115,7 @@ public class AuditRecord extends ExtensibleObject {
 
     /**
      * Get the creation time of the audit record in the CoT.
-     * Just setted by platform on creation, not manipulatable.
+     * Just set by platform on creation, not manipulatable.
      *
      * @return Date object representing the timestamp when audit record was created in
      * CoT.
