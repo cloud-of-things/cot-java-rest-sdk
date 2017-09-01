@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -21,6 +22,7 @@ import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
+import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
@@ -36,7 +38,8 @@ public class CepApiIT {
     private EventApi eventApi = cotPlat.getEventApi();
     private MeasurementApi meaApi = cotPlat.getMeasurementApi();
     private DeviceControlApi devApi = cotPlat.getDeviceControlApi();
-    
+    private InventoryApi invApi = cotPlat.getInventoryApi();
+
     private ManagedObject testObjectForOperation;
     private ManagedObject testObjectForEvent;
     private ManagedObject testObjectForMeasurement;
@@ -44,6 +47,8 @@ public class CepApiIT {
     private ManagedObject alarmSource1;
     private ManagedObject alarmSource2;
     private ManagedObject alarmSource3;
+    private ManagedObject testObjectForInventory1;
+    private ManagedObject testObjectForInventory2;
 
     private static final int DELAY_MILLIS = 100;
 
@@ -56,6 +61,10 @@ public class CepApiIT {
         testObjectForEvent = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_event_name");
         testObjectForMeasurement = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_measurement_name");
         testObjectForOperation = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_operation_name");
+        testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
+        testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
+        testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
+        testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
 
     }
 
@@ -68,6 +77,8 @@ public class CepApiIT {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForEvent);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForMeasurement);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForOperation);
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory1);
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory2);
 
     }
 
@@ -298,7 +309,8 @@ public class CepApiIT {
     }
 
     // This test creates two measurements and a subscriber. The subscriber then
-    // subscribes to these measurements successively. The tests checks whether the
+    // subscribes to these measurements successively. The tests checks whether
+    // the
     // subscriber received the correct notification from each measurement.
     @Test
     public void testSimpleRealTimeMeasurements() throws InterruptedException {
@@ -380,7 +392,57 @@ public class CepApiIT {
         assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
 
     }
-    
+
+    // This test creates two inventory objects and a subscriber. The subscriber then
+    // subscribes to these objects successively. The tests checks whether the
+    // subscriber received the correct notification from each object.
+    @Test
+    public void testSimpleRealTimeInventoryObjects() throws InterruptedException {
+
+        CepConnector connector = cepApi.getCepConnector();
+
+        final List<String> notedInventoryObjects = new ArrayList<>();
+
+        connector.subscribe("/managedobjects/" + testObjectForInventory1.getId());
+        connector.subscribe("/managedobjects/" + testObjectForInventory2.getId());
+
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedInventoryObjects.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        Thread.sleep(DELAY_MILLIS);
+        invApi.update(prepareForUpdate("first_test_object", "cot_managed_object1", testObjectForInventory1));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        invApi.update(prepareForUpdate("second_test_object", "cot_managed_object2", testObjectForInventory2));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        assertEquals(notedInventoryObjects.size(), 2);
+
+        assertTrue(notedInventoryObjects.get(0).contains("first_test_object"));
+        assertTrue(notedInventoryObjects.get(1).contains("second_test_object"));
+        assertTrue(notedInventoryObjects.get(0).contains("cot_managed_object1"));
+        assertTrue(notedInventoryObjects.get(1).contains("cot_managed_object2"));
+
+        assertFalse(notedInventoryObjects.get(1).contains("first_test_object"));
+        assertFalse(notedInventoryObjects.get(0).contains("second_test_object"));
+        assertFalse(notedInventoryObjects.get(1).contains("cot_managed_object1"));
+        assertFalse(notedInventoryObjects.get(0).contains("cot_managed_object2"));
+    }
+
     @Test
     public void testGenericCepApiMethods() throws InterruptedException {
 
@@ -450,7 +512,7 @@ public class CepApiIT {
         mea.setType(type);
         return mea;
     }
-    
+
     private Operation makeOperation(String attribute, ManagedObject source) {
         JsonObject jsonObject = new JsonObject();
         jsonObject.add("name", new JsonPrimitive("example"));
@@ -458,6 +520,15 @@ public class CepApiIT {
         operation.setDeviceId(source.getId());
         operation.set(attribute, jsonObject);
         return operation;
-        
+
+    }
+
+    private ManagedObject prepareForUpdate(String name, String type, ManagedObject source) {
+        ManagedObject obj = new ManagedObject();
+        obj.setId(source.getId());
+        obj.setName(name);
+        obj.setType(type);
+        return obj;
+
     }
 }
