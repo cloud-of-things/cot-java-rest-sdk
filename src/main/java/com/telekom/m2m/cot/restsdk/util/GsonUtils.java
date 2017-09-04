@@ -30,8 +30,7 @@ public class GsonUtils {
 				.registerTypeAdapter(Operation.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(Measurement.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(ExtensibleObject.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(ManagedObjectReferenceCollection.class,
-						new ManagedObjectReferenceCollectionSerializer())
+				.registerTypeAdapter(ManagedObjectReferenceCollection.class, new ManagedObjectReferenceCollectionSerializer())
 				.registerTypeAdapter(ManagedObjectReference.class, new ManagedObjectReferenceSerializer())
 				.registerTypeAdapter(User.class, new ExtensibleObjectSerializer())
 				.registerTypeAdapter(Group.class, new ExtensibleObjectSerializer())
