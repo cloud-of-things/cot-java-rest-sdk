@@ -132,7 +132,6 @@ public class DeviceControlApiTest {
         assertNotNull(obj);
     }
 
-
     @Test
     public void testGetOperationCollection() {
         final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
@@ -219,6 +218,17 @@ public class DeviceControlApiTest {
         assertEquals(bulkOperation.getGroupId(), "124301");
         assertEquals(bulkOperation.getStatus(), "ACTIVE");
         assertEquals(bulkOperation.getCreationRamp().intValue(), 15);
+    }
+
+    @Test
+    public void testGetBulkOperationCollection() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
+        final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
+
+        BulkOperationCollection bulkOperationCollection = deviceControlApi.getBulkOperationCollection(7);
+
+        assertNotNull(bulkOperationCollection);
     }
 
 }
