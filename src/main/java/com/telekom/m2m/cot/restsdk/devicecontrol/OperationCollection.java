@@ -10,7 +10,7 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 import java.util.stream.StreamSupport;
 
 /**
- * Represents a pageable Measurement collection.
+ * Represents a pageable Operation collection.
  * <p>
  * Collection can be scrolled with next() and prev().
  * <p>
