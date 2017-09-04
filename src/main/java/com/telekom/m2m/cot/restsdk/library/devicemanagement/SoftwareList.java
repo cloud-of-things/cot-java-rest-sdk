@@ -46,7 +46,6 @@ public class SoftwareList implements Fragment {
 
     @Override
     public JsonElement getJson() {
-
         JsonArray array = new JsonArray();
         for (Software software : softwareList) {
             array.add(gson.toJsonTree(software));

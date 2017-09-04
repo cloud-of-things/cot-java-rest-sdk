@@ -18,7 +18,6 @@ public class Hardware implements Fragment {
     }
 
 
-
     public String getModel() {
         return model;
     }

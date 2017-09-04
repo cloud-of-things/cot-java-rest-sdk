@@ -21,9 +21,20 @@ public class CellInfo implements Fragment {
     private List<CellTower> cellTowers = new ArrayList<>();
 
 
+    public CellInfo() {
+        radioType = null; // CellTowers will have to specify their own radioType now.
+    }
+
     public CellInfo(String radioType, CellTower... cellTowers) {
         this.radioType = radioType;
-        Collections.addAll(this.cellTowers, cellTowers);
+        for (CellTower cellTower : cellTowers) {
+            addCellTower(cellTower);
+        }
+    }
+
+
+    public String getRadioType() {
+        return radioType;
     }
 
 
@@ -40,9 +51,7 @@ public class CellInfo implements Fragment {
                 throw new CotSdkException("CellTower needs to have a radioType because this CellInfo doesn't.");
             }
         } else {
-            if (radioType == null) {
-                radioType = cellTower.radioType;
-            } else if (!radioType.equals(cellTower.radioType)) {
+            if ((radioType != null) && (!cellTower.radioType.equals(radioType))) {
                 throw new CotSdkException("CellTower.radioType ("+cellTower.radioType+") conflicts with this CellInfo.radioType ("+radioType+")");
             }
         }
@@ -66,7 +75,6 @@ public class CellInfo implements Fragment {
 
     @Override
     public JsonElement getJson() {
-        Gson gson = new Gson();
         JsonArray array = new JsonArray();
         for (CellInfo.CellTower cellTower : cellTowers) {
             array.add(gson.toJsonTree(cellTower));

@@ -6,9 +6,13 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 import org.testng.annotations.Test;
 
+import java.util.List;
+
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 
 public class DeviceManagementLibraryTest {
@@ -59,6 +63,19 @@ public class DeviceManagementLibraryTest {
         assertEquals(((JsonArray)m.get("c8y_SupportedOperations")).get(0).getAsString(), "op1");
         assertEquals(((JsonArray)m.get("c8y_SupportedOperations")).get(1).getAsString(), "op2");
         assertEquals(((JsonArray)m.get("c8y_SupportedOperations")).size(), 2);
+
+        String[] ops = f.getOperations();
+        assertEquals(ops.length, 2);
+
+        // The operations inside the SupportedOperations instance shall not be modifiable:
+        ops[0] = "foo";
+        assertEquals(f.getOperations()[0], "op1");
+
+        // The SupportedOperations need to make a copy of the input array should:
+        f = new SupportedOperations(ops);
+        assertEquals(f.getOperations()[0], "foo");
+        ops[0] = "bar";
+        assertEquals(f.getOperations()[0], "foo");
     }
 
 
@@ -116,17 +133,28 @@ public class DeviceManagementLibraryTest {
 
     @Test
     public void testSoftwareList() {
+        SoftwareList.Software software = new SoftwareList.Software("n4", "v4", "u4");
         SoftwareList f = new SoftwareList(new SoftwareList.Software("n1", "v1", "u1"),
-                new SoftwareList.Software("n2", "v2", "u2")).
-                addSoftware(new SoftwareList.Software("n3", "v3", "u3")).
-                addSoftware(new SoftwareList.Software("n4", "v4", "u4"));
+                                          new SoftwareList.Software("n2", "v2", "u2")).
+                                         addSoftware(new SoftwareList.Software("n3", "v3", "u3")).
+                                         addSoftware(software);
+        f.removeSoftware(software); // Just to see if it can be removed...
         ManagedObject m = new ManagedObject();
         m.setName("myObject");
         m.addFragment(f);
 
+        assertEquals(((JsonArray)m.get("c8y_SoftwareList")).size(), 3);
         assertEquals(((JsonArray)m.get("c8y_SoftwareList")).get(0).getAsJsonObject().get("version").getAsString(), "v1");
         assertEquals(((JsonArray)m.get("c8y_SoftwareList")).get(1).getAsJsonObject().get("url").getAsString(), "u2");
         assertEquals(((JsonArray)m.get("c8y_SoftwareList")).get(2).getAsJsonObject().get("name").getAsString(), "n3");
+
+        List<SoftwareList.Software> list = f.getSoftwareList();
+        assertEquals(list.size(), 3);
+
+        // The Software inside the SoftwareList instance shall not be modifiable from the side:
+        list.set(0, new SoftwareList.Software("foo", "foo", "foo"));
+        list = f.getSoftwareList();
+        assertEquals(list.get(0).name, "n1");
     }
 
 
@@ -143,15 +171,18 @@ public class DeviceManagementLibraryTest {
 
     @Test
     public void testCellInfo() {
+        CellInfo.CellTower cellTower = new CellInfo.CellTower("gsm", 48, 10, 20, 32, 3, 10, 12345678L, 1);
         CellInfo f = new CellInfo("gsm", new CellInfo.CellTower("gsm", 49, 100, 200, 30, 2, 20, 12345678L, 1),
-                new CellInfo.CellTower(null, 48, 10, 20, 31, null, null, null, 0)).
-                addCellTower(new CellInfo.CellTower("gsm", 48, 10, 20, 32, 3, 10, 12345678L, 1)).
-                addCellTower(new CellInfo.CellTower(null, 48, 10, 20, 33, null, null, null, null));
+                                         new CellInfo.CellTower(null, 48, 10, 20, 31, null, null, null, 0)).
+                                 addCellTower(cellTower).
+                                 addCellTower(new CellInfo.CellTower(null, 48, 10, 20, 33, null, null, null, null));
+        f.removeCellTower(cellTower); // Just to see if it can be removed...
         ManagedObject m = new ManagedObject();
         m.setName("myObject");
         m.addFragment(f);
 
         assertEquals(((JsonObject)m.get("c8y_CellInfo")).get("radioType").getAsString(), "gsm");
+        assertEquals(((JsonObject)m.get("c8y_CellInfo")).get("cellTowers").getAsJsonArray().size(), 3);
         JsonObject firstTower = ((JsonObject)m.get("c8y_CellInfo")).get("cellTowers").getAsJsonArray().get(0).getAsJsonObject();
         assertEquals(firstTower.get("mobileCountryCode").getAsString(), "49");
         assertEquals(firstTower.get("mobileNetworkCode").getAsString(), "100");
@@ -160,11 +191,48 @@ public class DeviceManagementLibraryTest {
         assertEquals(firstTower.get("radioType").getAsString(), "gsm");
         assertEquals(firstTower.get("serving").getAsString(), "1");
         assertFalse(((JsonObject)m.get("c8y_CellInfo")).get("cellTowers").getAsJsonArray().get(1).getAsJsonObject().has("primaryScramblingCode"));
-        assertEquals(((JsonObject)m.get("c8y_CellInfo")).get("cellTowers").getAsJsonArray().get(2).getAsJsonObject().get("signalStrength").getAsString(), "10");
-        assertEquals(((JsonObject)m.get("c8y_CellInfo")).get("cellTowers").getAsJsonArray().get(3).getAsJsonObject().get("cellId").getAsString(), "33");
+        assertEquals(((JsonObject)m.get("c8y_CellInfo")).get("cellTowers").getAsJsonArray().get(2).getAsJsonObject().get("cellId").getAsString(), "33");
     }
 
 
+    @Test
+    public void testCellInfoRadioType() {
+        CellInfo cellInfo = new CellInfo();
+
+        cellInfo.addCellTower(new CellInfo.CellTower("gsm", 49, 10, 20, 32, 2, 10, 12345678L, 1));
+        cellInfo.addCellTower(new CellInfo.CellTower("umts", 49, 10, 20, 32, 2, 10, 12345678L, 1));
+        try {
+            cellInfo.addCellTower(new CellInfo.CellTower(null, 49, 10, 20, 32, 2, 10, 12345678L, 1));
+            fail("Adding a CellTower without radioType to a CellInfo without radioType must fail.");
+        } catch (Exception e) {
+            // ok!
+        }
+
+        List<CellInfo.CellTower> towers = cellInfo.getCellTowers();
+        assertEquals(towers.size(), 2);
+        assertNull(cellInfo.getRadioType()); // Has to remain null because we have towers with different radioTypes.
+        assertEquals(cellInfo.getCellTowers().get(0).radioType, "gsm");
+        assertEquals(cellInfo.getCellTowers().get(1).radioType, "umts");
+
+        cellInfo = new CellInfo("gsm");
+        cellInfo.addCellTower(new CellInfo.CellTower("gsm", 49, 10, 20, 32, 2, 10, 12345678L, 1));
+        cellInfo.addCellTower(new CellInfo.CellTower(null, 49, 10, 20, 32, 2, 10, 12345678L, 1));
+        try {
+            cellInfo.addCellTower(new CellInfo.CellTower("umts", 49, 10, 20, 32, 2, 10, 12345678L, 1));
+            fail("Adding a CellTower without a radioType that doesn't match the one in CellInfo must fail.");
+        } catch (Exception e) {
+            // ok!
+        }
+
+        try {
+        cellInfo = new CellInfo("gsm", new CellInfo.CellTower("gsm", 49, 10, 20, 32, 2, 10, 12345678L, 1),
+                                       new CellInfo.CellTower(null, 49, 10, 20, 32, 2, 10, 12345678L, 1),
+                                       new CellInfo.CellTower("umts", 49, 10, 20, 32, 2, 10, 12345678L, 1));
+            fail("CellInfo with mismatching radioTypes cannot be constructed.");
+        } catch (Exception e) {
+            // ok!
+        }
+    }
 
 
     @Test
