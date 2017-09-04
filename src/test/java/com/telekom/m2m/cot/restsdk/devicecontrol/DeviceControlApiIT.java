@@ -142,18 +142,25 @@ public class DeviceControlApiIT {
     }
 
     @Test
-    public void testDeleteActivBulkOperation() throws Exception {
+    public void testUpdateAndDeleteActiveBulkOperation() throws Exception {
         // given
         ManagedObject deviceGroup = createDeviceGroup();
-        Date startDate = new Date(System.currentTimeMillis() + 500);
+        Date startDate = new Date(System.currentTimeMillis() + 500000);
         BulkOperation bulkOperation = createBulkOperation(deviceGroup, startDate);
 
-        // when
         BulkOperation createdBulkOperation = deviceControlApi.create(bulkOperation);
+
+        // when
+        Date changedStartDate = new Date(System.currentTimeMillis() + 24*60*60*1000);
+//        createdBulkOperation.setStartDate(changedStartDate);
+        createdBulkOperation.setCreationRamp(33);
+        deviceControlApi.update(createdBulkOperation);
         BulkOperation retrievedBulkOperation = deviceControlApi.getBulkOperation(createdBulkOperation.getId());
 
         // then
         assertNotNull(retrievedBulkOperation.getId());
+        assertEquals(retrievedBulkOperation.getCreationRamp(), 33);
+        assertEquals(retrievedBulkOperation.getStartDate().compareTo(changedStartDate), 0);
 
         // when
         deviceControlApi.deleteBulkOperation(retrievedBulkOperation.getId());
