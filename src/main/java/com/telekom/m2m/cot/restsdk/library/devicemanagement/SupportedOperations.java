@@ -43,9 +43,7 @@ public class SupportedOperations implements Fragment {
             array.add(operation);
         }
 
-        JsonObject object = new JsonObject();
-        object.add(getId(), array);
-        return object;
+        return array;
     }
 
 }

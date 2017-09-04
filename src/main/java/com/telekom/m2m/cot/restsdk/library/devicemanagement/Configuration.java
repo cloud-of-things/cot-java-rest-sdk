@@ -28,7 +28,7 @@ public class Configuration implements Fragment {
     @Override
     public JsonElement getJson() {
         JsonObject object = new JsonObject();
-        object.addProperty(getId(), config);
+        object.addProperty("config", config);
         return object;
     }
 

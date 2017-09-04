@@ -14,9 +14,7 @@ public class IsDevice implements Fragment {
 
     @Override
     public JsonElement getJson() {
-        JsonObject object = new JsonObject();
-        object.add(getId(), new JsonObject());
-        return object;
+        return new JsonObject();
     }
 
 }

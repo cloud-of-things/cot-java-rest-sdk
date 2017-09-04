@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
+import com.telekom.m2m.cot.restsdk.library.Fragment;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 import java.util.ArrayList;
@@ -149,4 +150,13 @@ public class ManagedObject extends ExtensibleObject {
             return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
+
+    /**
+     * Add a library {@link Fragment} to this ManagedObject.
+     * @param fragment
+     */
+    public void addFragment(Fragment fragment) {
+        anyObject.put(fragment.getId(), fragment.getJson());
+    }
+
 }

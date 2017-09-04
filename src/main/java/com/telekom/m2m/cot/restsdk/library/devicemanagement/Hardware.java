@@ -39,13 +39,11 @@ public class Hardware implements Fragment {
 
     @Override
     public JsonElement getJson() {
-        JsonObject internal = new JsonObject();
-        internal.addProperty("model", model);
-        internal.addProperty("revision", revision);
-        internal.addProperty("serialNumber", serialNumber);
-
         JsonObject object = new JsonObject();
-        object.add(getId(), internal);
+        object.addProperty("model", model);
+        object.addProperty("revision", revision);
+        object.addProperty("serialNumber", serialNumber);
+;
         return object;
     }
 }

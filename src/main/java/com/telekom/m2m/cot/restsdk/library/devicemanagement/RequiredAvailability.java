@@ -7,15 +7,15 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class RequiredAvailability implements Fragment {
 
-    private int responseInterval;
+    private float responseInterval;
 
 
-    public RequiredAvailability(int responseInterval) {
+    public RequiredAvailability(float responseInterval) {
         this.responseInterval = responseInterval;
     }
 
 
-    public int getResponseInterval() {
+    public float getResponseInterval() {
         return responseInterval;
     }
 
@@ -30,9 +30,7 @@ public class RequiredAvailability implements Fragment {
         JsonObject intervalObject = new JsonObject();
         intervalObject.addProperty("responseInterval", responseInterval);
 
-        JsonObject object = new JsonObject();
-        object.add(getId(), intervalObject);
-        return object;
+        return intervalObject;
     }
 
 }

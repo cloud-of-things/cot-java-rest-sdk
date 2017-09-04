@@ -40,9 +40,7 @@ public class Battery implements Fragment {
         JsonObject levelObject = new JsonObject();
         levelObject.add("level", level);
 
-        JsonObject object = new JsonObject();
-        object.add(getId(), levelObject);
-        return object;
+        return levelObject;
     }
 
 }

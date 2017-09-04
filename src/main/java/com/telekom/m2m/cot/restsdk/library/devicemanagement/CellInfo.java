@@ -6,6 +6,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class CellInfo implements Fragment {
 
-    private static final Gson gson = new Gson();
+    private static final Gson gson = GsonUtils.createGson();
 
     private String radioType;
     private List<CellTower> cellTowers = new ArrayList<>();
@@ -72,7 +73,10 @@ public class CellInfo implements Fragment {
         }
 
         JsonObject object = new JsonObject();
-        object.add(getId(), array);
+        if (radioType != null) {
+            object.addProperty("radioType", radioType);
+        }
+        object.add("cellTowers", array);
         return object;
     }
 

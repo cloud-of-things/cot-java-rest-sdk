@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,7 +14,7 @@ import java.util.List;
 
 public class SoftwareList implements Fragment {
 
-    private static final Gson gson = new Gson();
+    private static final Gson gson = GsonUtils.createGson();
 
     private List<Software> softwareList = new ArrayList<>();
 
@@ -51,9 +52,7 @@ public class SoftwareList implements Fragment {
             array.add(gson.toJsonTree(software));
         }
 
-        JsonObject object = new JsonObject();
-        object.add(getId(), array);
-        return object;
+        return array;
     }
 
 

@@ -58,9 +58,7 @@ public class SignalStrength implements Fragment {
         strengthObject.add("rssi", rssi);
         strengthObject.add("ber", ber);
 
-        JsonObject object = new JsonObject();
-        object.add(getId(), strengthObject);
-        return object;
+        return strengthObject;
     }
 
 }

@@ -39,13 +39,11 @@ public class Mobile implements Fragment {
 
     @Override
     public JsonElement getJson() {
-        JsonObject internal = new JsonObject();
-        internal.addProperty("imei", imei);
-        internal.addProperty("cellId", cellId);
-        internal.addProperty("iccid", iccid);
-
         JsonObject object = new JsonObject();
-        object.add(getId(), internal);
+        object.addProperty("imei", imei);
+        object.addProperty("cellId", cellId);
+        object.addProperty("iccid", iccid);
+
         return object;
     }
 

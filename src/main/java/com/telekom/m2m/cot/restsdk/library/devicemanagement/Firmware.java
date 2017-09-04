@@ -39,13 +39,11 @@ public class Firmware implements Fragment {
 
     @Override
     public JsonElement getJson() {
-        JsonObject internal = new JsonObject();
-        internal.addProperty("name", name);
-        internal.addProperty("version", version);
-        internal.addProperty("url", url);
-
         JsonObject object = new JsonObject();
-        object.add(getId(), internal);
+        object.addProperty("name", name);
+        object.addProperty("version", version);
+        object.addProperty("url", url);
+
         return object;
     }
 
