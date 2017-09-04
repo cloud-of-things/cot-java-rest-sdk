@@ -39,8 +39,6 @@ public class OperationCollectionIT {
 
     @BeforeMethod
     public void setUp() {
-        testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
-
         testManagedObjectParent =
                 TestHelper.createRandomManagedObjectInPlatform(
                         cotPlat,
