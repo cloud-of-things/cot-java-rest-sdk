@@ -87,8 +87,18 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
                     default :
                         mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
                 }
+            } else if (element.getValue().isJsonArray()) {
+                String key = element.getKey();
+                // Some of the library fragments are arrays, but they don't need special treatment because all
+                // fragments are stored as simple JsonElements in the ExtensibleObject, and not as themselves.
+                // We just list them for documentation purposes, in case someone wants to change that in the future.
+                switch (key) {
+                    case "c8y_SoftwareList":
+                    case "c8y_SupportedOperations":
+                    default:
+                        mo.set(key, element.getValue());
+                }
             }
-
         }
 
         return mo;

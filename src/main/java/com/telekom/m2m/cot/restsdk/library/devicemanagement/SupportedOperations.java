@@ -2,7 +2,6 @@ package com.telekom.m2m.cot.restsdk.library.devicemanagement;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 import java.util.Arrays;

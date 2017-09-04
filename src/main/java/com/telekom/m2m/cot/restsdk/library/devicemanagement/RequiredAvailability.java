@@ -7,15 +7,15 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class RequiredAvailability implements Fragment {
 
-    private float responseInterval;
+    private int responseInterval;
 
 
-    public RequiredAvailability(float responseInterval) {
+    public RequiredAvailability(int responseInterval) {
         this.responseInterval = responseInterval;
     }
 
 
-    public float getResponseInterval() {
+    public int getResponseInterval() {
         return responseInterval;
     }
 
