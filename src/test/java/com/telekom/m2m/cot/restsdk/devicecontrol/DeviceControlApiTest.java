@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
+import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
@@ -229,6 +230,36 @@ public class DeviceControlApiTest {
         BulkOperationCollection bulkOperationCollection = deviceControlApi.getBulkOperationCollection(7);
 
         assertNotNull(bulkOperationCollection);
+    }
+
+    @Test
+    public void testUpdateBulkOperation() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
+        final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
+
+        BulkOperation bulkOperation = new BulkOperation();
+        bulkOperation.setId("id234");
+        bulkOperation.setStatus("id234");
+        Progress progress = new Progress();
+        progress.setNumberOfDevices(1);
+        bulkOperation.setProgress(progress);
+        // it make sense to set either groupId or failedBulkOperationId, not both, but for test purposes I set both
+        bulkOperation.setGroupId("group123");
+        bulkOperation.setFailedBulkOperationId("failedBulkOperationId321");
+        bulkOperation.setStartDate(new Date(1504528150614L));
+
+        Operation operation = new Operation();
+        operation.set("description", "Restart device");
+        operation.set("c8y_Restart", new JsonObject());
+        bulkOperation.setOperation(operation);
+        bulkOperation.setCreationRamp(9);
+
+        String expectedBulkOperationJson = "{\"failedBulkOperationId\":\"failedBulkOperationId321\",\"operationPrototype\":{\"description\":\"Restart device\",\"c8y_Restart\":{}},\"creationRamp\":9,\"startDate\":\"2017-09-04T14:29:10.614+02\",\"groupId\":\"group123\"}";
+
+        deviceControlApi.update(bulkOperation);
+
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).doPutRequest(contains(expectedBulkOperationJson), contains("id234"), any(String.class));
     }
 
 }
