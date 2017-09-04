@@ -186,6 +186,21 @@ public class DeviceControlApi {
     }
 
     /**
+     * Retrieves a pageable Collection of BulkOperations.
+     *
+     * @param resultSize size of the results (Max. 2000)
+     * @return the first page of BulkOperationCollection which can be used to navigate through the found BulkOperations.
+     */
+    public BulkOperationCollection getBulkOperationCollection(int resultSize) {
+        return new BulkOperationCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_BULK_OPERATION_API_URL,
+                gson,
+                null,
+                resultSize);
+    }
+
+    /**
      * Deletes a bulk operation by provided id.
      * Note: it deletes only bulk operations with statuses ACTIVE or IN_PROGRESS
      *
