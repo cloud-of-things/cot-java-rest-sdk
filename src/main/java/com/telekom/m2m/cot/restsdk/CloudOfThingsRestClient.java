@@ -218,7 +218,6 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
     /**
      * Do a SmartREST real time request.
      *
