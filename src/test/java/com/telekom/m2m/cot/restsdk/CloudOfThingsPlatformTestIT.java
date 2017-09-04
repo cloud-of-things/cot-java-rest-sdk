@@ -4,8 +4,9 @@ import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.assertNotNull;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -28,9 +29,11 @@ public class CloudOfThingsPlatformTestIT {
     public void testWithCredentials() throws Exception {
         CotCredentials cotCredentials = new CotCredentials(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, cotCredentials);
+
         InventoryApi inventoryApi = cotPlatform.getInventoryApi();
+        assertNotNull(inventoryApi);
+
         inventoryApi.get("test");
-        Assert.assertNotNull(inventoryApi);
     }
 
 }

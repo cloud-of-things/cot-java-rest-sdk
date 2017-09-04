@@ -76,7 +76,7 @@ public class JsonArrayPagination {
         this.contentType = contentType;
         this.collectionElementName = collectionElementName;
         this.criteria = filterBuilder;
-        this.pageSize = pageSize;
+        setPageSize(pageSize);
     }
 
     /**

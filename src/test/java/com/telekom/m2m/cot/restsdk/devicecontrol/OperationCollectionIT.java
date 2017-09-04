@@ -6,17 +6,20 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
 import java.util.Date;
+
+import static org.testng.Assert.*;
+
 
 /**
  * @author steinert
  */
-public class DeviceControlApiOperationsCollectionIT {
+public class OperationCollectionIT {
 
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
@@ -36,8 +39,6 @@ public class DeviceControlApiOperationsCollectionIT {
 
     @BeforeMethod
     public void setUp() {
-        testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
-
         testManagedObjectParent =
                 TestHelper.createRandomManagedObjectInPlatform(
                         cotPlat,
@@ -50,7 +51,6 @@ public class DeviceControlApiOperationsCollectionIT {
                 );
 
         TestHelper.registerAsChildDevice(cotPlat, testManagedObjectParent, testManagedObject);
-
     }
 
     @AfterMethod
@@ -71,32 +71,32 @@ public class DeviceControlApiOperationsCollectionIT {
         deviceControlApi.create(operation);
 
         // when
-        final OperationCollection operationCollection = deviceControlApi.getOperations(5);
+        final OperationCollection operationCollection = deviceControlApi.getOperationCollection(5);
 
         // then
-        Assert.assertNotNull(operationCollection);
+        assertNotNull(operationCollection);
 
         final Operation[] operations = operationCollection.getOperations();
 
-        Assert.assertTrue(operations.length > 0);
-        Assert.assertEquals(operations.length, operationCollection.getJsonArray().size());
+        assertTrue(operations.length > 0);
+        assertEquals(operations.length, operationCollection.getJsonArray().size());
 
         final Operation retrievedOperation = operations[0];
         final JsonObject jsonObject = operationCollection.getJsonArray().get(0).getAsJsonObject();
 
-        Assert.assertTrue(retrievedOperation.getId() != null);
-        Assert.assertFalse(retrievedOperation.getId().isEmpty());
-        Assert.assertTrue(retrievedOperation.getId().equals(jsonObject.get("id").getAsString()));
+        assertTrue(retrievedOperation.getId() != null);
+        assertFalse(retrievedOperation.getId().isEmpty());
+        assertTrue(retrievedOperation.getId().equals(jsonObject.get("id").getAsString()));
 
-        Assert.assertTrue(retrievedOperation.getCreationTime() != null);
-        Assert.assertTrue(retrievedOperation.getCreationTime().compareTo(new Date()) < 0);
+        assertTrue(retrievedOperation.getCreationTime() != null);
+        assertTrue(retrievedOperation.getCreationTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(retrievedOperation.getStatus() != null);
-        Assert.assertTrue(retrievedOperation.getStatus().toString().equals(jsonObject.get("status").getAsString()));
+        assertTrue(retrievedOperation.getStatus() != null);
+        assertTrue(retrievedOperation.getStatus().toString().equals(jsonObject.get("status").getAsString()));
     }
 
     @Test
-    public void testDeleteMultipleOperationsBySource() throws Exception {
+    public void testDeleteMultipleOperationsByDeviceId() throws Exception {
         for (int i = 0; i < 6; i++) {
             Operation testOperation = new Operation();
             testOperation.setDeviceId(testManagedObject.getId());
@@ -105,18 +105,18 @@ public class DeviceControlApiOperationsCollectionIT {
             deviceControlApi.create(testOperation);
         }
 
-        OperationCollection operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
+        OperationCollection operations = deviceControlApi.getOperationCollection(Filter.build().byDeviceId(testManagedObject.getId()), 5);
         Operation[] os = operations.getOperations();
-        Assert.assertEquals(os.length, 5);
+        assertEquals(os.length, 5);
 
         deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject.getId()));
-        operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
+        operations = deviceControlApi.getOperationCollection(Filter.build().byDeviceId(testManagedObject.getId()), 5);
         os = operations.getOperations();
-        Assert.assertEquals(os.length, 0);
+        assertEquals(os.length, 0);
     }
 
     @Test
-    public void testMultipleOperationsBySource() throws Exception {
+    public void testMultipleOperationsByDeviceId() throws Exception {
         Operation testOperation = new Operation();
         testOperation.setDeviceId(testManagedObject.getId());
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
@@ -129,27 +129,15 @@ public class DeviceControlApiOperationsCollectionIT {
         testOperation2.set("com_telekom_m2m_cotcommand", jsonObject);
         deviceControlApi.create(testOperation2);
 
-        OperationCollection operations = deviceControlApi.getOperations(5);
+        OperationCollection operations = deviceControlApi.getOperationCollection(5);
         Operation[] os = operations.getOperations();
-        Assert.assertTrue(os.length > 0);
-        boolean allOperationsFromSource = true;
-        for (Operation o : os) {
-            if (!o.getDeviceId().equals(testManagedObject.getId())) {
-                allOperationsFromSource = false;
-            }
-        }
-        Assert.assertFalse(allOperationsFromSource);
+        assertTrue(os.length > 0);
+        assertTrue(Arrays.stream(os).filter(operation -> !operation.getDeviceId().equals(testManagedObject.getId())).count() > 0);
 
-        operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 20);
+        operations = deviceControlApi.getOperationCollection(Filter.build().byDeviceId(testManagedObject.getId()), 20);
         os = operations.getOperations();
-        allOperationsFromSource = true;
-        Assert.assertTrue(os.length > 0);
-        for (Operation o : os) {
-            if (!o.getDeviceId().equals(testManagedObject.getId())) {
-                allOperationsFromSource = false;
-            }
-        }
-        Assert.assertTrue(allOperationsFromSource);
+        assertTrue(os.length > 0);
+        assertTrue(Arrays.stream(os).filter(operation -> !operation.getDeviceId().equals(testManagedObject.getId())).count() == 0);
 
         // cleanup
         deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject2.getId()));
@@ -163,11 +151,11 @@ public class DeviceControlApiOperationsCollectionIT {
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
         deviceControlApi.create(testOperation);
 
-        OperationCollection operations = deviceControlApi.getOperations(Filter.build().byStatus(OperationStatus.PENDING), 5);
+        OperationCollection operations = deviceControlApi.getOperationCollection(Filter.build().byStatus(OperationStatus.PENDING), 5);
         Operation[] os = operations.getOperations();
-        Assert.assertTrue(os.length > 0);
+        assertTrue(os.length > 0);
         for (Operation o : os) {
-            Assert.assertTrue(o.getStatus().toString().equalsIgnoreCase(OperationStatus.PENDING.toString()));
+            assertTrue(o.getStatus().toString().equalsIgnoreCase(OperationStatus.PENDING.toString()));
         }
     }
 
@@ -181,23 +169,23 @@ public class DeviceControlApiOperationsCollectionIT {
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
         Date now = new Date();
         now.setSeconds(now.getSeconds() + 60);
-        OperationCollection operations = deviceControlApi.getOperations(
+        OperationCollection operations = deviceControlApi.getOperationCollection(
                 Filter.build()
                         .byDate(yesterday, now)
                         .byDeviceId(testManagedObject.getId()), 5);
 
 
         Operation[] os = operations.getOperations();
-        Assert.assertEquals(os.length, 1);
+        assertEquals(os.length, 1);
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        operations = deviceControlApi.getOperations(
+        operations = deviceControlApi.getOperationCollection(
                 Filter.build()
                         .byDate(beforeYesterday, yesterday)
                         .byDeviceId(testManagedObject.getId()), 5);
         os = operations.getOperations();
-        Assert.assertEquals(os.length, 0);
+        assertEquals(os.length, 0);
     }
 
     @Test
@@ -214,15 +202,15 @@ public class DeviceControlApiOperationsCollectionIT {
         final String agentId = testManagedObjectParent.getId();
 
         // when
-        OperationCollection operationCollection = deviceControlApi.getOperations(
+        OperationCollection operationCollection = deviceControlApi.getOperationCollection(
                 Filter.build()
                         .byAgentId(agentId), 5);
 
         // then
         final Operation[] operations = operationCollection.getOperations();
-        Assert.assertEquals(operations.length, 1);
+        assertEquals(operations.length, 1);
 
-        Assert.assertEquals(
+        assertEquals(
                 testManagedObject.getId(),
                 operations[0].getDeviceId()
         );
