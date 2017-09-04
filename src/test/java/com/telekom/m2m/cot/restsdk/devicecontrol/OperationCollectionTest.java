@@ -17,7 +17,7 @@ import static org.testng.Assert.assertNull;
  */
 public class OperationCollectionTest {
 
-    private final String relativeApiUrl = "audit/operations/";
+    private final String relativeApiUrl = "devicecontrol/operations/";
     private final Gson gson = GsonUtils.createGson();
     private final int pageSize = 5;
 
