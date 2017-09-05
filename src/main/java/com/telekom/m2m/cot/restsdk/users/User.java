@@ -1,9 +1,17 @@
 package com.telekom.m2m.cot.restsdk.users;
 
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
+import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 
 /**
@@ -16,6 +24,8 @@ public class User extends ExtensibleObject {
    private static final int EMAIL_SIZE = 254;
    private static final int MAX_PASSWORD_SIZE = 32;
    private static final int MIN_PASSWORD_SIZE = 6;
+   
+   private final Gson gson = GsonUtils.createGson();
 
   
     public User() {
@@ -109,6 +119,42 @@ public class User extends ExtensibleObject {
             anyObject.put("email", email);
         }
     }
+    
+    /**
+     * The method to retrieve the assigned device permissions of a user. The map
+     * contains a series of keys of device ids, and the values are a list of
+     * permissions of different type.
+     * 
+     * @return (Map<String, List<String>>) device permissions of a user
+     */
+    public Map<String, List<String>> getDevicePermissions() {
+        ExtensibleObject obj = (ExtensibleObject) anyObject.get("devicePermissions");
+        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
+
+        for (String key : obj.getAttributes().keySet()) {
+            List<String> list = new ArrayList<String>();
+            JsonArray jar = (JsonArray) obj.getAttributes().get(key);
+            for (JsonElement el : jar) {
+                list.add(el.getAsString());
+            }
+            devicePermission.put(key, list);
+        }
+        return devicePermission;
+    }
+
+    /**
+     * The method to set device permissions to a users. It allows to set more
+     * than one type of device permissions for more than one device at once by
+     * employing a map of device ids and a list of permissions.
+     * 
+     * @param devicePermissions
+     */
+    public void setDevicePermissions(Map<String, List<String>> devicePermissions) {
+
+        anyObject.put("devicePermissions", devicePermissions);
+
+    }
+
 
     /**
      * A method to get the URL of the user's groups

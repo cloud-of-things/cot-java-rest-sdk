@@ -1,13 +1,20 @@
 package com.telekom.m2m.cot.restsdk.util;
 
-import com.google.gson.*;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-
 import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.Map;
+
+import com.google.gson.JsonDeserializationContext;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
@@ -16,6 +23,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
 
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
 
+    @Override
     public JsonElement serialize(ExtensibleObject src, Type typeOfSrc,
                                  JsonSerializationContext context) {
         if (src == null) {
@@ -40,6 +48,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
 
     }
 
+    @Override
     public ExtensibleObject deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 
         JsonObject object = jsonElement.getAsJsonObject();
@@ -77,6 +86,17 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                 mo.set(element.getKey(), converted);
             } else if (element.getValue().isJsonObject()) {
                 mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), type));
+            } else if (element.getValue().isJsonArray()) {
+                String key = element.getKey();
+                // Some of the library fragments are arrays, but they don't need special treatment because all
+                // fragments are stored as simple JsonElements in the ExtensibleObject, and not as themselves.
+                // We just list them for documentation purposes, in case someone wants to change that in the future.
+                switch (key) {
+                    case "c8y_SoftwareList":
+                    case "c8y_SupportedOperations":
+                    default:
+                        mo.set(key, element.getValue());
+                }
             }
         }
 
