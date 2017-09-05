@@ -6,7 +6,10 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
-import java.util.Map;
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * DeviceControl API is used to work with operations.
@@ -208,7 +211,11 @@ public class DeviceControlApi {
         }
 
         if(bulkOperation.has("startDate")) {
-            extensibleObject.set("startDate", bulkOperation.getStartDate());
+            // curiously CoT platform accepts only a UTC time zone at updating the start date in a different way from creation of a bulk operation
+            Instant instant = bulkOperation.getStartDate().toInstant();
+            ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant,
+                    ZoneId.systemDefault());
+            extensibleObject.set("startDate", zonedDateTime.format(DateTimeFormatter.ISO_INSTANT));
         }
 
         if(bulkOperation.has("creationRamp")) {
