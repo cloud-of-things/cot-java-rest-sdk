@@ -255,7 +255,7 @@ public class DeviceControlApiTest {
         bulkOperation.setOperation(operation);
         bulkOperation.setCreationRamp(9);
 
-        String expectedBulkOperationJson = "{\"failedBulkOperationId\":\"failedBulkOperationId321\",\"operationPrototype\":{\"description\":\"Restart device\",\"c8y_Restart\":{}},\"creationRamp\":9,\"startDate\":\"2017-09-04T14:29:10.614+02\",\"groupId\":\"group123\"}";
+        String expectedBulkOperationJson = "{\"failedBulkOperationId\":\"failedBulkOperationId321\",\"operationPrototype\":{\"description\":\"Restart device\",\"c8y_Restart\":{}},\"creationRamp\":9,\"startDate\":\"2017-09-04T12:29:10.614Z\",\"groupId\":\"group123\"}";
 
         deviceControlApi.update(bulkOperation);
 
