@@ -9,7 +9,6 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 
@@ -22,7 +21,8 @@ public class CellInfo implements Fragment {
 
 
     public CellInfo() {
-        radioType = null; // CellTowers will have to specify their own radioType now.
+        radioType = null;
+        // CellTowers will have to specify their own radioType now.
     }
 
     public CellInfo(String radioType, CellTower... cellTowers) {
