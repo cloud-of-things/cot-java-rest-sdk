@@ -86,7 +86,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                 mo.set(element.getKey(), converted);
             } else if (element.getValue().isJsonObject()) {
                 mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), type));
-            } else if (element.getValue().isJsonArray()) {
+            }else if (element.getValue().isJsonArray()) {
                 String key = element.getKey();
                 // Some of the library fragments are arrays, but they don't need special treatment because all
                 // fragments are stored as simple JsonElements in the ExtensibleObject, and not as themselves.
