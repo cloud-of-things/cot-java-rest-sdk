@@ -16,6 +16,7 @@ import java.util.Date;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 
 /**
@@ -152,14 +153,21 @@ public class DeviceControlApiIT {
 
         // when
         Date changedStartDate = new Date(System.currentTimeMillis() + 24*60*60*1000);
-//        createdBulkOperation.setStartDate(changedStartDate);
+        createdBulkOperation.setStartDate(changedStartDate);
         createdBulkOperation.setCreationRamp(33);
         deviceControlApi.update(createdBulkOperation);
         BulkOperation retrievedBulkOperation = deviceControlApi.getBulkOperation(createdBulkOperation.getId());
 
-        // then
+        // then the updated bulkOperation gets a new Id, that's why there is no more bulkOperation with old Id
+        assertNull(retrievedBulkOperation);
+
+        // when we try to get createdBulkOperation with next id
+        retrievedBulkOperation = deviceControlApi.getBulkOperation(String.valueOf(Integer.valueOf(createdBulkOperation.getId())+1));
+
+        // then we could get a bulkOperation but we can not make sure that that's the updated bulkOperation
         assertNotNull(retrievedBulkOperation.getId());
-        assertEquals(retrievedBulkOperation.getCreationRamp(), 33);
+        // so this assertion can fail when in the meantime another bulkOperation was created
+        assertEquals(retrievedBulkOperation.getCreationRamp().intValue(), 33);
         assertEquals(retrievedBulkOperation.getStartDate().compareTo(changedStartDate), 0);
 
         // when
