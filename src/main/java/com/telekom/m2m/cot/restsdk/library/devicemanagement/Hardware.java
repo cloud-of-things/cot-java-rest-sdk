@@ -42,7 +42,7 @@ public class Hardware implements Fragment {
         object.addProperty("model", model);
         object.addProperty("revision", revision);
         object.addProperty("serialNumber", serialNumber);
-;
+
         return object;
     }
 }
