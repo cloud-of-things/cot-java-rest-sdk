@@ -406,7 +406,7 @@ public class UserApiIT {
         usertocreate.setFirstName("FirstName007");
         usertocreate.setPassword("password1234007");
         userApi.createUser(usertocreate, tenant);
-        User userInCloud = userApi.getUserByName("GenericUserName77", tenant);
+        User userInCloud = userApi.getUserByName(testUserName, tenant);
 
         // when (now prepare a map of permissions as below and assign these
         // permissions to the created user):
@@ -432,7 +432,7 @@ public class UserApiIT {
         // when (now let's return this user from the cloud and check if the
         // device permissions were assigned as expected):
 
-        User returned = userApi.getUserByName("GenericUserName77", tenant);
+        User returned = userApi.getUserByName(testUserName, tenant);
 
         assertEquals(devicePermission.keySet().size(), returned.getDevicePermissions().keySet().size());
 

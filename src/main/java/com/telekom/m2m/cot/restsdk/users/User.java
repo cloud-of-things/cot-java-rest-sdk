@@ -6,12 +6,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 
 /**
@@ -25,8 +23,6 @@ public class User extends ExtensibleObject {
    private static final int MAX_PASSWORD_SIZE = 32;
    private static final int MIN_PASSWORD_SIZE = 6;
    
-   private final Gson gson = GsonUtils.createGson();
-
   
     public User() {
         super();
