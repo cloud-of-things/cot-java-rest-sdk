@@ -7,11 +7,11 @@ import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
 
 public class DeviceManagementLibraryIT {
@@ -39,7 +39,7 @@ public class DeviceManagementLibraryIT {
         }
 
         inventoryApi.create(testManagedObject);
-        Assert.assertNotNull("Should now have an Id", testManagedObject.getId());
+        assertNotNull(testManagedObject.getId(), "Should now have an Id");
 
         ManagedObject moOut = inventoryApi.get(testManagedObject.getId());
 
@@ -56,6 +56,7 @@ public class DeviceManagementLibraryIT {
         assertEquals(((JsonObject)moOut.get("c8y_Firmware")).get("version").getAsString(), "vers");
         assertEquals(((JsonObject)moOut.get("c8y_Configuration")).get("config").getAsString(), "myConfig-1\\nmyConfig-2\\n");
         assertEquals(((JsonObject)moOut.get("c8y_CellInfo")).get("cellTowers").getAsJsonArray().get(2).getAsJsonObject().get("signalStrength").getAsString(), "10");
+        assertEquals(((JsonObject)moOut.get("c8y_CommunicationMode")).get("mode").getAsString(), "SMS");
     }
 
 }

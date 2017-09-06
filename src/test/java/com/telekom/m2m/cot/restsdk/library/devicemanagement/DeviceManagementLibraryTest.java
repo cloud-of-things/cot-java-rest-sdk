@@ -263,7 +263,8 @@ public class DeviceManagementLibraryTest {
                 new CellInfo("gsm", new CellInfo.CellTower("gsm", 49, 10, 20, 30, 2, 20, 12345678L, 1),
                                     new CellInfo.CellTower(null, 49, 10, 20, 31, null, null, null, 0)).
                             addCellTower(new CellInfo.CellTower("gsm", 49, 10, 20, 32, 2, 10, 12345678L, 1)).
-                            addCellTower(new CellInfo.CellTower(null, 49, 10, 20, 33, null, null, null, null))
+                            addCellTower(new CellInfo.CellTower(null, 49, 10, 20, 33, null, null, null, null)),
+                new CommunicationMode("SMS")
             };
     }
 
