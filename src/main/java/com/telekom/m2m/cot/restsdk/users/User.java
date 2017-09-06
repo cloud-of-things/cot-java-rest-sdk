@@ -139,7 +139,7 @@ public class User extends ExtensibleObject {
     }
 
     /**
-     * The method to set device permissions to a users. It allows to set more
+     * The method to set device permissions to a user. It allows to set more
      * than one type of device permissions for more than one device at once by
      * employing a map of device ids and a list of permissions.
      * 
