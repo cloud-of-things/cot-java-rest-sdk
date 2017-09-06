@@ -43,7 +43,7 @@ public class IdentityApi {
         externalIdObject.add("type", new JsonPrimitive(externalId.getType()));
         externalIdObject.add("externalId", new JsonPrimitive(externalId.getExternalId()));
 
-        String response = cloudOfThingsRestClient.doPostRequest(externalIdObject.toString(), "/identity/globalIds/" + externalId.getManagedObject().getId() + "/externalIds", CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.doPostRequest(externalIdObject.toString(), "/identity/globalIds/" + externalId.getManagedObject().getId() + "/externalIds", CONTENT_TYPE, CONTENT_TYPE);
         return gson.fromJson(response, ExternalId.class);
 
     }

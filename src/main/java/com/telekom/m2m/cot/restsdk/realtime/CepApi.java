@@ -1,5 +1,7 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Map;
 
 import com.google.gson.Gson;
@@ -17,11 +19,14 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 public class CepApi {
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
+
     private final Gson gson = GsonUtils.createGson();
+
 
     public CepApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
     }
+
 
     /**
      * Returns the connector that establishes the communications with the
@@ -33,38 +38,49 @@ public class CepApi {
         return new CepConnector(cloudOfThingsRestClient);
     }
 
+
     public ModuleCollection getModules() {
         return new ModuleCollection(cloudOfThingsRestClient, "cep/modules", gson, null);
 
     }
 
-    // TODO: to be tested with the new userName.
-    public Module createModule() {
-        String CONTENT = "multipart/form-data";
 
-        String json = "";
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, "cep/modules", CONTENT);
+    public Module createModule(Module module) {
+        String data = "module " + module.getName() + ";" + String.join("\n\n", module.getStatements());
 
-        Module module = getModule(id);
+        String response = cloudOfThingsRestClient.doFormUpload(data, "file", "cep/modules");
+
+        Module responseModule = gson.fromJson(response, Module.class);
+
+        module.copyFrom(responseModule);
+
+        return module;
+    }
+
+
+    public Module getModule(String id) {
+
+        String responseJson = cloudOfThingsRestClient.getResponse(id,
+                                                              "cep/modules",
+                                                              "application/vnd.com.nsn.cumulocity.cepModule+json");
+        String statementsFile = cloudOfThingsRestClient.getResponse(id,
+                "cep/modules",
+                "text/plain");
+
+        Module module = gson.fromJson(responseJson, Module.class);
+        String[] statements = statementsFile.split("\n\n");
+        module.setStatements(Arrays.asList(statements)); // TODO: does this already work?
+
         return module;
 
     }
 
     // TODO: to be tested with the new userName.
-    public Module getModule(String id) {
-
-        String CONTENT = "application/vnd.com.nsn.cumulocity.cepModule+json;ver=...";
-        String result = cloudOfThingsRestClient.getResponse(id, "cep/modules", CONTENT);
-        return new Module(gson.fromJson(result, ExtensibleObject.class));
-
-    }
-
-    // TODO: to be tested with the new userName.
-    public void updateModule(Module module) {
+    public void updateModule(Module module) {/*
 
         String CONTENT = "application/vnd.com.nsn.cumulocity.cepModule+json;ver=...";
         Map<String, Object> attributes = module.getAttributes();
-        // TODO check which fiels are not allowed to be updated:
+        // TODO check which fields are not allowed to be updated:
         attributes.remove("exampleFieldToBeRemoved");
 
         ExtensibleObject extensibleObject = new ExtensibleObject();
@@ -72,15 +88,21 @@ public class CepApi {
 
         String json = gson.toJson(extensibleObject);
         cloudOfThingsRestClient.doPutRequest(json, "cep/modules/" + module.getId(), CONTENT);
-
+*/
     }
 
     public void deleteModule(Module module) {
 
+        // TODO: 405 Method not supported!?
         cloudOfThingsRestClient.delete(module.getId(), "cep/modules");
 
     }
 
+    public void deleteModule(String id) {
+
+        cloudOfThingsRestClient.delete(id, "cep/module");
+
+    }
     // TODO check if we really need a representation of the CepApi such as
     // below:
     /*

@@ -12,6 +12,7 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -50,7 +51,7 @@ public class CloudOfThingsRestClient {
     }
 
     /**
-     * Proceedes a HTTP POST request and parses the response Header.
+     * Executes an HTTP POST request and parses the response Header.
      * Response header 'Location' will be split to get the ID of the object (mostly created).
      *
      * @param json
@@ -96,8 +97,15 @@ public class CloudOfThingsRestClient {
         }
     }
 
+
+    // TODO: here the contentType is also used for the Accept header, which is dirty!
+    public String doPostRequest(String json, String api, String contentType) {
+        return doPostRequest(json, api, contentType, contentType);
+    }
+
+
     /**
-     * Proceedes a HTTP POST request and returns the response body as String.
+     * Executes an HTTP POST request and returns the response body as String.
      *
      * @param json
      *            Request body, needs to be a json object correlating to the
@@ -106,33 +114,80 @@ public class CloudOfThingsRestClient {
      *            the REST API string.
      * @param contentType
      *            the Content-Type of the JSON Object.
+     * @param accept
+     *            the Accept header for the request
      * @return the received JSON response body.
      */
-    public String doPostRequest(String json, String api, String contentType) {
+    public String doPostRequest(String json, String api, String contentType, String accept) {
 
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
+        Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
                 .url(host + "/" + api)
-                .post(body)
-                .build();
+                .post(body);
+
+        if (contentType != null) {
+            requestBuilder.addHeader("Content-Type", contentType);
+        }
+        if (accept != null) {
+            requestBuilder.addHeader("Accept", accept);
+        }
+
         Response response = null;
         try {
-            response = client.newCall(request).execute();
+            response = client.newCall(requestBuilder.build()).execute();
             if (!response.isSuccessful()) {
                 final String err = getErrorMessage(response);
                 throw new CotSdkException(response.code(), err);
             }
 
-            return response.body().string();
+            String bodyContent = response.body().string();
+            return bodyContent;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
     }
+
+
+    /**
+     * Executes an HTTP POST request and returns the response body as String.
+     *
+     * @param file Request body, i.e. the first and only form part.
+     * @param name The name of the form field.
+     * @param api the URL path (without leading /)
+     * @return the response body
+     */
+    public String doFormUpload(String file, String name, String api) {
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(name, "", RequestBody.create(MultipartBody.FORM, file))
+                .build();
+
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api)
+                .post(body)
+                .build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            String bodyContent = response.body().string(); // TODO: might be unsafe in case of errors!
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
+
+            return bodyContent;
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
 
     /**
      * Do a real time polling request, i.e. the connect call. We use a different client for this call,
@@ -186,7 +241,7 @@ public class CloudOfThingsRestClient {
 
 
     /**
-     * Proceedes a HTTP POST request and returns the response body as String.
+     * Executes an HTTP POST request and returns the response body as String.
      * Method will throw an exception if the response code is indicating
      * an unsuccessful request.
      *
@@ -195,6 +250,7 @@ public class CloudOfThingsRestClient {
      * @param api
      *            the REST API string.
      * @return the received JSON response body.
+     * TODO: check if this method is redundant enough to delete it
      */
     public String doPostRequest(String json, String api) {
 
@@ -336,16 +392,19 @@ public class CloudOfThingsRestClient {
         }
     }
 
-    // TODO: check why the contentType is not necessary, because experiments seemed to indicate that it is...
-    public String getResponse(String id, String api, String contentType) {
-        Request request = new Request.Builder()
+
+    public String getResponse(String id, String api, String accept) {
+        Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
-                .build();
+                .url(host + "/" + api + "/" + id);
+
+        if (accept != null) {
+            requestBuilder.addHeader("Accept", accept);
+        }
 
         Response response = null;
         try {
-            response = client.newCall(request).execute();
+            response = client.newCall(requestBuilder.build()).execute();
             String result = null;
             if (response.isSuccessful()) {
                 result = response.body().string();

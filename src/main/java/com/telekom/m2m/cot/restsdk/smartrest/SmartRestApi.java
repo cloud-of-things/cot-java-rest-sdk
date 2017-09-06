@@ -6,6 +6,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,6 +43,7 @@ public class SmartRestApi {
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private final InventoryApi inventoryApi;
 
+    private static final Gson gson = GsonUtils.createGson();
 
 
     public SmartRestApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
@@ -107,11 +109,11 @@ public class SmartRestApi {
             List<SmartTemplate> templates = new ArrayList<>();
             JsonObject templateJson = (JsonObject) mo.getAttributes().get(JSON_TEMPLATE_ATTRIBUTE);
             if (templateJson.has("requestTemplates")) {
-                SmartRequestTemplate[] requests = new Gson().fromJson(templateJson.get("requestTemplates"), SmartRequestTemplate[].class);
+                SmartRequestTemplate[] requests = gson.fromJson(templateJson.get("requestTemplates"), SmartRequestTemplate[].class);
                 templates.addAll(Arrays.asList(requests));
             }
             if (templateJson.has("responseTemplates")) {
-                SmartResponseTemplate[] responses = new Gson().fromJson(templateJson.get("responseTemplates"), SmartResponseTemplate[].class);
+                SmartResponseTemplate[] responses = gson.fromJson(templateJson.get("responseTemplates"), SmartResponseTemplate[].class);
                 templates.addAll(Arrays.asList(responses));
             }
             return templates.toArray(new SmartTemplate[templates.size()]);

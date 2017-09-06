@@ -14,14 +14,16 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  * Created by Ozan Arslan on 14.08.2017.
  *
  */
-
 public class ModuleCollection extends JsonArrayPagination {
-    //TODO below CONTENT_TYPE might not work. In the cumulosity guide (realtime statements), the CONTENT_TYPE is not fully given.
+
+    //TODO below CONTENT_TYPE might not work. In the cumulocity guide (realtime statements), the CONTENT_TYPE is not fully given.
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.cepModuleCollection+json;ver=0.9";
+
     private static final String COLLECTION_ELEMENT_NAME = "modules";
 
+
     /**
-     * Creates a ModuleCollection. Use {@link UsersApi} to get ModuleCollections.
+     * Creates a ModuleCollection. Use {@link CepApi} to get ModuleCollections.
      *
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      * @param relativeApiUrl          relative url of the REST API without leading slash.
@@ -29,9 +31,9 @@ public class ModuleCollection extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      */
     ModuleCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-                    final String relativeApiUrl,
-                    final Gson gson,
-                    final Filter.FilterBuilder filterBuilder) {
+                     final String relativeApiUrl,
+                     final Gson gson,
+                     final Filter.FilterBuilder filterBuilder) {
         super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder);
     }
 
@@ -45,14 +47,13 @@ public class ModuleCollection extends JsonArrayPagination {
 
         if (jsonModules != null) {
             final Module[] arrayOfModules = new Module[jsonModules.size()];
-            for (int i = 0; i < jsonModules.size(); i++) {
-                JsonElement jsonModule = jsonModules.get(i).getAsJsonObject();
-                final Module module = new Module(gson.fromJson(jsonModule, ExtensibleObject.class));
-                arrayOfModules[i] = module;
+            for (int i = 0; i < arrayOfModules.length; i++) {
+                arrayOfModules[i] = gson.fromJson(jsonModules.get(i), Module.class);
             }
             return arrayOfModules;
         } else {
             return null;
         }
     }
+
 }
