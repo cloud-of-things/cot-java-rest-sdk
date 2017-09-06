@@ -72,7 +72,6 @@ public class CepApi {
 
     }
 
-    // TODO: to be tested with the new userName.
     public void updateModule(Module module) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.cepModule+json";
 
