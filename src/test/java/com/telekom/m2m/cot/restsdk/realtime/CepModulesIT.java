@@ -1,15 +1,17 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
+
+import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
 
 public class CepModulesIT {
@@ -59,4 +61,36 @@ public class CepModulesIT {
         assertEquals(myModule.getStatus(), "DEPLOYED");
     }
 
+    
+    
+    @Test
+    public void testUpdateModule() {
+        
+        //given (first create a module:)
+        String name = "testModuleX" + System.currentTimeMillis(); // TODO: validate (e.g. no '-' allowed?)
+        Module myModule = new Module();
+        myModule.setName(name);
+        List<String> statements = new ArrayList<>();
+        statements.add("@Name(\"s1\")\nselect * from EventCreated.win:time(1 hour)\n\n");
+
+        myModule.setStatements(statements);
+        cepApi.createModule(myModule);
+
+        moduleId = myModule.getId();
+        
+        //when (then  retrieve it back from the clould and update its fields):
+        myModule = cepApi.getModule(moduleId);
+        myModule.setName("newTestModuleX"+ System.currentTimeMillis());
+        myModule.setStatus("NOT_DEPLOYED");
+        cepApi.updateModule(myModule);
+        
+        //then (now let's return the module from the cloud and check if its fields are correctly updated):
+
+        myModule= cepApi.getModule(moduleId);
+        
+        assertTrue(myModule.getName().contains("newTestM"));
+        assertEquals(myModule.getStatus(), "NOT_DEPLOYED");
+        
+    }
+    
 }

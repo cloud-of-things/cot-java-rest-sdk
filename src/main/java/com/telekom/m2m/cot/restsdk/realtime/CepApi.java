@@ -1,12 +1,9 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
@@ -76,19 +73,19 @@ public class CepApi {
     }
 
     // TODO: to be tested with the new userName.
-    public void updateModule(Module module) {/*
+    public void updateModule(Module module) {
+        String CONTENT = "application/vnd.com.nsn.cumulocity.cepModule+json";
 
-        String CONTENT = "application/vnd.com.nsn.cumulocity.cepModule+json;ver=...";
-        Map<String, Object> attributes = module.getAttributes();
-        // TODO check which fields are not allowed to be updated:
-        attributes.remove("exampleFieldToBeRemoved");
+        String json = "{\"name\" : \"" + module.getName() + "\", \"status\" : \"" + module.getStatus() + "\"}";
 
-        ExtensibleObject extensibleObject = new ExtensibleObject();
-        extensibleObject.setAttributes(attributes);
+        // the status can only be updated if it has changed from the default:
+        // DEPLOYED. TODO: investigate why this is the case.
+        if (module.getStatus().equals("DEPLOYED")) {
+            json = "{\"name\" : \"" + module.getName() + "\"}";
+        }
 
-        String json = gson.toJson(extensibleObject);
         cloudOfThingsRestClient.doPutRequest(json, "cep/modules/" + module.getId(), CONTENT);
-*/
+
     }
 
     public void deleteModule(Module module) {
@@ -100,7 +97,7 @@ public class CepApi {
 
     public void deleteModule(String id) {
 
-        cloudOfThingsRestClient.delete(id, "cep/module");
+        cloudOfThingsRestClient.delete(id, "cep/modules");
 
     }
     // TODO check if we really need a representation of the CepApi such as
