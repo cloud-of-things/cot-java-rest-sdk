@@ -41,16 +41,15 @@ public class CepModulesIT {
 
     @Test
     public void testCreateModule() {
-        String name = "robmoduleX" + System.currentTimeMillis(); // TODO: validate (e.g. no '-' allowed?)
         Module myModule = new Module();
+        String name = "testmoduleX" + System.currentTimeMillis(); // TODO: validate (e.g. no '-' allowed?)
         myModule.setName(name);
+
         List<String> statements = new ArrayList<>();
-        statements.add("@Name(\"s1\")\nselect * from EventCreated.win:time(1 hour)\n\n");
-        //TODO: adding a second line/statement doesn't work like this?
-        /* +
-                       "@Name(\"s2\")\ninsert into CreatedEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events");
-                       */
+        statements.add("@Name(\"s1\") select * from EventCreated.win:time(1 hour)");
+        statements.add("@Name(\"s2\") insert into CreatedEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events");
         myModule.setStatements(statements);
+
         cepApi.createModule(myModule);
 
         moduleId = myModule.getId();
@@ -59,6 +58,9 @@ public class CepModulesIT {
         assertEquals(myModule.getName(), name);
         assertEquals(myModule.getId(), moduleId);
         assertEquals(myModule.getStatus(), "DEPLOYED");
+        assertEquals(myModule.getStatements().size(), 2);
+        assertEquals(myModule.getStatements().get(0), "@Name(\"s1\") select * from EventCreated.win:time(1 hour);");
+        assertEquals(myModule.getStatements().get(1), "@Name(\"s2\") insert into CreatedEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events;");
     }
 
     

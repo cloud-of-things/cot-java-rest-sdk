@@ -5,6 +5,7 @@ package com.telekom.m2m.cot.restsdk.realtime;
  * 
  * Created by Ozan Arslan on 14.08.2017.
  */
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -61,14 +62,42 @@ public class Module {
         this.status = status;
     }
 
-    // TODO: maybe we want to make a copy?
+    /**
+     * Return a copy of the statements in this module.
+     * Statements cannot be changed or added via this list. Use {@link #setStatements(List)} or
+     * {@link #addStatement(String)} instead.
+      * @return a copy of the statements in this module. List is empty if there are no statements.
+     */
     public List<String> getStatements() {
-        return statements;
+        if (statements != null) {
+            return new ArrayList<>(statements);
+        } else {
+            return new ArrayList<>();
+        }
     }
 
-    // TODO: maybe we want to make a copy?
+    /**
+     * Set the statements in this module to the statements in a given list. The List itself will not become the
+     * statement list of this module. Only the statements will be copied. Existing statements will be discarded.
+     * @param statements list of statements. Terminating ';' is optional.
+     */
     public void setStatements(List<String> statements) {
-        this.statements = statements;
+        this.statements = new ArrayList<>(statements.size());
+        for (String statement : statements) {
+            addStatement(statement);
+        }
+    }
+
+    /**
+     * Add another statemnt to the current list of statements.
+     * @param statement the new statement. Terminating ';' is optional.
+     */
+    public void addStatement(String statement) {
+        if (statement.endsWith(";")) {
+            statements.add(statement.trim());
+        } else {
+            statements.add(statement.trim()+";");
+        }
     }
 
     public String getFileRepresentation() {

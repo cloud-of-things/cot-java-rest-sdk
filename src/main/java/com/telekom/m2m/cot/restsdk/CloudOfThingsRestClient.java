@@ -174,12 +174,11 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(request).execute();
-            String bodyContent = response.body().string(); // TODO: might be unsafe in case of errors!
             if (!response.isSuccessful()) {
                 final String err = getErrorMessage(response);
                 throw new CotSdkException(response.code(), err);
             }
-
+            String bodyContent = response.body().string();
             return bodyContent;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);

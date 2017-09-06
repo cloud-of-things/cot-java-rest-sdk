@@ -43,7 +43,7 @@ public class CepApi {
 
 
     public Module createModule(Module module) {
-        String data = "module " + module.getName() + ";" + String.join("\n\n", module.getStatements());
+        String data = "module " + module.getName() + ";" + String.join("\n", module.getStatements());
 
         String response = cloudOfThingsRestClient.doFormUpload(data, "file", "cep/modules");
 
@@ -56,20 +56,18 @@ public class CepApi {
 
 
     public Module getModule(String id) {
-
-        String responseJson = cloudOfThingsRestClient.getResponse(id,
-                                                              "cep/modules",
-                                                              "application/vnd.com.nsn.cumulocity.cepModule+json");
-        String statementsFile = cloudOfThingsRestClient.getResponse(id,
-                "cep/modules",
-                "text/plain");
-
+        String responseJson = cloudOfThingsRestClient.getResponse(id, "cep/modules", "application/vnd.com.nsn.cumulocity.cepModule+json");
         Module module = gson.fromJson(responseJson, Module.class);
-        String[] statements = statementsFile.split("\n\n");
-        module.setStatements(Arrays.asList(statements)); // TODO: does this already work?
+
+        String statementsFile = cloudOfThingsRestClient.getResponse(id, "cep/modules", "text/plain");
+        String[] statements = statementsFile.split(";");
+        // The first line should be the module name, which itself is not a statement:
+        if (statements[0].startsWith("module")) {
+            statements = Arrays.copyOfRange(statements, 1, statements.length);
+        }
+        module.setStatements(Arrays.asList(statements));
 
         return module;
-
     }
 
     public void updateModule(Module module) {
@@ -87,18 +85,11 @@ public class CepApi {
 
     }
 
-    public void deleteModule(Module module) {
-
-        // TODO: 405 Method not supported!?
-        cloudOfThingsRestClient.delete(module.getId(), "cep/modules");
-
-    }
-
     public void deleteModule(String id) {
-
+        // This is the correct path, even if the official documentation disagrees:
         cloudOfThingsRestClient.delete(id, "cep/modules");
-
     }
+
     // TODO check if we really need a representation of the CepApi such as
     // below:
     /*
