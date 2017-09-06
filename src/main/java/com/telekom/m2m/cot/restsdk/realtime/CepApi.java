@@ -9,7 +9,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 /**
  * The class that defines the CepApi. CEP stands for Complex-Event-Processing.
  * CepApi returns a URL to a collection of modules.
- * 
+ *
  * Created by Ozan Arslan on 14.08.2017. TODO: we might want to rename this, to
  * avoid confusion with the CoT-entity "CepApi".
  */
@@ -26,8 +26,7 @@ public class CepApi {
 
 
     /**
-     * Returns the connector that establishes the communications with the
-     * notifications service.
+     * Returns the connector that establishes the real time communication with the notification service.
      * 
      * @return CepConnector
      */
@@ -36,16 +35,25 @@ public class CepApi {
     }
 
 
+    /**
+     * [Prepare to] load all Modules (json only, no statements) from the server.
+     * @return the ModuleCollection
+     */
     public ModuleCollection getModules() {
         return new ModuleCollection(cloudOfThingsRestClient, "cep/modules", gson, null);
 
     }
 
 
+    /**
+     * Create (i.e. persist) a new Module on the server.
+     * @param module the new Module. Will receive an ID from the server.
+     * @return the same Module instance
+     */
     public Module createModule(Module module) {
         String data = "module " + module.getName() + ";" + String.join("\n", module.getStatements());
 
-        String response = cloudOfThingsRestClient.doFormUpload(data, "file", "cep/modules");
+        String response = cloudOfThingsRestClient.doFormUpload(data, "file", "cep/modules", "text/plain");
 
         Module responseModule = gson.fromJson(response, Module.class);
 
@@ -55,6 +63,12 @@ public class CepApi {
     }
 
 
+    /**
+     * Get an existing Module by ID.
+     * This will cause two separate requests because it needs to get the json as well as the statements.
+     * @param id the ID of the Module
+     * @return the Module
+     */
     public Module getModule(String id) {
         String responseJson = cloudOfThingsRestClient.getResponse(id, "cep/modules", "application/vnd.com.nsn.cumulocity.cepModule+json");
         Module module = gson.fromJson(responseJson, Module.class);
@@ -70,6 +84,13 @@ public class CepApi {
         return module;
     }
 
+
+    /**
+     * Update a Module.
+     * This will cause two separate requests because it needs to update the json as well as the statements.
+     * TODO: maybe we should only update the dirty parts?
+     * @param module the Module that shall be updated on the server. No changes will happen to this object.
+     */
     public void updateModule(Module module) {
         String CONTENT = "application/vnd.com.nsn.cumulocity.cepModule+json";
 
@@ -81,14 +102,27 @@ public class CepApi {
             json = "{\"name\" : \"" + module.getName() + "\"}";
         }
 
+        // This is the correct path, even if the official documentation disagrees:
         cloudOfThingsRestClient.doPutRequest(json, "cep/modules/" + module.getId(), CONTENT);
 
+        String data = "module " + module.getName() + ";" + String.join("\n", module.getStatements());
+        // This is the correct path, even if the official documentation disagrees.
+        // Also, the update doesn't need to be multipart/form-data.
+        // And: the ID of the module doesn't seem to change. It is updated in place.
+        cloudOfThingsRestClient.doPutRequest(data, "cep/modules/" + module.getId(), "text/plain");
     }
 
+
+    /**
+     * Delete a Module by its ID.
+     * @param id the ID of the Module that should be deleted.
+     */
     public void deleteModule(String id) {
+        // TODO: we should check the return type (success: 204 NO CONTENT)
         // This is the correct path, even if the official documentation disagrees:
         cloudOfThingsRestClient.delete(id, "cep/modules");
     }
+
 
     // TODO check if we really need a representation of the CepApi such as
     // below:
