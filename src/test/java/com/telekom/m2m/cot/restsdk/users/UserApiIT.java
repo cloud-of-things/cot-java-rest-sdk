@@ -38,6 +38,9 @@ public class UserApiIT {
     private String exampleGroup = "admins";
 
     private String testUserName = "GenericUserName77";
+    private Group group =new Group();
+    private String testGroupName = "GenericGroupName77";
+    
     private String email = "mail@mail77.com";
 
     @AfterMethod
@@ -51,6 +54,17 @@ public class UserApiIT {
             // delete it's own user (should be the norm):
             assertEquals(ex.getCause().getMessage(),
                     "Request failed. Platform provided details: '\"users/Not Found\"' HTTP status code:'404' (see https://http.cat/404)");
+        }
+         
+        try {
+            // We need this in case a test failed in the middle, causing it to
+            // skip the delete call.
+            userApi.deleteGroup(group, tenant);
+        } catch (CotSdkException ex) {
+            // This exception is ok, because then the test method managed to
+            // delete it's own user (should be the norm):
+            assertEquals(ex.getCause().getMessage(),
+                    "Request failed. Platform provided details: '\"group/Not Found\"' HTTP status code:'404' (see https://http.cat/404)");
         }
     }
 
@@ -451,4 +465,52 @@ public class UserApiIT {
 
     }
 
+    @Test
+    public void testDevicePermissionsForGroups() throws Exception {
+        
+        // given (first create a group in the cloud where then we can set device permissions):
+        group.setName(testGroupName);
+        userApi.createGroup(group, tenant);
+        group = userApi.getGroupByName(tenant,testGroupName);
+
+        // when (now prepare a map of permissions as below and assign these
+        // permissions to the created group):
+        // We can assign more than one device id, and more than one permission
+        // type.
+        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
+        List<String> list1 = new ArrayList<String>();
+
+        list1.add("ALARM:*:READ");
+        list1.add("AUDIT:*:READ");
+
+        // These are real device ids, however cloud does not check their
+        // validity; one can also provide a random string as a device id.
+        devicePermission.put("{10481}", list1);
+        List<String> list2 = new ArrayList<String>();
+
+        list2.add("OPERATION:*:READ");
+        list2.add("EVENT:*:READ");
+        devicePermission.put("{10445}", list2);
+        group.setDevicePermissions(devicePermission);
+        userApi.updateGroup(group, tenant);
+
+        // when (now let's return this group from the cloud and check if the
+        // device permissions were assigned as expected):
+
+      group = userApi.getGroupByName(tenant, testGroupName);
+
+        assertEquals(devicePermission.keySet().size(), group.getDevicePermissions().keySet().size());
+
+        assertTrue((group.getDevicePermissions().get("{10481}").contains("ALARM:*:READ")));
+        assertTrue((group.getDevicePermissions().get("{10481}").contains("AUDIT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10481}").contains("OPERATION:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10481}").contains("EVENT:*:READ")));
+        
+        assertTrue((group.getDevicePermissions().get("{10445}").contains("OPERATION:*:READ")));
+        assertTrue((group.getDevicePermissions().get("{10445}").contains("EVENT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10445}").contains("ALARM:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10445}").contains("AUDIT:*:READ")));
+        
+    }
+    
 }
