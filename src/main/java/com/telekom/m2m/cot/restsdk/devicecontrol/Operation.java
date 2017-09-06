@@ -121,4 +121,23 @@ public class Operation extends ExtensibleObject {
     void setId(String id) {
         anyObject.put("id", id);
     }
+
+    /**
+     * Setting the deliveryType of the operation.
+     *
+     * @param deliveryType a String with delivery type, e.g. "SMS".
+     */
+    void setDeliveryType(String deliveryType) {
+        anyObject.put("deliveryType", deliveryType);
+    }
+
+    /**
+     * Getting the deliveryType of the operation.
+     *
+     * @return a String with the delivery type, e.g. "SMS".
+     */
+    public String getDeliveryType() {
+        return (String) anyObject.get("deliveryType");
+    }
+
 }
