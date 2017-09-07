@@ -59,10 +59,12 @@ public class UserApiIT {
         try {
             // We need this in case a test failed in the middle, causing it to
             // skip the delete call.
-            userApi.deleteGroup(group, tenant);
+            if (group.getId() != null) {
+                userApi.deleteGroup(group, tenant);
+            }
         } catch (CotSdkException ex) {
             // This exception is ok, because then the test method managed to
-            // delete it's own user (should be the norm):
+            // delete it's own group (should be the norm):
             assertEquals(ex.getCause().getMessage(),
                     "Request failed. Platform provided details: '\"group/Not Found\"' HTTP status code:'404' (see https://http.cat/404)");
         }
