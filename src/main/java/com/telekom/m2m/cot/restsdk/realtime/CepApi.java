@@ -123,14 +123,4 @@ public class CepApi {
     }
 
 
-    // TODO check if we really need a representation of the CepApi such as
-    // below:
-    /*
-     * public CepApiRepresentation getCepApi() {
-     * 
-     * String result = cloudOfThingsRestClient.getResponse("cep", null); return
-     * new CepApiRepresentation(gson.fromJson(result, ExtensibleObject.class));
-     * }
-     */
-
 }

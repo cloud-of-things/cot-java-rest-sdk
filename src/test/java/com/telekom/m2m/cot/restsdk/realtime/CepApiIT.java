@@ -49,7 +49,7 @@ public class CepApiIT {
     private ManagedObject alarmSource3;
     private ManagedObject testObjectForInventory1;
     private ManagedObject testObjectForInventory2;
-    private ManagedObject alarmObjectForCreateUpdateDelete;
+    private ManagedObject testObjectForCreateUpdateDelete;
 
     private static final int DELAY_MILLIS = 100;
 
@@ -66,7 +66,7 @@ public class CepApiIT {
         testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
         testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
         testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
-        alarmObjectForCreateUpdateDelete = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_alarm_for_createUpdateDelete");
+        testObjectForCreateUpdateDelete = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_for_createUpdateDelete");
 
     }
 
@@ -81,7 +81,7 @@ public class CepApiIT {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForOperation);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory1);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory2);
-        TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmObjectForCreateUpdateDelete);
+        
     }
 
     // This test will create one subscriber, then creates two alarms (for the
@@ -446,21 +446,21 @@ public class CepApiIT {
     }
 
     
-    // This test will create one subscriber, and an alarm. It will check if a
-    // notification is received upon creation, update and deletion of the alarm.
+    // This test will create one subscriber, and an inventory object. It will check if a
+    // notification is received upon update and deletion of the alarm.
     @Test
-    public void testNotificationsForCreateUpdateDelete() throws InterruptedException {
+    public void testNotificationsForUpdateDelete() throws InterruptedException {
 
         CepConnector connector = cepApi.getCepConnector();
 
-        final List<String> notedAlarms = new ArrayList<>();
+        final List<String> notedInventoryObjects = new ArrayList<>();
 
-        // Create the subscriptions and listeners:
-        connector.subscribe("/alarms/" + alarmObjectForCreateUpdateDelete.getId());
+        connector.subscribe("/managedobjects/" + testObjectForCreateUpdateDelete.getId());
+
         connector.addListener(new SubscriptionListener() {
             @Override
             public void onNotification(String channel, Notification notification) {
-                notedAlarms.add(notification.getData().toString());
+                notedInventoryObjects.add(notification.getData().toString());
             }
 
             @Override
@@ -472,82 +472,32 @@ public class CepApiIT {
         // Connect, starting background listener:
         connector.connect();
 
+        //Now let's update the object and see if we receive a notification:
+        
         Thread.sleep(DELAY_MILLIS);
-        Alarm alarm = alarmApi
-                .create(makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmObjectForCreateUpdateDelete));
+        invApi.update(prepareForUpdate("first_test_object", "cot_managed_object1", testObjectForCreateUpdateDelete));
 
         Thread.sleep(DELAY_MILLIS);
 
-        Thread.sleep(DELAY_MILLIS);
-
-        // Now test if we got a notification for creation of the alarm:
-        assertEquals(notedAlarms.size(), 1);
-        assertTrue(notedAlarms.get(0).contains(alarmObjectForCreateUpdateDelete.getId()));
-        assertTrue(notedAlarms.get(0).contains("MINOR"));
 
         // Now let's update the alarm and see if we will get notified:
-        alarm.setSeverity(Alarm.SEVERITY_MAJOR);
-        alarm.setStatus(Alarm.STATE_ACKNOWLEDGED);
-        alarmApi.update(alarm);
+        assertEquals(notedInventoryObjects.size(), 1);
+        assertTrue(notedInventoryObjects.get(0).contains("UPDATE"));
 
         Thread.sleep(DELAY_MILLIS);
 
-        assertEquals(notedAlarms.size(), 2);
+        // Now let's delete the object and see what happens:
+        invApi.delete(testObjectForCreateUpdateDelete.getId());
+        
+        Thread.sleep(DELAY_MILLIS);
 
-        assertTrue(notedAlarms.get(1).contains("MAJOR"));
-        assertTrue(notedAlarms.get(1).contains("ACKNOWLEDGED"));
-
-        // Now let's delete the alarm and see what happens:
-        // this part should wait until we can delete an alarm without deleting
-        // all the alarms in cloud.
-        // invApi.delete(alarmObjectForCreateUpdateDelete.getId());
-        // Thread.sleep(DELAY_MILLIS);
-
-        // System.out.println("size 3:"+notedAlarms.size());
-        // System.out.println("alarm notification after
-        // delete:"+notedAlarms.get(0));
-
+        assertEquals(notedInventoryObjects.size(), 2);
+        assertTrue(notedInventoryObjects.get(1).contains("DELETE"));
+        
     }
     
     
-    @Test
-    public void testGenericCepApiMethods() throws InterruptedException {
 
-        // given (testing getModules)
-        ModuleCollection collection = cepApi.getModules();
-
-        // TODO: the below tests does not work yet, as currently our user cannot
-        // access /cep or /cep/modules.
-
-        // when:
-        /*
-         * Module[] arrayOfModules = collection.getModules();
-         * 
-         * // then: assertTrue(arrayOfModules.length > 1,
-         * "There must be quite many of modules.");
-         * 
-         * // We demanded the moduleCollection (arrayOfModules) from the cloud
-         * // without filters which means that the arrayOfModules should contain
-         * // all modules in the cloud. Now let's access one of the modules in
-         * the // array:
-         * 
-         * Module module = arrayOfModules[0]; String id=module.getId(); //Now,
-         * let's try to retrieve the same module individually from the cloud
-         * using the getModule() method. Then we can compare both modules. This
-         * way we can prove both methods (getModule() and getModules()) at the
-         * same time. Module ModuleFromCloud =cepApi.getModule(id);
-         * 
-         * 
-         * //Now let's compare some of their fields:
-         * assertEquals(ModuleFromCloud.getName(), module.getName(),
-         * "The module in the collection should be same as the module retrieved individually."
-         * ); assertEquals(ModuleFromCloud.getId(), module.getId(),
-         * "The module in the collection should be same as the module retrieved individually."
-         * ); assertEquals(ModuleFromCloud.getStatus(), module.getStatus(),
-         * "The module in the collection should be same as the module retrieved individually."
-         * );
-         */
-    }
 
     private Alarm makeAlarm(String type, String severity, ManagedObject source) {
         Alarm alarm = new Alarm();
