@@ -59,8 +59,9 @@ public class UserApiIT {
         try {
             // We need this in case a test failed in the middle, causing it to
             // skip the delete call.
-          if(group.getId()!=null){
-            userApi.deleteGroup(group, tenant);}
+            if (group.getId() != null) {
+                userApi.deleteGroup(group, tenant);
+            }
         } catch (CotSdkException ex) {
             // This exception is ok, because then the test method managed to
             // delete it's own group (should be the norm):
