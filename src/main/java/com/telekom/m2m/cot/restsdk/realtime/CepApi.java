@@ -89,27 +89,27 @@ public class CepApi {
      * Update a Module.
      * This will cause two separate requests because it needs to update the json as well as the statements.
      * TODO: maybe we should only update the dirty parts?
-     * @param module the Module that shall be updated on the server. No changes will happen to this object.
+     * @param module the Module that shall be updated on the server.
+     *               The parameter instance will be updated with the response from the server (esp. lastModified).
      */
     public void updateModule(Module module) {
-        String CONTENT = "application/vnd.com.nsn.cumulocity.cepModule+json";
+        String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.cepModule+json";
 
-        String json = "{\"name\" : \"" + module.getName() + "\", \"status\" : \"" + module.getStatus() + "\"}";
+        String json = "{\"name\" : \"" + module.getName() + "\", \"status\" : \"" + module.getStatus().name() + "\"}";
 
         // the status can only be updated if it has changed from the default:
         // DEPLOYED. TODO: investigate why this is the case.
-        if (module.getStatus().equals("DEPLOYED")) {
+        if (module.getStatus().equals(Module.Status.DEPLOYED)) {
             json = "{\"name\" : \"" + module.getName() + "\"}";
         }
 
-        // This is the correct path, even if the official documentation disagrees:
-        cloudOfThingsRestClient.doPutRequest(json, "cep/modules/" + module.getId(), CONTENT);
+        cloudOfThingsRestClient.doPutRequest(json, "cep/modules/" + module.getId(), CONTENT_TYPE);
 
         String data = "module " + module.getName() + ";" + String.join("\n", module.getStatements());
-        // This is the correct path, even if the official documentation disagrees.
-        // Also, the update doesn't need to be multipart/form-data.
+        // The update doesn't need to be multipart/form-data.
         // And: the ID of the module doesn't seem to change. It is updated in place.
-        cloudOfThingsRestClient.doPutRequest(data, "cep/modules/" + module.getId(), "text/plain");
+        String responseJson = cloudOfThingsRestClient.doPutRequest(data, "cep/modules/" + module.getId(), "text/plain", CONTENT_TYPE);
+        module.copyFrom(gson.fromJson(responseJson, Module.class));
     }
 
 
@@ -119,7 +119,6 @@ public class CepApi {
      */
     public void deleteModule(String id) {
         // TODO: we should check the return type (success: 204 NO CONTENT)
-        // This is the correct path, even if the official documentation disagrees:
         cloudOfThingsRestClient.delete(id, "cep/modules");
     }
 

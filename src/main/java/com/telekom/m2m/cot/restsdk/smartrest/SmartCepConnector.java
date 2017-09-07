@@ -140,7 +140,7 @@ public class SmartCepConnector implements Runnable {
      * <br>
      * Adding the same listener multiple times has no additional effect.
      *
-     * @param listener
+     * @param listener the SmartListener that shall receive notifications from this connector
      */
     public void addListener(SmartListener listener) {
         listeners.add(listener);
@@ -152,7 +152,7 @@ public class SmartCepConnector implements Runnable {
      * <br>
      * Trying to remove a listener that doesn't exist is ok.
      *
-     * @param listener
+     * @param listener the SmartListener to remove
      */
     public void removeListener(SmartListener listener) {
         listeners.remove(listener);

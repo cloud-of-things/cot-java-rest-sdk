@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.testng.annotations.AfterMethod;
@@ -59,7 +60,7 @@ public class CepModulesIT {
 
         assertEquals(myModule.getName(), name);
         assertEquals(myModule.getId(), moduleId);
-        assertEquals(myModule.getStatus(), "DEPLOYED");
+        assertEquals(myModule.getStatus(), Module.Status.DEPLOYED);
         assertEquals(myModule.getStatements().size(), 2);
         assertEquals(myModule.getStatements().get(0), "@Name(\"s1\") select * from EventCreated.win:time(1 hour);");
         assertEquals(myModule.getStatements().get(1), "@Name(\"s2\") insert into CreatedEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events;");
@@ -67,8 +68,7 @@ public class CepModulesIT {
 
     
     @Test
-    public void testUpdateModule() {
-        
+    public void testUpdateModule() throws InterruptedException {
         //given (first create a module:)
         String name = "testModuleX" + System.currentTimeMillis(); // TODO: validate (e.g. no '-' allowed?)
         Module myModule = new Module();
@@ -78,26 +78,38 @@ public class CepModulesIT {
 
         myModule.setStatements(statements);
         cepApi.createModule(myModule);
-
         moduleId = myModule.getId();
 
         //when (then retrieve it back from the cloud and update its fields):
         myModule = cepApi.getModule(moduleId);
+        Date lastModifiedBefore = myModule.getLastModified();
+        Thread.sleep(1000); // We have to wait 1 sec because that's the precision of the lastModified time.
+
         myModule.setName("newTestModuleX"+ System.currentTimeMillis());
-        myModule.setStatus("NOT_DEPLOYED");
+        myModule.setStatus(Module.Status.NOT_DEPLOYED);
         statements.clear();
         statements.add("@Name(\"s2\")\nselect * from EventCreated.win:time(2 hour)");
         myModule.setStatements(statements);
         cepApi.updateModule(myModule);
-        
+        Date lastModifiedAfter = myModule.getLastModified();
+        assertTrue(lastModifiedAfter.getTime() > lastModifiedBefore.getTime());
+
         //then (now let's return the module from the cloud and check if its fields are correctly updated):
 
         myModule = cepApi.getModule(moduleId);
-        
+        Date lastModifiedLater = myModule.getLastModified();
+        System.out.println("later: "+lastModifiedLater);
         assertTrue(myModule.getName().startsWith("newTestModuleX"));
-        assertEquals(myModule.getStatus(), "NOT_DEPLOYED");
+        assertEquals(myModule.getStatus(), Module.Status.NOT_DEPLOYED);
         assertEquals(myModule.getStatements().size(), 1);
         assertEquals(myModule.getStatements().get(0), "@Name(\"s2\")\nselect * from EventCreated.win:time(2 hour);");
+
+        /* TODO: this isn't possible. Neither in the web gui. "Assigned deployment id '152' is already in use". Why?
+        // Now we switch it back to DEPLOYED:
+        myModule.setStatus(Module.Status.DEPLOYED);
+        cepApi.updateModule(myModule);
+        assertEquals(myModule.getStatus(), Module.Status.DEPLOYED);
+        */
     }
     
 }
