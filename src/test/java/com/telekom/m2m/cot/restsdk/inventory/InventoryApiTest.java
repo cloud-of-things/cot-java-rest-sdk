@@ -51,7 +51,7 @@ public class InventoryApiTest {
         InventoryApi inventoryApi = platform.getInventoryApi();
         inventoryApi.update(mo);
 
-        Mockito.verify(rc, times(1)).doPutRequest(anyString(), anyString(), anyString(), anyString());
+        Mockito.verify(rc, times(1)).doPutRequest(anyString(), anyString(), anyString());
     }
 
     @Test

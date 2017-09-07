@@ -17,6 +17,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 
 /**
@@ -448,14 +449,42 @@ public class CloudOfThingsRestClient {
 
     }
 
-    public void doPutRequest(String data, String api, String contentType) {
-        RequestBody body = RequestBody.create(MediaType.parse(contentType), data);
-        Request request = new Request.Builder()
+
+    /**
+     * Execute a PUT request.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @return the response body, if there was one (empty string otherwise)
+     */
+    public String doPutRequest(String data, String path, String contentType) {
+        return doPutRequest(data, path, contentType, "*/*");
+    }
+
+
+    /**
+     * Execute a PUT request.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @param accept the Accept header (may be null)
+     * @return the response body, if there was one (empty string otherwise)
+     */
+    public String doPutRequest(String data, String path, String contentType, String accept) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), data);
+        Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
-                .url(host + "/" + api)
-                .put(body)
-                .build();
+                .url(host + "/" + path)
+                .put(requestBody);
+
+        if (accept != null) {
+            requestBuilder.addHeader("Accept", accept);
+        }
+
+        Request request = requestBuilder.build();
 
         Response response = null;
         try {
@@ -463,6 +492,8 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Requested returned error code");
             }
+            ResponseBody responseBody = response.body();
+            return (responseBody == null) ? "" : responseBody.string();
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         } finally {
@@ -470,25 +501,6 @@ public class CloudOfThingsRestClient {
         }
     }
 
-    public void doPutRequest(String json, String id, String api, String contentType) {
-        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
-                .url(host + "/" + api + "/" + id)
-                .put(body)
-                .build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
-        } finally {
-            closeResponseBodyIfResponseAndBodyNotNull(response);
-        }
-
-    }
 
     public void delete(String id, String api) {
         Request request = new Request.Builder()

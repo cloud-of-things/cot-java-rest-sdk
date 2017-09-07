@@ -12,10 +12,14 @@ import java.util.List;
 
 public class Module {
 
+    public enum Status {
+        DEPLOYED, NOT_DEPLOYED
+    }
+
     private String id;
     private String name;
     private Date lastModified;
-    private String status;
+    private Status status;
     private String fileRepresentation;
     private List<String> statements;
 
@@ -54,11 +58,11 @@ public class Module {
         this.lastModified = lastModified;
     }
 
-    public String getStatus() {
+    public Status getStatus() {
         return status;
     }
 
-    public void setStatus(String status) {
+    public void setStatus(Status status) {
         this.status = status;
     }
 
