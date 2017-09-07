@@ -22,6 +22,8 @@ public interface SmartListener {
 
     /**
      * If the SmartCepConnector receives an error then it will pass it on to all its listeners by calling this method.
+     *
+     * @param error will usually be a {@link com.telekom.m2m.cot.restsdk.util.CotSdkException}
      */
     void onError(Throwable error);
 

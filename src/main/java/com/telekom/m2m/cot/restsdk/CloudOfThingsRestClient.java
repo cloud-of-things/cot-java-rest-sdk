@@ -12,10 +12,12 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
+import okhttp3.ResponseBody;
 
 
 /**
@@ -32,11 +34,11 @@ public class CloudOfThingsRestClient {
 
     protected OkHttpClient client;
 
-    // This is an automatic clone of {@link #client}, which can have it's own timeouts, because we don't want
-    // a real time server advice to change timeout behaviour for the whole application:
+    // This is an automatic clone of {@link #client}, which can have it's own, much longer, timeouts, and because we
+    // don't want a real time server advice to change timeout behaviour for the whole application:
     protected OkHttpClient realTimeClient;
-    // The read timeout for the realTimeClient. It will always be set by the caller, but we store it to detect changes:
-    protected Integer realTimeTimeout = null;
+    // The read timeout for the realTimeClient. It should always be set by the caller, but we store it to detect changes:
+    protected Integer realTimeTimeout = 60000;
 
 
     public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
@@ -50,7 +52,7 @@ public class CloudOfThingsRestClient {
     }
 
     /**
-     * Proceedes a HTTP POST request and parses the response Header.
+     * Executes an HTTP POST request and parses the response Header.
      * Response header 'Location' will be split to get the ID of the object (mostly created).
      *
      * @param json
@@ -96,8 +98,15 @@ public class CloudOfThingsRestClient {
         }
     }
 
+
+    // TODO: here the contentType is also used for the Accept header, which is dirty!
+    public String doPostRequest(String json, String api, String contentType) {
+        return doPostRequest(json, api, contentType, contentType);
+    }
+
+
     /**
-     * Proceedes a HTTP POST request and returns the response body as String.
+     * Executes an HTTP POST request and returns the response body as String.
      *
      * @param json
      *            Request body, needs to be a json object correlating to the
@@ -106,9 +115,99 @@ public class CloudOfThingsRestClient {
      *            the REST API string.
      * @param contentType
      *            the Content-Type of the JSON Object.
+     * @param accept
+     *            the Accept header for the request
      * @return the received JSON response body.
      */
-    public String doPostRequest(String json, String api, String contentType) {
+    public String doPostRequest(String json, String api, String contentType, String accept) {
+
+        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api)
+                .post(body);
+
+        if (contentType != null) {
+            requestBuilder.addHeader("Content-Type", contentType);
+        }
+        if (accept != null) {
+            requestBuilder.addHeader("Accept", accept);
+        }
+
+        Response response = null;
+        try {
+            response = client.newCall(requestBuilder.build()).execute();
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
+
+            String bodyContent = response.body().string();
+            return bodyContent;
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
+
+    /**
+     * Executes an HTTP POST request and returns the response body as String.
+     *
+     * @param file Request body, i.e. the first and only form part.
+     * @param name The name of the form field.
+     * @param api the URL path (without leading /)
+     * @return the response body
+     */
+    public String doFormUpload(String file, String name, String api, String contentType) {
+        RequestBody body = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart(name, "", RequestBody.create(MultipartBody.FORM, file))
+                .build();
+
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType)
+                .url(host + "/" + api)
+                .post(body)
+                .build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
+            String bodyContent = response.body().string();
+            return bodyContent;
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
+
+    /**
+     * Do a real time polling request, i.e. the connect call. We use a different client for this call,
+     * because it's supposed to have very long timeouts, unsuitable for regular requests.
+     * Regular real time polling and smart rest real time polling share the same client (and therefore timeout)
+     * because it is to be expected that a client will probably use either one of them, but not both.
+     *
+     * @param json
+     *            Request body, needs to be a json object correlating to the
+     *            contentType.
+     * @param api
+     *            the REST API string.
+     * @param contentType
+     *            the Content-Type of the JSON Object.
+     * @param timeout the new timeout for real time requests. null = don't change the current timeout
+     *
+     * @return the received JSON response body.
+     */
+    public String doRealTimePollingRequest(String json, String api, String contentType, Integer timeout) {
 
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
         Request request = new Request.Builder()
@@ -118,6 +217,13 @@ public class CloudOfThingsRestClient {
                 .url(host + "/" + api)
                 .post(body)
                 .build();
+
+        // For the first request, or any subsequent request that wants to change the timeout, we need to get a new client:
+        if ((realTimeClient == null) || ((timeout != null) && (!timeout.equals(realTimeTimeout)))) {
+            realTimeTimeout = (timeout != null) ? timeout : realTimeTimeout;
+            realTimeClient = client.newBuilder().readTimeout(realTimeTimeout, TimeUnit.MILLISECONDS).build();
+        }
+
         Response response = null;
         try {
             response = client.newCall(request).execute();
@@ -134,6 +240,40 @@ public class CloudOfThingsRestClient {
         }
     }
 
+
+    /**
+     * Executes an HTTP POST request and returns the response body as String.
+     * Method will throw an exception if the response code is indicating
+     * an unsuccessful request.
+     *
+     * @param json
+     *            Request body, needs to be a json object.
+     * @param api
+     *            the REST API string.
+     * @return the received JSON response body.
+     * TODO: check if this method is redundant enough to delete it
+     */
+    public String doPostRequest(String json, String api) {
+
+        RequestBody body = RequestBody.create(null, json);
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .url(host + "/" + api)
+                .post(body)
+                .build();
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
+            }
+            return response.body().string();
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
 
     /**
      * Do a SmartREST real time request.
@@ -173,6 +313,8 @@ public class CloudOfThingsRestClient {
     /**
      * Do a SmartREST real time polling request, i.e. the connect call. We use a different client for this call,
      * because it's supposed to have very long timeouts, unsuitable for regular requests.
+     * Regular real time polling and smart rest real time polling share the same client (and therefore timeout)
+     * because it is to be expected that a client will probably use either one of them, but not both.
      *
      * @param xId the X-Id for which this request shall be made. Cannot be null, because it's used by the server to
      *            detect that it is a SmartREST request in the first place.
@@ -184,18 +326,17 @@ public class CloudOfThingsRestClient {
     public String[] doSmartRealTimePollingRequest(String xId, String lines, Integer timeout) {
         RequestBody body = RequestBody.create(null, lines);
 
-        Request.Builder builder = new Request.Builder()
+        Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("X-Id", xId)
                 .url(host + "/cep/realtime") // Same real time endpoint handles smart and regular requests.
-                .post(body);
-
-        Request request = builder.build();
+                .post(body)
+                .build();
 
         // For the first request, or any subsequent request that wants to change the timeout, we need to get a new client:
         if ((realTimeClient == null) || ((timeout != null) && (!timeout.equals(realTimeTimeout)))) {
-            realTimeTimeout = timeout;
-            realTimeClient = client.newBuilder().readTimeout(timeout, TimeUnit.MILLISECONDS).build();
+            realTimeTimeout = (timeout != null) ? timeout : realTimeTimeout;
+            realTimeClient = client.newBuilder().readTimeout(realTimeTimeout, TimeUnit.MILLISECONDS).build();
         }
 
         Response response = null;
@@ -252,16 +393,19 @@ public class CloudOfThingsRestClient {
         }
     }
 
-    // TODO: check why the contentType is not necessary, because experiments seemed to indicate that it is...
-    public String getResponse(String id, String api, String contentType) {
-        Request request = new Request.Builder()
+
+    public String getResponse(String id, String api, String accept) {
+        Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
-                .build();
+                .url(host + "/" + api + "/" + id);
+
+        if (accept != null) {
+            requestBuilder.addHeader("Accept", accept);
+        }
 
         Response response = null;
         try {
-            response = client.newCall(request).execute();
+            response = client.newCall(requestBuilder.build()).execute();
             String result = null;
             if (response.isSuccessful()) {
                 result = response.body().string();
@@ -305,15 +449,42 @@ public class CloudOfThingsRestClient {
 
     }
 
-    public void doPutRequest(String json, String api, String contentType) {
-        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
+
+    /**
+     * Execute a PUT request.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @return the response body, if there was one (empty string otherwise)
+     */
+    public String doPutRequest(String data, String path, String contentType) {
+        return doPutRequest(data, path, contentType, "*/*");
+    }
+
+
+    /**
+     * Execute a PUT request.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @param accept the Accept header (may be null)
+     * @return the response body, if there was one (empty string otherwise)
+     */
+    public String doPutRequest(String data, String path, String contentType, String accept) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), data);
+        Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
-                .url(host + "/" + api)
-                .put(body)
-                .build();
+                .url(host + "/" + path)
+                .put(requestBody);
+
+        if (accept != null) {
+            requestBuilder.addHeader("Accept", accept);
+        }
+
+        Request request = requestBuilder.build();
 
         Response response = null;
         try {
@@ -321,6 +492,8 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Requested returned error code");
             }
+            ResponseBody responseBody = response.body();
+            return (responseBody == null) ? "" : responseBody.string();
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         } finally {
@@ -328,25 +501,6 @@ public class CloudOfThingsRestClient {
         }
     }
 
-    public void doPutRequest(String json, String id, String api, String contentType) {
-        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
-                .url(host + "/" + api + "/" + id)
-                .put(body)
-                .build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-        } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
-        } finally {
-            closeResponseBodyIfResponseAndBodyNotNull(response);
-        }
-
-    }
 
     public void delete(String id, String api) {
         Request request = new Request.Builder()
