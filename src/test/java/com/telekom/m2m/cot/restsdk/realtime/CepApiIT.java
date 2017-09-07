@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -391,6 +393,64 @@ public class CepApiIT {
         assertTrue(notedOperations.get(0).contains("first_operation_attribute"));
         assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
 
+    }
+
+    // This test will create one subscriber, and an operation. It will check if a
+    // notification is received upon creation, update and deletion of the alarm.
+    @Test
+    public void testNotificationsForCreateUpdateDeleteOperation() throws InterruptedException {
+
+        CepConnector connector = cepApi.getCepConnector();
+
+        final List<String> notedOperations = new ArrayList<>();
+
+        // Create the subscriptions and listeners:
+        connector.subscribe("/operations/" + testObjectForOperation.getId());
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedOperations.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        Thread.sleep(DELAY_MILLIS);
+        Operation operation = devApi.create(makeOperation("first_operation_attribute", testObjectForOperation));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        // Now test if we got a notification for creation of the operation:
+        assertEquals(notedOperations.size(), 1);
+        assertTrue(notedOperations.get(0).contains(testObjectForOperation.getId()));
+        assertTrue(notedOperations.get(0).contains("CREATE"));
+
+        // Now let's update the operation and see if we will get notified:
+        operation.setStatus(OperationStatus.EXECUTING);
+        devApi.update(operation);
+
+        Thread.sleep(DELAY_MILLIS);
+
+        assertEquals(notedOperations.size(), 2);
+
+        assertTrue(notedOperations.get(1).contains(testObjectForOperation.getId()));
+        assertTrue(notedOperations.get(1).contains("UPDATE"));
+        assertTrue(notedOperations.get(1).contains(OperationStatus.EXECUTING.toString()));
+
+        // Now let's delete the operation and see what happens:
+        devApi.deleteOperations(Filter.build().byDeviceId(testObjectForOperation.getId()));
+        Thread.sleep(DELAY_MILLIS);
+
+        assertEquals(notedOperations.size(), 3);
+        assertFalse(notedOperations.get(2).contains(testObjectForOperation.getId()));
+        assertTrue(notedOperations.get(2).contains("DELETE"));
+        assertTrue(notedOperations.get(2).contains(operation.getId()));
     }
 
     // This test creates two inventory objects and a subscriber. The subscriber then
