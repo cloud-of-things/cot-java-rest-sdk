@@ -159,7 +159,7 @@ public class CloudOfThingsRestClient {
      * @param api the URL path (without leading /)
      * @return the response body
      */
-    public String doFormUpload(String file, String name, String api) {
+    public String doFormUpload(String file, String name, String api, String contentType) {
         RequestBody body = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart(name, "", RequestBody.create(MultipartBody.FORM, file))
@@ -167,6 +167,7 @@ public class CloudOfThingsRestClient {
 
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType)
                 .url(host + "/" + api)
                 .post(body)
                 .build();
@@ -447,12 +448,11 @@ public class CloudOfThingsRestClient {
 
     }
 
-    public void doPutRequest(String json, String api, String contentType) {
-        RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
+    public void doPutRequest(String data, String api, String contentType) {
+        RequestBody body = RequestBody.create(MediaType.parse(contentType), data);
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
-                .addHeader("Accept", contentType)
                 .url(host + "/" + api)
                 .put(body)
                 .build();

@@ -25,9 +25,10 @@ public class CepModulesIT {
     public void tearDown() {
         if (moduleId != null) {
             cepApi.deleteModule(moduleId);
+            moduleId = null;
         }
-
     }
+
 
     @Test
     public void testGetModules() {
@@ -39,8 +40,9 @@ public class CepModulesIT {
         }
     }
 
+
     @Test
-    public void testCreateModule() {
+    public void testCreateAndReadModule() {
         Module myModule = new Module();
         String name = "testmoduleX" + System.currentTimeMillis(); // TODO: validate (e.g. no '-' allowed?)
         myModule.setName(name);
@@ -64,7 +66,6 @@ public class CepModulesIT {
     }
 
     
-    
     @Test
     public void testUpdateModule() {
         
@@ -73,26 +74,30 @@ public class CepModulesIT {
         Module myModule = new Module();
         myModule.setName(name);
         List<String> statements = new ArrayList<>();
-        statements.add("@Name(\"s1\")\nselect * from EventCreated.win:time(1 hour)\n\n");
+        statements.add("@Name(\"s1\")\nselect * from EventCreated.win:time(1 hour)");
 
         myModule.setStatements(statements);
         cepApi.createModule(myModule);
 
         moduleId = myModule.getId();
-        
-        //when (then  retrieve it back from the clould and update its fields):
+
+        //when (then retrieve it back from the cloud and update its fields):
         myModule = cepApi.getModule(moduleId);
         myModule.setName("newTestModuleX"+ System.currentTimeMillis());
         myModule.setStatus("NOT_DEPLOYED");
+        statements.clear();
+        statements.add("@Name(\"s2\")\nselect * from EventCreated.win:time(2 hour)");
+        myModule.setStatements(statements);
         cepApi.updateModule(myModule);
         
         //then (now let's return the module from the cloud and check if its fields are correctly updated):
 
-        myModule= cepApi.getModule(moduleId);
+        myModule = cepApi.getModule(moduleId);
         
-        assertTrue(myModule.getName().contains("newTestM"));
+        assertTrue(myModule.getName().startsWith("newTestModuleX"));
         assertEquals(myModule.getStatus(), "NOT_DEPLOYED");
-        
+        assertEquals(myModule.getStatements().size(), 1);
+        assertEquals(myModule.getStatements().get(0), "@Name(\"s2\")\nselect * from EventCreated.win:time(2 hour);");
     }
     
 }
