@@ -1,11 +1,7 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
-
-
-
 /**
- * A SubscriptionListener receives real time notifications to which it
- * was subscribed to.
+ * A SubscriptionListener receives real time notifications to which it was subscribed to.
  */
 public interface SubscriptionListener {
 
@@ -15,12 +11,12 @@ public interface SubscriptionListener {
      * @param channel the channel that the listener subscribed to.
      * @param notification the {@link Notification} that contains all the matching response lines.
      */
-    public void onNotification(String channel, Notification notification);
+    void onNotification(String channel, Notification notification);
 
 
     /**
      * If the CepConnector receives an error then it will pass it on to all it's listeners by calling this method.
      */
-    public void onError(String channel, Throwable error);
+    void onError(String channel, Throwable error);
 
 }

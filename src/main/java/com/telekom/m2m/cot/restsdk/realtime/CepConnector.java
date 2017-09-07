@@ -295,6 +295,7 @@ public class CepConnector implements Runnable {
 
                 for (JsonElement element : response) {
                     // TODO: evaluate advice?
+                    // TODO: pass errors to our listeners?
 
                     JsonObject jsonObject = element.getAsJsonObject();
 

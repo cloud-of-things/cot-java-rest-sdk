@@ -2,15 +2,13 @@ package com.telekom.m2m.cot.restsdk.realtime;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 /**
- * The class that defines the operations on collection of modules. This class represents the module collections. It also allows the creation and deletion of modules. 
- * 
+ * This class represents a collection of {@link Module}s.
+ *
  * Created by Ozan Arslan on 14.08.2017.
  *
  */

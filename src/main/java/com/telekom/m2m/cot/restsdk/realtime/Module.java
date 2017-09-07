@@ -1,15 +1,12 @@
 package com.telekom.m2m.cot.restsdk.realtime;
-/**
- * TODO: currently the class is barely more than a placeholder.
- * The class that defines the operations on modules. The class represents a module which can be queried, modified and deployed.
- * 
- * Created by Ozan Arslan on 14.08.2017.
- */
+
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
+/**
+ * A Module holds a list of real time statements.
+ */
 public class Module {
 
     public enum Status {
@@ -20,7 +17,6 @@ public class Module {
     private String name;
     private Date lastModified;
     private Status status;
-    private String fileRepresentation;
     private List<String> statements;
 
 
@@ -29,7 +25,6 @@ public class Module {
         this.name = module.getName();
         this.lastModified = module.getLastModified();
         this.status = module.getStatus();
-        this.fileRepresentation = module.getFileRepresentation();
         this.statements = module.getStatements();
     }
 
@@ -51,11 +46,13 @@ public class Module {
     }
 
     public Date getLastModified() {
-        return lastModified;
+        // TODO: maybe we should use java8-date-stuff instead.
+        return new Date(lastModified.getTime());
     }
 
     public void setLastModified(Date lastModified) {
-        this.lastModified = lastModified;
+        // TODO: maybe we should use java8-date-stuff instead.
+        this.lastModified = new Date(lastModified.getTime());
     }
 
     public Status getStatus() {
@@ -87,13 +84,11 @@ public class Module {
      */
     public void setStatements(List<String> statements) {
         this.statements = new ArrayList<>(statements.size());
-        for (String statement : statements) {
-            addStatement(statement);
-        }
+        statements.forEach(this::addStatement);
     }
 
     /**
-     * Add another statemnt to the current list of statements.
+     * Add another statement to the current list of statements.
      * @param statement the new statement. Terminating ';' is optional.
      */
     public void addStatement(String statement) {
@@ -102,14 +97,6 @@ public class Module {
         } else {
             statements.add(statement.trim()+";");
         }
-    }
-
-    public String getFileRepresentation() {
-        return fileRepresentation;
-    }
-
-    public void setFileRepresentation(String fileRepresentation) {
-        this.fileRepresentation = fileRepresentation;
     }
 
 }
