@@ -1,12 +1,12 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import org.junit.Test;
 import org.testng.Assert;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import org.testng.annotations.Test;
 
 public class UserTest {
 
@@ -38,11 +38,11 @@ public class UserTest {
 		
 		String[] forbidden= {" ","$","\\","/","+",":","nameWith Space", "DollarSign$Name",
 		        "Back\\SlashName", "Slash/Name", "NameWith+Sign","NameWith:Symbol","Mixture$\\/+: Name"};
-		for(String x : forbidden){
-		    try{
+		for (String x : forbidden) {
+		    try {
 		        user.setUserName(x);
 		        Assert.fail("Restricted characters should not be allowed in  userName. Failed name is "+x);
-		       }catch (CotSdkException ex  ){
+		       } catch (CotSdkException ex  ) {
 		       }
 		}
 	}

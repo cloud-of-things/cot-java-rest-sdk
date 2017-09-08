@@ -12,7 +12,8 @@ import org.testng.asserts.SoftAssert;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.AssertJUnit.fail;
+import static org.testng.Assert.fail;
+
 
 /**
  * @author steinert
