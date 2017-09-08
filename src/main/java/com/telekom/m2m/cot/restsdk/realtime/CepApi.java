@@ -10,8 +10,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * The class that defines the CepApi. CEP stands for Complex-Event-Processing.
  * CepApi returns a URL to a collection of modules.
  *
- * Created by Ozan Arslan on 14.08.2017. TODO: we might want to rename this, to
- * avoid confusion with the CoT-entity "CepApi".
+ * Created by Ozan Arslan on 14.08.2017.
  */
 public class CepApi {
 
@@ -19,6 +18,8 @@ public class CepApi {
 
     private final Gson gson = GsonUtils.createGson();
 
+    private final static String MODULES_API= "cep/modules";
+    private final static String CONTENT_TYPE_MODULES= "application/vnd.com.nsn.cumulocity.cepModule+json";
 
     public CepApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -40,7 +41,7 @@ public class CepApi {
      * @return the ModuleCollection
      */
     public ModuleCollection getModules() {
-        return new ModuleCollection(cloudOfThingsRestClient, "cep/modules", gson, null);
+        return new ModuleCollection(cloudOfThingsRestClient, MODULES_API, gson, null);
 
     }
 
@@ -53,7 +54,7 @@ public class CepApi {
     public Module createModule(Module module) {
         String data = "module " + module.getName() + ";" + String.join("\n", module.getStatements());
 
-        String response = cloudOfThingsRestClient.doFormUpload(data, "file", "cep/modules", "text/plain");
+        String response = cloudOfThingsRestClient.doFormUpload(data, "file", MODULES_API, "text/plain");
 
         Module responseModule = gson.fromJson(response, Module.class);
 
@@ -70,10 +71,10 @@ public class CepApi {
      * @return the Module
      */
     public Module getModule(String id) {
-        String responseJson = cloudOfThingsRestClient.getResponse(id, "cep/modules", "application/vnd.com.nsn.cumulocity.cepModule+json");
+        String responseJson = cloudOfThingsRestClient.getResponse(id, MODULES_API, CONTENT_TYPE_MODULES);
         Module module = gson.fromJson(responseJson, Module.class);
 
-        String statementsFile = cloudOfThingsRestClient.getResponse(id, "cep/modules", "text/plain");
+        String statementsFile = cloudOfThingsRestClient.getResponse(id, MODULES_API, "text/plain");
         String[] statements = statementsFile.split(";");
         // The first line should be the module name, which itself is not a statement:
         if (statements[0].startsWith("module")) {
@@ -93,8 +94,6 @@ public class CepApi {
      *               The parameter instance will be updated with the response from the server (esp. lastModified).
      */
     public void updateModule(Module module) {
-        String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.cepModule+json";
-
         String json = "{\"name\" : \"" + module.getName() + "\", \"status\" : \"" + module.getStatus().name() + "\"}";
 
         // the status can only be updated if it has changed from the default:
@@ -103,12 +102,12 @@ public class CepApi {
             json = "{\"name\" : \"" + module.getName() + "\"}";
         }
 
-        cloudOfThingsRestClient.doPutRequest(json, "cep/modules/" + module.getId(), CONTENT_TYPE);
+        cloudOfThingsRestClient.doPutRequest(json, MODULES_API +"/"+ module.getId(), CONTENT_TYPE_MODULES);
 
         String data = "module " + module.getName() + ";" + String.join("\n", module.getStatements());
         // The update doesn't need to be multipart/form-data.
         // And: the ID of the module doesn't seem to change. It is updated in place.
-        String responseJson = cloudOfThingsRestClient.doPutRequest(data, "cep/modules/" + module.getId(), "text/plain", CONTENT_TYPE);
+        String responseJson = cloudOfThingsRestClient.doPutRequest(data, MODULES_API +"/"+ module.getId(), "text/plain", CONTENT_TYPE_MODULES);
         module.copyFrom(gson.fromJson(responseJson, Module.class));
     }
 
@@ -118,8 +117,7 @@ public class CepApi {
      * @param id the ID of the Module that should be deleted.
      */
     public void deleteModule(String id) {
-        // TODO: we should check the return type (success: 204 NO CONTENT)
-        cloudOfThingsRestClient.delete(id, "cep/modules");
+        cloudOfThingsRestClient.delete(id, MODULES_API);
     }
 
 

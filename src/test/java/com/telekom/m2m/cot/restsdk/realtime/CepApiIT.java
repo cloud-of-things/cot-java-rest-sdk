@@ -64,8 +64,6 @@ public class CepApiIT {
         testObjectForOperation = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_operation_name");
         testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
         testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
-        testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
-        testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
         testObjectForCreateUpdateDelete = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_for_createUpdateDelete");
 
     }
@@ -169,7 +167,7 @@ public class CepApiIT {
         // individual connect-response-cycles.
         // That's why it is possible to reconnect without losing data in the
         // meantime.
-        // (It cann't continue over new handshakes though (i.e. new clientId))
+        // (It can't continue over new handshakes though (i.e. new clientId))
         alarmApi.create(makeAlarm("com_telekom_TestType0", Alarm.SEVERITY_MINOR, alarmSource1));
 
         // Connect, starting background listener:
