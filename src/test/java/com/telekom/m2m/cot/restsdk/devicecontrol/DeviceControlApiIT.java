@@ -6,23 +6,32 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReference;
+import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
+import com.telekom.m2m.cot.restsdk.realtime.Notification;
+import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
+import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 
 /**
  * Created by Patrick Steinert on 30.01.16.
  */
 public class DeviceControlApiIT {
+
+    private static final int DELAY_MILLIS = 100;
 
     CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
@@ -43,7 +52,7 @@ public class DeviceControlApiIT {
     @Test
     public void testCreateAndGetOperation() throws Exception {
         // given
-        Operation operation = createOperation();
+        Operation operation = createOperation("com_telekom_m2m_cotcommand");
 
         // when
         Operation createdOperation = deviceControlApi.create(operation);
@@ -63,7 +72,7 @@ public class DeviceControlApiIT {
     @Test
     public void testCreateAndUpdateOperation() throws Exception {
         // given
-        Operation operation = createOperation();
+        Operation operation = createOperation("com_telekom_m2m_cotcommand");
 
         // when
         Operation createdOperation = deviceControlApi.create(operation);
@@ -183,6 +192,50 @@ public class DeviceControlApiIT {
         inventoryApi.delete(deviceGroup.getId());
     }
 
+    // This test creates two operations and a subscriber. The subscriber then
+    // subscribes to these operations successively. The tests checks whether the
+    // subscriber received the correct notification from each operations.
+    @Test
+    public void testNotificationConnector() throws InterruptedException {
+
+        // given
+        CepConnector connector = deviceControlApi.getNotificationConnector();
+
+        final List<String> notedOperations = new ArrayList<>();
+
+        connector.subscribe("/" + testManagedObject.getId());
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedOperations.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        // when
+        Thread.sleep(DELAY_MILLIS);
+        deviceControlApi.create(createOperation("first_operation_attribute"));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        deviceControlApi.create(createOperation("second_operation_attribute"));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        // then
+        assertEquals(notedOperations.size(), 2);
+
+        assertTrue(notedOperations.get(0).contains("first_operation_attribute"));
+        assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
+    }
+
     private ManagedObject createDeviceGroup() {
         ManagedObject deviceGroup = new ManagedObject();
         deviceGroup.setName("deviceGroup");
@@ -201,7 +254,7 @@ public class DeviceControlApiIT {
         return deviceGroupFromCoT;
     }
 
-    private Operation createOperation() {
+    private Operation createOperation(String operationName) {
         JsonObject parameters = new JsonObject();
         parameters.add("param1", new JsonPrimitive("1"));
 
@@ -211,13 +264,13 @@ public class DeviceControlApiIT {
 
         Operation operation = new Operation();
         operation.setDeviceId(testManagedObject.getId());
-        operation.set("com_telekom_m2m_cotcommand", jsonObject);
+        operation.set(operationName, jsonObject);
 
         return operation;
     }
 
     private BulkOperation createBulkOperation(ManagedObject deviceGroup, Date startDate) {
-        Operation operation = createOperation();
+        Operation operation = createOperation("com_telekom_m2m_cotcommand");
         Operation createdOperation = deviceControlApi.create(operation);
         Operation retrievedOperation = deviceControlApi.getOperation(createdOperation.getId());
 
@@ -230,4 +283,5 @@ public class DeviceControlApiIT {
 
         return bulkOperation;
     }
+
 }
