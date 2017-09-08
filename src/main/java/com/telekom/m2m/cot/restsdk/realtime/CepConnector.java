@@ -35,7 +35,7 @@ public class CepConnector implements Runnable {
 
     private static final int THREAD_JOIN_GRACE_MILLIS = 1000;
 
-    private String notificationUrl;
+    private String notificationPath;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
     private boolean connected = false;
@@ -63,12 +63,12 @@ public class CepConnector implements Runnable {
      * @param cloudOfThingsRestClient
      *            the client to use for connection to the cloud
      *
-     * @param notificationUrl a String with REST endpoint url for notification requests (handshake, subscribe, connect...)
+     * @param notificationPath a String with REST endpoint path for notification requests (handshake, subscribe, connect...)
      *                       without host, leading and trailing slashes e.g. cep/realtime
      */
-    public CepConnector(CloudOfThingsRestClient cloudOfThingsRestClient, String notificationUrl) {
+    public CepConnector(CloudOfThingsRestClient cloudOfThingsRestClient, String notificationPath) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-        this.notificationUrl = notificationUrl;
+        this.notificationPath = notificationPath;
     }
 
 
@@ -92,7 +92,7 @@ public class CepConnector implements Runnable {
             obj.addProperty("clientId", clientId);
             obj.addProperty("subscription", channel);
             body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationUrl, CONTENT_TYPE);
+            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
             // TODO: check response
         }
     }
@@ -112,7 +112,7 @@ public class CepConnector implements Runnable {
             obj.addProperty("clientId", clientId);
             obj.addProperty("subscription", channel);
             body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationUrl, CONTENT_TYPE);
+            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
         }
     }
 
@@ -231,7 +231,7 @@ public class CepConnector implements Runnable {
         obj.addProperty("clientId", clientId);
         obj.addProperty("connectionType", "long-polling");
         body.add(obj);
-        String result = cloudOfThingsRestClient.doRealTimePollingRequest(body.toString(), notificationUrl, CONTENT_TYPE, timeout);
+        String result = cloudOfThingsRestClient.doRealTimePollingRequest(body.toString(), notificationPath, CONTENT_TYPE, timeout);
         return result;
     }
 
@@ -254,7 +254,7 @@ public class CepConnector implements Runnable {
 
         JsonArray body = new JsonArray();
         body.add(obj);
-        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationUrl, CONTENT_TYPE);
+        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
         // TODO: check result for errors
         JsonArray r = gson.fromJson(result, JsonArray.class);
         clientId = r.get(0).getAsJsonObject().get("clientId").getAsString();
@@ -282,7 +282,7 @@ public class CepConnector implements Runnable {
             obj.addProperty("subscription", channel);
             body.add(obj);
         }
-        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationUrl, CONTENT_TYPE);
+        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
     }
 
 
