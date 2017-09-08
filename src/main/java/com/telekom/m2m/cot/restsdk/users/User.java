@@ -121,7 +121,7 @@ public class User extends ExtensibleObject {
      * contains a series of keys of device ids, and the values are a list of
      * permissions of different type.
      * 
-     * @return (Map<String, List<String>>) device permissions of a user
+     * @return a map device permissions of a user
      */
     public Map<String, List<String>> getDevicePermissions() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("devicePermissions");

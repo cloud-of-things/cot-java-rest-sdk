@@ -125,7 +125,7 @@ public class Group extends ExtensibleObject {
      * contains a series of keys of device ids, and the values are a list of
      * permissions of different type.
      * 
-     * @return (Map<String, List<String>>) device permissions of a group
+     * @return a map of device permissions of a group
      */
     public Map<String, List<String>> getDevicePermissions() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("devicePermissions");
