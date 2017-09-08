@@ -1,12 +1,12 @@
 package com.telekom.m2m.cot.restsdk.retentionrule;
 
+import java.util.Map;
+
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-
-import java.util.Map;
 
 
 /**
@@ -153,17 +153,17 @@ public class RetentionRuleApi {
             case RetentionRule.DATA_TYPE_MEASUREMENT :
                 break;
             case RetentionRule.DATA_TYPE_ALARM :
-                if ((rule.getFragmentType() != null) && (!rule.getFragmentType().equals("*"))) {
+                if ((rule.getFragmentType() != null) && (!"*".equals(rule.getFragmentType()))) {
                     throw new CotSdkException("RetentionRule of dataType " + RetentionRule.DATA_TYPE_ALARM + " cannot have a fragmentType.");
                 }
                 break;
              case RetentionRule.DATA_TYPE_AUDIT :
-                if ((rule.getFragmentType() != null) && (!rule.getFragmentType().equals("*"))) {
+                if ((rule.getFragmentType() != null) && (!"*".equals(rule.getFragmentType()))) {
                     throw new CotSdkException("RetentionRule of dataType " + RetentionRule.DATA_TYPE_AUDIT + " cannot have a fragmentType.");
                 }
                 break;
             case RetentionRule.DATA_TYPE_OPERATION :
-                if ((rule.getType() != null) && (!rule.getType().equals("*"))) {
+                if ((rule.getType() != null) && (!"*".equals(rule.getType()))) {
                     throw new CotSdkException("RetentionRule of dataType " + RetentionRule.DATA_TYPE_OPERATION + " cannot have a type.");
                 }
                 break;
