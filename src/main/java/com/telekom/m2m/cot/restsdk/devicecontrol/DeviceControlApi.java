@@ -20,7 +20,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class DeviceControlApi {
 
-    public static final String NOTIFICATION_REST_ENDPOINT = "devicecontrol/notifications";
+    public static final String NOTIFICATION_PATH = "devicecontrol/notifications";
 
     private static final String CONTENT_TYPE_NEW_DEVICE_REQUEST = "application/vnd.com.nsn.cumulocity.newDeviceRequest+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
@@ -266,7 +266,7 @@ public class DeviceControlApi {
      * @return CepConnector
      */
     public CepConnector getNotificationConnector() {
-        return new CepConnector(cloudOfThingsRestClient, NOTIFICATION_REST_ENDPOINT);
+        return new CepConnector(cloudOfThingsRestClient, NOTIFICATION_PATH);
     }
 
 }

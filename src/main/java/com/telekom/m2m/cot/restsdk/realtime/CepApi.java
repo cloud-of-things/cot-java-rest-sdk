@@ -14,7 +14,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class CepApi {
 
-    public static final String NOTIFICATION_REST_ENDPOINT = "cep/realtime";
+    public static final String NOTIFICATION_PATH = "cep/realtime";
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
@@ -34,7 +34,7 @@ public class CepApi {
      * @return CepConnector
      */
     public CepConnector getCepConnector() {
-        return new CepConnector(cloudOfThingsRestClient, NOTIFICATION_REST_ENDPOINT);
+        return new CepConnector(cloudOfThingsRestClient, NOTIFICATION_PATH);
     }
 
 
