@@ -90,7 +90,7 @@ public class InventoryApi {
      */
     public void update(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
-        cloudOfThingsRestClient.doPutRequest(json, managedObject.getId(), RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
+        cloudOfThingsRestClient.doPutRequest(json, RELATIVE_API_URL + "/" + managedObject.getId(), CONTENT_TYPE_MANAGEDOBJECT);
     }
 
     /**

@@ -1,3 +1,4 @@
+
 package com.telekom.m2m.cot.restsdk.users;
 
 import static org.testng.Assert.assertEquals;

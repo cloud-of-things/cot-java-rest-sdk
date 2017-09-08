@@ -81,7 +81,7 @@ public class MeasurementApi {
 
         final String json = gson.toJson(createJsonObject(measurements));
 
-        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION);
+        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION, CONTENT_TYPE_MEASUREMENT_COLLECTION);
 
         return gson.fromJson(response, MeasurementsHolder.class)
                 .getMeasurements();
