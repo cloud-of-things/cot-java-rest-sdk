@@ -295,11 +295,13 @@ public class CepApiIT {
         connector.connect();
 
         Thread.sleep(DELAY_MILLIS);
-        eventApi.createEvent(makeEvent("com_telekom_TestType1", testObjectForEvent));
+        Event event1 = makeEvent("com_telekom_TestType1", testObjectForEvent);
+        eventApi.createEvent(event1);
 
         Thread.sleep(DELAY_MILLIS);
 
-        eventApi.createEvent(makeEvent("com_telekom_TestType2", testObjectForEvent));
+        Event event2 = makeEvent("com_telekom_TestType2", testObjectForEvent);
+        eventApi.createEvent(event2);
 
         Thread.sleep(DELAY_MILLIS);
 
@@ -308,6 +310,20 @@ public class CepApiIT {
         assertTrue(notedEvents.get(0).contains(testObjectForEvent.getId()));
         assertTrue(notedEvents.get(1).contains(testObjectForEvent.getId()));
 
+        // when
+        eventApi.deleteEvent(event1);
+        eventApi.deleteEvent(event2);
+
+        Thread.sleep(DELAY_MILLIS);
+
+        // then
+        assertEquals(notedEvents.size(), 4);
+        assertTrue(notedEvents.get(2).contains(testObjectForEvent.getId()));
+        assertTrue(notedEvents.get(2).contains(event1.getId()));
+        assertTrue(notedEvents.get(2).contains("DELETE"));
+        assertTrue(notedEvents.get(3).contains(testObjectForEvent.getId()));
+        assertTrue(notedEvents.get(3).contains(event2.getId()));
+        assertTrue(notedEvents.get(3).contains("DELETE"));
     }
 
     // This test creates two measurements and a subscriber. The subscriber then
@@ -338,11 +354,13 @@ public class CepApiIT {
         connector.connect();
 
         Thread.sleep(DELAY_MILLIS);
-        meaApi.createMeasurement(makeMeasurement("com_telekom_TestType01", testObjectForMeasurement));
+        Measurement measurement1 = makeMeasurement("com_telekom_TestType01", testObjectForMeasurement);
+        meaApi.createMeasurement(measurement1);
 
         Thread.sleep(DELAY_MILLIS);
 
-        meaApi.createMeasurement(makeMeasurement("com_telekom_TestType02", testObjectForMeasurement));
+        Measurement measurement2 = makeMeasurement("com_telekom_TestType02", testObjectForMeasurement);
+        meaApi.createMeasurement(measurement2);
 
         Thread.sleep(DELAY_MILLIS);
 
@@ -351,6 +369,20 @@ public class CepApiIT {
         assertTrue(notedMeasurements.get(0).contains(testObjectForMeasurement.getId()));
         assertTrue(notedMeasurements.get(1).contains(testObjectForMeasurement.getId()));
 
+        // when
+        meaApi.delete(measurement1);
+        meaApi.delete(measurement2);
+
+        Thread.sleep(DELAY_MILLIS);
+
+        // then
+        assertEquals(notedMeasurements.size(), 4);
+        assertTrue(notedMeasurements.get(2).contains(testObjectForMeasurement.getId()));
+        assertTrue(notedMeasurements.get(2).contains(measurement1.getId()));
+        assertTrue(notedMeasurements.get(2).contains("DELETE"));
+        assertTrue(notedMeasurements.get(3).contains(testObjectForMeasurement.getId()));
+        assertTrue(notedMeasurements.get(3).contains(measurement2.getId()));
+        assertTrue(notedMeasurements.get(3).contains("DELETE"));
     }
 
     // This test creates two operations and a subscriber. The subscriber then
