@@ -396,7 +396,7 @@ public class CepApiIT {
     }
 
     // This test will create one subscriber, and an operation. It will check if a
-    // notification is received upon creation, update and deletion of the alarm.
+    // notification is received upon creation, update and deletion of the operation.
     @Test
     public void testNotificationsForCreateUpdateDeleteOperation() throws InterruptedException {
 
@@ -508,7 +508,7 @@ public class CepApiIT {
 
     
     // This test will create one subscriber, and an inventory object. It will check if a
-    // notification is received upon update and deletion of the alarm.
+    // notification is received upon update and deletion of the managed object.
     @Test
     public void testNotificationsForUpdateDelete() throws InterruptedException {
 
