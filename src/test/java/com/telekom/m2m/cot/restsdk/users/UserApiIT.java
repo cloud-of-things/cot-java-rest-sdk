@@ -52,9 +52,8 @@ public class UserApiIT {
             userApi.deleteUserByUserName(testUserName, tenant);
         } catch (CotSdkException ex) {
             // This exception is ok, because then the test method managed to
-            // delete it's own user (should be the norm):
-            assertEquals(ex.getCause().getMessage(),
-                    "Request failed. Platform provided details: '\"users/Not Found\"' HTTP status code:'404' (see https://http.cat/404)");
+            // delete its own user (should be the norm):
+            assertEquals(ex.getHttpStatus(), 404);
         }
          
         try {
@@ -65,9 +64,8 @@ public class UserApiIT {
             }
         } catch (CotSdkException ex) {
             // This exception is ok, because then the test method managed to
-            // delete it's own group (should be the norm):
-            assertEquals(ex.getCause().getMessage(),
-                    "Request failed. Platform provided details: '\"group/Not Found\"' HTTP status code:'404' (see https://http.cat/404)");
+            // delete its own group (should be the norm):
+            assertEquals(ex.getHttpStatus(), 404);
         }
     }
 

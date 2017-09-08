@@ -90,6 +90,7 @@ public class CloudOfThingsRestClient {
             }
             return result;
         } catch (CotSdkException e) {
+            // We need to rethrow this in order to not loose the status code.
             throw e;
         } catch (Exception e) {
             throw new CotSdkException("Problem: " + e.getMessage(), e);
@@ -441,6 +442,9 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), err);
             }
             return result;
+        } catch (CotSdkException e) {
+            // We need to rethrow this in order to not loose the status code.
+            throw e;
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         } finally {
@@ -514,6 +518,9 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Error in delete with ID '" + id + "' (see https://http.cat/" + response.code() + ")");
             }
+        } catch( CotSdkException e) {
+            // We need to rethrow this in order to not loose the status code.
+            throw e;
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         } finally {
@@ -534,6 +541,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Error in delete by criteria '" + filter + "'");
             }
         } catch (CotSdkException e) {
+            // We need to rethrow this in order to not loose the status code.
             throw e;
         } catch (Exception e) {
             throw new CotSdkException("Error in request: " + e.getMessage(), e);
