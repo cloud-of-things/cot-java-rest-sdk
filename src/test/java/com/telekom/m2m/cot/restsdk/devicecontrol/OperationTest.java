@@ -17,6 +17,7 @@ public class OperationTest {
     private final String operationId = "234";
     private final OperationStatus status = OperationStatus.PENDING;
     private final String deviceId = "dev123";
+    private final String deliveryType = "SMS";
 
     @Test
     public void testBasics() {
@@ -27,6 +28,7 @@ public class OperationTest {
         assertNull(operation.getId());
         assertNull(operation.getCreationTime());
         assertNull(operation.getStatus());
+        assertNull(operation.getDeliveryType());
 
         // given
         ExtensibleObject eo = new ExtensibleObject();
@@ -118,6 +120,7 @@ public class OperationTest {
         operation.setId(operationId);
         operation.setStatus(status);
         operation.setDeviceId(deviceId);
+        operation.setDeliveryType(deliveryType);
 
         return operation;
     }
@@ -126,6 +129,7 @@ public class OperationTest {
         assertEquals(testOperation.getId(), operationId);
         assertEquals(testOperation.getStatus(), status);
         assertEquals(testOperation.getDeviceId(), deviceId);
+        assertEquals(testOperation.getDeliveryType(), deliveryType);
         assertNull(testOperation.getCreationTime());
     }
 

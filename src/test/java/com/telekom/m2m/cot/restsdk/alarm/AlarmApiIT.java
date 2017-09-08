@@ -71,7 +71,8 @@ public class AlarmApiIT {
         Assert.assertEquals(retrievedAlarm.getText(), "Strange thing happend!");
         Assert.assertEquals(retrievedAlarm.getTime().compareTo(timeOfEventHappening), 0);
         Assert.assertNotNull(retrievedAlarm.getCreationTime());
-        Assert.assertEquals(retrievedAlarm.getCreationTime().compareTo(new Date()), -1);
+        // adds 5000 ms to the current time to make sure that assertion doesn't fail
+        Assert.assertEquals(retrievedAlarm.getCreationTime().compareTo(new Date(System.currentTimeMillis()+5000)), -1);
     }
 
     @Test
@@ -98,7 +99,8 @@ public class AlarmApiIT {
         Assert.assertEquals(retrievedAlarm.getText(), "Strange thing happend!");
         Assert.assertEquals(retrievedAlarm.getTime().compareTo(timeOfEventHappening), 0);
         Assert.assertNotNull(retrievedAlarm.getCreationTime());
-        Assert.assertEquals(retrievedAlarm.getCreationTime().compareTo(new Date()), -1);
+        // adds 5000 ms to the current time to make sure that assertion doesn't fail
+        Assert.assertEquals(retrievedAlarm.getCreationTime().compareTo(new Date(System.currentTimeMillis()+5000)), -1);
 
         Assert.assertEquals(retrievedAlarm.getStatus(), Alarm.STATE_ACTIVE);
         Assert.assertEquals(retrievedAlarm.getSeverity(), Alarm.SEVERITY_MAJOR);

@@ -6,6 +6,11 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+import java.time.Instant;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 /**
  * DeviceControl API is used to work with operations.
  *
@@ -183,6 +188,47 @@ public class DeviceControlApi {
 
         return extensibleObject != null ?
                 new BulkOperation(extensibleObject) : null;
+    }
+
+
+    /**
+     * Updates an existing bulk operation.
+     * Updatable fields: groupId, failedBulkOperationId, startDate, creationRamp, operation
+     *
+     * @param bulkOperation the bulk operation with new values for updatable fields.
+     *                  Id, status, progress are not changeable.
+     * @since 0.6.0
+     */
+    public void update(BulkOperation bulkOperation) {
+        ExtensibleObject extensibleObject = new ExtensibleObject();
+
+        if(bulkOperation.has("groupId")) {
+            extensibleObject.set("groupId", bulkOperation.getGroupId());
+        }
+
+        if(bulkOperation.has("failedBulkOperationId")) {
+            extensibleObject.set("failedBulkOperationId", bulkOperation.getFailedBulkOperationId());
+        }
+
+        if(bulkOperation.has("startDate")) {
+            // curiously CoT platform accepts only a UTC time zone at updating the start date in a different way from creation of a bulk operation
+            Instant instant = bulkOperation.getStartDate().toInstant();
+            ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(instant,
+                    ZoneId.systemDefault());
+            extensibleObject.set("startDate", zonedDateTime.format(DateTimeFormatter.ISO_INSTANT));
+        }
+
+        if(bulkOperation.has("creationRamp")) {
+            extensibleObject.set("creationRamp", bulkOperation.getCreationRamp());
+        }
+
+        if(bulkOperation.has("operationPrototype")) {
+            extensibleObject.set("operationPrototype", bulkOperation.getOperation());
+        }
+
+        String json = gson.toJson(extensibleObject);
+
+        cloudOfThingsRestClient.doPutRequest(json, RELATIVE_BULK_OPERATION_API_URL + bulkOperation.getId(), CONTENT_TYPE_BULK_OPERATION);
     }
 
     /**

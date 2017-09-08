@@ -1,3 +1,4 @@
+
 package com.telekom.m2m.cot.restsdk.users;
 
 import static org.testng.Assert.assertEquals;
@@ -409,6 +410,110 @@ public class UserApiIT {
 
         // now delete that group:
         userApi.deleteGroup(returnedGroup, tenant);
+
+    }
+
+    @Test
+    public void testDevicePermissionsForUsers() throws Exception {
+
+        // given (first create a user where then we can set device permissions):
+        User usertocreate = new User();
+        usertocreate.setUserName(testUserName);
+        usertocreate.setLastName("LastName007");
+        usertocreate.setFirstName("FirstName007");
+        usertocreate.setPassword("password1234007");
+        userApi.createUser(usertocreate, tenant);
+        User userInCloud = userApi.getUserByName(testUserName, tenant);
+
+        // when (now prepare a map of permissions as below and assign these
+        // permissions to the created user):
+        // We can assign more than one device id, and more than one permission
+        // type.
+        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
+        List<String> list1 = new ArrayList<String>();
+
+        list1.add("ALARM:*:READ");
+        list1.add("AUDIT:*:READ");
+
+        // These are real device ids, however cloud does not check their
+        // validity; one can also provide a random string as a device id.
+        devicePermission.put("{10481}", list1);
+        List<String> list2 = new ArrayList<String>();
+
+        list2.add("OPERATION:*:READ");
+        list2.add("EVENT:*:READ");
+        devicePermission.put("{10445}", list2);
+        userInCloud.setDevicePermissions(devicePermission);
+        userApi.updateUser(userInCloud, tenant);
+
+        // when (now let's return this user from the cloud and check if the
+        // device permissions were assigned as expected):
+
+        User returned = userApi.getUserByName(testUserName, tenant);
+
+        assertEquals(devicePermission.keySet().size(), returned.getDevicePermissions().keySet().size());
+
+        assertTrue((returned.getDevicePermissions().get("{10481}").contains("ALARM:*:READ")));
+        assertTrue((returned.getDevicePermissions().get("{10481}").contains("AUDIT:*:READ")));
+        assertFalse((returned.getDevicePermissions().get("{10481}").contains("OPERATION:*:READ")));
+        assertFalse((returned.getDevicePermissions().get("{10481}").contains("EVENT:*:READ")));
+        
+        assertTrue((returned.getDevicePermissions().get("{10445}").contains("OPERATION:*:READ")));
+        assertTrue((returned.getDevicePermissions().get("{10445}").contains("EVENT:*:READ")));
+        assertFalse((returned.getDevicePermissions().get("{10445}").contains("ALARM:*:READ")));
+        assertFalse((returned.getDevicePermissions().get("{10445}").contains("AUDIT:*:READ")));
+        
+        // now delete that user:
+        userApi.deleteUserByUserName(testUserName, tenant);
+
+    }
+
+    @Test
+    public void testDevicePermissionsForGroups() throws Exception {
+        
+        // given (first create a group in the cloud where then we can set device permissions):
+        group.setName(testGroupName);
+        userApi.createGroup(group, tenant);
+        group = userApi.getGroupByName(tenant,testGroupName);
+
+        // when (now prepare a map of permissions as below and assign these
+        // permissions to the created group):
+        // We can assign more than one device id, and more than one permission
+        // type.
+        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
+        List<String> list1 = new ArrayList<String>();
+
+        list1.add("ALARM:*:READ");
+        list1.add("AUDIT:*:READ");
+
+        // These are real device ids, however cloud does not check their
+        // validity; one can also provide a random string as a device id.
+        devicePermission.put("{10481}", list1);
+        List<String> list2 = new ArrayList<String>();
+
+        list2.add("OPERATION:*:READ");
+        list2.add("EVENT:*:READ");
+        devicePermission.put("{10445}", list2);
+        group.setDevicePermissions(devicePermission);
+        userApi.updateGroup(group, tenant);
+
+        // when (now let's return this group from the cloud and check if the
+        // device permissions were assigned as expected):
+
+      group = userApi.getGroupByName(tenant, testGroupName);
+
+        assertEquals(devicePermission.keySet().size(), group.getDevicePermissions().keySet().size());
+
+        assertTrue((group.getDevicePermissions().get("{10481}").contains("ALARM:*:READ")));
+        assertTrue((group.getDevicePermissions().get("{10481}").contains("AUDIT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10481}").contains("OPERATION:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10481}").contains("EVENT:*:READ")));
+        
+        assertTrue((group.getDevicePermissions().get("{10445}").contains("OPERATION:*:READ")));
+        assertTrue((group.getDevicePermissions().get("{10445}").contains("EVENT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10445}").contains("ALARM:*:READ")));
+        assertFalse((group.getDevicePermissions().get("{10445}").contains("AUDIT:*:READ")));
+        
     }
     
 }
