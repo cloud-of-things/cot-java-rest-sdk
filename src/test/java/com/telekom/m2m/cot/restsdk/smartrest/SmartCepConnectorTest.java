@@ -1,10 +1,8 @@
 package com.telekom.m2m.cot.restsdk.smartrest;
 
-
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -25,6 +23,8 @@ import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
 
+// Some of these tests might cause NullPointerExceptions in the SmartCepConnector. We believe that is only due to
+// some issue with how the cloudOfThingsRestClient mock is used here...
 public class SmartCepConnectorTest {
 
     CloudOfThingsRestClient cloudOfThingsRestClient;
