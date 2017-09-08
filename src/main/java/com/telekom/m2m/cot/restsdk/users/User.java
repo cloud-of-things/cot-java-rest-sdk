@@ -32,6 +32,7 @@ public class User extends ExtensibleObject {
         super(extensibleObject);
     }
 
+
     /**
      * Get the unique identifier of the user.
      *
@@ -121,34 +122,25 @@ public class User extends ExtensibleObject {
      * contains a series of keys of device ids, and the values are a list of
      * permissions of different type.
      * 
-     * @return a map device permissions of a user
+     * @return a map of device permissions for this user or null if the user has no permissions
+     * TODO: make a copy instead?
      */
     public Map<String, List<String>> getDevicePermissions() {
-        ExtensibleObject obj = (ExtensibleObject) anyObject.get("devicePermissions");
-        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
-
-        for (String key : obj.getAttributes().keySet()) {
-            List<String> list = new ArrayList<String>();
-            JsonArray jar = (JsonArray) obj.getAttributes().get(key);
-            for (JsonElement el : jar) {
-                list.add(el.getAsString());
-            }
-            devicePermission.put(key, list);
-        }
-        return devicePermission;
+        return (Map<String, List<String>>)anyObject.get("devicePermissions");
     }
+
 
     /**
      * The method to set device permissions to a user. It allows to set more
      * than one type of device permissions for more than one device at once by
      * employing a map of device ids and a list of permissions.
+     * Will overwrite all existing permissions in this User instance.
      * 
-     * @param devicePermissions
+     * @param devicePermissions the new permissions for this user.
+     * TODO: make a copy instead?
      */
     public void setDevicePermissions(Map<String, List<String>> devicePermissions) {
-
         anyObject.put("devicePermissions", devicePermissions);
-
     }
 
 

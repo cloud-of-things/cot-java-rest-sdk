@@ -427,43 +427,42 @@ public class UserApiIT {
         // permissions to the created user):
         // We can assign more than one device id, and more than one permission
         // type.
-        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
-        List<String> list1 = new ArrayList<String>();
+        Map<String, List<String>> devicePermission = new LinkedHashMap<>();
 
+        List<String> list1 = new ArrayList<>();
         list1.add("ALARM:*:READ");
         list1.add("AUDIT:*:READ");
-
         // These are real device ids, however cloud does not check their
         // validity; one can also provide a random string as a device id.
-        devicePermission.put("{10481}", list1);
-        List<String> list2 = new ArrayList<String>();
+        devicePermission.put("10481", list1);
 
+        List<String> list2 = new ArrayList<>();
         list2.add("OPERATION:*:READ");
         list2.add("EVENT:*:READ");
-        devicePermission.put("{10445}", list2);
+        devicePermission.put("10445", list2);
+
         userInCloud.setDevicePermissions(devicePermission);
         userApi.updateUser(userInCloud, tenant);
 
         // when (now let's return this user from the cloud and check if the
         // device permissions were assigned as expected):
-
         User returned = userApi.getUserByName(testUserName, tenant);
 
-        assertEquals(devicePermission.keySet().size(), returned.getDevicePermissions().keySet().size());
+        Map<String, List<String>> returnedDevicePermissions = returned.getDevicePermissions();
+        assertEquals(devicePermission.size(), returnedDevicePermissions.size());
 
-        assertTrue((returned.getDevicePermissions().get("{10481}").contains("ALARM:*:READ")));
-        assertTrue((returned.getDevicePermissions().get("{10481}").contains("AUDIT:*:READ")));
-        assertFalse((returned.getDevicePermissions().get("{10481}").contains("OPERATION:*:READ")));
-        assertFalse((returned.getDevicePermissions().get("{10481}").contains("EVENT:*:READ")));
+        assertTrue((returnedDevicePermissions.get("10481").contains("ALARM:*:READ")));
+        assertTrue((returnedDevicePermissions.get("10481").contains("AUDIT:*:READ")));
+        assertFalse((returnedDevicePermissions.get("10481").contains("OPERATION:*:READ")));
+        assertFalse((returnedDevicePermissions.get("10481").contains("EVENT:*:READ")));
         
-        assertTrue((returned.getDevicePermissions().get("{10445}").contains("OPERATION:*:READ")));
-        assertTrue((returned.getDevicePermissions().get("{10445}").contains("EVENT:*:READ")));
-        assertFalse((returned.getDevicePermissions().get("{10445}").contains("ALARM:*:READ")));
-        assertFalse((returned.getDevicePermissions().get("{10445}").contains("AUDIT:*:READ")));
+        assertTrue((returnedDevicePermissions.get("10445").contains("OPERATION:*:READ")));
+        assertTrue((returnedDevicePermissions.get("10445").contains("EVENT:*:READ")));
+        assertFalse((returnedDevicePermissions.get("10445").contains("ALARM:*:READ")));
+        assertFalse((returnedDevicePermissions.get("10445").contains("AUDIT:*:READ")));
         
         // now delete that user:
         userApi.deleteUserByUserName(testUserName, tenant);
-
     }
 
     @Test
@@ -478,20 +477,20 @@ public class UserApiIT {
         // permissions to the created group):
         // We can assign more than one device id, and more than one permission
         // type.
-        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
-        List<String> list1 = new ArrayList<String>();
+        Map<String, List<String>> devicePermission = new LinkedHashMap<>();
+        List<String> list1 = new ArrayList<>();
 
         list1.add("ALARM:*:READ");
         list1.add("AUDIT:*:READ");
 
         // These are real device ids, however cloud does not check their
         // validity; one can also provide a random string as a device id.
-        devicePermission.put("{10481}", list1);
-        List<String> list2 = new ArrayList<String>();
+        devicePermission.put("10481", list1);
+        List<String> list2 = new ArrayList<>();
 
         list2.add("OPERATION:*:READ");
         list2.add("EVENT:*:READ");
-        devicePermission.put("{10445}", list2);
+        devicePermission.put("10445", list2);
         group.setDevicePermissions(devicePermission);
         userApi.updateGroup(group, tenant);
 
@@ -502,15 +501,15 @@ public class UserApiIT {
 
         assertEquals(devicePermission.keySet().size(), group.getDevicePermissions().keySet().size());
 
-        assertTrue((group.getDevicePermissions().get("{10481}").contains("ALARM:*:READ")));
-        assertTrue((group.getDevicePermissions().get("{10481}").contains("AUDIT:*:READ")));
-        assertFalse((group.getDevicePermissions().get("{10481}").contains("OPERATION:*:READ")));
-        assertFalse((group.getDevicePermissions().get("{10481}").contains("EVENT:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10481").contains("ALARM:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10481").contains("AUDIT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10481").contains("OPERATION:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10481").contains("EVENT:*:READ")));
         
-        assertTrue((group.getDevicePermissions().get("{10445}").contains("OPERATION:*:READ")));
-        assertTrue((group.getDevicePermissions().get("{10445}").contains("EVENT:*:READ")));
-        assertFalse((group.getDevicePermissions().get("{10445}").contains("ALARM:*:READ")));
-        assertFalse((group.getDevicePermissions().get("{10445}").contains("AUDIT:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10445").contains("OPERATION:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10445").contains("EVENT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10445").contains("ALARM:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10445").contains("AUDIT:*:READ")));
         
     }
     

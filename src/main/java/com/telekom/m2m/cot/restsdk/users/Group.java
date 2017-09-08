@@ -126,20 +126,10 @@ public class Group extends ExtensibleObject {
      * permissions of different type.
      * 
      * @return a map of device permissions of a group
+     * TODO: make a copy instead?
      */
     public Map<String, List<String>> getDevicePermissions() {
-        ExtensibleObject obj = (ExtensibleObject) anyObject.get("devicePermissions");
-        Map<String, List<String>> devicePermission = new LinkedHashMap<String, List<String>>();
-
-        for (String key : obj.getAttributes().keySet()) {
-            List<String> list = new ArrayList<String>();
-            JsonArray jar = (JsonArray) obj.getAttributes().get(key);
-            for (JsonElement el : jar) {
-                list.add(el.getAsString());
-            }
-            devicePermission.put(key, list);
-        }
-        return devicePermission;
+        return (Map<String, List<String>>)anyObject.get("devicePermissions");
     }
 
     /**
@@ -148,11 +138,10 @@ public class Group extends ExtensibleObject {
      * employing a map of device ids and a list of permissions.
      * 
      * @param devicePermissions
+     * TODO: make a copy instead?
      */
     public void setDevicePermissions(Map<String, List<String>> devicePermissions) {
-
         anyObject.put("devicePermissions", devicePermissions);
-
     }
     
     

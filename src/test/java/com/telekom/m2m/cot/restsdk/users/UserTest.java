@@ -8,6 +8,15 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import org.testng.annotations.Test;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.assertNull;
+import static org.testng.Assert.assertEquals;
+
+
 public class UserTest {
 
 	// TODO fix the logger problem below
@@ -29,12 +38,12 @@ public class UserTest {
 		String json = gson.toJson(user);
 
 		JsonObject o = gson.fromJson(json, JsonObject.class);
-		Assert.assertEquals(o.get("userName").getAsString(), "RandomName");
-		Assert.assertEquals(o.get("id").getAsString(), "667");
-		Assert.assertEquals(o.get("firstName").getAsString(), "FName");
-		Assert.assertEquals(o.get("lastName").getAsString(), "LName");
-		Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
-		Assert.assertEquals(o.get("password").getAsString(), "verysecret");
+		assertEquals(o.get("userName").getAsString(), "RandomName");
+		assertEquals(o.get("id").getAsString(), "667");
+		assertEquals(o.get("firstName").getAsString(), "FName");
+		assertEquals(o.get("lastName").getAsString(), "LName");
+		assertEquals(o.get("email").getAsString(), "mail@mail.com");
+		assertEquals(o.get("password").getAsString(), "verysecret");
 		
 		String[] forbidden= {" ","$","\\","/","+",":","nameWith Space", "DollarSign$Name",
 		        "Back\\SlashName", "Slash/Name", "NameWith+Sign","NameWith:Symbol","Mixture$\\/+: Name"};
@@ -46,4 +55,20 @@ public class UserTest {
 		       }
 		}
 	}
+
+	@Test
+	public void testDevicePermissions() {
+		User user = new User();
+		Map<String, List<String>> permissionsIn = user.getDevicePermissions();
+		assertNull(permissionsIn);
+
+		permissionsIn = new HashMap<>();
+		permissionsIn.put("Device-A", Arrays.asList("EVENT:*:READ", "ALARM:*:*READ"));
+		permissionsIn.put("Device-B", Arrays.asList("*:*:*"));
+		user.setDevicePermissions(permissionsIn);
+
+		Map<String, List<String>> permissionsOut = user.getDevicePermissions();
+		assertEquals(permissionsOut, permissionsIn);
+	}
+
 }
