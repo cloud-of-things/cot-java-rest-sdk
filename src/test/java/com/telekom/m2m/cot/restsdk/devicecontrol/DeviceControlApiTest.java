@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import org.mockito.Mockito;
@@ -64,7 +65,7 @@ public class DeviceControlApiTest {
         Operation updatedOperation = deviceControlApi.update(testOperation);
 
         Mockito.verify(cotRestClientMock, Mockito.times(1)).
-                doPutRequest(contains(operationStatus.toString()) , contains(operationId), any(String.class));
+                doPutRequest(contains(operationStatus.toString()), contains(operationId), any(String.class));
 
         assertNotNull(updatedOperation);
         assertEquals(updatedOperation.getId(), operationId);
@@ -167,7 +168,7 @@ public class DeviceControlApiTest {
 
         deviceControlApi.deleteOperations(filterBuilder);
 
-        Mockito.verify(cotRestClientMock, Mockito.times(1)).deleteBy(eq("deviceId="+deviceId), any(String.class));
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).deleteBy(eq("deviceId=" + deviceId), any(String.class));
     }
 
     @Test
@@ -262,4 +263,15 @@ public class DeviceControlApiTest {
         Mockito.verify(cotRestClientMock, Mockito.times(1)).doPutRequest(contains(expectedBulkOperationJson), contains("id234"), any(String.class));
     }
 
+    @Test
+    public void testGetNotificationConnector() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
+        final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
+
+        CepConnector notificationConnector = deviceControlApi.getNotificationConnector();
+
+        assertNotNull(notificationConnector);
+
+    }
 }

@@ -52,7 +52,7 @@ public class CepConnectorTest {
                     }
                 });
 
-        CepConnector connector = new CepConnector(cloudOfThingsRestClient);
+        CepConnector connector = new CepConnector(cloudOfThingsRestClient, CepApi.NOTIFICATION_PATH);
 
         // With these settings the interruption will happen when the connect is still waiting:
         connector.setTimeout(1000);

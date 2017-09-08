@@ -14,6 +14,8 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class CepApi {
 
+    public static final String NOTIFICATION_PATH = "cep/realtime";
+
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
     private final Gson gson = GsonUtils.createGson();
@@ -32,7 +34,7 @@ public class CepApi {
      * @return CepConnector
      */
     public CepConnector getCepConnector() {
-        return new CepConnector(cloudOfThingsRestClient);
+        return new CepConnector(cloudOfThingsRestClient, NOTIFICATION_PATH);
     }
 
 

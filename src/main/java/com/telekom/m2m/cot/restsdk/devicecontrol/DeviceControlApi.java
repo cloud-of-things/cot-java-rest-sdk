@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
@@ -19,9 +20,7 @@ import java.time.format.DateTimeFormatter;
  */
 public class DeviceControlApi {
 
-    private final CloudOfThingsRestClient cloudOfThingsRestClient;
-
-    protected Gson gson = GsonUtils.createGson();
+    public static final String NOTIFICATION_PATH = "devicecontrol/notifications";
 
     private static final String CONTENT_TYPE_NEW_DEVICE_REQUEST = "application/vnd.com.nsn.cumulocity.newDeviceRequest+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
@@ -30,6 +29,10 @@ public class DeviceControlApi {
     private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
     private static final String RELATIVE_OPERATION_API_URL = "devicecontrol/operations/";
     private static final String RELATIVE_BULK_OPERATION_API_URL = "devicecontrol/bulkoperations/";
+
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
+
+    protected Gson gson = GsonUtils.createGson();
 
     /**
      * Internal used constructor.
@@ -254,6 +257,16 @@ public class DeviceControlApi {
      */
     public void deleteBulkOperation(String bulkOperationId) {
         cloudOfThingsRestClient.delete(bulkOperationId, RELATIVE_BULK_OPERATION_API_URL);
+    }
+
+
+    /**
+     * Returns the connector that establishes the real time communication with the notification service.
+     *
+     * @return CepConnector
+     */
+    public CepConnector getNotificationConnector() {
+        return new CepConnector(cloudOfThingsRestClient, NOTIFICATION_PATH);
     }
 
 }
