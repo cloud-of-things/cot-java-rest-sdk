@@ -46,7 +46,7 @@ public class JsonArrayPaginationTest {
         final String json = "{\"auditRecords\":[{\"id\":\"234\"}]}";
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5&type=" + type;
 
-        Mockito.when(cotRestClientMock.getResponse(url, contentType)).thenReturn(json);
+        Mockito.when(cotRestClientMock.getResponse(url)).thenReturn(json);
 
         // when
         final JsonArray jsonArray = jsonArrayPaginationWithFilter.getJsonArray();
@@ -69,7 +69,7 @@ public class JsonArrayPaginationTest {
         final String json = "{\"auditRecords\":[{\"id\":\"234\"}]}";
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
 
-        Mockito.when(cotRestClientMock.getResponse(url, contentType)).thenReturn(json);
+        Mockito.when(cotRestClientMock.getResponse(url)).thenReturn(json);
 
         // when
         final JsonArray jsonArray = jsonArrayPagination.getJsonArray();
@@ -92,7 +92,7 @@ public class JsonArrayPaginationTest {
         final String json = "{\"auditRecords\":[]}";
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
 
-        Mockito.when(cotRestClientMock.getResponse(url, contentType)).thenReturn(json);
+        Mockito.when(cotRestClientMock.getResponse(url)).thenReturn(json);
 
         // when
         JsonArray jsonArray = jsonArrayPagination.getJsonArray();
@@ -111,7 +111,7 @@ public class JsonArrayPaginationTest {
 
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
 
-        Mockito.when(cotRestClientMock.getResponse(url, contentType)).thenThrow(new CotSdkException("exception was thrown"));
+        Mockito.when(cotRestClientMock.getResponse(url)).thenThrow(new CotSdkException("exception was thrown"));
 
         // when
         JsonArray jsonArray = jsonArrayPagination.getJsonArray();
@@ -128,7 +128,7 @@ public class JsonArrayPaginationTest {
         final String json = "{}";
         final String url = relativeApiUrl + "?currentPage=1&pageSize=5";
 
-        Mockito.when(cotRestClientMock.getResponse(url, contentType)).thenReturn(json);
+        Mockito.when(cotRestClientMock.getResponse(url)).thenReturn(json);
 
         // when
         JsonArray jsonArray = jsonArrayPagination.getJsonArray();
@@ -152,10 +152,10 @@ public class JsonArrayPaginationTest {
         final String urlPage2 = relativeApiUrl + "?currentPage=2&pageSize=5";
         final String urlPage3 = relativeApiUrl + "?currentPage=3&pageSize=5";
 
-        Mockito.when(cotRestClientMock.getResponse(urlPage0, contentType)).thenReturn(jsonResultPage1);
-        Mockito.when(cotRestClientMock.getResponse(urlPage1, contentType)).thenReturn(jsonResultPage1);
-        Mockito.when(cotRestClientMock.getResponse(urlPage2, contentType)).thenReturn(jsonResultPage2);
-        Mockito.when(cotRestClientMock.getResponse(urlPage3, contentType)).thenReturn(jsonResultPageEmpty);
+        Mockito.when(cotRestClientMock.getResponse(urlPage0)).thenReturn(jsonResultPage1);
+        Mockito.when(cotRestClientMock.getResponse(urlPage1)).thenReturn(jsonResultPage1);
+        Mockito.when(cotRestClientMock.getResponse(urlPage2)).thenReturn(jsonResultPage2);
+        Mockito.when(cotRestClientMock.getResponse(urlPage3)).thenReturn(jsonResultPageEmpty);
 
         // when you retrieve the current page of collection at first time
         JsonArray jsonArray = jsonArrayPagination.getJsonArray();
@@ -217,9 +217,9 @@ public class JsonArrayPaginationTest {
         final String urlPageSize2 = relativeApiUrl + "?currentPage=1&pageSize=2";
         final String urlPageSize5 = relativeApiUrl + "?currentPage=1&pageSize=5";
 
-        Mockito.when(cotRestClientMock.getResponse(urlPageSize1, contentType)).thenReturn(jsonResultPageSize1);
-        Mockito.when(cotRestClientMock.getResponse(urlPageSize2, contentType)).thenReturn(jsonResultPageSize2);
-        Mockito.when(cotRestClientMock.getResponse(urlPageSize5, contentType)).thenReturn(jsonResultPageSize2);
+        Mockito.when(cotRestClientMock.getResponse(urlPageSize1)).thenReturn(jsonResultPageSize1);
+        Mockito.when(cotRestClientMock.getResponse(urlPageSize2)).thenReturn(jsonResultPageSize2);
+        Mockito.when(cotRestClientMock.getResponse(urlPageSize5)).thenReturn(jsonResultPageSize2);
 
         // when
         jsonArrayPagination.setPageSize(-1);

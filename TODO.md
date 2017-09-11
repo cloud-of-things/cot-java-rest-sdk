@@ -14,10 +14,14 @@
 * Real time notifications
  * Timing advice
  * More robust error handling
+ * No notification on delete of operations?
 
 * Real time modules
  * Redeployment of modules doesn't always work
  * more input validation
+
+* Device permissions
+ * client side validation
 
 * RetentionRule
  * verify that filters are not applicable

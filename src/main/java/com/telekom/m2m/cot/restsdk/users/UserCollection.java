@@ -89,7 +89,7 @@ public class UserCollection {
         if (criteria != null) {
             url += "&" + criteria.buildFilter();
         }
-        response = cloudOfThingsRestClient.getResponse(url, CONTENT_TYPE);
+        response = cloudOfThingsRestClient.getResponse(url);
 
         return gson.fromJson(response, JsonObject.class);
     }

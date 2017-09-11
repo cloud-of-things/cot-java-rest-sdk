@@ -108,7 +108,7 @@ public class JsonArrayPagination {
         if (criteria != null) {
             url += "&" + criteria.buildFilter();
         }
-        response = cloudOfThingsRestClient.getResponse(url, contentType);
+        response = cloudOfThingsRestClient.getResponse(url);
 
         return gson.fromJson(response, JsonObject.class);
     }

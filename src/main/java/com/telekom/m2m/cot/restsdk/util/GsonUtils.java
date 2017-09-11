@@ -22,24 +22,24 @@ import com.telekom.m2m.cot.restsdk.users.User;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class GsonUtils {
-	public static Gson createGson() {
-		return new GsonBuilder().registerTypeAdapter(ManagedObject.class, new ManagedObjectSerializer())
-				.registerTypeAdapter(Event.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(Alarm.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(AuditRecord.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(Operation.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(Measurement.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(ExtensibleObject.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(ManagedObjectReferenceCollection.class, new ManagedObjectReferenceCollectionSerializer())
-				.registerTypeAdapter(ManagedObjectReference.class, new ManagedObjectReferenceSerializer())
-				.registerTypeAdapter(User.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(Group.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(CurrentUser.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(Role.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(RetentionRule.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(BulkOperation.class, new ExtensibleObjectSerializer())
-				.registerTypeAdapter(Progress.class, new ExtensibleObjectSerializer())
+    public static Gson createGson() {
+        return new GsonBuilder().registerTypeAdapter(ManagedObject.class, new ManagedObjectSerializer())
+                .registerTypeAdapter(Event.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(Alarm.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(AuditRecord.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(Operation.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(Measurement.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(ExtensibleObject.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(ManagedObjectReferenceCollection.class, new ManagedObjectReferenceCollectionSerializer())
+                .registerTypeAdapter(ManagedObjectReference.class, new ManagedObjectReferenceSerializer())
+                .registerTypeAdapter(User.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(Group.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(CurrentUser.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(Role.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(RetentionRule.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(BulkOperation.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(Progress.class, new ExtensibleObjectSerializer())
 
-				.setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").create();
-	}
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").create();
+    }
 }

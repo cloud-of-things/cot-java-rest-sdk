@@ -67,7 +67,7 @@ public class RetentionRuleCollectionTest {
                 (Filter.FilterBuilder)null);
         retentionRuleCollection.setPageSize(5); // Not important, but the test should not rely on default values.
 
-        Mockito.when(rc.getResponse(eq("retention/retentions?currentPage=1&pageSize=5"), any(String.class))).thenReturn(collectionJson);
+        Mockito.when(rc.getResponse(eq("retention/retentions?currentPage=1&pageSize=5"))).thenReturn(collectionJson);
     }
 
 

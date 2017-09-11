@@ -47,12 +47,12 @@ public class UserApi {
     }
 
     public User getUserByName(String userName, String tenant) {
-        String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/users/" + userName, CONTENT_TYPE_USER);
+        String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/users/" + userName);
         return new User(gson.fromJson(result, ExtensibleObject.class));
     }
 
     public Group getGroupByName(String tenant, String groupName) {
-        String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/groupByName/" + groupName, CONTENT_TYPE_GROUP);
+        String result = cloudOfThingsRestClient.getResponse("user/" + tenant + "/groupByName/" + groupName);
         return new Group(gson.fromJson(result, ExtensibleObject.class));
     }
 
@@ -70,7 +70,7 @@ public class UserApi {
      * @return an instance of the currently logged in user.
      */
     public CurrentUser getCurrentUser() {
-        String result = cloudOfThingsRestClient.getResponse("user/currentUser", CONTENT_TYPE_USER);
+        String result = cloudOfThingsRestClient.getResponse("user/currentUser");
         return new CurrentUser(gson.fromJson(result, ExtensibleObject.class));
     }
 

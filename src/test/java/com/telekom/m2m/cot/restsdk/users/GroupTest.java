@@ -8,9 +8,6 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import org.testng.annotations.Test;
 
 public class GroupTest {
-    // TODO fix the logger problem below
-    // private static final Logger logger =
-    // LoggerFactory.getLogger(GroupsApiTest.class);
 
     @Test
     public void testGroupMethods() {

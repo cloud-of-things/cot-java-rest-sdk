@@ -9,29 +9,25 @@ import org.testng.annotations.Test;
 
 public class CurrentUserTest {
 
-	// TODO fix the logger problem below
-	// private static final Logger logger =
-	// LoggerFactory.getLogger(UsersApiTest.class);
+    @Test
+    public void testUserMethods() {
 
-	@Test
-	public void testUserMethods() {
+        CurrentUser user = new CurrentUser();
+        user.setId("667");
+        user.setEmail("mail@mail.com");
+        user.setFirstName("FName");
+        user.setLastName("LName");
+        user.setPassword("verysecret");
 
-		CurrentUser user = new CurrentUser();
-		user.setId("667");
-		user.setEmail("mail@mail.com");
-		user.setFirstName("FName");
-		user.setLastName("LName");
-		user.setPassword("verysecret");
+        Gson gson = GsonUtils.createGson();
+        String json = gson.toJson(user);
 
-		Gson gson = GsonUtils.createGson();
-		String json = gson.toJson(user);
+        JsonObject o = gson.fromJson(json, JsonObject.class);
+        Assert.assertEquals(o.get("id").getAsString(), "667");
+        Assert.assertEquals(o.get("firstName").getAsString(), "FName");
+        Assert.assertEquals(o.get("lastName").getAsString(), "LName");
+        Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
+        Assert.assertEquals(o.get("password").getAsString(), "verysecret");
 
-		JsonObject o = gson.fromJson(json, JsonObject.class);
-		Assert.assertEquals(o.get("id").getAsString(), "667");
-		Assert.assertEquals(o.get("firstName").getAsString(), "FName");
-		Assert.assertEquals(o.get("lastName").getAsString(), "LName");
-		Assert.assertEquals(o.get("email").getAsString(), "mail@mail.com");
-		Assert.assertEquals(o.get("password").getAsString(), "verysecret");
-
-	}
+    }
 }

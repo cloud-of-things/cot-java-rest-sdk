@@ -253,7 +253,6 @@ public class CepConnector implements Runnable {
         JsonArray body = new JsonArray();
         body.add(obj);
         String result = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
-        // TODO: check result for errors
         JsonArray r = gson.fromJson(result, JsonArray.class);
         clientId = r.get(0).getAsJsonObject().get("clientId").getAsString();
     }

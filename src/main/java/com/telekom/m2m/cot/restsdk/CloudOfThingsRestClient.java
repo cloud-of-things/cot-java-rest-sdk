@@ -421,11 +421,9 @@ public class CloudOfThingsRestClient {
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
-
     }
 
-    // TODO: check why the contentType is not necessary, because experiments seemed to indicate that it is...
-    public String getResponse(String api, String contentType) {
+    public String getResponse(String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .url(host + "/" + api)
@@ -450,7 +448,6 @@ public class CloudOfThingsRestClient {
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
-
     }
 
 

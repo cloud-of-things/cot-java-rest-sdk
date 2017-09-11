@@ -229,8 +229,8 @@ public class CloudOfThingsPlatform {
     }
 
 
-	public SmartRestApi getSmartRestApi() {
-		return new SmartRestApi(cloudOfThingsRestClient);
-	}
+    public SmartRestApi getSmartRestApi() {
+        return new SmartRestApi(cloudOfThingsRestClient);
+    }
 
 }

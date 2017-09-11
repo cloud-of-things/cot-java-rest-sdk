@@ -66,7 +66,7 @@ public class DeviceCredentialsApi {
 
         final String api = RELATIVE_NEW_DEVICE_REQUEST_API_URL + newDeviceRequestId;
 
-        final String response = cloudOfThingsRestClient.getResponse(api, CONTENT_TYPE);
+        final String response = cloudOfThingsRestClient.getResponse(api);
 
         final ExtensibleObject extensibleObject = gson.fromJson(response, ExtensibleObject.class);
 
