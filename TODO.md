@@ -3,20 +3,17 @@
 * General
  * verify the format of all the IDs (string vs. number)
 
-* Integration tests
- * make sure that all test data is precisely cleaned up
-
-* CloudOfThingsRestClient
- * verify the necessity of Content-Type headers
-
 * Null
  * EventApi: return null if event is not found
  * Array methods: return empty array instead of null?
 
 * SmartREST real time notifications
  * More robust error handling
- * More efficient mass subscription
  * maybe new SmartRequestTemplate(String csv)
+
+* Real time notifications
+ * Timing advice
+ * More robust error handling
 
 * RetentionRule
  * verify that filters are not applicable
@@ -26,10 +23,6 @@
  * Query Language
  * GET supported measurements of a managed object
  * testMultipleManagedObjectsByFragment
-
-* Complete DeviceControl
- * Operations Filter with Agent
- * Bulk Operations
 
 * Refactor FilterBuilder
  * Currently all filters are allowed with any *Collection. Would be better if just available filters

@@ -20,7 +20,6 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * notification services.
  * 
  * Created by Ozan Arslan on 18.08.2017
- * TODO: allow changing of timeout/interval
  */
 public class CepConnector implements Runnable {
 
@@ -93,7 +92,6 @@ public class CepConnector implements Runnable {
             obj.addProperty("subscription", channel);
             body.add(obj);
             cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
-            // TODO: check response
         }
     }
 
