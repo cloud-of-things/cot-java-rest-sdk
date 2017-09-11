@@ -31,8 +31,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * Set the unique identifier of the user. Just used internally.
      *
-     * @param id
-     *            the new identifier.
+     * @param id a String with the new identifier.
      */
     void setId(String id) {
         anyObject.put("id", id);
@@ -50,11 +49,11 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to set userName.
      * 
-     * @param inputUserName
+     * @param userName a String with the name of a user.
      */
-    public void setUserName(String inputUserName) {
+    public void setUserName(String userName) {
 
-        anyObject.put("userName", inputUserName);
+        anyObject.put("userName", userName);
     }
 
     /**
@@ -69,7 +68,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to set the password of the user.
      * 
-     * @param password
+     * @param password a String
      */
     public void setPassword(String password) {
         anyObject.put("password", password);
