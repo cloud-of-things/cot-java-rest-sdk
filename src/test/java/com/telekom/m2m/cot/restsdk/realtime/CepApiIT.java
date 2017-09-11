@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
-import com.telekom.m2m.cot.restsdk.util.Filter;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -29,6 +28,7 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
+
 
 public class CepApiIT {
 
@@ -53,7 +53,7 @@ public class CepApiIT {
     private ManagedObject testObjectForInventory2;
     private ManagedObject testObjectForCreateUpdateDelete;
 
-    private static final int DELAY_MILLIS = 100;
+    private static final int DELAY_MILLIS = 150;
 
     @BeforeClass
     public void setUpClass() {
