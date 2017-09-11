@@ -127,7 +127,7 @@ public class Operation extends ExtensibleObject {
      *
      * @param deliveryType a String with delivery type, e.g. "SMS".
      */
-    void setDeliveryType(String deliveryType) {
+    public void setDeliveryType(String deliveryType) {
         anyObject.put("deliveryType", deliveryType);
     }
 

@@ -43,15 +43,13 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 * **Retention rules**: Completely implemented
 * **Users**: Completely implemented
 * **SmartREST**: Completely implemented
-
-**Partly Implemented**
-* **Device control**: Completely implemented, except BulkOperations
-* **Real-time notifications**: only for SmartREST
+* **Device control**: Completely implemented
+* **Real-time notifications**: Completely implemented
+* **Real-time statements**: Completely implemented
+* **Device management library**: Completely implemented
 
 **Not Implemented**
-* **Device management library**: Not implemented
 * **Sensor library**: Not implemented
-* **Real-time statements**: Not implemented
 * **Cumulocity Event Language**: Not implemented
 * **Tenants**: Not implemented
 * **Applications**: Not implemented
@@ -67,11 +65,13 @@ Also see integration tests (*IT).
 Short information about what has changed between releases.
 
 ### Release 0.6.0
+* Complete Device control
+* Complete Real-time notifications
+* Complete Real-time statements
+* Complete Device management library
 * Complete Users API
 * Complete Retention Rule API
 * Complete SmartREST API
-
-### Release 0.5.1-SNAPSHOT
 * Complete Audit API
 * Refactor collection classes extending JsonArrayPagination base class
 
