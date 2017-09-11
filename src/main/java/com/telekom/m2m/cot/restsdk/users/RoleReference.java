@@ -22,7 +22,7 @@ public class RoleReference extends ExtensibleObject {
     /**
      * The method to return the role that the reference holds.
      * 
-     * @return
+     * @return Role object the reference is pointing to.
      */
     public Role getRole() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("role");
@@ -32,7 +32,7 @@ public class RoleReference extends ExtensibleObject {
     /**
      * The method to return the URL of the role that the reference holds.
      * 
-     * @return the URL of the role
+     * @return the URL of the role.
      */
     public String getSelf() {
 
@@ -40,9 +40,13 @@ public class RoleReference extends ExtensibleObject {
 
     }
 
+    /**
+     * Sets the role of this reference.
+     *
+     * @param role {@link Role} object.
+     */
     public void setRole(Role role) {
         anyObject.put("role", role);
-
     }
 
 }

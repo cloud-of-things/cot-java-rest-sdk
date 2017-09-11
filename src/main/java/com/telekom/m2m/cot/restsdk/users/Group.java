@@ -65,7 +65,7 @@ public class Group extends ExtensibleObject {
     /**
      * The method to return the group name.
      * 
-     * @return name
+     * @return name as String.
      */
     public String getName() {
         return (String) anyObject.get("name");
@@ -74,36 +74,34 @@ public class Group extends ExtensibleObject {
     /**
      * The method to set group name.
      * 
-     * @param name
+     * @param name group name as String.
      */
     public void setName(String name) {
         anyObject.put("name", name);
     }
 
     /**
-     * Return the users of the group
+     * Return the users of the group.
      * 
-     * @return
+     * @return UserReferenceCollection object with references to the users.
      */
     public UserReferenceCollection getUsers() {
         return (UserReferenceCollection) anyObject.get("users");
     }
 
     /**
+     * Set the users of the group.
      * 
-     * Set the users of the group
-     * 
-     * @param users
+     * @param users {@link UserReferenceCollection} containing the users for this group.
      */
     public void setUsers(UserReferenceCollection users) {
         anyObject.put("users", users);
     }
 
     /**
+     * Return the roles of the group.
      * 
-     * Return the roles of the group
-     * 
-     * @return roles
+     * @return roles of the group as {@link RoleReferenceCollection}
      */
     public RoleReferenceCollection getRoles() {
         return (RoleReferenceCollection) anyObject.get("roles");
@@ -112,7 +110,7 @@ public class Group extends ExtensibleObject {
     /**
      * Set the roles for the group
      * 
-     * @param roles
+     * @param roles {@link RoleReferenceCollection} containing the roles for this group.
      */
     public void setRoles(RoleReferenceCollection roles) {
         anyObject.put("roles", roles);
@@ -137,7 +135,7 @@ public class Group extends ExtensibleObject {
      * than one type of device permissions for more than one device at once by
      * employing a map of device ids and a list of permissions.
      * 
-     * @param devicePermissions
+     * @param devicePermissions as Map object.
      * TODO: make a copy instead?
      */
     public void setDevicePermissions(Map<String, List<String>> devicePermissions) {

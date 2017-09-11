@@ -16,6 +16,8 @@ public interface SubscriptionListener {
 
     /**
      * If the CepConnector receives an error then it will pass it on to all it's listeners by calling this method.
+     * @param channel the channel that the listener subscribed to.
+     * @param error {@link Throwable} object with error information.
      */
     void onError(String channel, Throwable error);
 

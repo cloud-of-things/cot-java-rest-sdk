@@ -19,7 +19,7 @@ public class ExtensibleObject {
     /**
      * Constructor that uses all the objects from an existing ExtensibleObject.
      *
-     * @param extensibleObject
+     * @param extensibleObject as input object.
      */
     protected ExtensibleObject(ExtensibleObject extensibleObject) {
         if (extensibleObject != null)

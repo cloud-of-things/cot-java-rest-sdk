@@ -159,6 +159,7 @@ public class CloudOfThingsRestClient {
      * @param file Request body, i.e. the first and only form part.
      * @param name The name of the form field.
      * @param api the URL path (without leading /)
+     * @param contentType http header variable content-type
      * @return the response body
      */
     public String doFormUpload(String file, String name, String api, String contentType) {

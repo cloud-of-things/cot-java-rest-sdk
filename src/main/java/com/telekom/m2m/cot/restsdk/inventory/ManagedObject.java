@@ -153,7 +153,7 @@ public class ManagedObject extends ExtensibleObject {
 
     /**
      * Add a library {@link Fragment} to this ManagedObject.
-     * @param fragment
+     * @param fragment adds a fragment to this ManagedObject.
      */
     public void addFragment(Fragment fragment) {
         anyObject.put(fragment.getId(), fragment.getJson());
