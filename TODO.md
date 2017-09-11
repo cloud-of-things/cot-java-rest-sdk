@@ -15,6 +15,10 @@
  * Timing advice
  * More robust error handling
 
+* Real time modules
+ * Redeployment of modules doesn't always work
+ * more input validation
+
 * RetentionRule
  * verify that filters are not applicable
 
