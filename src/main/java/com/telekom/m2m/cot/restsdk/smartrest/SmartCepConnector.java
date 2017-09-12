@@ -187,6 +187,7 @@ public class SmartCepConnector implements Runnable {
         }
 
         pollingThread = new Thread(this);
+        pollingThread.setName("SmartCepConnector.pollingThread");
         pollingThread.start();
     }
 
@@ -197,11 +198,13 @@ public class SmartCepConnector implements Runnable {
      */
     public void disconnect() {
         shallDisconnect = true;
-        pollingThread.interrupt();
-        try {
-            pollingThread.join(THREAD_JOIN_GRACE_MILLIS); // One second should be more than enough to end the loop.
-        } catch (InterruptedException ex) {
-            throw new CotSdkException("Real time polling thread didn't finish properly when asked to disconnect.", ex);
+        if (pollingThread != null) {
+            pollingThread.interrupt();
+            try {
+                pollingThread.join(THREAD_JOIN_GRACE_MILLIS); // One second should be more than enough to end the loop.
+            } catch (InterruptedException ex) {
+                throw new CotSdkException("Real time polling thread didn't finish properly when asked to disconnect.", ex);
+            }
         }
     }
 

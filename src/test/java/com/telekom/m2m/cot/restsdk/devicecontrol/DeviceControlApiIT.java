@@ -37,6 +37,8 @@ public class DeviceControlApiIT {
     private ManagedObject testManagedObject;
     private DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
 
+    CepConnector connector;
+
 
     @BeforeClass
     public void setUp() {
@@ -47,6 +49,9 @@ public class DeviceControlApiIT {
     public void tearDown() {
         deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject.getId()));
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
+        if (connector != null) {
+            connector.disconnect();
+        }
     }
 
     @Test
@@ -199,7 +204,7 @@ public class DeviceControlApiIT {
     public void testNotificationConnector() throws InterruptedException {
 
         // given
-        CepConnector connector = deviceControlApi.getNotificationConnector();
+        connector = deviceControlApi.getNotificationConnector();
 
         final List<String> notedOperations = new ArrayList<>();
 
