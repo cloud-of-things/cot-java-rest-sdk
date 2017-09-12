@@ -56,7 +56,6 @@ public class User extends ExtensibleObject {
     /**
      * Method to retrieve the URL of a user
      * 
-     * @param user
      * @return URL of the user
      */
     public String getSelf(User user, String tenant) {

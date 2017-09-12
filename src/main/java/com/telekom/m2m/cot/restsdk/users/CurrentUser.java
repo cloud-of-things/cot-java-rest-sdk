@@ -68,7 +68,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to set the password of the user.
      * 
-     * @param password a String
+     * @param password is a String with a password of the user.
      */
     public void setPassword(String password) {
         anyObject.put("password", password);
@@ -77,7 +77,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to retrieve the first name of the user.
      * 
-     * @return firstName
+     * @return firstName a String with the first name of the user.
      */
     public String getFirstName() {
         return (String) anyObject.get("firstName");
@@ -86,7 +86,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to set the first name of the user.
      * 
-     * @param firstName
+     * @param firstName is a String with the first name of the user.
      */
     public void setFirstName(String firstName) {
         anyObject.put("firstName", firstName);
@@ -95,7 +95,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to retrieve the last name of the user.
      * 
-     * @return lastName
+     * @return lastName a String with the last name of the user.
      */
     public String getLastName() {
         return (String) anyObject.get("lastName");
@@ -104,7 +104,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to set the last name of the user.
      * 
-     * @param lastName
+     * @param lastName is a String with the last name of the user.
      */
     public void setLastName(String lastName) {
         anyObject.put("lastName", lastName);
@@ -113,7 +113,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to retrieve the email address of the user.
      * 
-     * @return email
+     * @return email a String with the email address of the user.
      */
     public String getEmail() {
         return (String) anyObject.get("email");
@@ -122,22 +122,16 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to set the email address of a user.
      * 
-     * @param email
+     * @param email is a String with the email address of the user.
      * 
      */
     public void setEmail(String email) {
         anyObject.put("email", email);
     }
 
-    public String getGroupsOfUser() {
-        return (String) anyObject.get("groups");
-    }
-
     /**
      * The method to return the URL of the current user.
      * 
-     * @param user
-     * @param tenant
      * @return the URL of the current user as a String.
      */
     public String getSelf(CurrentUser user, String tenant) {

@@ -80,7 +80,7 @@ public class UserApi {
      * return it.
      * 
      * @param user the user to create/persist in the cloud
-     * @param tenant
+     * @param tenant a String with tenant name
      * @return the same input user object
      */
     public User createUser(User user, String tenant) {
@@ -96,16 +96,11 @@ public class UserApi {
      * A method to create a user in the cloud and return it by providing a
      * userName, password, firstName, lastName and a tenant.
      * 
-     * @param userName
-     *            of the user.
-     * @param tenant
-     *            of the tenant where the user resides.
-     * @param firstName
-     *            of the user.
-     * @param lastName
-     *            of the user.
-     * @param password
-     *            of the user.
+     * @param userName of the user.
+     * @param tenant of the tenant where the user resides.
+     * @param firstName of the user.
+     * @param lastName of the user.
+     * @param password of the user.
      * @return an instance of the user.
      */
     public User createUser(String userName, String tenant, String firstName, String lastName, String password) {
@@ -123,8 +118,8 @@ public class UserApi {
     /**
      * The method to delete a specific user from the cloud.
      * 
-     * @param user
-     * @param tenant
+     * @param user a user object of the user which should be deleted.
+     * @param tenant a String with the name of the tenant.
      */
     public void deleteUser(User user, String tenant) {
         cloudOfThingsRestClient.delete(user.getId(), "user/" + tenant + "/users");
@@ -134,8 +129,8 @@ public class UserApi {
      * The method to delete a specific user from the cloud by providing the
      * username.
      * 
-     * @param userName
-     * @param tenant
+     * @param userName a name of the user which should be deleted.
+     * @param tenant a String with the name of the tenant.
      */
     public void deleteUserByUserName(String userName, String tenant) {
         User user = getUserByName(userName, tenant);
@@ -147,9 +142,9 @@ public class UserApi {
     /**
      * The method to add a specific user to a group.
      * 
-     * @param user
-     * @param tenant
-     * @param group
+     * @param user a user object of the user which should be added to the group.
+     * @param tenant a String with the name of the tenant.
+     * @param group a group object the user used to be added to.
      */
     public void addUserToGroup(User user, String tenant, Group group) {
         String json = "{\"user\":{\"self\": \"" + user.getSelf(user, tenant) + "\" }}";
@@ -212,8 +207,8 @@ public class UserApi {
      * The method to retrieve a collection of references (URLs) of roles that a
      * user is assigned to.
      * 
-     * @param user
-     * @param tenant
+     * @param user a user object of the user whose roles references will be retrieved.
+     * @param tenant a String with the name of the tenant.
      * @return a collection of role references of a user.
      */
     public RoleReferenceCollection getRolesReferencesOfUser(User user, String tenant) {
@@ -231,8 +226,8 @@ public class UserApi {
      * The groups can have more than one role. This method returns the
      * collection of references of roles that the group is assigned to.
      * 
-     * @param group
-     * @param tenant
+     * @param group the group object of the group whose roles references will be retrieved.
+     * @param tenant a String with the name of the tenant.
      * @return collection of roles that the group is assigned to.
      */
     public RoleReferenceCollection getRolesReferencesOfGroup(Group group, String tenant) {
@@ -249,8 +244,9 @@ public class UserApi {
     /**
      * The method to update the fields of a user in the cloud.
      * 
-     * @param user
-     * @param tenant
+     * @param user the user object with the new values to be stored.
+     *             Id, username, password cannot be updated and will be ignored.
+     * @param tenant a String with the name of the tenant.
      */
     public void updateUser(User user, String tenant) {
         Map<String, Object> attributes = user.getAttributes();

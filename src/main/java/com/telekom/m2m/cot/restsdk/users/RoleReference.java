@@ -22,7 +22,7 @@ public class RoleReference extends ExtensibleObject {
     /**
      * The method to return the role that the reference holds.
      * 
-     * @return
+     * @return a role object
      */
     public Role getRole() {
         ExtensibleObject obj = (ExtensibleObject) anyObject.get("role");

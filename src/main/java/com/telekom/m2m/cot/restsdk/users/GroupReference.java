@@ -41,7 +41,7 @@ public class GroupReference extends ExtensibleObject {
     /**
      * The method to set the reference to a group.
      * 
-     * @param group
+     * @param group a {@link Group} object
      */
     public void setGroup(Group group) {
         anyObject.put("group", group);
