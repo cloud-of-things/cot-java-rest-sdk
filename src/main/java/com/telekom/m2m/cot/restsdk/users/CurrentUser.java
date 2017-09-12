@@ -131,7 +131,10 @@ public class CurrentUser extends ExtensibleObject {
 
     /**
      * The method to return the URL of the current user.
-     * 
+     *
+     * @param user CurrentUser object with id
+     * @param tenant String with tenant name
+     *
      * @return the URL of the current user as a String.
      */
     public String getSelf(CurrentUser user, String tenant) {

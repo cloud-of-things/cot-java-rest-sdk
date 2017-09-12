@@ -46,8 +46,7 @@ public class User extends ExtensibleObject {
     /**
      * Set the unique identifier of the user. Just used internally.
      *
-     * @param id
-     *            the new identifier.
+     * @param id the new identifier.
      */
     void setId(String id) {
         anyObject.put("id", id);
@@ -55,7 +54,10 @@ public class User extends ExtensibleObject {
 
     /**
      * Method to retrieve the URL of a user
-     * 
+     *
+     * @param user user object with id
+     * @param tenant String with tenant name
+     *
      * @return URL of the user
      */
     public String getSelf(User user, String tenant) {
