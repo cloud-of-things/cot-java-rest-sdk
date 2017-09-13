@@ -10,7 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Set;
+
 
 /**
  * Created by Patrick Steinert on 31.01.16.
@@ -30,20 +30,23 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
 
     public JsonElement serialize(ExtensibleObject src, Type typeOfSrc,
                                  JsonSerializationContext context) {
-        if (src == null)
+        if (src == null) {
             return null;
-        else {
-            JsonObject object = new JsonObject();
-            Map<String, Object> attributes = src.getAttributes();
-            Set<String> keys = attributes.keySet();
-            for (String key : keys) {
-                // Omit keys
-                if (blacklist.contains(key)) continue;
-
-                object.add(key, context.serialize(attributes.get(key)));
-            }
-            return object;
         }
+
+        JsonObject object = new JsonObject();
+        Map<String, Object> attributes = src.getAttributes();
+        for (Map.Entry<String, Object> entry : attributes.entrySet()) {
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            // Omit blacklisted keys
+            if (blacklist.contains(key)) {
+                continue;
+            }
+
+            object.add(key, context.serialize(value));
+        }
+        return object;
     }
 
     public ExtensibleObject deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
@@ -73,28 +76,29 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
                 }
                 mo.set(element.getKey(), converted);
             } else if (element.getValue().isJsonObject()) {
-                if (element.getKey().toString().equals("childDevices")) {
-                    ManagedObjectReferenceCollection morc = jsonDeserializationContext.deserialize(element.getValue(),
-                            ManagedObjectReferenceCollection.class);
-                    mo.set("childDevices", morc);
-                } else if (element.getKey().toString().equals("childAssets")) {
-                    ManagedObjectReferenceCollection morc = jsonDeserializationContext.deserialize(element.getValue(),
-                            ManagedObjectReferenceCollection.class);
-                    mo.set("childAssets", morc);
-                } else if (element.getKey().toString().equals("deviceParents")) {
-                    ManagedObjectReferenceCollection morc = jsonDeserializationContext.deserialize(element.getValue(),
-                            ManagedObjectReferenceCollection.class);
-                    mo.set("deviceParents", morc);
-                } else if (element.getKey().toString().equals("assetParents")) {
-                    ManagedObjectReferenceCollection morc = jsonDeserializationContext.deserialize(element.getValue(),
-                            ManagedObjectReferenceCollection.class);
-                    mo.set("assetParents", morc);
-                } else {
-                    mo.set(element.getKey(),
-                            jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
+                String key = element.getKey();
+                switch (key) {
+                    case "childDevices" :
+                    case "childAssets" :
+                    case "deviceParents" :
+                    case "assetParents" :
+                        mo.set(key, jsonDeserializationContext.deserialize(element.getValue(), ManagedObjectReferenceCollection.class));
+                        break;
+                    default :
+                        mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
+                }
+            } else if (element.getValue().isJsonArray()) {
+                String key = element.getKey();
+                // Some of the library fragments are arrays, but they don't need special treatment because all
+                // fragments are stored as simple JsonElements in the ExtensibleObject, and not as themselves.
+                // We just list them for documentation purposes, in case someone wants to change that in the future.
+                switch (key) {
+                    case "c8y_SoftwareList":
+                    case "c8y_SupportedOperations":
+                    default:
+                        mo.set(key, element.getValue());
                 }
             }
-
         }
 
         return mo;

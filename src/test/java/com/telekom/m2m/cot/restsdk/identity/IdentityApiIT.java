@@ -58,7 +58,7 @@ public class IdentityApiIT {
     @Test
     public void testGetMultipleGlobalIds() throws Exception {
         IdentityApi idApi = cotPlat.getIdentityApi();
-        String extId = "142300";
+        String extId = "extId-" + (Math.random() * Integer.MAX_VALUE);
 
         ExternalId externalId = new ExternalId();
         externalId.setExternalId(extId);
@@ -68,7 +68,7 @@ public class IdentityApiIT {
 
         ExternalId newExtId = idApi.create(externalId);
 
-        ExternalIdCollection externalIdCollection = idApi.getGlobalIds(extId, 5);
+        ExternalIdCollection externalIdCollection = idApi.getGlobalIds(testManagedObject.getId(), 5);
         Assert.assertEquals(externalIdCollection.getExternalIds().length, 1);
     }
 }

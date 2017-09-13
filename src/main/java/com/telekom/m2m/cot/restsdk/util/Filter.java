@@ -15,7 +15,7 @@ import java.util.Set;
  */
 public class Filter {
 
-    private HashMap<String, String> arguments = new HashMap<String, String>();
+    private HashMap<String, String> arguments = new HashMap<>();
 
     private Filter() {
     }
@@ -175,6 +175,30 @@ public class Filter {
          */
         public FilterBuilder byAgentId(String agentId) {
             instance.arguments.put("agentId", agentId);
+            return this;
+        }
+
+        /**
+         * Adds a build for a user.
+         *
+         * @param user to build for.
+         * @return an appropriate build Object.
+         * @since 0.6.0
+         */
+        public FilterBuilder byUser(String user) {
+            instance.arguments.put("user", user);
+            return this;
+        }
+
+        /**
+         * Adds a build for an application.
+         *
+         * @param application to build for.
+         * @return an appropriate build Object.
+         * @since 0.6.0
+         */
+        public FilterBuilder byApplication(String application) {
+            instance.arguments.put("application", application);
             return this;
         }
 

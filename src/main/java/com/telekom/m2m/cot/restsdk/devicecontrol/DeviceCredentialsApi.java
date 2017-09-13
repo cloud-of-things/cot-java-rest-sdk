@@ -12,9 +12,11 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class DeviceCredentialsApi {
 
-    private final CloudOfThingsRestClient cloudOfThingsRestClient;
-    protected Gson gson = GsonUtils.createGson();
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.deviceCredentials+json;charset=UTF-8;ver=0.9";
+    private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
+
+    protected Gson gson = GsonUtils.createGson();
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
     /**
      * Constructor for this API - just used internal.
@@ -36,8 +38,7 @@ public class DeviceCredentialsApi {
         deviceCredentials.setId(deviceId);
         String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(deviceCredentials), "devicecontrol/deviceCredentials", CONTENT_TYPE);
 
-        DeviceCredentials retrievedDeviceCredentials = gson.fromJson(response, DeviceCredentials.class);
-        return retrievedDeviceCredentials;
+        return gson.fromJson(response, DeviceCredentials.class);
     }
 
     /**
@@ -47,7 +48,12 @@ public class DeviceCredentialsApi {
      * @return an object to retrieve NewDeviceRequests.
      */
     public NewDeviceRequestCollection getNewDeviceRequests(int resultSize) {
-        return new NewDeviceRequestCollection(resultSize, cloudOfThingsRestClient);
+        return new NewDeviceRequestCollection(
+                cloudOfThingsRestClient,
+                RELATIVE_NEW_DEVICE_REQUEST_API_URL,
+                gson,
+                null,
+                resultSize);
     }
 
     /**
@@ -58,9 +64,9 @@ public class DeviceCredentialsApi {
      */
     public NewDeviceRequest getNewDeviceRequest(final String newDeviceRequestId) {
 
-        final String api = "/devicecontrol/newDeviceRequests/" + newDeviceRequestId;
+        final String api = RELATIVE_NEW_DEVICE_REQUEST_API_URL + newDeviceRequestId;
 
-        final String response = cloudOfThingsRestClient.getResponse(api, CONTENT_TYPE);
+        final String response = cloudOfThingsRestClient.getResponse(api);
 
         final ExtensibleObject extensibleObject = gson.fromJson(response, ExtensibleObject.class);
 
@@ -74,6 +80,6 @@ public class DeviceCredentialsApi {
      * @param deviceId the unique identifier.
      */
     public void deleteNewDeviceRequests(String deviceId) {
-        cloudOfThingsRestClient.delete(deviceId, "devicecontrol/newDeviceRequests");
+        cloudOfThingsRestClient.delete(deviceId, RELATIVE_NEW_DEVICE_REQUEST_API_URL);
     }
 }

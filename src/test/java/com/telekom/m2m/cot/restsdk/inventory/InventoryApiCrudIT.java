@@ -27,38 +27,40 @@ public class InventoryApiCrudIT {
     }
 
     @Test
-    public void testGetDevice() throws Exception {
-        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-        InventoryApi inventoryApi = cotPlat.getInventoryApi();
-
-        ManagedObject mo = inventoryApi.get("142300");
-        ManagedObjectReferenceCollection childs = mo.getChildDevices();
-        Assert.assertNotNull(childs.getSelf());
-
-        Iterable<ManagedObjectReference> children = childs.get(5);
-        Iterator<ManagedObjectReference> iter = children.iterator();
-
-        Assert.assertTrue(iter.hasNext());
-        ManagedObject child = iter.next().getManagedObject();
-        Assert.assertEquals(child.getName(), "RaspPi 8fef9ec2 Sensor BMP180");
-    }
-
-    @Test
     public void testCreateAndRead() throws Exception {
 
         ManagedObject mo = new ManagedObject();
-        mo.setName("MyTest-testCreateAndRead");
+        final String moName = "MyTest-testCreateAndRead";
+        mo.setName(moName);
+
+        ManagedObject moChild = new ManagedObject();
+        final String moChildName = "RaspPi 8fef9ec2 Sensor BMP180";
+        moChild.setName(moChildName);
 
         CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
         ManagedObject createdMo = inventoryApi.create(mo);
+        ManagedObject createdMoChild = inventoryApi.create(moChild);
+
+        inventoryApi.registerAsChildDevice(createdMo, createdMoChild);
 
         Assert.assertNotNull("Should now have an Id", createdMo.getId());
 
         ManagedObject retrievedMo = inventoryApi.get(createdMo.getId());
 
         Assert.assertEquals(retrievedMo.getId(), createdMo.getId(), "Should have the same Id");
-        Assert.assertEquals(retrievedMo.getName(), "MyTest-testCreateAndRead", "Should have the same Name");
+        Assert.assertEquals(retrievedMo.getName(), moName, "Should have the same Name");
+
+        ManagedObjectReferenceCollection childDevices = retrievedMo.getChildDevices();
+        Assert.assertNotNull(childDevices.getSelf());
+
+        Iterable<ManagedObjectReference> children = childDevices.get();
+        Iterator<ManagedObjectReference> iter = children.iterator();
+
+        Assert.assertTrue(iter.hasNext());
+        ManagedObject child = iter.next().getManagedObject();
+        Assert.assertEquals(child.getName(), moChildName);
+
     }
 
     @Test

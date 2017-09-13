@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
+import com.telekom.m2m.cot.restsdk.library.Fragment;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
 import java.util.ArrayList;
@@ -8,14 +9,14 @@ import java.util.Date;
 /**
  * Represents a ManagedObject from the platform.
  * <p>
- * The ManagedObject can be model any physical or cyber-physical object, even virtual object.
+ * The ManagedObject can model any physical or cyber-physical object, even virtual object.
  * <p>
  * Created by Patrick Steinert on 30.01.16.
  */
 public class ManagedObject extends ExtensibleObject {
 
     /**
-     * Default construction to create a new managed objects.
+     * Default construction to create a new managed object.
      */
     public ManagedObject() {
         super();
@@ -107,7 +108,7 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("childDevices")) {
             return (ManagedObjectReferenceCollection) anyObject.get("childDevices");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
 
@@ -120,7 +121,7 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("childAssets")) {
             return (ManagedObjectReferenceCollection) anyObject.get("childAssets");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
 
@@ -133,7 +134,7 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("deviceParents")) {
             return (ManagedObjectReferenceCollection) anyObject.get("deviceParents");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
 
@@ -146,7 +147,17 @@ public class ManagedObject extends ExtensibleObject {
         if (anyObject.containsKey("assetParents")) {
             return (ManagedObjectReferenceCollection) anyObject.get("assetParents");
         } else {
-            return new ManagedObjectReferenceCollection(new ArrayList<ManagedObjectReference>(), null);
+            return new ManagedObjectReferenceCollection(new ArrayList<>(), null);
         }
     }
+
+    /**
+     * Add a library {@link Fragment} to this ManagedObject.
+     *
+     * @param fragment the {@link Fragment} object to add to this ManagedObject.
+     */
+    public void addFragment(Fragment fragment) {
+        anyObject.put(fragment.getId(), fragment.getJson());
+    }
+
 }

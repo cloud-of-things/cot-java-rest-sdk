@@ -51,7 +51,7 @@ public class InventoryApiTest {
         InventoryApi inventoryApi = platform.getInventoryApi();
         inventoryApi.update(mo);
 
-        Mockito.verify(rc, times(1)).doPutRequest(anyString(), anyString(), anyString(), anyString());
+        Mockito.verify(rc, times(1)).doPutRequest(anyString(), anyString(), anyString());
     }
 
     @Test
@@ -60,8 +60,7 @@ public class InventoryApiTest {
         // given
         final CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         final CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
-        Mockito.when(platform.getInventoryApi())
-                .thenReturn(new InventoryApi(rc));
+        Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));
 
         final ManagedObject parentDevice = new ManagedObject();
         final ManagedObject childDevice = new ManagedObject();
@@ -71,7 +70,7 @@ public class InventoryApiTest {
         inventoryApi.registerAsChildDevice(parentDevice, childDevice);
 
         // then
-        Mockito.verify(rc).doPostRequest(anyString(), anyString());
+        Mockito.verify(rc).doPostRequest(anyString(), anyString(), anyString());
     }
 
 }

@@ -152,5 +152,55 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
         cloudOfThingsRestClient.delete("", "");
     }
 
+    @Test(expectedExceptions = { CotSdkException.class }, expectedExceptionsMessageRegExp = "Error in request:.*")
+    public void testDeleteByWithException() throws Exception {
+        OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
 
+        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
+        PowerMockito.when(clientMock.newCall(any(Request.class))).thenThrow(new RuntimeException());
+
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
+        cloudOfThingsRestClient.deleteBy("", "");
+    }
+
+    @Test(expectedExceptions = { CotSdkException.class }, expectedExceptionsMessageRegExp = "Error in delete by criteria.*")
+    public void testDeleteByWithReturningError() throws Exception {
+
+        OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
+        Call call = PowerMockito.mock(Call.class);
+
+        Response response = PowerMockito.mock(Response.class);
+
+        PowerMockito.when(response.isSuccessful()).thenReturn(false);
+        PowerMockito.when(response.code()).thenReturn(404);
+
+        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
+        PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
+        PowerMockito.when(call.execute()).thenReturn(response);
+
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
+        cloudOfThingsRestClient.deleteBy("", "");
+    }
+
+    @Test
+    public void testDeleteBy() throws Exception {
+
+        OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
+        Call call = PowerMockito.mock(Call.class);
+
+        Response response = PowerMockito.mock(Response.class);
+
+        PowerMockito.when(response.isSuccessful()).thenReturn(true);
+        PowerMockito.when(response.code()).thenReturn(204); //204: no content
+
+        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
+        PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
+        PowerMockito.when(call.execute()).thenReturn(response);
+
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
+        cloudOfThingsRestClient.deleteBy("", "");
+    }
 }

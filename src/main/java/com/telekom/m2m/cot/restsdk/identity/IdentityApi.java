@@ -12,7 +12,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class IdentityApi {
-    String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.externalId+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.externalId+json;charset=UTF-8;ver=0.9";
     protected Gson gson = GsonUtils.createGson();
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -43,7 +43,7 @@ public class IdentityApi {
         externalIdObject.add("type", new JsonPrimitive(externalId.getType()));
         externalIdObject.add("externalId", new JsonPrimitive(externalId.getExternalId()));
 
-        String response = cloudOfThingsRestClient.doPostRequest(externalIdObject.toString(), "/identity/globalIds/" + externalId.getManagedObject().getId() + "/externalIds", CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.doPostRequest(externalIdObject.toString(), "/identity/globalIds/" + externalId.getManagedObject().getId() + "/externalIds", CONTENT_TYPE, CONTENT_TYPE);
         return gson.fromJson(response, ExternalId.class);
 
     }
@@ -78,6 +78,11 @@ public class IdentityApi {
      * @since 0.3.0
      */
     public ExternalIdCollection getGlobalIds(String externalId, int resultSize) {
-        return new ExternalIdCollection(externalId, resultSize, cloudOfThingsRestClient);
+        return new ExternalIdCollection(
+                cloudOfThingsRestClient,
+                "/identity/globalIds/" + externalId + "/externalIds",
+                gson,
+                null,
+                resultSize);
     }
 }

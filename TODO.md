@@ -1,17 +1,40 @@
 # Todos
 
+* General
+ * verify the format of all the IDs (string vs. number)
+
+* Null
+ * EventApi: return null if event is not found
+ * Array methods: return empty array instead of null?
+
+* SmartREST real time notifications
+ * More robust error handling
+ * maybe new SmartRequestTemplate(String csv)
+
+* Real time notifications
+ * Timing advice
+ * More robust error handling
+ * No notification on delete of operations?
+
+* Real time modules
+ * Redeployment of modules doesn't always work
+ * more input validation
+
+* Device permissions
+ * client side validation
+
+* RetentionRule
+ * verify that filters are not applicable
+
 * Complete Inventory 
  * Write children (implemented, needs refactoring)
  * Query Language
  * GET supported measurements of a managed object
  * testMultipleManagedObjectsByFragment
 
-* Complete DeviceControl
- * Operations Filter with Agent
- * Bulk Operations
-
 * Refactor FilterBuilder
- * Currently all filters are allowed with any *Collection. Would be better if just available filters work.
+ * Currently all filters are allowed with any *Collection. Would be better if just available filters
+   work, especially for DELETE.
 
 * Refactor the basics, Clean Code
 * Implement Geo Features

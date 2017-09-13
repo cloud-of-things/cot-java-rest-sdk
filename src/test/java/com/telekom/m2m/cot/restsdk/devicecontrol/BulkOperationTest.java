@@ -1,50 +1,123 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import org.mockito.Mockito;
-import org.testng.Assert;
+import com.google.gson.Gson;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.any;
+import java.util.Date;
+
+import static org.testng.Assert.*;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Created by Patrick Steinert on 02.01.17.
  */
 public class BulkOperationTest {
 
+    private final String bulkOperationId = "bulkOperationId1";
+    private final long creationRamp = System.currentTimeMillis();
+    private final String failedBulkOperationId = "failedBulkOperationId3";
+    private final String groupId = "groupId4";
+    private final Operation operation = new Operation();
+    private final Progress progress = new Progress();
+    private final Date startDate = new Date() ;
+    private final String status = "ACTIVE";
+
     @Test
-    public void testBulkOperations() throws Exception {
+    public void testBulkOperation() {
+        // when
+        final BulkOperation bulkOperation = new BulkOperation();
 
-        String bulkOperationJsonExample = "{\n" +
-                "  \"id\" : \"123\",\n" +
-                "  \"self\" : \"<<This BulkOperation URL>>\",\n" +
-                "  \"groupId\" : \"124301\",\n" +
-                "  \"status\" : \"ACTIVE\",\n" +
-                "  \"startDate\" : \"2011-09-06T12:03:27\",\n" +
-                "  \"operationPrototype\":{\"test\"=>\"TEST1\"},\n" +
-                "  \"creationRamp\":15,\n" +
-                "  \"progress\":\n" +
-                "    {\n" +
-                "     \"pending\":0, \"failed\":0, \"executing\":0, \"successful\":0, \"all\":2\n" +
-                "    }\n" +
-                "}";
+        // then
+        assertNotNull(bulkOperation);
+        assertNotNull(bulkOperation.getAttributes());
+        assertEquals(bulkOperation.getAttributes().size(), 0);
+        assertNull(bulkOperation.getId());
+    }
 
-        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
-        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
-        Mockito.when(platform.getDeviceControlApi()).thenReturn(new DeviceControlApi(rc));
-        Mockito.when(rc.getResponse(any(String.class), any(String.class), any(String.class))).thenReturn(
-                bulkOperationJsonExample);
+    @Test
+    public void testBulkOperationSetterAndGetter() {
+        // when
+        BulkOperation testBulkOperation = createTestBulkOperation();
 
-        DeviceControlApi inventoryApi = platform.getDeviceControlApi();
-        BulkOperation bulkOperation = inventoryApi.getBulkOperation("0");
+        // then
+        checkAssertions(testBulkOperation);
+    }
 
-        Assert.assertEquals(bulkOperation.getId(), "123");
-        Assert.assertEquals(bulkOperation.getGroupId(), "124301");
-        Assert.assertEquals(bulkOperation.getStatus(), "ACTIVE");
-        Assert.assertEquals(bulkOperation.getCreationRamp().intValue(), 15);
+    @Test
+    public void testBulkOperationWrapper() {
+        // given
+        BulkOperation testBulkOperation = createTestBulkOperation();
 
+        // when
+        BulkOperation wrappedBulkOperation = new BulkOperation(testBulkOperation);
 
+        // then
+        assertNotNull(wrappedBulkOperation, "Wrapping into the BulkOperation failed!");
+        checkAssertions(wrappedBulkOperation);
+    }
+
+    @Test
+    public void testBulkOperationSerialization() {
+        // given
+        BulkOperation testBulkOperation = createTestBulkOperation();
+
+        // when
+        Gson gson = GsonUtils.createGson();
+        String json = gson.toJson(testBulkOperation);
+
+        // then
+        assertNotNull(json, "Serialization of the BulkOperation failed!");
+        assertTrue(json.contains(bulkOperationId));
+        assertTrue(json.contains(groupId));
+        assertTrue(json.contains(status));
+        assertTrue(json.contains(failedBulkOperationId));
+        assertTrue(json.contains(String.valueOf(creationRamp)));
+        assertTrue(json.contains("operation"));
+        assertTrue(json.contains("progress"));
+        assertTrue(json.contains("startDate"));
+    }
+
+    @Test
+    public void testBulkOperationDeserialization() {
+        // given
+        BulkOperation testBulkOperation = createTestBulkOperation();
+        Gson gson = GsonUtils.createGson();
+        String json = gson.toJson(testBulkOperation);
+
+        // when
+        ExtensibleObject deserializedBulkOperation = gson.fromJson(json, ExtensibleObject.class);
+
+        // then
+        assertNotNull(deserializedBulkOperation, "Deserialization of the BulkOperation failed!");
+        BulkOperation bulkOperation = new BulkOperation(deserializedBulkOperation);
+        checkAssertions(bulkOperation);
+    }
+
+    private BulkOperation createTestBulkOperation() {
+        BulkOperation bulkOperation = new BulkOperation();
+        bulkOperation.setId(bulkOperationId);
+        bulkOperation.setCreationRamp(creationRamp);
+        bulkOperation.setFailedBulkOperationId(failedBulkOperationId);
+        bulkOperation.setGroupId(groupId);
+        bulkOperation.setOperation(operation);
+        bulkOperation.setProgress(progress);
+        bulkOperation.setStartDate(startDate);
+        bulkOperation.setStatus(status);
+
+        return bulkOperation;
+    }
+
+    private void checkAssertions(BulkOperation testBulkOperation) {
+        assertEquals(testBulkOperation.getId(), bulkOperationId);
+        assertEquals(testBulkOperation.getGroupId(), groupId);
+        assertEquals(testBulkOperation.getStatus(), status);
+        assertEquals(testBulkOperation.getFailedBulkOperationId(), failedBulkOperationId);
+        assertEquals(testBulkOperation.getCreationRamp().longValue(), creationRamp);
+        assertTrue(testBulkOperation.getOperation() instanceof Operation);
+        assertTrue(testBulkOperation.getProgress() instanceof Progress);
+        assertEquals(testBulkOperation.getStartDate(), startDate);
     }
 
 

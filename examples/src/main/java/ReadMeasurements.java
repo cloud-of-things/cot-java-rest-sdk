@@ -2,6 +2,7 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementCollection;
@@ -43,16 +44,14 @@ public class ReadMeasurements {
             csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
 
 
-            CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
-                    host,
-                    tenant, user, password);
+            CloudOfThingsPlatform platform = new CloudOfThingsPlatform(host, new CotCredentials(tenant, user, password));
             MeasurementApi mApi = platform.getMeasurementApi();
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat csv = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             System.out.println("Grabbing data From: '" + dt.format(from.getTime()) + "' To: '" + dt.format(to.getTime()) + "'");
             MeasurementCollection mcol = mApi.getMeasurements(Filter.build().bySource("142300").byDate(from.getTime(), to.getTime()), 2000);
             Table<Date, String, Double> records = HashBasedTable.create();
-            ArrayList<Date> list = new ArrayList<Date>();
+            ArrayList<Date> list = new ArrayList<>();
             while (true) {
                 int maxRetry = 5;
                 Measurement[] measurements = new Measurement[0];
@@ -92,8 +91,7 @@ public class ReadMeasurements {
                 if (measurements.length == 0)
                     break;
 
-                for (int i = 0; i < measurements.length; i++) {
-                    Measurement m = measurements[i];
+                for (Measurement m : measurements) {
                     JsonObject rawData;
                     double value;
                     switch (m.get("type").toString()) {

@@ -20,6 +20,8 @@ public class EventApiCollectionIT {
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
+    private EventApi eventApi = cotPlat.getEventApi();
+
     @BeforeMethod
     public void setUp() {
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
@@ -27,20 +29,24 @@ public class EventApiCollectionIT {
 
     @AfterMethod
     public void tearDown() {
+        eventApi.deleteEvents(Filter.build().bySource(testManagedObject.getId()));
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
 
 
     @Test
     public void testMultipleEvents() throws Exception {
-        // Expects a tenant with already multiple measurements
+        Event testEvent = new Event();
+        testEvent.setSource(testManagedObject);
+        testEvent.setTime(new Date());
+        testEvent.setType("mytype");
+        testEvent.setText("Test");
+        eventApi.createEvent(testEvent);
 
-        EventApi measurementApi = cotPlat.getEventApi();
-
-        EventCollection measurementCollection = measurementApi.getEvents();
+        EventCollection eventCollection = eventApi.getEvents();
 
 
-        Event[] events = measurementCollection.getEvents();
+        Event[] events = eventCollection.getEvents();
 
         Assert.assertTrue(events.length > 0);
 
@@ -58,12 +64,8 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsWithPaging() throws Exception {
-        // Expects a tenant with already multiple measurements
-
         // !!! Important !!!
         // Test assumes pageSize default is 5.
-
-        EventApi eventApi = cotPlat.getEventApi();
 
         for (int i = 0; i < 6; i++) {
             Event testEvent = new Event();
@@ -76,7 +78,6 @@ public class EventApiCollectionIT {
         }
 
         EventCollection eventCollection = eventApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
-
 
         Event[] events = eventCollection.getEvents();
 
@@ -106,13 +107,10 @@ public class EventApiCollectionIT {
         Assert.assertEquals(events.length, 6);
         Assert.assertFalse(eventCollection.hasNext());
         Assert.assertFalse(eventCollection.hasPrevious());
-
     }
 
     @Test
     public void testDeleteMultipleEventsBySource() throws Exception {
-        EventApi eApi = cotPlat.getEventApi();
-
         for (int i = 0; i < 6; i++) {
             Event testEvent = new Event();
             testEvent.setSource(testManagedObject);
@@ -120,31 +118,29 @@ public class EventApiCollectionIT {
             testEvent.setType("mytype-" + i);
             testEvent.setText("Test" + i);
 
-            eApi.createEvent(testEvent);
+            eventApi.createEvent(testEvent);
         }
 
-        EventCollection events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
+        EventCollection events = eventApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
         Event[] es = events.getEvents();
         Assert.assertEquals(es.length, 5);
 
-        eApi.deleteEvents(Filter.build().bySource(testManagedObject.getId()));
-        events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
+        eventApi.deleteEvents(Filter.build().bySource(testManagedObject.getId()));
+        events = eventApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
         es = events.getEvents();
         Assert.assertEquals(es.length, 0);
     }
 
     @Test
     public void testMultipleEventsBySource() throws Exception {
-        EventApi eApi = cotPlat.getEventApi();
-
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
         testEvent.setType("mytype");
         testEvent.setText("Test");
-        eApi.createEvent(testEvent);
+        eventApi.createEvent(testEvent);
 
-        EventCollection events = eApi.getEvents();
+        EventCollection events = eventApi.getEvents();
         Event[] es = events.getEvents();
         Assert.assertTrue(es.length > 0);
         boolean allEventsFromSource = true;
@@ -156,7 +152,7 @@ public class EventApiCollectionIT {
         Assert.assertFalse(allEventsFromSource);
 
         //measurements = mApi.getMeasurementsBySource(testManagedObject.getId());
-        events = eApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
+        events = eventApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
         es = events.getEvents();
         allEventsFromSource = true;
         Assert.assertTrue(es.length > 0);
@@ -170,17 +166,15 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByType() throws Exception {
-        EventApi eApi = cotPlat.getEventApi();
-
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
         testEvent.setType("mysuperspecialtype");
         testEvent.setText("Test");
 
-        eApi.createEvent(testEvent);
+        eventApi.createEvent(testEvent);
 
-        EventCollection events = eApi.getEvents();
+        EventCollection events = eventApi.getEvents();
         Event[] es = events.getEvents();
         Assert.assertTrue(es.length > 0);
         boolean allEventsFromSameType = true;
@@ -191,7 +185,7 @@ public class EventApiCollectionIT {
         }
         Assert.assertFalse(allEventsFromSameType);
 
-        events = eApi.getEvents(Filter.build().byType(testEvent.getType()));
+        events = eventApi.getEvents(Filter.build().byType(testEvent.getType()));
         es = events.getEvents();
         allEventsFromSameType = true;
         Assert.assertTrue(es.length > 0);
@@ -205,18 +199,16 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventByDate() throws Exception {
-        EventApi eApi = cotPlat.getEventApi();
-
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
         testEvent.setText("Test");
 
-        eApi.createEvent(testEvent);
+        eventApi.createEvent(testEvent);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-        EventCollection events = eApi.getEvents(Filter.build().byDate(yesterday, new Date()));
+        EventCollection events = eventApi.getEvents(Filter.build().byDate(yesterday, new Date()));
 
 
         Event[] es = events.getEvents();
@@ -224,7 +216,7 @@ public class EventApiCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        events = eApi.getEvents(Filter.build().byDate(beforeYesterday, yesterday));
+        events = eventApi.getEvents(Filter.build().byDate(beforeYesterday, yesterday));
         es = events.getEvents();
         Assert.assertEquals(es.length, 0);
     }
@@ -232,18 +224,16 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByDateAndBySource() throws Exception {
-        EventApi eApi = cotPlat.getEventApi();
-
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
         testEvent.setText("Test");
 
-        eApi.createEvent(testEvent);
+        eventApi.createEvent(testEvent);
 
         Date yesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24));
-        EventCollection events = eApi.getEvents(
+        EventCollection events = eventApi.getEvents(
                 Filter.build()
                         .byDate(yesterday, new Date())
                         .bySource(testManagedObject.getId()));
@@ -254,7 +244,7 @@ public class EventApiCollectionIT {
 
         Date beforeYesterday = new Date(new Date().getTime() - (1000 * 60 * 60 * 24) - 10);
 
-        events = eApi.getEvents(
+        events = eventApi.getEvents(
                 Filter.build()
                         .byDate(beforeYesterday, yesterday)
                         .bySource(testManagedObject.getId()));
@@ -265,8 +255,6 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByTypeAndBySource() throws Exception {
-        EventApi eApi = cotPlat.getEventApi();
-
         Position sts = new Position();
         sts.setAlt(1000.0);
         sts.setLat(50.722607);
@@ -279,9 +267,9 @@ public class EventApiCollectionIT {
         testEvent.setText("Test");
 
         testEvent.set(sts);
-        eApi.createEvent(testEvent);
+        eventApi.createEvent(testEvent);
 
-        EventCollection events = eApi.getEvents(
+        EventCollection events = eventApi.getEvents(
                 Filter.build()
                         .byType("mysuperspecialtype")
                         .bySource(testManagedObject.getId()));
@@ -291,7 +279,7 @@ public class EventApiCollectionIT {
         Assert.assertEquals(es.length, 1);
 
 
-        events = eApi.getEvents(
+        events = eventApi.getEvents(
                 Filter.build()
                         .byType("NOT_USED")
                         .bySource(testManagedObject.getId()));
@@ -302,8 +290,6 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByFragmentTypeAndBySource() throws Exception {
-        EventApi eApi = cotPlat.getEventApi();
-
         Position sts = new Position();
         sts.setAlt(1000.0);
         sts.setLat(50.722607);
@@ -315,9 +301,9 @@ public class EventApiCollectionIT {
         testEvent.setType("mysuperspecialtype");
         testEvent.setText("Test");
         testEvent.set(sts);
-        eApi.createEvent(testEvent);
+        eventApi.createEvent(testEvent);
 
-        EventCollection events = eApi.getEvents(
+        EventCollection events = eventApi.getEvents(
                 Filter.build()
                         .byFragmentType("com_telekom_m2m_cot_restsdk_util_Position")
                         .bySource(testManagedObject.getId()));
@@ -327,11 +313,12 @@ public class EventApiCollectionIT {
         Assert.assertEquals(es.length, 1);
 
 
-        events = eApi.getEvents(
+        events = eventApi.getEvents(
                 Filter.build()
                         .byFragmentType("com_telekom_m2m_cot_restsdk_util_Position_not")
                         .bySource(testManagedObject.getId()));
         es = events.getEvents();
         Assert.assertEquals(es.length, 0);
     }
+
 }
