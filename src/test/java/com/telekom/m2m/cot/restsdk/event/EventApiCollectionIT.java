@@ -79,7 +79,6 @@ public class EventApiCollectionIT {
 
         EventCollection eventCollection = eventApi.getEvents(Filter.build().bySource(testManagedObject.getId()));
 
-
         Event[] events = eventCollection.getEvents();
 
         Assert.assertEquals(events.length, 5);
@@ -108,7 +107,6 @@ public class EventApiCollectionIT {
         Assert.assertEquals(events.length, 6);
         Assert.assertFalse(eventCollection.hasNext());
         Assert.assertFalse(eventCollection.hasPrevious());
-
     }
 
     @Test
@@ -322,4 +320,5 @@ public class EventApiCollectionIT {
         es = events.getEvents();
         Assert.assertEquals(es.length, 0);
     }
+
 }

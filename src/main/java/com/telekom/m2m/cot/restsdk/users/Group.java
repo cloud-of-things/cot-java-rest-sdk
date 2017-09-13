@@ -16,11 +16,19 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  * Created by Ozan Arslan on 13.07.2017
  */
 public class Group extends ExtensibleObject {
-    
+
+    /**
+     * Default construction to create a new group.
+     */
     public Group() {
         super();
     }
 
+    /**
+     * Internal constructor to create a group from base class.
+     *
+     * @param extensibleObject object from base class.
+     */
     public Group(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }
@@ -55,8 +63,7 @@ public class Group extends ExtensibleObject {
     /**
      * Set the unique identifier of the group. Just used internally.
      *
-     * @param id
-     *            the new identifier.
+     * @param id the new identifier.
      */
     void setId(String id) {
         anyObject.put("id", id);
@@ -65,7 +72,7 @@ public class Group extends ExtensibleObject {
     /**
      * The method to return the group name.
      * 
-     * @return name as String.
+     * @return name a String with the name of the group.
      */
     public String getName() {
         return (String) anyObject.get("name");
@@ -74,7 +81,7 @@ public class Group extends ExtensibleObject {
     /**
      * The method to set group name.
      * 
-     * @param name group name as String.
+     * @param name is a String with the name of the group.
      */
     public void setName(String name) {
         anyObject.put("name", name);
@@ -83,7 +90,7 @@ public class Group extends ExtensibleObject {
     /**
      * Return the users of the group.
      * 
-     * @return UserReferenceCollection object with references to the users.
+     * @return a collection with the users assigned to this group.
      */
     public UserReferenceCollection getUsers() {
         return (UserReferenceCollection) anyObject.get("users");
@@ -92,7 +99,7 @@ public class Group extends ExtensibleObject {
     /**
      * Set the users of the group.
      * 
-     * @param users {@link UserReferenceCollection} containing the users for this group.
+     * @param users a collection with the users to assign to this group.
      */
     public void setUsers(UserReferenceCollection users) {
         anyObject.put("users", users);
@@ -101,7 +108,7 @@ public class Group extends ExtensibleObject {
     /**
      * Return the roles of the group.
      * 
-     * @return roles of the group as {@link RoleReferenceCollection}
+     * @return roles a collection of type {@link RoleReferenceCollection} containing the roles assigned to this group. 
      */
     public RoleReferenceCollection getRoles() {
         return (RoleReferenceCollection) anyObject.get("roles");
@@ -110,7 +117,7 @@ public class Group extends ExtensibleObject {
     /**
      * Set the roles for the group
      * 
-     * @param roles {@link RoleReferenceCollection} containing the roles for this group.
+     * @param roles a collection of type {@link RoleReferenceCollection} containing the roles to assign to this group.
      */
     public void setRoles(RoleReferenceCollection roles) {
         anyObject.put("roles", roles);
@@ -135,13 +142,11 @@ public class Group extends ExtensibleObject {
      * than one type of device permissions for more than one device at once by
      * employing a map of device ids and a list of permissions.
      * 
-     * @param devicePermissions as Map object.
+     * @param devicePermissions a map with device id as a key and a list of permission strings as a value.
      * TODO: make a copy instead?
      */
     public void setDevicePermissions(Map<String, List<String>> devicePermissions) {
         anyObject.put("devicePermissions", devicePermissions);
     }
-    
-    
 
 }

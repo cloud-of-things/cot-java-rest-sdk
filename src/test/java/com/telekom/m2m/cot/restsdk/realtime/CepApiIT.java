@@ -11,6 +11,7 @@ import java.util.List;
 
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -55,6 +56,16 @@ public class CepApiIT {
 
     private static final int DELAY_MILLIS = 150;
 
+    CepConnector connector;
+
+
+    @AfterMethod
+    public void tearDown() {
+        if (connector != null) {
+            connector.disconnect();
+        }
+    }
+
     @BeforeClass
     public void setUpClass() {
         testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
@@ -67,7 +78,6 @@ public class CepApiIT {
         testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
         testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
         testObjectForCreateUpdateDelete = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_for_createUpdateDelete");
-
     }
 
     @AfterClass
@@ -81,8 +91,8 @@ public class CepApiIT {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForOperation);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory1);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testObjectForInventory2);
-        
     }
+
 
     // This test will create one subscriber, then creates two alarms (for the
     // same device/channel), then check if
@@ -90,7 +100,7 @@ public class CepApiIT {
     @Test
     public void testSimpleRealTimeAlarms() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         final List<String> notedAlarms = new ArrayList<>();
 
@@ -137,7 +147,7 @@ public class CepApiIT {
     @Test
     public void testSubUnsub() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         // Prepare initial subscription:
         String channel1 = "/alarms/" + alarmSource1.getId();
@@ -225,7 +235,7 @@ public class CepApiIT {
     @Test
     public void testMultiChannels() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         // Prepare subscriptions for sources 1 and 2, but not for 3:
         connector.subscribe("/alarms/" + alarmSource1.getId());
@@ -274,7 +284,7 @@ public class CepApiIT {
     @Test
     public void testSimpleRealTimeEvents() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         final List<String> notedEvents = new ArrayList<>();
 
@@ -333,7 +343,7 @@ public class CepApiIT {
     @Test
     public void testSimpleRealTimeMeasurements() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         final List<String> notedMeasurements = new ArrayList<>();
 
@@ -391,7 +401,7 @@ public class CepApiIT {
     @Test
     public void testSimpleRealTimeOperation() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         final List<String> notedOperations = new ArrayList<>();
 
@@ -432,7 +442,7 @@ public class CepApiIT {
     @Test
     public void testNotificationsForCreateUpdateDeleteOperation() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         final List<String> notedOperations = new ArrayList<>();
 
@@ -494,7 +504,7 @@ public class CepApiIT {
     @Test
     public void testSimpleRealTimeInventoryObjects() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         final List<String> notedInventoryObjects = new ArrayList<>();
 
@@ -544,7 +554,7 @@ public class CepApiIT {
     @Test
     public void testNotificationsForUpdateDelete() throws InterruptedException {
 
-        CepConnector connector = cepApi.getCepConnector();
+        connector = cepApi.getCepConnector();
 
         final List<String> notedInventoryObjects = new ArrayList<>();
 

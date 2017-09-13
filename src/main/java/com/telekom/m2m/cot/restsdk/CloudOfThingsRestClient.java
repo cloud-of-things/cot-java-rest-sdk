@@ -159,7 +159,7 @@ public class CloudOfThingsRestClient {
      * @param file Request body, i.e. the first and only form part.
      * @param name The name of the form field.
      * @param api the URL path (without leading /)
-     * @param contentType http header variable content-type
+     * @param contentType a String with the Content-Type to set in header of the request.
      * @return the response body
      */
     public String doFormUpload(String file, String name, String api, String contentType) {
@@ -228,7 +228,7 @@ public class CloudOfThingsRestClient {
 
         Response response = null;
         try {
-            response = client.newCall(request).execute();
+            response = realTimeClient.newCall(request).execute();
             if (!response.isSuccessful()) {
                 final String err = getErrorMessage(response);
                 throw new CotSdkException(response.code(), err);
