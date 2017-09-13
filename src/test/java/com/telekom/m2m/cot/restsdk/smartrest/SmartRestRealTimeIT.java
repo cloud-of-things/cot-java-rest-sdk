@@ -40,6 +40,8 @@ public class SmartRestRealTimeIT {
     private String xId = null;
     private String xId2 = null;
 
+    SmartCepConnector connector;
+
 
     @BeforeMethod
     public void setUp() {
@@ -63,6 +65,9 @@ public class SmartRestRealTimeIT {
         TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource1);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource2);
         TestHelper.deleteManagedObjectInPlatform(cotPlat, alarmSource3);
+        if (connector != null) {
+            connector.disconnect();
+        }
     }
 
 
@@ -78,7 +83,7 @@ public class SmartRestRealTimeIT {
                 new SmartRequestTemplate[0],
                 new SmartResponseTemplate[]{responseTemplate});
 
-        SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
+        connector = smartRestApi.getNotificationsConnector(xId);
 
         // Prepare subscription:
         connector.subscribe("/alarms/" + alarmSource1.getId(), null);
@@ -133,7 +138,7 @@ public class SmartRestRealTimeIT {
                 new SmartRequestTemplate[0],
                 new SmartResponseTemplate[]{responseTemplate});
 
-        SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
+        connector = smartRestApi.getNotificationsConnector(xId);
 
         // Prepare initial subscription:
         connector.subscribe("/alarms/" + alarmSource1.getId(), null);
@@ -220,7 +225,7 @@ public class SmartRestRealTimeIT {
                 new SmartRequestTemplate[0],
                 new SmartResponseTemplate[]{responseTemplate});
 
-        SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
+        connector = smartRestApi.getNotificationsConnector(xId);
 
         // Prepare subscriptions for sources 1 and 2, but not for 3:
         connector.subscribe("/alarms/" + alarmSource1.getId(), null);
@@ -276,7 +281,7 @@ public class SmartRestRealTimeIT {
                 new SmartRequestTemplate[0],
                 new SmartResponseTemplate[]{responseTemplate1, responseTemplate2});
 
-        SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
+        connector = smartRestApi.getNotificationsConnector(xId);
 
         // Prepare subscription:
         connector.subscribe("/alarms/" + alarmSource1.getId(), null);
@@ -334,7 +339,7 @@ public class SmartRestRealTimeIT {
                 new SmartResponseTemplate[]{new SmartResponseTemplate(
                         "300", "$", "$", new String[]{"$.type", "$.id"})});
 
-        SmartCepConnector connector = smartRestApi.getNotificationsConnector(xId);
+        connector = smartRestApi.getNotificationsConnector(xId);
 
         // Prepare subscription (at first, only for xId):
         connector.subscribe("/alarms/" + alarmSource1.getId(), null);

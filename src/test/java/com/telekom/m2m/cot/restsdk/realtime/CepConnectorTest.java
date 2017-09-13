@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.realtime;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -14,11 +15,14 @@ import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.fail;
 
 
 public class CepConnectorTest {
 
     CloudOfThingsRestClient cloudOfThingsRestClient;
+
+    CepConnector connector;
 
 
     @BeforeMethod
@@ -26,11 +30,17 @@ public class CepConnectorTest {
         cloudOfThingsRestClient = mock(CloudOfThingsRestClient.class);
     }
 
+    @AfterMethod
+    public void tearDown() throws InterruptedException {
+        if (connector != null) {
+            connector.disconnect();
+        }
+    }
 
     // This test will disconnect a running connect loop, first while it is waiting for a response and then while it
     // is sleeping between connect requests. In both situations a clean shutdown must be possible.
     @Test
-    public void testDisconnectM() throws InterruptedException {
+    public void testDisconnect() throws InterruptedException {
         when(cloudOfThingsRestClient.doPostRequest(anyString(), anyString(), anyString())).
                 thenReturn("[{\"clientId\":\"My-Client-Id\"}]");
         when(cloudOfThingsRestClient.doRealTimePollingRequest(anyString(), anyString(), anyString(), anyInt())).
@@ -52,7 +62,7 @@ public class CepConnectorTest {
                     }
                 });
 
-        CepConnector connector = new CepConnector(cloudOfThingsRestClient, CepApi.NOTIFICATION_PATH);
+        connector = new CepConnector(cloudOfThingsRestClient, CepApi.NOTIFICATION_PATH);
 
         // With these settings the interruption will happen when the connect is still waiting:
         connector.setTimeout(1000);

@@ -18,10 +18,10 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 public class User extends ExtensibleObject {
     
    private static final Pattern USERNAME_RULE = Pattern.compile("[^\\s\\\\+\\$/:]+"); 
-   private static final int MAX_USERNAME_SIZE = 1000;
-   private static final int EMAIL_SIZE = 254;
-   private static final int MAX_PASSWORD_SIZE = 32;
-   private static final int MIN_PASSWORD_SIZE = 6;
+   public static final int MAX_USERNAME_SIZE = 1000;
+   public static final int EMAIL_SIZE = 254;
+   public static final int MAX_PASSWORD_SIZE = 32;
+   public static final int MIN_PASSWORD_SIZE = 6;
    
   
     public User() {
@@ -46,8 +46,7 @@ public class User extends ExtensibleObject {
     /**
      * Set the unique identifier of the user. Just used internally.
      *
-     * @param id
-     *            the new identifier.
+     * @param id the new identifier.
      */
     void setId(String id) {
         anyObject.put("id", id);
@@ -55,18 +54,36 @@ public class User extends ExtensibleObject {
 
     /**
      * Method to retrieve the URL of a user
-     * 
-     * @param user
+     *
+     * @param user user object with id
+     * @param tenant String with tenant name
+     *
      * @return URL of the user
      */
     public String getSelf(User user, String tenant) {
         return "/user/" + tenant + "/users/" + user.getId();
     }
 
+    /**
+     * Returns the userName.
+     *
+     * @return the userName as String.
+     */
     public String getUserName() {
         return (String) anyObject.get("userName");
     }
 
+    /**
+     * Set the userName.
+     *
+     * There is some validation:
+     * <ul>
+     *  <li>of maximum length MAX_USERNAME_SIZE</li>
+     *  <li>absence of whitespace, slashes nor any of (+$:) characters</li>
+     * </ul>
+     *
+     * @param inputUserName the userName.
+     */
     public void setUserName(String inputUserName) {
         if (inputUserName.length() > MAX_USERNAME_SIZE) {
             throw new CotSdkException("UserName cannot contain more than "+MAX_USERNAME_SIZE+" characters.");
@@ -77,10 +94,26 @@ public class User extends ExtensibleObject {
         }
     }
 
+    /**
+     * Returns the password of the user.
+     *
+     * @return the password as String.
+     */
     public String getPassword() {
         return (String) anyObject.get("password");
     }
 
+    /**
+     * Set the password.
+     *
+     * There is some validation:
+     * <ul>
+     *  <li>of minumum length MIN_PASSWORD_SIZE</li>
+     *  <li>of maximum length MAX_PASSWORD_SIZE</li>
+     *  <li>absence of whitespace, slashes nor any of (+$:) characters</li>
+     * </ul>
+     * @param password as String.
+     */
     public void setPassword(String password) {
         if (password.length() > MAX_PASSWORD_SIZE || password.length() < MIN_PASSWORD_SIZE) {
             throw new CotSdkException("Password must contain at least "+MIN_PASSWORD_SIZE+" and at most "+MAX_PASSWORD_SIZE+" characters.");
@@ -89,26 +122,61 @@ public class User extends ExtensibleObject {
         }
     }
 
+    /**
+     * Returns the firstName.
+     *
+     * @return firstName as String.
+     */
     public String getFirstName() {
         return (String) anyObject.get("firstName");
     }
 
+    /**
+     * Sets the first name.
+     *
+     * @param firstName as String
+     */
     public void setFirstName(String firstName) {
         anyObject.put("firstName", firstName);
     }
 
+    /**
+     * Returns the lastName.
+     *
+     * @return lastName as String.
+     */
     public String getLastName() {
         return (String) anyObject.get("lastName");
     }
 
+    /**
+     * Sets the lastName.
+     *
+     * @param lastName as String
+     */
     public void setLastName(String lastName) {
         anyObject.put("lastName", lastName);
     }
 
+    /**
+     * Returns the email.
+     *
+     * @return email as String.
+     */
     public String getEmail() {
         return (String) anyObject.get("email");
     }
 
+    /**
+     * Set the email.
+     *
+     * There is some validation:
+     * <ul>
+     *  <li>of maximum length EMAIL_SIZE</li>
+     * </ul>
+     *
+     * @param email as String.
+     */
     public void setEmail(String email) {
         if (email.length() > EMAIL_SIZE) {
             throw new CotSdkException("Email address cannot contain more than "+EMAIL_SIZE+" characters.");

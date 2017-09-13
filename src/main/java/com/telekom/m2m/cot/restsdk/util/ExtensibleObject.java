@@ -19,7 +19,7 @@ public class ExtensibleObject {
     /**
      * Constructor that uses all the objects from an existing ExtensibleObject.
      *
-     * @param extensibleObject
+     * @param extensibleObject existing base class object whose values in the map will be copied.
      */
     protected ExtensibleObject(ExtensibleObject extensibleObject) {
         if (extensibleObject != null)

@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.smartrest;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -29,6 +30,14 @@ public class SmartCepConnectorTest {
 
     CloudOfThingsRestClient cloudOfThingsRestClient;
 
+    SmartCepConnector connector;
+
+    @AfterMethod
+    public void tearDown() {
+        if (connector != null) {
+            connector.disconnect();
+        }
+    }
 
     @BeforeMethod
     public void setup() {
@@ -38,7 +47,7 @@ public class SmartCepConnectorTest {
 
     @Test
     public void testMultiListeners() throws InterruptedException {
-        SmartCepConnector connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
+        connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
 
         when(cloudOfThingsRestClient.doSmartRealTimeRequest("My-X-Id", MSG_REALTIME_HANDSHAKE)).
                 thenReturn(new String[]{"My-Client-Id"});
@@ -86,7 +95,7 @@ public class SmartCepConnectorTest {
 
     @Test
     public void testAdvice() throws InterruptedException {
-        SmartCepConnector connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
+        connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
 
         int initialTimeout = 10;
         connector.setTimeout(initialTimeout);
@@ -118,7 +127,7 @@ public class SmartCepConnectorTest {
 
     @Test
     public void testErrors() throws InterruptedException {
-        SmartCepConnector connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
+        connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
 
         when(cloudOfThingsRestClient.doSmartRealTimeRequest("My-X-Id", MSG_REALTIME_HANDSHAKE)).
                 thenReturn(new String[]{"My-Client-Id"});
@@ -181,7 +190,7 @@ public class SmartCepConnectorTest {
                     }
                 });
 
-        SmartCepConnector connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
+        connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
 
         // With these settings the interruption will happen when the connect is still waiting:
         connector.setTimeout(1000);
