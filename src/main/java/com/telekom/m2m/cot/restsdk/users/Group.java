@@ -88,7 +88,7 @@ public class Group extends ExtensibleObject {
     }
 
     /**
-     * Return the users of the group
+     * Return the users of the group.
      * 
      * @return a collection with the users assigned to this group.
      */
@@ -97,8 +97,7 @@ public class Group extends ExtensibleObject {
     }
 
     /**
-     * 
-     * Set the users of the group
+     * Set the users of the group.
      * 
      * @param users a collection with the users to assign to this group.
      */
@@ -107,10 +106,9 @@ public class Group extends ExtensibleObject {
     }
 
     /**
+     * Return the roles of the group.
      * 
-     * Return the roles of the group
-     * 
-     * @return roles a collection with the roles assigned to this group.
+     * @return roles a collection of type {@link RoleReferenceCollection} containing the roles assigned to this group. 
      */
     public RoleReferenceCollection getRoles() {
         return (RoleReferenceCollection) anyObject.get("roles");
@@ -119,7 +117,7 @@ public class Group extends ExtensibleObject {
     /**
      * Set the roles for the group
      * 
-     * @param roles a collection with the roles to assign to this group.
+     * @param roles a collection of type {@link RoleReferenceCollection} containing the roles to assign to this group.
      */
     public void setRoles(RoleReferenceCollection roles) {
         anyObject.put("roles", roles);

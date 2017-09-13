@@ -40,7 +40,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to return the username.
      * 
-     * @return userName
+     * @return userName userName as String
      */
     public String getUserName() {
         return (String) anyObject.get("userName");
@@ -59,7 +59,7 @@ public class CurrentUser extends ExtensibleObject {
     /**
      * The method to retrieve the password of the user.
      * 
-     * @return password
+     * @return password as String.
      */
     public String getPassword() {
         return (String) anyObject.get("password");
@@ -123,7 +123,6 @@ public class CurrentUser extends ExtensibleObject {
      * The method to set the email address of a user.
      * 
      * @param email is a String with the email address of the user.
-     * 
      */
     public void setEmail(String email) {
         anyObject.put("email", email);
@@ -134,7 +133,6 @@ public class CurrentUser extends ExtensibleObject {
      *
      * @param user CurrentUser object with id
      * @param tenant String with tenant name
-     *
      * @return the URL of the current user as a String.
      */
     public String getSelf(CurrentUser user, String tenant) {
