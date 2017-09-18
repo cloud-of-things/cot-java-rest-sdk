@@ -37,8 +37,10 @@ public class SmartRestApi {
     public static final String MSG_REALTIME_ADVICE      = "86";
     public static final String MSG_REALTIME_XID         = "87";
 
-    private static final String JSON_TEMPLATE_ATTRIBUTE = "com_cumulocity_model_smartrest_SmartRestTemplate";
+    // It seems that not all responses from the server use the same style of line breaks.
+    public static final String LINE_BREAK_PATTERN = "\\r\\n|\\n";
 
+    private static final String JSON_TEMPLATE_ATTRIBUTE = "com_cumulocity_model_smartrest_SmartRestTemplate";
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private final InventoryApi inventoryApi;
@@ -61,35 +63,37 @@ public class SmartRestApi {
      * @return the GId of the templates, if they exist, null otherwise.
      */
     public String checkTemplateExistence(String xId) {
-        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, "", false);
-        if (response.length == 1) {
-            String responseMsg = response[0].split(",")[0];
+        SmartRequest smartRequest = new SmartRequest(xId, SmartRequest.PROCESSING_MODE_PERSISTENT, "");
+
+        String response = cloudOfThingsRestClient.doSmartRequest(smartRequest);
+        String[] responseLines = response.split(LINE_BREAK_PATTERN);
+        if (responseLines.length == 1) {
+            String responseMsg = responseLines[0].split(",")[0];
             switch (responseMsg) {
                 case MSG_TEMPLATES_OK:
-                    return response[0].split(",")[1];
+                    return responseLines[0].split(",")[1];
                 case MSG_TEMPLATES_NOT_FOUND:
                     return null;
                 default:
-                    throw new CotSdkException("Invalid response to smart template check: " + response[0]);
+                    throw new CotSdkException("Invalid response to smart template check: " + responseLines[0]);
             }
         }
 
-        throw new CotSdkException("Invalid response to smart template check: " + String.join("\n", (CharSequence[])response));
+        throw new CotSdkException("Invalid response to smart template check: " + response);
     }
 
 
     /**
      * Do a SmartREST-request.
      *
-     * @param xId the X-Id for which this request shall be made.
-     *            Can be null, omitting the X-Id header, to allow for multiple X-Id ("15,myxid").
-     * @param lines a String with newline-separated lines for the request body
-     * @param transientMode whether to use "X-Cumulocity-Processing-Mode: TRANSIENT" (false: PERSISTENT).
+     * @param smartRequest the request with meta information and lines to send to platform.
      *
-     * @return the response body as an array of individual lines
+     * @return a SmartResponse object with the response body as a String with newline-separated lines.
      */
-    public String[] execute(String xId, String lines, boolean transientMode) {
-        return cloudOfThingsRestClient.doSmartRequest(xId, lines, transientMode);
+    public SmartResponse execute(SmartRequest smartRequest) {
+        String response = cloudOfThingsRestClient.doSmartRequest(smartRequest);
+
+        return new SmartResponse(response);
     }
 
 
@@ -146,13 +150,16 @@ public class SmartRestApi {
             lines.append("11,").append(t).append("\n");
         }
 
-        String[] response = cloudOfThingsRestClient.doSmartRequest(xId, lines.toString(), false);
+        SmartRequest smartRequest = new SmartRequest(xId, SmartRequest.PROCESSING_MODE_PERSISTENT, lines.toString());
+        String response = cloudOfThingsRestClient.doSmartRequest(smartRequest);
 
-        if ((response == null) || (response.length == 0)) {
+        String[] responseLines = response.split(LINE_BREAK_PATTERN);
+
+        if ((responseLines == null) || (responseLines.length == 0)) {
             throw new CotSdkException("Received empty response when trying to store SmartREST-templates.");
         }
 
-        String[] responseParts = response[0].split(",");
+        String[] responseParts = responseLines[0].split(",");
         switch (responseParts[0]) {
             case MSG_TEMPLATES_OK:
                 return responseParts[1].trim();
