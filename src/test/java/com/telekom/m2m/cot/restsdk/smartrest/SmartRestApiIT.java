@@ -132,6 +132,7 @@ public class SmartRestApiIT {
 
         // We call SmartREST-template number 300 and pass the gId as the parameter.
         String[] response = smartRestApi.execute(xId, "300,"+gId, true);
+        // TODO: we also need a test that executes multiple lines (and one for multiple X-Ids).
 
         // The response templates are evaluated in order, so we can exactly know, what answers we should receive:
 
