@@ -131,23 +131,25 @@ public class SmartRestApiIT {
                 new SmartResponseTemplate[]{managedObjectResponse1, managedObjectResponse2, managedObjectResponse3});
 
         // We call SmartREST-template number 300 and pass the gId as the parameter.
-        String[] response = smartRestApi.execute(xId, "300,"+gId, true);
         // TODO: we also need a test that executes multiple lines (and one for multiple X-Ids).
+        SmartRequest smartRequest = new SmartRequest(xId, SmartRequest.PROCESSING_MODE_TRANSIENT, "300,"+gId);
+        SmartResponse response = smartRestApi.execute(smartRequest);
+        String[] responseLines = response.getBody().split(SmartRestApi.LINE_BREAK_PATTERN);
 
         // The response templates are evaluated in order, so we can exactly know, what answers we should receive:
 
         // Response template 400, in response to the request from line 1 (the only line),
         // with the gId and a date, that starts with the year 20...: (the test will break after the year 2099, which should be ok ;-)
-        assertTrue(response[0].startsWith("400,1,"+gId+",20"));
+        assertTrue(responseLines[0].startsWith("400,1,"+gId+",20"));
 
         // A response line for each response template in the array, extracted by response template 401,
         // and also triggered by request line 1:
-        assertEquals(response[1], "401,1,400");
-        assertEquals(response[2], "401,1,401");
-        assertEquals(response[3], "401,1,402");
+        assertEquals(responseLines[1], "401,1,400");
+        assertEquals(responseLines[2], "401,1,401");
+        assertEquals(responseLines[3], "401,1,402");
 
         // The response line for the template 402: request template ID and method:
-        assertEquals(response[4], "402,1,300,GET");
+        assertEquals(responseLines[4], "402,1,300,GET");
     }
 
 

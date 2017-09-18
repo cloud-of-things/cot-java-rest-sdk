@@ -8,6 +8,8 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
+import com.telekom.m2m.cot.restsdk.smartrest.SmartRequest;
+import com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
@@ -28,9 +30,6 @@ public class CloudOfThingsRestClient {
     private final Gson gson = GsonUtils.createGson();
     private final String encodedAuthString;
     private final String host;
-
-    // It seems that not all responses from the server use the same style of line breaks.
-    private static final String LINE_BREAK_PATTERN = "\\r\\n|\\n";
 
     protected OkHttpClient client;
 
@@ -304,7 +303,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             String responseBody = response.body().string();
-            return responseBody.split(LINE_BREAK_PATTERN);
+            return responseBody.split(SmartRestApi.LINE_BREAK_PATTERN);
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -348,7 +347,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             String responseBody = response.body().string();
-            return responseBody.split(LINE_BREAK_PATTERN);
+            return responseBody.split(SmartRestApi.LINE_BREAK_PATTERN);
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -359,25 +358,26 @@ public class CloudOfThingsRestClient {
     /**
      * Do a SmartREST-request.
      *
-     * @param xId the X-Id for which this request shall be made.
-     *            Can be null, omitting the X-Id header, to allow for multiple X-Id ("15,myxid").
-     *            TODO: do we need to not send the header at all, in that case?
-     * @param lines a String with newline-separated lines for the request body
-     * @param transientMode whether to use "X-Cumulocity-Processing-Mode: TRANSIENT" (false: PERSISTENT).
+     * @param smartRequest the request with meta information and lines to send to platform.
      *
-     * @return the response body as an array of individual lines
+     * @return the response body as a String with newline-separated lines.
      */
-    public String[] doSmartRequest(String xId, String lines, boolean transientMode) {
-        RequestBody body = RequestBody.create(null, lines);
+    public String doSmartRequest(SmartRequest smartRequest) {
+        RequestBody body = RequestBody.create(null, smartRequest.getBody());
 
         Request.Builder builder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("X-Id", xId)
                 .url(host + "/s") // SmartRest-endpoint is always just "/s".
                 .post(body);
-        if (transientMode) {
-            // PERSISTENT is the default, so we don't specify it.
-            builder.addHeader("X-Cumulocity-Processing-Mode", "TRANSIENT");
+
+        //TODO: do we need to not send the header at all, in that case?
+        if(smartRequest.getXId() != null && !smartRequest.getXId().isEmpty()) {
+            builder.addHeader("X-Id", smartRequest.getXId());
+        }
+
+        // PERSISTENT processing mode is the default, so we don't to handle it in the else-case.
+        if (smartRequest.getProcessingMode() != null && !smartRequest.getProcessingMode().isEmpty()) {
+            builder.addHeader("X-Cumulocity-Processing-Mode", smartRequest.getProcessingMode());
         }
         Request request = builder.build();
 
@@ -387,8 +387,7 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
-            String responseBody = response.body().string();
-            return responseBody.split(LINE_BREAK_PATTERN);
+            return response.body().string();
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
