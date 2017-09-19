@@ -94,4 +94,21 @@ public class ExtensibleObject {
         return "ExtensibleObject{" + "anyObject=" + anyObject +
                 '}';
     }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof ExtensibleObject)) return false;
+
+        ExtensibleObject that = (ExtensibleObject) o;
+
+        return anyObject != null ? anyObject.equals(that.anyObject) : that.anyObject == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return anyObject != null ? anyObject.hashCode() : 0;
+    }
+
 }

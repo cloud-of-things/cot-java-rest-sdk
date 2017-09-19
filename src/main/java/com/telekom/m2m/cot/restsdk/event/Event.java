@@ -13,7 +13,7 @@ import java.util.Date;
 public class Event extends ExtensibleObject {
 
     /**
-     * Default construction to create a new event.
+     * Constructor to create a new empty event.
      */
     public Event() {
         super();

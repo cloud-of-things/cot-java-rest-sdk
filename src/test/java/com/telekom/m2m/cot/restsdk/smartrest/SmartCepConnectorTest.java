@@ -49,12 +49,14 @@ public class SmartCepConnectorTest {
     public void testMultiListeners() throws InterruptedException {
         connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
 
-        when(cloudOfThingsRestClient.doSmartRealTimeRequest("My-X-Id", MSG_REALTIME_HANDSHAKE)).
-                thenReturn(new String[]{"My-Client-Id"});
-        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest("My-X-Id", MSG_REALTIME_CONNECT + "," + "My-Client-Id", connector.getTimeout())).
-                thenReturn(new String[]{"100,1,my-notification",
-                        "101,1,my-extra-data,foo",
-                        "86,,1000,10000,retry"}). // This is a control message, that should not go to the listeners.
+        when(cloudOfThingsRestClient.doSmartRealTimeRequest(
+                new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_HANDSHAKE))).
+                thenReturn(new SmartResponse("My-Client-Id"));
+        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(
+                new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_CONNECT + "," + "My-Client-Id"), connector.getTimeout())).
+                thenReturn(new SmartResponse("100,1,my-notification\n" +
+                                             "101,1,my-extra-data,foo\n" +
+                                             "86,,1000,10000,retry")). // This is a control message, that should not go to the listeners.
                 thenAnswer(new Answer<String[]>() { // This is for the second polling loop iteration.
                     @Override
                     public String[] answer(InvocationOnMock invocation) throws InterruptedException {
@@ -102,12 +104,14 @@ public class SmartCepConnectorTest {
         int initialInterval = 10;
         connector.setInterval(initialInterval);
 
-        when(cloudOfThingsRestClient.doSmartRealTimeRequest("My-X-Id", MSG_REALTIME_HANDSHAKE)).
-                thenReturn(new String[]{"My-Client-Id"});
-        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(eq("My-X-Id"), eq(MSG_REALTIME_CONNECT + "," + "My-Client-Id"), anyInt())).
-                thenReturn(new String[]{"100,1,my-notification",
-                        "101,1,my-extra-data,foo",
-                        "86,,1000,100,retry"}).
+        when(cloudOfThingsRestClient.doSmartRealTimeRequest(
+                new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_HANDSHAKE))).
+                thenReturn(new SmartResponse("My-Client-Id"));
+        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(
+                eq(new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_CONNECT + "," + "My-Client-Id")), anyInt())).
+                thenReturn(new SmartResponse("100,1,my-notification\n" +
+                                             "101,1,my-extra-data,foo\n" +
+                                             "86,,1000,100,retry")).
                 thenAnswer(new Answer<String[]>() { // This is for the second polling loop iteration.
                     @Override
                     public String[] answer(InvocationOnMock invocation) throws InterruptedException {
@@ -129,13 +133,15 @@ public class SmartCepConnectorTest {
     public void testErrors() throws InterruptedException {
         connector =  new SmartCepConnector(cloudOfThingsRestClient, "My-X-Id");
 
-        when(cloudOfThingsRestClient.doSmartRealTimeRequest("My-X-Id", MSG_REALTIME_HANDSHAKE)).
-                thenReturn(new String[]{"My-Client-Id"});
-        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(eq("My-X-Id"), eq(MSG_REALTIME_CONNECT + "," + "My-Client-Id"), anyInt())).
-                thenReturn(new String[]{"40,No template for this X-ID"}).
-                thenAnswer(new Answer<String[]>() { // This is for the second polling loop iteration.
+        when(cloudOfThingsRestClient.doSmartRealTimeRequest(
+                new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_HANDSHAKE))).
+                thenReturn(new SmartResponse("My-Client-Id"));
+        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(
+                new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_CONNECT + "," + "My-Client-Id"), connector.getTimeout())).
+                thenReturn(new SmartResponse("40,No template for this X-ID")).
+                thenAnswer(new Answer<SmartResponse>() { // This is for the second polling loop iteration.
                     @Override
-                    public String[] answer(InvocationOnMock invocation) throws InterruptedException {
+                    public SmartResponse answer(InvocationOnMock invocation) throws InterruptedException {
                         Thread.sleep(100); // We just delay the mock server response, until the test finishes.
                         return null;
                     }
@@ -169,24 +175,26 @@ public class SmartCepConnectorTest {
     // is sleeping between connect requests. In both situations a clean shutdown must be possible.
     @Test
     public void testDisconnect() throws InterruptedException {
-        when(cloudOfThingsRestClient.doSmartRealTimeRequest("My-X-Id", MSG_REALTIME_HANDSHAKE)).
-                thenReturn(new String[]{"My-Client-Id"});
-        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(eq("My-X-Id"), eq(MSG_REALTIME_CONNECT + "," + "My-Client-Id"), anyInt())).
-                thenAnswer(new Answer<String[]>() { // First answer, will keep the connect waiting.
+        when(cloudOfThingsRestClient.doSmartRealTimeRequest(
+                new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_HANDSHAKE))).
+                thenReturn(new SmartResponse("My-Client-Id"));
+        when(cloudOfThingsRestClient.doSmartRealTimePollingRequest(
+                eq(new SmartRequest("My-X-Id", SmartRequest.ProcessingMode.PERSISTENT, MSG_REALTIME_CONNECT + "," + "My-Client-Id")), anyInt())).
+                thenAnswer(new Answer<SmartResponse>() { // First answer, will keep the connect waiting.
                     @Override
-                    public String[] answer(InvocationOnMock invocation) {
+                    public SmartResponse answer(InvocationOnMock invocation) {
                         try {
                             Thread.sleep(1000); // We just delay the mock server response, until the test finishes.
                         } catch (InterruptedException ex) {
                             // That's ok, we interrupted it ourselves here.
                         }
-                        return new String[]{};
+                        return new SmartResponse(null);
                     }
                 }).
-                thenAnswer(new Answer<String[]>() { // Second answer, will let the connect finish, so we go to the poll-wait-sleep.
+                thenAnswer(new Answer<SmartResponse>() { // Second answer, will let the connect finish, so we go to the poll-wait-sleep.
                     @Override
-                    public String[] answer(InvocationOnMock invocation) {
-                        return new String[]{};
+                    public SmartResponse answer(InvocationOnMock invocation) {
+                        return new SmartResponse(null);
                     }
                 });
 
