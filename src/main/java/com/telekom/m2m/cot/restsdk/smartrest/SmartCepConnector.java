@@ -11,6 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
+import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.LINE_BREAK_PATTERN;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_ADVICE;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_HANDSHAKE;
 import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_SUBSCRIBE;
@@ -111,10 +112,13 @@ public class SmartCepConnector implements Runnable {
 
         // If we already have a clientId we should immediately send the subscribe request:
         if (clientId != null) {
-            cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_SUBSCRIBE +
-                                                                "," + clientId +
-                                                                "," + channel +
-                                                                (xIds.isEmpty() ? "" : "," + String.join(",", xIds)));
+            SmartRequest smartRequest = new SmartRequest(
+                    xId,
+                    MSG_REALTIME_SUBSCRIBE +
+                      "," + clientId +
+                      "," + channel +
+                      (xIds.isEmpty() ? "" : "," + String.join(",", xIds)));
+            cloudOfThingsRestClient.doSmartRealTimeRequest(smartRequest);
         }
     }
 
@@ -129,7 +133,10 @@ public class SmartCepConnector implements Runnable {
 
         // If we already have a clientId we should immediately send the unsubscribe request:
         if (clientId != null) {
-            cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_UNSUBSCRIBE + "," + clientId + "," + channel);
+            SmartRequest smartRequest = new SmartRequest(
+                    xId,
+                    MSG_REALTIME_UNSUBSCRIBE + "," + clientId + "," + channel);
+            cloudOfThingsRestClient.doSmartRealTimeRequest(smartRequest);
         }
     }
 
@@ -340,25 +347,32 @@ public class SmartCepConnector implements Runnable {
 
 
     protected String[] doConnect() {
-        String[] response = cloudOfThingsRestClient.doSmartRealTimePollingRequest(xId, MSG_REALTIME_CONNECT + "," + clientId, timeout);
-        if (response.length > 0) {
+        SmartRequest smartRequest = new SmartRequest(
+                xId,
+                MSG_REALTIME_CONNECT + "," + clientId);
+
+        SmartResponse response = cloudOfThingsRestClient.doSmartRealTimePollingRequest(smartRequest, timeout);
+        String[] responseLines = response.getLines();
+        if (responseLines.length > 0) {
             // The first line can contain leading spaces, periodically sent by the server as a keep-alive signal.
-            response[0] = response[0].trim();
+            responseLines[0] = responseLines[0].trim();
         }
-        return response;
+        return responseLines;
     }
 
 
     protected String doHandshake() {
-        String[] response = cloudOfThingsRestClient.doSmartRealTimeRequest(xId, MSG_REALTIME_HANDSHAKE);
-        switch (response.length) {
+        SmartRequest smartRequest = new SmartRequest(xId, MSG_REALTIME_HANDSHAKE);
+        SmartResponse response = cloudOfThingsRestClient.doSmartRealTimeRequest(smartRequest);
+        String[] responseLines = response.getLines();
+        switch (responseLines.length) {
             case 1:
                 // TODO: 43,1,Invalid Message Identifier?!?
-                return response[0].trim();
+                return responseLines[0].trim();
             case 0:
                 throw new CotSdkException("SmartREST notification handshake failed: empty response => no clientId.");
             default:
-                throw new CotSdkException("SmartREST notification handshake failed: ambiguous multi line response: " + Arrays.toString(response));
+                throw new CotSdkException("SmartREST notification handshake failed: ambiguous multi line response: " + Arrays.toString(responseLines));
         }
     }
 
@@ -375,11 +389,13 @@ public class SmartCepConnector implements Runnable {
         // Unfortunately we need one request for each channel.
         for (Map.Entry<String, Set<String>> entry: subscriptions.entrySet()) {
             String xIds = String.join(",", entry.getValue());
-            cloudOfThingsRestClient.doSmartRealTimeRequest(xId,
+            SmartRequest smartRequest = new SmartRequest(
+                    xId,
                     MSG_REALTIME_SUBSCRIBE + ","
-                            + clientId + ","
-                            + entry.getKey()
-                            + ((xIds.length() == 0) ? "" : "," + xIds));
+                      + clientId + ","
+                      + entry.getKey()
+                      + ((xIds.length() == 0) ? "" : "," + xIds));
+            cloudOfThingsRestClient.doSmartRealTimeRequest(smartRequest);
         }
     }
 

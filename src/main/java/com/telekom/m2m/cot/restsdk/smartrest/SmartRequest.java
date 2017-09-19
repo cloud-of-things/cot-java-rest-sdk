@@ -7,15 +7,26 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class SmartRequest extends ExtensibleObject {
 
-    public static final String PROCESSING_MODE_TRANSIENT = "TRANSIENT";
-    public static final String PROCESSING_MODE_PERSISTENT = "PERSISTENT";
+    public enum ProcessingMode {
+        TRANSIENT, PERSISTENT
+    }
+
 
     /**
-     * Default constructor to create a new request for SmartREST API.
+     * Constructor to create a new request for SmartREST API.
+     * It will have the processing mode PERSISTENT.
+     *
+     * @param xId the X-Id for which this request shall be made.
+     *            Can be null, omitting the X-Id header, to allow for multiple X-Id ("15,myxid").
+     * @param body a String with newline-separated lines for the request body
      */
-    public SmartRequest() {
+    public SmartRequest(String xId, String body) {
         super();
+        setXId(xId);
+        setProcessingMode(ProcessingMode.PERSISTENT);
+        setBody(body);
     }
+
 
     /**
      * Constructor to create a new request for SmartREST API.
@@ -23,14 +34,16 @@ public class SmartRequest extends ExtensibleObject {
      * @param xId the X-Id for which this request shall be made.
      *            Can be null, omitting the X-Id header, to allow for multiple X-Id ("15,myxid").
      * @param body a String with newline-separated lines for the request body
-     * @param processingMode a String with one of two values: "TRANSIENT" or "PERSISTENT".
+     * @param processingMode can be {@link ProcessingMode#TRANSIENT} if you just want to pass data for real time
+     *                       processing, which need not be stored in the CoT database.
      */
-    public SmartRequest(String xId, String processingMode, String body) {
+    public SmartRequest(String xId, ProcessingMode processingMode, String body) {
         super();
         setXId(xId);
         setProcessingMode(processingMode);
         setBody(body);
     }
+
 
     /**
      * Get the X-Id of the template to use for this request.
@@ -54,22 +67,22 @@ public class SmartRequest extends ExtensibleObject {
 
     /**
      * Get the processing mode to use for this request.
-     * One of two values are possible: "TRANSIENT" and "PERSISTENT".
+     * One of two values are possible: TRANSIENT and PERSISTENT.
      *
-     * @return a String with one of two values: "TRANSIENT" or "PERSISTENT".
+     * @return the {@link ProcessingMode}
      */
-    public String getProcessingMode() {
-        return (String) anyObject.get("processing-mode");
+    public ProcessingMode getProcessingMode() {
+        return (ProcessingMode) anyObject.get("processing-mode");
     }
 
     /**
      * Setting processing mode to use for this request.
-     * Only two values will be accepted: "TRANSIENT" and "PERSISTENT".
-     * When left empty, "PERSISTENT" processing mode will be assumed and used as default.
+     * Only two values will be accepted: TRANSIENT and PERSISTENT.
+     * When left empty, PERSISTENT processing mode will be assumed and used as default.
      *
-     * @param processingMode a String with processing mode to use for this request.
+     * @param processingMode the {@link ProcessingMode}
      */
-    public void setProcessingMode(String processingMode) {
+    public void setProcessingMode(ProcessingMode processingMode) {
         anyObject.put("processing-mode", processingMode);
     }
 
@@ -91,4 +104,5 @@ public class SmartRequest extends ExtensibleObject {
     public void setBody(String body) {
         anyObject.put("body", body);
     }
+
 }

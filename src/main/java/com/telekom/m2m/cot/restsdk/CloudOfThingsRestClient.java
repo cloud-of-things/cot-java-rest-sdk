@@ -9,7 +9,7 @@ import java.util.concurrent.TimeUnit;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRequest;
-import com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi;
+import com.telekom.m2m.cot.restsdk.smartrest.SmartResponse;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
@@ -279,18 +279,16 @@ public class CloudOfThingsRestClient {
     /**
      * Do a SmartREST real time request.
      *
-     * @param xId the X-Id for which this request shall be made. Cannot be null, because it's used by the server to
-     *            detect that it is a SmartREST request in the first place.
-     * @param lines a String with newline-separated lines for the request body
+     * @param smartRequest the request with meta information and lines to send to platform.
      *
-     * @return the response body as an array of individual lines
+     * @return the SmartResponse
      */
-    public String[] doSmartRealTimeRequest(String xId, String lines) {
-        RequestBody body = RequestBody.create(null, lines);
+    public SmartResponse doSmartRealTimeRequest(SmartRequest smartRequest) {
+        RequestBody body = RequestBody.create(null, smartRequest.getBody());
 
         Request.Builder builder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("X-Id", xId)
+                .addHeader("X-Id", smartRequest.getXId())
                 .url(host + "/cep/realtime") // Same real time endpoint handles smart and regular requests.
                 .post(body);
 
@@ -303,7 +301,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             String responseBody = response.body().string();
-            return responseBody.split(SmartRestApi.LINE_BREAK_PATTERN);
+            return new SmartResponse(responseBody);
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -317,19 +315,17 @@ public class CloudOfThingsRestClient {
      * Regular real time polling and smart rest real time polling share the same client (and therefore timeout)
      * because it is to be expected that a client will probably use either one of them, but not both.
      *
-     * @param xId the X-Id for which this request shall be made. Cannot be null, because it's used by the server to
-     *            detect that it is a SmartREST request in the first place.
-     * @param lines a String with newline-separated lines for the request body
+     * @param smartRequest the request with meta information and lines to send to platform.
      * @param timeout the new timeout for real time requests. null = don't change the current timeout
      *
-     * @return the response body as an array of individual lines
+     * @return the SmartResponse
      */
-    public String[] doSmartRealTimePollingRequest(String xId, String lines, Integer timeout) {
-        RequestBody body = RequestBody.create(null, lines);
+    public SmartResponse doSmartRealTimePollingRequest(SmartRequest smartRequest, Integer timeout) {
+        RequestBody body = RequestBody.create(null, smartRequest.getBody());
 
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .addHeader("X-Id", xId)
+                .addHeader("X-Id", smartRequest.getXId())
                 .url(host + "/cep/realtime") // Same real time endpoint handles smart and regular requests.
                 .post(body)
                 .build();
@@ -347,7 +343,7 @@ public class CloudOfThingsRestClient {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
             String responseBody = response.body().string();
-            return responseBody.split(SmartRestApi.LINE_BREAK_PATTERN);
+            return new SmartResponse(responseBody);
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -360,9 +356,9 @@ public class CloudOfThingsRestClient {
      *
      * @param smartRequest the request with meta information and lines to send to platform.
      *
-     * @return the response body as a String with newline-separated lines.
+     * @return the SmartResponse
      */
-    public String doSmartRequest(SmartRequest smartRequest) {
+    public SmartResponse doSmartRequest(SmartRequest smartRequest) {
         RequestBody body = RequestBody.create(null, smartRequest.getBody());
 
         Request.Builder builder = new Request.Builder()
@@ -371,13 +367,13 @@ public class CloudOfThingsRestClient {
                 .post(body);
 
         //TODO: do we need to not send the header at all, in that case?
-        if(smartRequest.getXId() != null && !smartRequest.getXId().isEmpty()) {
+        if (smartRequest.getXId() != null && !smartRequest.getXId().isEmpty()) {
             builder.addHeader("X-Id", smartRequest.getXId());
         }
 
-        // PERSISTENT processing mode is the default, so we don't to handle it in the else-case.
-        if (smartRequest.getProcessingMode() != null && !smartRequest.getProcessingMode().isEmpty()) {
-            builder.addHeader("X-Cumulocity-Processing-Mode", smartRequest.getProcessingMode());
+        // PERSISTENT processing mode is the default, so we don't need to handle it in the else-case.
+        if (smartRequest.getProcessingMode() != null) {
+            builder.addHeader("X-Cumulocity-Processing-Mode", smartRequest.getProcessingMode().name());
         }
         Request request = builder.build();
 
@@ -387,7 +383,7 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
             }
-            return response.body().string();
+            return new SmartResponse(response.body().string());
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
