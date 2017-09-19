@@ -45,7 +45,7 @@ public class SmartResponse extends ExtensibleObject {
      * @return the Array, which will be empty if the body was empty.
      */
     public String[] getLines() {
-        String body = (String) anyObject.get("body");
+        String body = getBody();
         if (body == null || body.isEmpty()) {
             return new String[0];
         } else {
