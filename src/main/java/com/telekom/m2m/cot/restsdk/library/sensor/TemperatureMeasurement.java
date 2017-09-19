@@ -4,13 +4,13 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-public class Temperature implements Fragment{
+public class TemperatureMeasurement implements Fragment{
 
     private float temperatureValue;
     private String temperatureUnit;
     
     
-    public Temperature(float temperatureValue, String temperatureUnit) {
+    public TemperatureMeasurement(float temperatureValue, String temperatureUnit) {
         this.temperatureValue = temperatureValue;
         this.temperatureUnit = temperatureUnit;
     }
@@ -25,7 +25,7 @@ public class Temperature implements Fragment{
     
     @Override
     public String getId() {
-        return "c8y_TemperatureSensor";
+        return "c8y_TemperatureMeasurement";
     }
     
     
