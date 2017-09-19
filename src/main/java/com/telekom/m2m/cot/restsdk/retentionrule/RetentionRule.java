@@ -20,7 +20,7 @@ public class RetentionRule extends ExtensibleObject {
 
 
     /**
-     * Default constructor to create a new rule.
+     * Constructor to create a new empty rule.
      */
     public RetentionRule() {
         super();

@@ -16,7 +16,7 @@ import java.util.Date;
 public class ManagedObject extends ExtensibleObject {
 
     /**
-     * Default construction to create a new managed object.
+     * Constructor to create a new empty managed object.
      */
     public ManagedObject() {
         super();

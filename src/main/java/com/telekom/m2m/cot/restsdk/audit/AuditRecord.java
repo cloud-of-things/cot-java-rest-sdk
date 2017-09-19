@@ -37,7 +37,7 @@ public class AuditRecord extends ExtensibleObject {
     public static final String SEVERITY_INFORMATION = "INFORMATION";
 
     /**
-     * Default construction to create a new audit record.
+     * Constructor to create a new empty audit record.
      */
     public AuditRecord() {
         super();
