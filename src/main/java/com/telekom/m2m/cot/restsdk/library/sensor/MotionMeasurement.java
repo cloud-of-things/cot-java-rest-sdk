@@ -4,7 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-public class Motion implements Fragment{
+public class MotionMeasurement implements Fragment{
 
     
     private boolean detectedMotionValue;
@@ -14,7 +14,7 @@ public class Motion implements Fragment{
     private final String motionValueType="BOOLEAN";
     
     
-    public Motion(boolean detectedMotionValue, float motionSpeedValue, String motionSpeedUnit) {
+    public MotionMeasurement(boolean detectedMotionValue, float motionSpeedValue, String motionSpeedUnit) {
         this.detectedMotionValue = detectedMotionValue;
         this.motionSpeedValue = motionSpeedValue;
         this.motionSpeedUnit = motionSpeedUnit;

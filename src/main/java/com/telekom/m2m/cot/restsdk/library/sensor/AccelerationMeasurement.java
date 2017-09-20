@@ -4,12 +4,12 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-public class Acceleration  implements Fragment{
+public class AccelerationMeasurement  implements Fragment{
 
     private float accelerationValue;
     private String accelerationUnit;
     
-    public Acceleration(float accelerationValue, String accelerationUnit){
+    public AccelerationMeasurement(float accelerationValue, String accelerationUnit){
         
         this.accelerationUnit=accelerationUnit;
         this.accelerationValue=accelerationValue;
