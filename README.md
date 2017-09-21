@@ -1,6 +1,6 @@
 # Cloud of Things Java Rest SDK
 
-This is an SDK to interface with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
+This is an SDK to interface with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by T-Systems International GmbH
 
 _Current version is: 0.6.0_
 
