@@ -18,7 +18,7 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 public class Group extends ExtensibleObject {
 
     /**
-     * Default construction to create a new group.
+     * Constructor to create a new empty group.
      */
     public Group() {
         super();

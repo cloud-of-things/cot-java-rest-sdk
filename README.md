@@ -2,7 +2,7 @@
 
 This is an SDK to interface with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by Deutsche Telekom AG
 
-_Current version is: 0.6.0_
+_Current version is: 0.6.1_
 
 ## Usage
 
@@ -11,7 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>0.6.0</version>
+    <version>0.6.1</version>
 </dependency>
 ```
 
@@ -63,6 +63,9 @@ Also see integration tests (*IT).
 ## Release Notes
 
 Short information about what has changed between releases.
+
+### Release 0.6.1
+* Provides and uses SmartRequest/-Response classes
 
 ### Release 0.6.0
 * Complete Device control
