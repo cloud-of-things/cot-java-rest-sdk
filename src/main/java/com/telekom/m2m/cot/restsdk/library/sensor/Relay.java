@@ -14,6 +14,11 @@ public Relay (String relayState){
     this.relayState=relayState;
     
 }
+
+public String getRelayState(){
+    return relayState;
+}
+
     @Override
     public String getId() {
         return "c8y_Relay";

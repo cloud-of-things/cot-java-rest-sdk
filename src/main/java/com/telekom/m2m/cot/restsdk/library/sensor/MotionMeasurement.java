@@ -40,7 +40,7 @@ public class MotionMeasurement implements Fragment{
     
     @Override
     public String getId() {
-        return "c8y_MotionSensor";
+        return "c8y_MotionMeasurement";
     }
     
     

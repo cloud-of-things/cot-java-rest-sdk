@@ -158,27 +158,41 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
 
         this.aPlusValue = aPlusValue;
         this.aPlusUnit = aPlusUnit;
-        this.pMinusValue = pMinusValue;
-        this.pMinusUnit = pMinusUnit;
-        
-        this.aPlusOneValue = aPlusValue;
-        this.aPlusOneUnit = aPlusUnit;          
+        this.aMinusValue = aMinusValue;
+        this.aMinusUnit = aMinusUnit;
+              
+        this.aPlusOneValue = aPlusOneValue;
+        this.aPlusOneUnit = aPlusOneUnit;          
         this.aPlusTwoValue = aPlusTwoValue;
         this.aPlusTwoUnit = aPlusTwoUnit;           
         this.aPlusThreeValue = aPlusThreeValue;
         this.aPlusThreeUnit = aPlusThreeUnit;  
         
+        this.aMinusOneValue = aMinusOneValue;
+        this.aMinusOneUnit = aMinusOneUnit;          
+        this.aMinusTwoValue = aMinusTwoValue;
+        this.aMinusTwoUnit = aMinusTwoUnit;           
+        this.aMinusThreeValue = aMinusThreeValue;
+        this.aMinusThreeUnit = aMinusThreeUnit;  
+              
         this.pPlusValue = pPlusValue;
         this.pPlusUnit = pPlusUnit;
         this.pMinusValue = pMinusValue;
         this.pMinusUnit = pMinusUnit;
         
-        this.pPlusOneValue = pPlusValue;
-        this.pPlusOneUnit = pPlusUnit;          
+        this.pPlusOneValue = pPlusOneValue;
+        this.pPlusOneUnit = pPlusOneUnit;          
         this.pPlusTwoValue = pPlusTwoValue;
         this.pPlusTwoUnit = pPlusTwoUnit;           
         this.pPlusThreeValue = pPlusThreeValue;
         this.pPlusThreeUnit = pPlusThreeUnit;  
+        
+        this.pMinusOneValue = pMinusOneValue;
+        this.pMinusOneUnit = pMinusOneUnit;          
+        this.pMinusTwoValue = pMinusTwoValue;
+        this.pMinusTwoUnit = pMinusTwoUnit;           
+        this.pMinusThreeValue = pMinusThreeValue;
+        this.pMinusThreeUnit = pMinusThreeUnit;  
         
         this.RIPlusValue = RIPlusValue;
         this.RIPlusUnit = RIPlusUnit;
@@ -214,13 +228,13 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
 
 
     public float getOutgoingEnergyValue() {
-        return pMinusValue;
+        return aMinusValue;
     }
 
 
 
     public String getOutgoingEnergyUnit() {
-        return pMinusUnit;
+        return aMinusUnit;
     }
 
 
@@ -237,13 +251,13 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
 
 
     public float getOutgoingEnergyP1Value() {
-        return pMinusOneValue;
+        return aMinusOneValue;
     }
 
 
 
     public String getOutgoingEnergyP1Unit() {
-        return pMinusOneUnit;
+        return aMinusOneUnit;
     }
 
 
@@ -258,12 +272,12 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
 
 
     public float getOutgoingEnergyP2Value() {
-        return pMinusTwoValue;
+        return aMinusTwoValue;
     }
 
 
     public String getOutgoingEnergyP2Unit() {
-        return pMinusTwoUnit;
+        return aMinusTwoUnit;
     }
 
 
@@ -278,12 +292,12 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
 
 
     public float getOutgoingEnergyP3Value() {
-        return pMinusThreeValue;
+        return aMinusThreeValue;
     }
 
 
     public String getOutgoingEnergyP3Unit() {
-        return pMinusThreeUnit;
+        return aMinusThreeUnit;
     }
 
 
