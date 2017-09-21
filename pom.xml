@@ -14,11 +14,23 @@
 
     <licenses>
         <license>
-            <name>All rights reserved. Feel free to use in your CoT IoT
-                projects.
+            <name>
+                MIT License
             </name>
+            <comments>
+                All rights reserved. Feel free to use in your CoT IoT projects.
+            </comments>
+            <url>
+                https://opensource.org/licenses/MIT
+            </url>
         </license>
     </licenses>
+
+    <organization>
+        <name>T-Systems International GmbH</name>
+    </organization>
+
+    <inceptionYear>2017</inceptionYear>
 
     <scm>
         <connection>scm:git:git@github.com:marquies/cot-java-rest-sdk.git
@@ -57,6 +69,8 @@
     </developers>
 
     <properties>
+        <license.licenseName>mit</license.licenseName>
+        <license.licenseFile>${basedir}/LICENSE</license.licenseFile>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <powermock.version>1.6.4</powermock.version>
