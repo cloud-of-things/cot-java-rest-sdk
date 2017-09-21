@@ -22,7 +22,5 @@ public class RelayArray implements Fragment{
     @Override
     public JsonElement getJson() {
         return new JsonObject();
-
-
     }
 }
