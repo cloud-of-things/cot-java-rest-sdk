@@ -9,7 +9,7 @@ public class SensorLibraryTest {
     
     
 @Test
-public void showSensorAndMeasurementFields() {
+public void showSensorAndMeasurementIDandJSON() {
     Fragment[] ff = getFragments();
 
     for (Fragment f : ff) {
