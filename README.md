@@ -64,6 +64,9 @@ Also see integration tests (*IT).
 
 Short information about what has changed between releases.
 
+### Release 0.6.1
+* Provides and uses SmartRequest/-Response classes
+
 ### Release 0.6.0
 * Complete Device control
 * Complete Real-time notifications
