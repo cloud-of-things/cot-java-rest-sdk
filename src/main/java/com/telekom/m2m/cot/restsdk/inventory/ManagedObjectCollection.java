@@ -23,7 +23,7 @@ public class ManagedObjectCollection extends JsonArrayPagination {
     private static final String COLLECTION_ELEMENT_NAME = "managedObjects";
 
     /**
-     * Internal contstructor to create an ManagedObjectCollection.
+     * Internal constructor to create a ManagedObjectCollection.
      * Use {@link InventoryApi} to get ManagedObjectCollection.
      *
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
@@ -49,7 +49,8 @@ public class ManagedObjectCollection extends JsonArrayPagination {
      */
     public ManagedObject[] getManagedObjects() {
         final JsonArray jsonManagedObjects = getJsonArray();
-
+        ManagedObject[] binaries = gson.fromJson(jsonManagedObjects, ManagedObject[].class);
+return binaries;/*
         if (jsonManagedObjects != null) {
             final ManagedObject[] arrayOfManagedObjects = new ManagedObject[jsonManagedObjects.size()];
             for (int i = 0; i < jsonManagedObjects.size(); i++) {
@@ -60,6 +61,6 @@ public class ManagedObjectCollection extends JsonArrayPagination {
             return arrayOfManagedObjects;
         } else {
             return null;
-        }
+        }*/
     }
 }

@@ -154,7 +154,7 @@ public class CloudOfThingsRestClient {
 
 
     /**
-     * Executes an HTTP POST request and returns the response body as String.
+     * Executes a multipart form upload of a string and returns the response body as String.
      *
      * @param file Request body, i.e. the first and only form part.
      * @param name The name of the form field.
@@ -184,6 +184,55 @@ public class CloudOfThingsRestClient {
             }
             String bodyContent = response.body().string();
             return bodyContent;
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
+
+    /**
+     * Executes an HTTP POST request and returns the response body as String.
+     *
+     * @param file Request body, i.e. the first and only form part.
+     * @param name The name of the form field.
+     * @param api the URL path (without leading /)
+     * @return the ID from the Location header (for newly created objects)
+     */
+    public String doFormUpload(byte[][] files, String[] names, String api) {
+        if (files.length != names.length) {
+            throw new CotSdkException("Need to have the same number of files and names to upload (actual: "+files.length+" != "+names.length);
+        }
+
+        MultipartBody.Builder bodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        for (int i=0; i<names.length; i++) {
+            bodyBuilder.addFormDataPart(names[i], "", RequestBody.create(MultipartBody.FORM, files[i]));
+        }
+
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", "text/foo")
+                .url(host + "/" + api)
+                .post(bodyBuilder.build())
+                .build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
+
+            String location = response.header("Location");
+            String result = null;
+            if (location != null) {
+                String[] pathParts = location.split("\\/");
+                result = pathParts[pathParts.length - 1];
+            }
+            return result;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
