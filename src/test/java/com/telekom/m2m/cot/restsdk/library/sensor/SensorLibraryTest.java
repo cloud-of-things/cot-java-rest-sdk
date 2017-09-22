@@ -191,7 +191,30 @@ public class SensorLibraryTest {
                 new TemperatureMeasurement(23f, "C"), 
                 new VoltageMeasurement(18.1f, "V"),
                 new Position(24f, 25f, 26f, "TELIC", "Time Event"), 
-                new Relay("OPEN") };
+                new Relay("OPEN"), 
+                new RelayArray(createRelayArray())};
     }
 
+    @Test
+    public void testArrayOfRelays() {
+    
+    RelayArray RelayArrayObject = new RelayArray(createRelayArray());
+    assertEquals(RelayArrayObject.getArrayOfRelays()[0].getRelayState().toString(), "OPEN");
+    assertEquals(RelayArrayObject.getArrayOfRelays()[1].getRelayState().toString(), "CLOSED");
+    assertEquals(RelayArrayObject.getArrayOfRelays()[2].getRelayState().toString(), "OPEN");
+
+ 
+    }
+    
+  static  Relay[] createRelayArray(){
+        
+        
+        Relay r1 =new Relay("OPEN");
+        Relay r2 =new Relay("CLOSED");
+        Relay r3 = new Relay("OPEN");
+        Relay[] arrayOfRelays={r1,r2,r3};
+        
+       return arrayOfRelays;
+    }
+    
 }

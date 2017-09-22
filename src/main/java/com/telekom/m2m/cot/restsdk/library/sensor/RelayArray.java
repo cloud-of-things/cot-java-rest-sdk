@@ -1,7 +1,7 @@
 package com.telekom.m2m.cot.restsdk.library.sensor;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 /**
@@ -12,8 +12,19 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
  */
 public class RelayArray implements Fragment{
 
-    
+    private Relay arrayOfRelays[];
 
+    
+    public RelayArray(Relay arrayOfRelays[]){
+        
+        this.arrayOfRelays=arrayOfRelays;
+    }
+    
+    public Relay[] getArrayOfRelays(){
+        
+        return arrayOfRelays;
+    }
+    
     @Override
     public String getId() {
         return "c8y_RelayArray";
@@ -21,6 +32,10 @@ public class RelayArray implements Fragment{
 
     @Override
     public JsonElement getJson() {
-        return new JsonObject();
+        JsonArray array = new JsonArray();
+        for (Relay r:arrayOfRelays){
+        array.add(r.getRelayState().toString());
+        }
+        return array;
     }
 }

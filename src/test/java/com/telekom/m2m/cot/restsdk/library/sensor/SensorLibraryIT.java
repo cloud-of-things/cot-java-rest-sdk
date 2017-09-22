@@ -7,6 +7,7 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
+import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
@@ -159,7 +160,9 @@ public class SensorLibraryIT {
 
         assertTrue(moOut.has("c8y_Relay"));
         assertEquals(((JsonObject)moOut.get("c8y_Relay")).get("relayState").getAsString(), "OPEN");
+        assertTrue(moOut.has("c8y_RelayArray"));
+        assertTrue(((JsonArray)moOut.get("c8y_RelayArray")).toString().contains("OPEN"));
 
-
+        
     }    
 }
