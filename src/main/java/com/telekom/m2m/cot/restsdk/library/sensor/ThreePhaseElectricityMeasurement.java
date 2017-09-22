@@ -82,48 +82,48 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
      */
 
     // Total reactive inductive energy, incoming:
-    private float RIPlusValue;
-    private String RIPlusUnit;
+    private float riPlusValue;
+    private String riPlusUnit;
 
     // Total reactive inductive energy, outgoing:
-    private float RIMinusValue;
-    private String RIMinusUnit;
+    private float riMinusValue;
+    private String riMinusUnit;
 
     /*
      * Reactive Capacitive Energy Variables:
      */
 
     // Total capacitive inductive energy, incoming:
-    private float RCPlusValue;
-    private String RCPlusUnit;
+    private float rcPlusValue;
+    private String rcPlusUnit;
 
     // Total capacitive inductive energy, outgoing:
-    private float RCMinusValue;
-    private String RCMinusUnit;
+    private float rcMinusValue;
+    private String rcMinusUnit;
 
     /*
      * Reactive Inductive Power Variables:
      */
 
     // Total reactive inductive power, incoming:
-    private float PIPlusValue;
-    private String PIPlusUnit;
+    private float piPlusValue;
+    private String piPlusUnit;
 
     // Total reactive inductive power, outgoing:
-    private float PIMinusValue;
-    private String PIMinusUnit;
+    private float piMinusValue;
+    private String piMinusUnit;
 
     /*
      * Reactive Capacitive Power Variables:
      */
 
     // Total capacitive inductive power, incoming:
-    private float PCPlusValue;
-    private String PCPlusUnit;
+    private float pcPlusValue;
+    private String pcPlusUnit;
 
     // Total capacitive inductive power, outgoing:
-    private float PCMinusValue;
-    private String PCMinusUnit;
+    private float pcMinusValue;
+    private String pcMinusUnit;
 
     public ThreePhaseElectricityMeasurement(
             //Energy Variables:
@@ -145,16 +145,16 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
             float pMinusThreeValue, String pMinusThreeUnit,
             
             //Reactive Inductive Energy Variables:                                                                                                 
-            float RIPlusValue, String RIPlusUnit, float RIMinusValue, String RIMinusUnit,
+            float riPlusValue, String riPlusUnit, float riMinusValue, String riMinusUnit,
             
             //Reactive Capacitive Energy Variables:                                                                                                 
-            float RCPlusValue, String RCPlusUnit, float RCMinusValue, String RCMinusUnit,
+            float rcPlusValue, String rcPlusUnit, float rcMinusValue, String rcMinusUnit,
             
             //Reactive Inductive Power Variables:                                                                                                 
-            float PIPlusValue, String PIPlusUnit, float PIMinusValue, String PIMinusUnit,
+            float piPlusValue, String piPlusUnit, float piMinusValue, String piMinusUnit,
             
             //Reactive Capacitive Power Variables:                                                                                                 
-            float PCPlusValue, String PCPlusUnit, float PCMinusValue, String PCMinusUnit) {
+            float pcPlusValue, String pcPlusUnit, float pcMinusValue, String pcMinusUnit) {
 
         this.aPlusValue = aPlusValue;
         this.aPlusUnit = aPlusUnit;
@@ -194,25 +194,25 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
         this.pMinusThreeValue = pMinusThreeValue;
         this.pMinusThreeUnit = pMinusThreeUnit;  
         
-        this.RIPlusValue = RIPlusValue;
-        this.RIPlusUnit = RIPlusUnit;
-        this.RIMinusValue = RIMinusValue;
-        this.RIMinusUnit = RIMinusUnit;
+        this.riPlusValue = riPlusValue;
+        this.riPlusUnit = riPlusUnit;
+        this.riMinusValue = riMinusValue;
+        this.riMinusUnit = riMinusUnit;
         
-        this.RCPlusValue = RCPlusValue;
-        this.RCPlusUnit = RCPlusUnit;
-        this.RCMinusValue = RCMinusValue;
-        this.RCMinusUnit = RCMinusUnit;    
+        this.rcPlusValue = rcPlusValue;
+        this.rcPlusUnit = rcPlusUnit;
+        this.rcMinusValue = rcMinusValue;
+        this.rcMinusUnit = rcMinusUnit;    
         
-        this.PIPlusValue = PIPlusValue;
-        this.PIPlusUnit = PIPlusUnit;
-        this.PIMinusValue = PIMinusValue;
-        this.PIMinusUnit = PIMinusUnit;
+        this.piPlusValue = piPlusValue;
+        this.piPlusUnit = piPlusUnit;
+        this.piMinusValue = piMinusValue;
+        this.piMinusUnit = piMinusUnit;
         
-        this.PCPlusValue = PCPlusValue;
-        this.PCPlusUnit = PCPlusUnit;
-        this.PCMinusValue = PCMinusValue;
-        this.PCMinusUnit = PCMinusUnit;  
+        this.pcPlusValue = pcPlusValue;
+        this.pcPlusUnit = pcPlusUnit;
+        this.pcMinusValue = pcMinusValue;
+        this.pcMinusUnit = pcMinusUnit;  
         
     }
 
@@ -381,82 +381,82 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
 
 
     public float getIncomingReactiveInductiveEnergyValue() {
-        return RIPlusValue;
+        return riPlusValue;
     }
 
 
     public String getIncomingReactiveInductiveEnergyUnit() {
-        return RIPlusUnit;
+        return riPlusUnit;
     }
 
 
     public float getOutgoingReactiveInductiveEnergyValue() {
-        return RIMinusValue;
+        return riMinusValue;
     }
 
 
     public String getOutgoingReactiveInductiveEnergyUnit() {
-        return RIMinusUnit;
+        return riMinusUnit;
     }
 
 
     public float getIncomingReactiveCapacitiveEnergyValue() {
-        return RCPlusValue;
+        return rcPlusValue;
     }
 
 
     public String getIncomingReactiveCapacitiveEnergyUnit() {
-        return RCPlusUnit;
+        return rcPlusUnit;
     }
 
 
     public float getOutgoingReactiveCapacitiveEnergyValue() {
-        return RCMinusValue;
+        return rcMinusValue;
     }
 
 
     public String getOutgoingReactiveCapacitiveEnergyUnit() {
-        return RCMinusUnit;
+        return rcMinusUnit;
     }
 
 
     public float getIncomingReactiveInductivePowerValue() {
-        return PIPlusValue;
+        return piPlusValue;
     }
 
 
     public String getIncomingReactiveInductivePowerUnit() {
-        return PIPlusUnit;
+        return piPlusUnit;
     }
 
 
     public float getOutgoingReactiveInductivePowerValue() {
-        return PIMinusValue;
+        return piMinusValue;
     }
 
 
     public String getOutgoingReactiveInductivePowerUnit() {
-        return PIMinusUnit;
+        return piMinusUnit;
     }
 
 
     public float getIncomingReactiveCapacitivePowerValue() {
-        return PCPlusValue;
+        return pcPlusValue;
     }
 
 
     public String getIncomingReactiveCapacitivePowerUnit() {
-        return PCPlusUnit;
+        return pcPlusUnit;
     }
 
 
     public float getOutgoingReactiveCapacitivePowerValue() {
-        return PCMinusValue;
+        return pcMinusValue;
     }
 
 
     public String getOutgoingReactiveCapacitivePowerUnit() {
-        return PCMinusUnit;
+        return pcMinusUnit;
     }
    
     
@@ -528,33 +528,33 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
         pMinusThree.addProperty("unit", pMinusThreeUnit); 
         
         JsonObject RIPlus = new JsonObject();
-        RIPlus.addProperty("value", RIPlusValue);
-        RIPlus.addProperty("unit", RIPlusUnit);
+        RIPlus.addProperty("value", riPlusValue);
+        RIPlus.addProperty("unit", riPlusUnit);
         JsonObject RIMinus = new JsonObject();
-        RIMinus.addProperty("value", RIMinusValue);
-        RIMinus.addProperty("unit", RIMinusUnit);
+        RIMinus.addProperty("value", riMinusValue);
+        RIMinus.addProperty("unit", riMinusUnit);
         
         JsonObject RCPlus = new JsonObject();
-        RCPlus.addProperty("value", RCPlusValue);
-        RCPlus.addProperty("unit", RCPlusUnit);
+        RCPlus.addProperty("value", rcPlusValue);
+        RCPlus.addProperty("unit", rcPlusUnit);
         JsonObject RCMinus = new JsonObject();
-        RCMinus.addProperty("value", RCMinusValue);
-        RCMinus.addProperty("unit", RCMinusUnit);
+        RCMinus.addProperty("value", rcMinusValue);
+        RCMinus.addProperty("unit", rcMinusUnit);
 
         JsonObject PIPlus = new JsonObject();
-        PIPlus.addProperty("value", PIPlusValue);
-        PIPlus.addProperty("unit", PIPlusUnit);
+        PIPlus.addProperty("value", piPlusValue);
+        PIPlus.addProperty("unit", piPlusUnit);
         JsonObject PIMinus = new JsonObject();
-        PIMinus.addProperty("value", PIMinusValue);
-        PIMinus.addProperty("unit", PIMinusUnit);
+        PIMinus.addProperty("value", piMinusValue);
+        PIMinus.addProperty("unit", piMinusUnit);
         
 
         JsonObject PCPlus = new JsonObject();
-        PCPlus.addProperty("value", PCPlusValue);
-        PCPlus.addProperty("unit", PCPlusUnit);  
+        PCPlus.addProperty("value", pcPlusValue);
+        PCPlus.addProperty("unit", pcPlusUnit);  
         JsonObject PCMinus = new JsonObject();
-        PCMinus.addProperty("value", PCMinusValue);
-        PCMinus.addProperty("unit", PCMinusUnit);
+        PCMinus.addProperty("value", pcMinusValue);
+        PCMinus.addProperty("unit", pcMinusUnit);
         
         JsonObject energyObject = new JsonObject();
         energyObject.add("A+", aPlus);

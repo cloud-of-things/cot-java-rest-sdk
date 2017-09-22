@@ -16,12 +16,12 @@ public class VoltageMeasurement implements Fragment{
     }
     
     
-    public float getvoltageValue(){
+    public float getVoltageValue(){
         
         return voltageValue;
     }
 
-    public String getvoltageUnit(){
+    public String getVoltageUnit(){
         
         return voltageUnit;
     }

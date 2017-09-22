@@ -4,20 +4,23 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-public class Relay implements Fragment{
+public class Relay implements Fragment {
 
-    
-private String relayState;
+    public enum State {
+        OPEN, CLOSED
+    }
 
-public Relay (String relayState){
-    
-    this.relayState=relayState;
-    
-}
+    private State relayState;
 
-public String getRelayState(){
-    return relayState;
-}
+    public Relay(State relayState) {
+
+        this.relayState = relayState;
+
+    }
+
+    public State getRelayState() {
+        return relayState;
+    }
 
     @Override
     public String getId() {
@@ -26,14 +29,11 @@ public String getRelayState(){
 
     @Override
     public JsonElement getJson() {
-        
-        
-        JsonObject relayObject = new JsonObject();
-        relayObject.addProperty("relayState", relayState);
-        
-        return relayObject;
 
+        JsonObject relayObject = new JsonObject();
+        relayObject.addProperty("relayState", relayState.toString());
+
+        return relayObject;
 
     }
 }
-
