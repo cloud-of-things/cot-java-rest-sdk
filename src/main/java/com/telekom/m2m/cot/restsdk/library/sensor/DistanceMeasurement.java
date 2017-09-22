@@ -16,12 +16,12 @@ public class DistanceMeasurement implements Fragment{
     }
     
     
-    public float getdistanceValue(){
+    public float getDistanceValue(){
         
         return distanceValue;
     }
 
-    public String getdistanceUnit(){
+    public String getDistanceUnit(){
         
         return distanceUnit;
     }

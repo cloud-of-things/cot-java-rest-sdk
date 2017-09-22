@@ -16,12 +16,12 @@ public class HumidityMeasurement implements Fragment{
     }
     
     
-    public float gethumidityValue(){
+    public float getHumidityValue(){
         
         return humidityValue;
     }
 
-    public String gethumidityUnit(){
+    public String getHumidityUnit(){
         
         return humidityUnit;
     }

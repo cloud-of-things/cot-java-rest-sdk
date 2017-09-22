@@ -16,12 +16,12 @@ public class CurrentMeasurement implements Fragment{
     }
     
     
-    public float getcurrentValue(){
+    public float getCurrentValue(){
         
         return currentValue;
     }
 
-    public String getcurrentUnit(){
+    public String getCurrentUnit(){
         
         return currentUnit;
     }

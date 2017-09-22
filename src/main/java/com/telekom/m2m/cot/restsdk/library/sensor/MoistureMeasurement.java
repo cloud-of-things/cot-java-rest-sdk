@@ -16,12 +16,12 @@ public class MoistureMeasurement implements Fragment{
     }
     
     
-    public float getmoistureValue(){
+    public float getMoistureValue(){
         
         return moistureValue;
     }
 
-    public String getmoistureUnit(){
+    public String getMoistureUnit(){
         
         return moistureUnit;
     }

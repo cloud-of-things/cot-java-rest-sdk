@@ -16,12 +16,12 @@ public class LightMeasurement implements Fragment{
     }
     
     
-    public float getlightValue(){
+    public float getLightValue(){
         
         return lightValue;
     }
 
-    public String getlightUnit(){
+    public String getLightUnit(){
         
         return lightUnit;
     }
