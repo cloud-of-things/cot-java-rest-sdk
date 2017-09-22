@@ -8,17 +8,29 @@
 
     <name>Cloud of Things Java REST SDK</name>
     <description>This is an SDK to interfere with the Cloud of Things by
-        Deutsche Telekom AG.
+        T-Systems International GmbH.
     </description>
     <url>https://github.com/marquies/cot-java-rest-sdk</url>
 
     <licenses>
         <license>
-            <name>All rights reserved. Feel free to use in your CoT IoT
-                projects.
+            <name>
+                MIT License
             </name>
+            <comments>
+                All rights reserved. Feel free to use in your CoT IoT projects.
+            </comments>
+            <url>
+                https://opensource.org/licenses/MIT
+            </url>
         </license>
     </licenses>
+
+    <organization>
+        <name>T-Systems International GmbH</name>
+    </organization>
+
+    <inceptionYear>2017</inceptionYear>
 
     <scm>
         <connection>scm:git:git@github.com:marquies/cot-java-rest-sdk.git
@@ -27,9 +39,9 @@
             scm:git:git@github.com:marquies/cot-java-rest-sdk.git
         </developerConnection>
         <url>git@github.com:marquies/cot-java-rest-sdk.git</url>
-      <tag>CotJavaRestSdk-0.6.1</tag>
-  </scm>
-
+        <tag>CotJavaRestSdk-0.6.0</tag>
+    </scm>
+  
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
@@ -48,7 +60,7 @@
             <name>Patrick Breucking</name>
             <email>Patrick.Breucking@t-systems.com</email>
             <url>http://www.patrickbreucking.de</url>
-            <organization>Deutsche Telekom AG</organization>
+            <organization>T-Systems International GmbH</organization>
             <organizationUrl>http://m2m.telekom.com</organizationUrl>
             <roles>
                 <role>Technical Program Manager IoT</role>
@@ -57,6 +69,7 @@
     </developers>
 
     <properties>
+        <license.licenseName>mit</license.licenseName>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <powermock.version>1.6.4</powermock.version>
@@ -216,6 +229,31 @@
                     </flowInitContext>
                 </configuration>
             </plugin>
+            <!--
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>license-maven-plugin</artifactId>
+                            <version>1.14</version>
+                            <executions>
+                                <execution>
+                                    <id>first</id>
+                                    <goals>
+                                        <goal>update-file-header</goal>
+                                    </goals>
+                                    <phase>process-sources</phase>
+                                    <configuration>
+                                        <licenseName>mit</licenseName>
+                                        <roots>
+                                            <root>src/main/java</root>
+                                        </roots>
+                                        <processStartTag>*****</processStartTag>
+                                        <processEndTag>+++++</processEndTag>
+                                        <sectionDelimiter>-&#45;&#45;&#45;&#45;</sectionDelimiter>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+            -->
         </plugins>
     </build>
 </project>
