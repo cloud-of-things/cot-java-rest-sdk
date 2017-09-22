@@ -35,9 +35,9 @@ public class AuditApiIT {
         final String text = "new audit record created";
         final String type = "com_telekom_audit_TestType_" + System.currentTimeMillis();
         final Date timeOfAuditRecording = new Date();
-        // reduce time by 1 second to get a difference between "time" set by client and "creationTime" set by platform
+        // reduce time by 10 second to get a difference between "time" set by client and "creationTime" set by platform
         // because sometimes the system time of the client is not equal to the system time of the platform
-        timeOfAuditRecording.setTime(timeOfAuditRecording.getTime()-1000);
+        timeOfAuditRecording.setTime(timeOfAuditRecording.getTime()-10000);
         final String user = "integration-tester";
         final String application = this.getClass().getSimpleName();
         final String activity = "Create Audit Record";

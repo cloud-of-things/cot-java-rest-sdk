@@ -497,7 +497,7 @@ public class UserApiIT {
         // when (now let's return this group from the cloud and check if the
         // device permissions were assigned as expected):
 
-      group = userApi.getGroupByName(tenant, testGroupName);
+        group = userApi.getGroupByName(tenant, testGroupName);
 
         assertEquals(devicePermission.keySet().size(), group.getDevicePermissions().keySet().size());
 
