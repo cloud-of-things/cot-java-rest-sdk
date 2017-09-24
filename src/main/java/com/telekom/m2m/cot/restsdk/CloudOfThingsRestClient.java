@@ -195,10 +195,10 @@ public class CloudOfThingsRestClient {
     /**
      * Executes an HTTP POST request and returns the response body as String.
      *
-     * @param file Request body, i.e. the first and only form part.
-     * @param name The name of the form field.
+     * @param files array of byte[], one for each form field.
+     * @param names the names of the form field, same order as files.
      * @param api the URL path (without leading /)
-     * @return the ID from the Location header (for newly created objects)
+     * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
      */
     public String doFormUpload(byte[][] files, String[] names, String api) {
         if (files.length != names.length) {
@@ -546,6 +546,45 @@ public class CloudOfThingsRestClient {
             }
             ResponseBody responseBody = response.body();
             return (responseBody == null) ? "" : responseBody.string();
+        } catch (Exception e) {
+            throw new CotSdkException("Error in request", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
+
+    /**
+     * Execute a PUT request that will result in a new or changed ID.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
+     */
+    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), data);
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType)
+                .url(host + "/" + path)
+                .put(requestBody);
+
+        Request request = requestBuilder.build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Requested returned error code");
+            }
+            String location = response.header("Location");
+            String result = null;
+            if (location != null) {
+                String[] pathParts = location.split("\\/");
+                result = pathParts[pathParts.length - 1];
+            }
+            return result;
         } catch (Exception e) {
             throw new CotSdkException("Error in request", e);
         } finally {

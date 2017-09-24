@@ -21,25 +21,28 @@ public class BinariesApi {
     }
 
 
-
     /**
      * Retrieves binaries meta data.
      *
-     * @param filters the FilterBuilder to filter the retrieved binaries; null = get all
-     * @param pageSize size of the results (Max. 2000); null = use default ({@link com.telekom.m2m.cot.restsdk.util.JsonArrayPagination#DEFAULT_PAGE_SIZE}
+     * @param pageSize size of the result page (Max. 2000); null = use default ({@link com.telekom.m2m.cot.restsdk.util.JsonArrayPagination#DEFAULT_PAGE_SIZE}
      * TODO: filters?
      * @return the pageable BinariesCollection
      */
-    public BinariesCollection getBinaries(Filter.FilterBuilder filters, Integer pageSize) {
+    public BinariesCollection getBinaries(Integer pageSize) {
         return new BinariesCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
                 gson,
-                filters,
                 pageSize);
     }
 
 
+    /**
+     * Upload/create a new Binary.
+     *
+     * @param binary the new Binary, with name, type and data. Will receive the ID of the newly created resource.
+     * @return the ID of the newly created resource.
+     */
     public String uploadBinary(Binary binary) {
         byte[][] data = new byte[3][];
         String[] names = new String[3];
@@ -56,30 +59,56 @@ public class BinariesApi {
     }
 
 
+    /**
+     * Delete a Binary from the CoT.
+     *
+     * @param id the ID of the Binary that shall be deleted.
+     */
     public void deleteBinary(String id) {
         cloudOfThingsRestClient.delete(id, RELATIVE_API_URL);
     }
 
 
+    /**
+     * Delete a Binary from the CoT.
+     *
+     * @param binary the Binary to delete (by its ID).
+     */
     public void deleteBinary(Binary binary) {
         cloudOfThingsRestClient.delete(binary.getId(), RELATIVE_API_URL);
     }
 
 
-    public void replaceBinary(Binary binary) {
-        cloudOfThingsRestClient.doPutRequest(
+    /**
+     * Replace the data of the binary in the CoT.
+     * This will result in a new ID for the binary. The old ID will stop existing.
+     *
+     * @param binary the Binary that has the (old) ID and the (new) data. The ID will be updated.
+     * @return the new ID of the binary.
+     */
+    public String replaceBinary(Binary binary) {
+        String newId = cloudOfThingsRestClient.doPutRequestWithIdResponse(
                 new String(binary.getData()),
                 RELATIVE_API_URL + "/" + binary.getId(),
                 binary.getType());
+        binary.setId(newId);
+        return newId;
     }
 
 
+    /**
+     * Get (or "fill in") the actual binary data into a Binary (e.g. from a {@link BinariesCollection}).
+     * This data is identified by the ID of the Binary (and not the self-link (although that would probably work too)).
+     *
+     * @param binary the Binary for which the data shall be downloaded. Will be enriched with that data.
+     * @return the original byte[] from the response or null, if the body is empty.
+     */
     public byte[] getData(Binary binary) {
-        // TODO: get name & type from response headers?
-        String self = (String)binary.get("self");
-        String response = cloudOfThingsRestClient.getResponse(binary.getId(), RELATIVE_API_URL, binary.getType());
-        if (response != null) {
-            return response.getBytes();
+        String responseBody = cloudOfThingsRestClient.getResponse(binary.getId(), RELATIVE_API_URL, binary.getType());
+        if (responseBody != null) {
+            byte[] data = responseBody.getBytes();
+            binary.setData(data);
+            return data;
         } else {
             return null;
         }

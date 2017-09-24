@@ -15,6 +15,11 @@ public class Binary extends ManagedObject {
         super(extensibleObject);
     }
 
+    public Binary(String id) {
+        super();
+        setId(id);
+        anyObject.put("c8y_IsBinary", "");
+    }
 
     public Binary(String name, String type, byte[] data) {
         super();
@@ -24,18 +29,26 @@ public class Binary extends ManagedObject {
         anyObject.put("c8y_IsBinary", "");
     }
 
+
     public String getName() {
         return (String)anyObject.get("name");
     }
+
 
     public String getType() {
         return (String)anyObject.get("type");
     }
 
+
     public byte[] getData() {
         byte[] data = (byte[])anyObject.get("data");
         return Arrays.copyOf(data, data.length);
     }
+
+    public void setData(byte[] data) {
+        anyObject.put("data", Arrays.copyOf(data, data.length));
+    }
+
 
     public int size() {
         byte[] data = (byte[])anyObject.get("data");

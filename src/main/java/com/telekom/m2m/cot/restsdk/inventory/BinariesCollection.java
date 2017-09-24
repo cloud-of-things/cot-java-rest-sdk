@@ -21,9 +21,8 @@ public class BinariesCollection extends JsonArrayPagination {
     public BinariesCollection(CloudOfThingsRestClient cloudOfThingsRestClient,
                               String relativeApiUrl,
                               Gson gson,
-                              Filter.FilterBuilder filterBuilder,
                               Integer pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder);
+        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, null);
         if (pageSize != null) {
             setPageSize(pageSize);
         }

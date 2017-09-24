@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
@@ -70,10 +71,11 @@ public class BinariesApiIT {
 
         bin.set("type", "application/json");
         bin.set("data", "{\"foo\":\"bar\"}".getBytes());
-        api.replaceBinary(bin);
+        String id = api.replaceBinary(bin);
 
         data = new String(api.getData(bin));
         assertEquals(data, "{\"foo\":\"bar\"}");
+        assertEquals(id, bin.getId());
     }
 
 
