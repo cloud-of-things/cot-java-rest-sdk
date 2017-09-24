@@ -75,7 +75,7 @@ public class BinariesApiIT {
 
         data = new String(api.getData(bin));
         assertEquals(data, "{\"foo\":\"bar\"}");
-        assertEquals(id, bin.getId());
+        assertEquals(id, bin.getId()); // Replacing the content changes the id!
     }
 
 
@@ -93,7 +93,7 @@ public class BinariesApiIT {
         binaryIds.add(binaryId);
 
 
-        BinariesCollection c = api.getBinaries(null, 1000);
+        BinariesCollection c = api.getBinaries(1000);
         Binary[] bb = c.getBinaries();
 
         // We can't know how many other binaries were there already.

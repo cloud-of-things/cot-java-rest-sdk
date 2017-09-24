@@ -2,10 +2,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 
