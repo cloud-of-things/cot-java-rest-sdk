@@ -4,26 +4,24 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-/**
- * Currently, barely more than a place holder.
- * 
- * @author ozanarslan
- *
- */
-public class RelayArray implements Fragment{
+import java.util.Arrays;
+
+
+public class RelayArray implements Fragment {
 
     private Relay arrayOfRelays[];
 
     
-    public RelayArray(Relay arrayOfRelays[]){
+    public RelayArray(Relay arrayOfRelays[]) {
         
-        this.arrayOfRelays=arrayOfRelays;
+        this.arrayOfRelays = Arrays.copyOf(arrayOfRelays, arrayOfRelays.length);
     }
     
-    public Relay[] getArrayOfRelays(){
+    public Relay[] getArrayOfRelays() {
         
-        return arrayOfRelays;
+        return Arrays.copyOf(arrayOfRelays, arrayOfRelays.length);
     }
+
     
     @Override
     public String getId() {
@@ -33,8 +31,8 @@ public class RelayArray implements Fragment{
     @Override
     public JsonElement getJson() {
         JsonArray array = new JsonArray();
-        for (Relay r:arrayOfRelays){
-        array.add(r.getRelayState().toString());
+        for (Relay r : arrayOfRelays) {
+            array.add(r.getRelayState().name());
         }
         return array;
     }

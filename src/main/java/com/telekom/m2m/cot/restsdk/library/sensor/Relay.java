@@ -12,11 +12,12 @@ public class Relay implements Fragment {
 
     private State relayState;
 
+
     public Relay(State relayState) {
 
         this.relayState = relayState;
-
     }
+
 
     public State getRelayState() {
         return relayState;
@@ -34,6 +35,6 @@ public class Relay implements Fragment {
         relayObject.addProperty("relayState", relayState.toString());
 
         return relayObject;
-
     }
+
 }

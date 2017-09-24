@@ -4,24 +4,25 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-public class LightMeasurement implements Fragment{
+public class LightMeasurement implements Fragment {
 
     private float lightValue;
     private String lightUnit;
-    
-    public LightMeasurement(float lightValue, String lightUnit){
+
+
+    public LightMeasurement(float lightValue, String lightUnit) {
         
         this.lightUnit=lightUnit;
         this.lightValue=lightValue;
     }
     
     
-    public float getLightValue(){
+    public float getLightValue() {
         
         return lightValue;
     }
 
-    public String getLightUnit(){
+    public String getLightUnit() {
         
         return lightUnit;
     }
@@ -40,8 +41,6 @@ public class LightMeasurement implements Fragment{
         JsonObject light = new JsonObject();
         light.addProperty("value", lightValue);
         light.addProperty("unit", lightUnit);
-
-
 
         JsonObject lightObject = new JsonObject();
         lightObject.add("e", light);

@@ -6,7 +6,6 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class TemperatureSensor implements Fragment{
 
-    
 
     @Override
     public String getId() {
@@ -16,7 +15,6 @@ public class TemperatureSensor implements Fragment{
     @Override
     public JsonElement getJson() {
         return new JsonObject();
-
-
     }
+
 }

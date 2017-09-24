@@ -45,6 +45,7 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
     /*
      * Power Variables:
      */
+
     // Total active power, incoming:
     private float pPlusValue;
     private String pPlusUnit;
@@ -124,6 +125,7 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
     // Total capacitive inductive power, outgoing:
     private float pcMinusValue;
     private String pcMinusUnit;
+
 
     public ThreePhaseElectricityMeasurement(
             //Energy Variables:
@@ -226,11 +228,9 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
     }
 
 
-
     public float getOutgoingEnergyValue() {
         return aMinusValue;
     }
-
 
 
     public String getOutgoingEnergyUnit() {
@@ -243,17 +243,14 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
     }
 
 
-
     public String getIncomingEnergyP1Unit() {
         return aPlusOneUnit;
     }
 
 
-
     public float getOutgoingEnergyP1Value() {
         return aMinusOneValue;
     }
-
 
 
     public String getOutgoingEnergyP1Unit() {
@@ -359,6 +356,7 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
     public String getOutgoingPowerP2Unit() {
         return pMinusTwoUnit;
     }
+
 
     public float getIncomingPowerP3Value() {
         return pPlusThreeValue;
@@ -565,8 +563,7 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
         energyObject.add("A-:2", aMinusTwo);
         energyObject.add("A+:3", aPlusThree);
         energyObject.add("A-:3", aMinusThree);
-        
-        
+
         energyObject.add("P+", pPlus);
         energyObject.add("P-", pMinus);
         energyObject.add("P+:1", pPlusOne);

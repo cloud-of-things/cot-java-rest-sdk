@@ -12,6 +12,7 @@ public class Position implements Fragment {
     private String trackingProtocol;
     private String reportReason;
 
+
     public Position(float altitude, float longitude, float latitude, String trackingProtocol, String reportReason) {
         this.altitude = altitude;
         this.longitude = longitude;
@@ -19,6 +20,7 @@ public class Position implements Fragment {
         this.trackingProtocol = trackingProtocol;
         this.reportReason = reportReason;
     }
+
 
     public float getAltitude() {
         return altitude;

@@ -4,9 +4,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-public class SinglePhaseElectricitySensor implements Fragment{
-
-    
+public class SinglePhaseElectricitySensor implements Fragment {
 
     @Override
     public String getId() {
@@ -16,7 +14,6 @@ public class SinglePhaseElectricitySensor implements Fragment{
     @Override
     public JsonElement getJson() {
         return new JsonObject();
-
-
     }
+
 }

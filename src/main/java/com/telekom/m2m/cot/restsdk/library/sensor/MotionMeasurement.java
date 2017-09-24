@@ -4,22 +4,23 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 
-public class MotionMeasurement implements Fragment{
+public class MotionMeasurement implements Fragment {
 
-    
+    private static final String motionValueType="BOOLEAN";
+    private static final String detectedMotionUnit="";
+
     private boolean detectedMotionValue;
-    private final String detectedMotionUnit="";
     private float motionSpeedValue;
     private String motionSpeedUnit;
-    private final String motionValueType="BOOLEAN";
-    
+
     
     public MotionMeasurement(boolean detectedMotionValue, float motionSpeedValue, String motionSpeedUnit) {
         this.detectedMotionValue = detectedMotionValue;
         this.motionSpeedValue = motionSpeedValue;
         this.motionSpeedUnit = motionSpeedUnit;
     }
-    
+
+
     public boolean getDetectedMotionValue() {
         return detectedMotionValue;
     }
@@ -35,16 +36,14 @@ public class MotionMeasurement implements Fragment{
     public String getMotionSpeedUnit() {
         return motionSpeedUnit;
     }
-    
-    
+
     
     @Override
     public String getId() {
         return "c8y_MotionMeasurement";
     }
     
-    
-    
+
     @Override
     public JsonElement getJson() {
         JsonObject motionDetected = new JsonObject();
@@ -62,4 +61,5 @@ public class MotionMeasurement implements Fragment{
 
         return motionObject;
     }
+
 }

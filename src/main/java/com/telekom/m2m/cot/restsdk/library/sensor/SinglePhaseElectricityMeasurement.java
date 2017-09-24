@@ -35,6 +35,7 @@ public class SinglePhaseElectricityMeasurement implements Fragment {
         this.pMinusUnit = pMinusUnit;
     }
 
+
     public float getIncomingEnergyValue() {
         return aPlusValue;
     }
