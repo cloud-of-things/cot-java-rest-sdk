@@ -1,7 +1,10 @@
 package com.telekom.m2m.cot.restsdk.library.sensor;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 
+import com.google.gson.JsonObject;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import org.testng.annotations.Test;
 
 import com.telekom.m2m.cot.restsdk.library.Fragment;
@@ -149,7 +152,45 @@ public class SensorLibraryTest {
         assertEquals(rl.getRelayState().toString(), "OPEN");
 
     }
-    
+
+
+    @Test
+    public void testMobile() {
+        // Short version (device management lib):
+        Mobile f = new Mobile("123456789012345", "23FF", "0123456789ABCDEF0123");
+        ManagedObject m = new ManagedObject();
+        m.setName("myObject");
+        m.addFragment(f);
+
+        JsonObject mobileObject = (JsonObject)m.get("c8y_Mobile");
+        assertEquals(mobileObject.get("imei").getAsString(), "123456789012345");
+        assertEquals(mobileObject.get("cellId").getAsString(), "23FF");
+        assertEquals(mobileObject.get("iccid").getAsString(), "0123456789ABCDEF0123");
+        assertFalse(mobileObject.has("imsi")); // There should be none of the other fields in this version. One example is sufficient.
+
+        // Complete version (sensor lib):
+        f = new Mobile("imsi", "imei", "currentOperator", "currentBand", "connType", "rssi",
+                       "ecn0", "rcsp", "mnc", "lac", "cellId", "msisdn", "iccid");
+        m = new ManagedObject();
+        m.addFragment(f);
+
+        mobileObject = (JsonObject)m.get("c8y_Mobile");
+        assertEquals(mobileObject.get("imsi").getAsString(), "imsi");
+        assertEquals(mobileObject.get("imei").getAsString(), "imei");
+        assertEquals(mobileObject.get("currentOperator").getAsString(), "currentOperator");
+        assertEquals(mobileObject.get("currentBand").getAsString(), "currentBand");
+        assertEquals(mobileObject.get("connType").getAsString(), "connType");
+        assertEquals(mobileObject.get("rssi").getAsString(), "rssi");
+        assertEquals(mobileObject.get("ecn0").getAsString(), "ecn0");
+        assertEquals(mobileObject.get("rcsp").getAsString(), "rcsp");
+        assertEquals(mobileObject.get("mnc").getAsString(), "mnc");
+        assertEquals(mobileObject.get("lac").getAsString(), "lac");
+        assertEquals(mobileObject.get("cellId").getAsString(), "cellId");
+        assertEquals(mobileObject.get("msisdn").getAsString(), "msisdn");
+        assertEquals(mobileObject.get("iccid").getAsString(), "iccid");
+    }
+
+
     static Fragment[] getFragments() {
         return new Fragment[] { new AccelerationSensor(), 
                 new CurrentSensor(), 
