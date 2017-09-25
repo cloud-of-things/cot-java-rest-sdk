@@ -12,6 +12,7 @@ import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
+import com.telekom.m2m.cot.restsdk.inventory.BinariesApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.realtime.CepApi;
@@ -231,6 +232,10 @@ public class CloudOfThingsPlatform {
 
     public SmartRestApi getSmartRestApi() {
         return new SmartRestApi(cloudOfThingsRestClient);
+    }
+
+    public BinariesApi getBinariesApi() {
+        return new BinariesApi(cloudOfThingsRestClient);
     }
 
 }
