@@ -49,6 +49,7 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
         return object;
     }
 
+    // TODO: some special attributes might not yet get deserialized in the best way...
     public ExtensibleObject deserialize(JsonElement jsonElement, Type type, JsonDeserializationContext jsonDeserializationContext) throws JsonParseException {
 
         JsonObject object = jsonElement.getAsJsonObject();
@@ -82,6 +83,8 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
                     case "childAssets" :
                     case "deviceParents" :
                     case "assetParents" :
+                    case "additionParents" :
+                    case "childAdditions" :
                         mo.set(key, jsonDeserializationContext.deserialize(element.getValue(), ManagedObjectReferenceCollection.class));
                         break;
                     default :

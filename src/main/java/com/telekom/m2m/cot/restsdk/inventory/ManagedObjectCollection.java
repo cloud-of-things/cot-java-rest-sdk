@@ -47,18 +47,9 @@ public class ManagedObjectCollection extends JsonArrayPagination {
      */
     public ManagedObject[] getManagedObjects() {
         final JsonArray jsonManagedObjects = getJsonArray();
-        ManagedObject[] binaries = gson.fromJson(jsonManagedObjects, ManagedObject[].class);
-return binaries;/*
-        if (jsonManagedObjects != null) {
-            final ManagedObject[] arrayOfManagedObjects = new ManagedObject[jsonManagedObjects.size()];
-            for (int i = 0; i < jsonManagedObjects.size(); i++) {
-                JsonElement jsonManagedObject = jsonManagedObjects.get(i).getAsJsonObject();
-                final ManagedObject managedObject = new ManagedObject(gson.fromJson(jsonManagedObject, ExtensibleObject.class));
-                arrayOfManagedObjects[i] = managedObject;
-            }
-            return arrayOfManagedObjects;
-        } else {
-            return null;
-        }*/
+        ManagedObject[] managedObjects = gson.fromJson(jsonManagedObjects, ManagedObject[].class);
+
+        return managedObjects;
     }
+    
 }
