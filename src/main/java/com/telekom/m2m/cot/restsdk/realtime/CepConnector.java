@@ -294,30 +294,33 @@ public class CepConnector implements Runnable {
 
             do {
                 String responseString = doConnect();
-                JsonArray response = gson.fromJson(responseString, JsonArray.class);
+                if (responseString != null) {
+                    JsonArray response = gson.fromJson(responseString, JsonArray.class);
 
-                for (JsonElement element : response) {
-                    // TODO: evaluate advice?
-                    // TODO: pass errors to our listeners?
+                    for (JsonElement element : response) {
+                        // TODO: evaluate advice?
+                        // TODO: pass errors to our listeners?
 
-                    JsonObject jsonObject = element.getAsJsonObject();
+                        JsonObject jsonObject = element.getAsJsonObject();
 
-                    String notificationChannel = jsonObject.get("channel").getAsString();
+                        String notificationChannel = jsonObject.get("channel").getAsString();
 
-                    // We don't pass on failures and meta data to the listeners.
-                    if (!notificationChannel.startsWith("/meta/")) {
+                        // We don't pass on failures and meta data to the listeners.
+                        if (!notificationChannel.startsWith("/meta/")) {
 
-                        for (SubscriptionListener listener : listeners) {
-                            // Now filter out the unnecessary fields from
-                            // the JsonElement and pass the required
-                            // information to the notification object:
-                            JsonObject jsonNotification = new JsonObject();
-                            jsonNotification.add("data", jsonObject.get("data"));
-                            jsonNotification.add("channel", jsonObject.get("channel"));
-                            listener.onNotification(notificationChannel, new Notification(jsonNotification));
+                            for (SubscriptionListener listener : listeners) {
+                                // Now filter out the unnecessary fields from
+                                // the JsonElement and pass the required
+                                // information to the notification object:
+                                JsonObject jsonNotification = new JsonObject();
+                                jsonNotification.add("data", jsonObject.get("data"));
+                                jsonNotification.add("channel", jsonObject.get("channel"));
+                                listener.onNotification(notificationChannel, new Notification(jsonNotification));
+                            }
                         }
                     }
                 }
+
                 try {
                     if (!shallDisconnect) {
                         Thread.sleep(interval);

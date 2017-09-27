@@ -3,11 +3,15 @@ package com.telekom.m2m.cot.restsdk;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRequest;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartResponse;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
@@ -283,6 +287,9 @@ public class CloudOfThingsRestClient {
             }
 
             return response.body().string();
+        } catch (SocketTimeoutException e) {
+            // That's ok and normal. There just weren't any new notifications.
+            return null;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -393,6 +400,9 @@ public class CloudOfThingsRestClient {
             }
             String responseBody = response.body().string();
             return new SmartResponse(responseBody);
+        } catch (SocketTimeoutException e) {
+            // That's ok and normal. There just weren't any new notifications.
+            return null;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -653,10 +663,24 @@ public class CloudOfThingsRestClient {
     }
 
     private String getErrorMessage(final Response response) throws IOException {
-        final JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
         String errorMessage = "Request failed.";
-        if (o.has("error")) {
-            errorMessage += " Platform provided details: '" + o.get("error") + "'";
+        String body = "";
+        try {
+            body = response.body().string();
+            final JsonElement e = gson.fromJson(body, JsonElement.class);
+            if (e instanceof JsonObject) {
+                JsonObject o = (JsonObject) e;
+                if (o.has("error")) {
+                    errorMessage += " Platform provided details: '" + o.get("error") + "'";
+                }
+            } else if (e instanceof JsonPrimitive) {
+                JsonPrimitive p = (JsonPrimitive) e;
+                errorMessage += " Platform provided details: '" + p + "'";
+            }
+        } catch (JsonSyntaxException ex) {
+            errorMessage += " " + body;
+        } catch (NullPointerException ex) {
+            errorMessage += " Response body was empty.";
         }
 
         return errorMessage;
