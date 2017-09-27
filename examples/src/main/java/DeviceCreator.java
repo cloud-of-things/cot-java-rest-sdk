@@ -9,7 +9,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import java.util.Map;
 
 /**
- * The DeviceCreator lets You create, print and delete devices (which are just ManagedObects in the CoT).
+ * The DeviceCreator lets You create, print and delete devices (which are just ManagedObjects in the CoT).
  */
 public class DeviceCreator {
 
