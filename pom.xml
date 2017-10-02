@@ -229,31 +229,6 @@
                     </flowInitContext>
                 </configuration>
             </plugin>
-            <!--
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>license-maven-plugin</artifactId>
-                            <version>1.14</version>
-                            <executions>
-                                <execution>
-                                    <id>first</id>
-                                    <goals>
-                                        <goal>update-file-header</goal>
-                                    </goals>
-                                    <phase>process-sources</phase>
-                                    <configuration>
-                                        <licenseName>mit</licenseName>
-                                        <roots>
-                                            <root>src/main/java</root>
-                                        </roots>
-                                        <processStartTag>*****</processStartTag>
-                                        <processEndTag>+++++</processEndTag>
-                                        <sectionDelimiter>-&#45;&#45;&#45;&#45;</sectionDelimiter>
-                                    </configuration>
-                                </execution>
-                            </executions>
-                        </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>

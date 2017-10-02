@@ -18,7 +18,7 @@ public class DeviceCreator {
     private static void printHelpAndExit() {
         System.out.println("Create a new example device: -c/--create <name>");
         System.out.println("Read and print a device: -r/--read <id>");
-        System.out.println("Delete a device device: -d/--delete <id>");
+        System.out.println("Delete a device: -d/--delete <id>");
         System.exit(0);
     }
 
