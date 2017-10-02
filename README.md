@@ -57,7 +57,7 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 
 ## Examples
 
-See examples folder. (Needs improvements ;) )
+See examples folder.
 Also see integration tests (*IT).
 
 ## Release Notes
