@@ -28,11 +28,11 @@ public class AlarmTrigger {
             printHelpAndExit();
         }
 
-        // Adjust these to your test instance:
-        String url = "<url>";
-        String tenant = "<tenant>";
-        String user = "<user>";
-        String password = "<password>";
+        // Ensure that you populate the required environment variables with your credentials.
+        String url = System.getenv("COT_REST_CLIENT_HOST");
+        String tenant = System.getenv("COT_REST_CLIENT_TENANT");
+        String user = System.getenv("COT_REST_CLIENT_USER");
+        String password = System.getenv("COT_REST_CLIENT_PASSWORD");
 
         // From the platform we can get the numerous APIs, for example the AlarmApi:
         CloudOfThingsPlatform platform = new CloudOfThingsPlatform(url, new CotCredentials(tenant, user, password));

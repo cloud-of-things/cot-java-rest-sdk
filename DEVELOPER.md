@@ -13,6 +13,12 @@ To run the integration tests you should now use 'mvn integration-test'
 
 - Create CoT account
 - export credentials (examples should read them from ENV to make this work)
+
+    export COT_REST_CLIENT_HOST="your-host"
+    export COT_REST_CLIENT_TENANT="your-tenant"
+    export COT_REST_CLIENT_USER="your-user"
+    export COT_REST_CLIENT_PASSWORD="your-password"
+
 - compile SDK and install it into local maven repository
 - compile examples
 - compile JAR with all dependencies
