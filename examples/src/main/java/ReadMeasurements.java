@@ -2,7 +2,6 @@ import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementCollection;
@@ -39,7 +38,7 @@ public class ReadMeasurements {
             csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
 
 
-            CloudOfThingsPlatform platform = PlatformFactory.create();
+            CloudOfThingsPlatform platform = PlatformFactory.createFromEnvironment();
             MeasurementApi mApi = platform.getMeasurementApi();
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat csv = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
