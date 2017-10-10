@@ -24,10 +24,11 @@ public class ReadMeasurements {
     private static final String NEW_LINE_SEPARATOR = "\n";
 
     public static void main(String[] args) {
-        String host = "https://cot-url";
-        String tenant = "tenant";
-        String user = "user";
-        String password = "password";
+        // Ensure that you populate the required environment variables with your credentials.
+        String host = System.getenv("COT_REST_CLIENT_HOST");
+        String tenant = System.getenv("COT_REST_CLIENT_TENANT");
+        String user = System.getenv("COT_REST_CLIENT_USER");
+        String password = System.getenv("COT_REST_CLIENT_PASSWORD");
 
         Calendar from = new GregorianCalendar(2016, Calendar.JANUARY, 1, 0, 0, 0);
         Calendar to = new GregorianCalendar(2016, Calendar.JANUARY, 31, 23, 59, 59);
