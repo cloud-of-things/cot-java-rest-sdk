@@ -11,18 +11,39 @@ To run the integration tests you should now use 'mvn integration-test'
 
 ## Try Examples ##
 
+### Get Credentials ###
+
 - Create CoT account
-- export credentials (examples should read them from ENV to make this work)
+
+Export your Cloud of Things credentials as environment variables. These are required by the examples:
 
     export COT_REST_CLIENT_HOST="your-host"
     export COT_REST_CLIENT_TENANT="your-tenant"
     export COT_REST_CLIENT_USER="your-user"
     export COT_REST_CLIENT_PASSWORD="your-password"
 
-- compile SDK and install it into local maven repository
-- compile examples
-- compile JAR with all dependencies
-- execute examples
-  - create device
-  - start alarm watcher
-  - create alarms
+### Compiling ###
+
+Compile the CoT REST SDK and install it into your local maven repository:
+
+    mvn clean install -DskipITs -DskipTests -Dgpg.skip
+
+Compile the example classes:
+
+    mvn compile -f examples/pom.xml
+
+Create a REST client jar that contains all dependencies:
+
+    mvn -P build-archives -DskipITs -DskipTests package
+
+### Executing Examples ###
+
+  - TODO: create device
+
+Start an alarm watcher:
+
+    java -cp examples/target/classes:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar AlarmWatcher
+
+Trigger an alarm:
+
+    java -cp examples/target/classes:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar AlarmTrigger 166349 my_alarm_identifier CRITICAL "My alarm message."
