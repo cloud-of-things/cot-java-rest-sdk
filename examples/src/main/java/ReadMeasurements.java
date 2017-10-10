@@ -24,12 +24,6 @@ public class ReadMeasurements {
     private static final String NEW_LINE_SEPARATOR = "\n";
 
     public static void main(String[] args) {
-        // Ensure that you populate the required environment variables with your credentials.
-        String host = System.getenv("COT_REST_CLIENT_HOST");
-        String tenant = System.getenv("COT_REST_CLIENT_TENANT");
-        String user = System.getenv("COT_REST_CLIENT_USER");
-        String password = System.getenv("COT_REST_CLIENT_PASSWORD");
-
         Calendar from = new GregorianCalendar(2016, Calendar.JANUARY, 1, 0, 0, 0);
         Calendar to = new GregorianCalendar(2016, Calendar.JANUARY, 31, 23, 59, 59);
         SimpleDateFormat dtFileFormat = new SimpleDateFormat("yyyy-MM-dd_HH-mm");
@@ -45,7 +39,7 @@ public class ReadMeasurements {
             csvFilePrinter = new CSVPrinter(fileWriter, csvFileFormat);
 
 
-            CloudOfThingsPlatform platform = new CloudOfThingsPlatform(host, new CotCredentials(tenant, user, password));
+            CloudOfThingsPlatform platform = PlatformFactory.create();
             MeasurementApi mApi = platform.getMeasurementApi();
             SimpleDateFormat dt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             SimpleDateFormat csv = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
