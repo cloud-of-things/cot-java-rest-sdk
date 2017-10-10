@@ -12,24 +12,26 @@ class PlatformFactory {
      * @return The platform object.
      */
     static CloudOfThingsPlatform createFromEnvironment() {
-        // Ensure that you populate the required environment variables with your credentials.
-        String host = System.getenv("COT_REST_CLIENT_HOST");
-        if (host == null) {
-            throw new RuntimeException("Cloud of Things host missing. Provide it via environment variable 'COT_REST_CLIENT_HOST'.");
+        return new CloudOfThingsPlatform(
+                readFromEnvironment("host"),
+                new CotCredentials(
+                        readFromEnvironment("tenant"),
+                        readFromEnvironment("user"),
+                        readFromEnvironment("password")
+                )
+        );
+    }
+
+    /**
+     * @param name The name of the environment variable (without prefix, case does not matter).
+     * @return The value.
+     */
+    private static String readFromEnvironment(String name) {
+        final String environmentVariableName = "COT_REST_CLIENT_" + name.toUpperCase();
+        String value = System.getenv(environmentVariableName);
+        if (value == null) {
+            throw new RuntimeException("Cloud of Things " + name + " missing. Provide it via environment variable '" + environmentVariableName + "'.");
         }
-        String tenant = System.getenv("COT_REST_CLIENT_TENANT");
-        if (tenant == null) {
-            throw new RuntimeException("Cloud of Things tenant missing. Provide it via environment variable 'COT_REST_CLIENT_TENANT'.");
-        }
-        String user = System.getenv("COT_REST_CLIENT_USER");
-        if (user == null) {
-            throw new RuntimeException("Cloud of Things user missing. Provide it via environment variable 'COT_REST_CLIENT_USER'.");
-        }
-        String password = System.getenv("COT_REST_CLIENT_PASSWORD");
-        if (password == null) {
-            throw new RuntimeException("Cloud of Things password missing. Provide it via environment variable 'COT_REST_CLIENT_PASSWORD'.");
-        }
-        // From the platform we can get the numerous APIs, for example the AlarmApi:
-        return new CloudOfThingsPlatform(host, new CotCredentials(tenant, user, password));
+        return value;
     }
 }
