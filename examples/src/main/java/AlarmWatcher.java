@@ -16,7 +16,7 @@ import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 public class AlarmWatcher {
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
         // Ensure that you populate the required environment variables with your credentials.
         String url = System.getenv("COT_REST_CLIENT_HOST");
         String tenant = System.getenv("COT_REST_CLIENT_TENANT");
@@ -48,7 +48,9 @@ public class AlarmWatcher {
 
         // Connect, starting background listener, and then wait.
         connector.connect();
-        while (true) {}
+        while (true) {
+            Thread.sleep(10);
+        }
     }
 
 
