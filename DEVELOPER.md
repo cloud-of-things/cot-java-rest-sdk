@@ -38,12 +38,20 @@ Create a REST client jar that contains all dependencies:
 
 ### Executing Examples ###
 
-  - TODO: create device
+Create a new device named ``try-examples``:
+
+    java -cp examples/target/classes:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar DeviceCreator --create try-examples
+
+This generates output that contains the ID of the new device, e.g.:
+
+    The new device 'try-examples' has the ID 199332
+
+Remember the ID of the device, it will be needed to trigger an alarm.
 
 Start an alarm watcher:
 
     java -cp examples/target/classes:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar AlarmWatcher
 
-Trigger an alarm:
+Trigger an alarm in a new terminal window:
 
-    java -cp examples/target/classes:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar AlarmTrigger 166349 my_alarm_identifier CRITICAL "My alarm message."
+    java -cp examples/target/classes:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar AlarmTrigger 199332 my_alarm_identifier CRITICAL "My alarm message."
