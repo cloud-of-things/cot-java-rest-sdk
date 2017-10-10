@@ -49,7 +49,7 @@ public class InventoryPrinter {
 
             for (ManagedObject managedObject : managedObjects) {
                 System.out.println(managedObject.getId() + ": \t" + managedObject.getType() + " \t" + managedObject.getName());
-                    count += 1;
+                count += 1;
             }
 
             // Has this been the last page?
