@@ -26,15 +26,11 @@ Export your Cloud of Things credentials as environment variables. These are requ
 
 Compile the CoT REST SDK and install it into your local maven repository:
 
-    mvn clean install -DskipITs -DskipTests -Dgpg.skip
+    mvn clean install --activate-profiles build-archives -DskipITs -DskipTests -Dgpg.skip
 
 Compile the example classes and their dependencies:
 
      mvn --activate-profiles build-archives -f examples/pom.xml package
-
-Create a REST client jar that contains all dependencies:
-
-    mvn --activate-profiles build-archives -DskipITs -DskipTests package
 
 ### Executing Examples ###
 
