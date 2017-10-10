@@ -22,13 +22,13 @@ public class InventoryPrinter {
         }
 
         // Ensure that you populate the required environment variables with your credentials.
-        String url = System.getenv("COT_REST_CLIENT_HOST");
+        String host = System.getenv("COT_REST_CLIENT_HOST");
         String tenant = System.getenv("COT_REST_CLIENT_TENANT");
         String user = System.getenv("COT_REST_CLIENT_USER");
         String password = System.getenv("COT_REST_CLIENT_PASSWORD");
 
         // From the platform we can get the numerous APIs, for example the InventoryApi:
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(url, new CotCredentials(tenant, user, password));
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(host, new CotCredentials(tenant, user, password));
         InventoryApi inventoryApi = platform.getInventoryApi();
 
         // Get all objects, or objects filtered by type, 32 per page (each page is
