@@ -7,11 +7,11 @@ import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 class PlatformFactory {
 
     /**
-     * Reads credentials from environment variables and uses them to create a Cloud of Things platform object.
+     * Reads credentials from environment variables and uses them to createFromEnvironment a Cloud of Things platform object.
      *
      * @return The platform object.
      */
-    static CloudOfThingsPlatform create() {
+    static CloudOfThingsPlatform createFromEnvironment() {
         // Ensure that you populate the required environment variables with your credentials.
         String host = System.getenv("COT_REST_CLIENT_HOST");
         if (host == null) {

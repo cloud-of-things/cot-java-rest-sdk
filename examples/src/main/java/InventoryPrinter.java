@@ -1,5 +1,4 @@
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectCollection;
@@ -22,7 +21,7 @@ public class InventoryPrinter {
         }
 
         // From the platform we can get the numerous APIs, for example the InventoryApi:
-        CloudOfThingsPlatform platform = PlatformFactory.create();
+        CloudOfThingsPlatform platform = PlatformFactory.createFromEnvironment();
         InventoryApi inventoryApi = platform.getInventoryApi();
 
         // Get all objects, or objects filtered by type, 32 per page (each page is
