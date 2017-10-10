@@ -35,7 +35,11 @@ public class EventApi {
      */
     public Event getEvent(String eventId) {
         String response = cloudOfThingsRestClient.getResponse(eventId, RELATIVE_API_URL, CONTENT_TYPE);
-        return new Event(gson.fromJson(response, ExtensibleObject.class));
+        if (response !=null){        
+            return new Event(gson.fromJson(response, ExtensibleObject.class));
+        }else{
+            return null;
+        }
     }
 
     /**
