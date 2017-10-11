@@ -59,9 +59,11 @@ public class EventApiIT {
 
         EventApi eventApi = cotPlat.getEventApi();
 
-        Thread.sleep(2000);
-
         Event createdEvent = eventApi.createEvent(event);
+        
+        Thread.sleep(200);
+
+        
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());
 
 
@@ -97,9 +99,10 @@ public class EventApiIT {
 
         EventApi eventApi = cotPlat.getEventApi();
 
-        Thread.sleep(2000);
-
         Event createdEvent = eventApi.createEvent(event);
+        
+        Thread.sleep(200);
+        
         String id= createdEvent.getId();
         
         //The event that exist in the cloud should be gettable:        
