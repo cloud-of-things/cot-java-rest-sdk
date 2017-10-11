@@ -44,7 +44,7 @@ Compile the example classes and their dependencies:
 
 Create a new device named ``try-examples``:
 
-    java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar DeviceCreator --create try-examples
+    java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar DeviceCreator --create try-examples
 
 This generates output that contains the ID of the new device, e.g.:
 
@@ -54,8 +54,8 @@ Remember the ID of the device, it will be needed to trigger an alarm.
 
 Start an alarm watcher:
 
-    java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar AlarmWatcher
+    java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar AlarmWatcher
 
 Trigger an alarm in a new terminal window:
 
-    java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar:target/java-rest-client-with-dependencies-0.7.0-SNAPSHOT.jar AlarmTrigger 199332 my_alarm_identifier CRITICAL "My alarm message."
+    java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar AlarmTrigger 199332 my_alarm_identifier CRITICAL "My alarm message."
