@@ -60,12 +60,8 @@ public class EventApiIT {
         EventApi eventApi = cotPlat.getEventApi();
 
         Event createdEvent = eventApi.createEvent(event);
-        
-        Thread.sleep(200);
-
-        
+            
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());
-
 
         Event retrievedEvent = eventApi.getEvent(createdEvent.getId());
         Assert.assertEquals(retrievedEvent.getId(), createdEvent.getId());
@@ -100,9 +96,7 @@ public class EventApiIT {
         EventApi eventApi = cotPlat.getEventApi();
 
         Event createdEvent = eventApi.createEvent(event);
-        
-        Thread.sleep(200);
-        
+                
         String id= createdEvent.getId();
         
         //The event that exist in the cloud should be gettable:        
@@ -111,10 +105,6 @@ public class EventApiIT {
         //Now lets try to "get" an event that does not exist in the cloud, get method should return a null:
         Assert.assertNull(eventApi.getEvent("theIdThatDoesNotExist"));
         
-        
-        
-        
-    
     }
 
 }
