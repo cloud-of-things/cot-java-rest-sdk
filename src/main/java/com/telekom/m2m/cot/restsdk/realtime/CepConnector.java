@@ -285,7 +285,10 @@ public class CepConnector implements Runnable {
         cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
     }
 
-
+    /**
+     * Starts the connector in a separate thread. Not meant to be called directly,
+     * please use {@link #connect()} to start the connector.
+     */
     @Override
     public void run() {
         connected = true;
