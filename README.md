@@ -28,9 +28,9 @@ You can find the Java Doc of the latest release here: http://marquies.github.io/
 
 ## Developer Information
 
-Developers can find information in the [Wiki](https://github.com/marquies/cot-java-rest-sdk/wiki)
+Developers can find information in the [Wiki](https://github.com/marquies/cot-java-rest-sdk/wiki) and DEVELOPER.md file.
 
-## Completenes of API
+## Completeness of API
 
 **Completed Implemented**
 * **Measurements**: Completely implemented
@@ -57,7 +57,7 @@ Developers can find information in the [Wiki](https://github.com/marquies/cot-ja
 
 ## Examples
 
-See examples folder.
+See DEVELOPER.md and examples folder.
 Also see integration tests (*IT).
 
 ## Release Notes
