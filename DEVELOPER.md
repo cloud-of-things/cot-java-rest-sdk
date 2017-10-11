@@ -52,6 +52,12 @@ This generates output that contains the ID of the new device, e.g.:
 
 Remember the ID of the device, it will be needed to trigger an alarm.
 
+Show all devices that are registered in the Cloud of Things:
+
+    java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar InventoryPrinter
+
+The created device should show up there.
+
 Start an alarm watcher:
 
     java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar AlarmWatcher
