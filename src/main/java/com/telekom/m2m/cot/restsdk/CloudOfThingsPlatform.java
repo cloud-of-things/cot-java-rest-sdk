@@ -128,7 +128,7 @@ public class CloudOfThingsPlatform {
      * the CoT over HTTP proxy server.
      *
      * @param host
-     *            URL to the host to connect to.
+     *            URL to connect to. Must contain scheme and host, e.g. https://username.int2-ram.m2m.telekom.com
      * @param username
      *            the username of the platform user.
      * @param password
