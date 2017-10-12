@@ -1,7 +1,6 @@
 package com.telekom.m2m.cot.restsdk;
 
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
