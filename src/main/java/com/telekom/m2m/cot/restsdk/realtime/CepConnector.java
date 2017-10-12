@@ -18,6 +18,9 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * provides methods to perform operations such as handshake,
  * subscribe/unsubscribe and connect which are required to communicate with the
  * notification services.
+ *
+ * Hint: This class implements {@link Runnable}, but it is designed to manage threading internally.
+ *       Please do *not* create a thread that starts a connector instance.
  * 
  * Created by Ozan Arslan on 18.08.2017
  */
