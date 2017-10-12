@@ -1,22 +1,5 @@
 # Developer Information
 
-To try the examples it might be easiest to build the complete jar with all
-the dependencies like this:
-
-mvn -P build-archives -DskipITs -DskipTests package
-
-Further Information can be found in the Wiki: https://github.com/marquies/cot-java-rest-sdk/wiki
-
-## Run Tests ##
-
-Run the unit tests:
-
-    mvn test
-
-Run the integration tests:
-
-    mvn integration-test
-
 ## Try Examples ##
 
 ### Get Credentials ###
@@ -65,3 +48,19 @@ Start an alarm watcher:
 Trigger an alarm in a new terminal window:
 
     java -cp examples/target/java-rest-client-examples-with-dependencies-0.7.0-SNAPSHOT.jar AlarmTrigger 199332 my_alarm_identifier CRITICAL "My alarm message."
+    
+## Run Tests ##
+
+Run the unit tests:
+
+    mvn test
+
+Run the integration tests:
+
+    mvn integration-test
+    
+## Build the SDK ##
+    
+Use the following command to build a jar that contains the SDK and all its dependencies:
+
+    mvn -P build-archives -DskipITs -DskipTests package
