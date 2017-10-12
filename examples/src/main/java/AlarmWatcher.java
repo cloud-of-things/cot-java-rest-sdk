@@ -16,15 +16,16 @@ import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 public class AlarmWatcher {
 
 
-    public static void main(String[] args) {
-        // Adjust these to your test instance:
-        String url = "<url>";
-        String tenant = "<tenant>";
-        String user = "<user>";
-        String password = "<password>";
-
+    public static void main(String[] args) throws InterruptedException {
         // From the platform we can get the numerous APIs, for example the CepApi (ComplexEventProcessing):
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(url, new CotCredentials(tenant, user, password));
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
+            Environment.read("host"),
+            new CotCredentials(
+                Environment.read("tenant"),
+                Environment.read("user"),
+                Environment.read("password")
+            )
+        );
         CepApi cepApi = platform.getCepApi();
 
         // With the CepApi you can get the connector, which will receive and distribute the notifications:
@@ -48,7 +49,9 @@ public class AlarmWatcher {
 
         // Connect, starting background listener, and then wait.
         connector.connect();
-        while (true) {}
+        while (true) {
+            Thread.sleep(10);
+        }
     }
 
 

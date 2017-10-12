@@ -23,14 +23,15 @@ public class DeviceCreator {
     }
 
     public static void main(String[] args) {
-        // Adjust these to your test instance:
-        String url = "<url>";
-        String tenant = "<tenant>";
-        String user = "<user>";
-        String password = "<password>";
-
         // From the platform we can get the numerous APIs, for example the InventoryApi:
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(url, new CotCredentials(tenant, user, password));
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
+            Environment.read("host"),
+            new CotCredentials(
+                Environment.read("tenant"),
+                Environment.read("user"),
+                Environment.read("password")
+            )
+        );
         inventoryApi = platform.getInventoryApi();
 
         if (args.length == 2) {

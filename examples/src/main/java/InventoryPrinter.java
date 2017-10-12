@@ -21,14 +21,15 @@ public class InventoryPrinter {
             type = args[0];
         }
 
-        // Adjust these to your test instance:
-        String url = "<url>";
-        String tenant = "<tenant>";
-        String user = "<user>";
-        String password = "<password>";
-
         // From the platform we can get the numerous APIs, for example the InventoryApi:
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(url, new CotCredentials(tenant, user, password));
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
+            Environment.read("host"),
+            new CotCredentials(
+                Environment.read("tenant"),
+                Environment.read("user"),
+                Environment.read("password")
+            )
+        );
         InventoryApi inventoryApi = platform.getInventoryApi();
 
         // Get all objects, or objects filtered by type, 32 per page (each page is
@@ -49,7 +50,7 @@ public class InventoryPrinter {
 
             for (ManagedObject managedObject : managedObjects) {
                 System.out.println(managedObject.getId() + ": \t" + managedObject.getType() + " \t" + managedObject.getName());
-                    count += 1;
+                count += 1;
             }
 
             // Has this been the last page?

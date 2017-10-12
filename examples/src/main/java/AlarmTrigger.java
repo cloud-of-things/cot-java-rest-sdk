@@ -27,15 +27,14 @@ public class AlarmTrigger {
         if (args.length < 4) {
             printHelpAndExit();
         }
-
-        // Adjust these to your test instance:
-        String url = "<url>";
-        String tenant = "<tenant>";
-        String user = "<user>";
-        String password = "<password>";
-
-        // From the platform we can get the numerous APIs, for example the AlarmApi:
-        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(url, new CotCredentials(tenant, user, password));
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
+            Environment.read("host"),
+            new CotCredentials(
+                Environment.read("tenant"),
+                Environment.read("user"),
+                Environment.read("password")
+            )
+        );
         AlarmApi alarmApi = platform.getAlarmApi();
 
         Alarm alarm = new Alarm();
@@ -52,5 +51,4 @@ public class AlarmTrigger {
 
         System.out.println("The alarm has been created with id " + alarm.getId());
     }
-
 }
