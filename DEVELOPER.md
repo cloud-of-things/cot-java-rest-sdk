@@ -13,7 +13,7 @@ Run the unit tests:
 
     mvn test
 
-To run the integration tests you should now use 'mvn integration-test':
+Run the integration tests:
 
     mvn integration-test
 
