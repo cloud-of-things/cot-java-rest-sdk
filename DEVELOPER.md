@@ -51,6 +51,11 @@ Trigger an alarm in a new terminal window:
     
 ## Run Tests ##
 
+The project uses following kind of tests:
+
+- Unit tests
+- Integration tests (file suffix xyz**IT.java**)
+
 Run the unit tests:
 
     mvn test
