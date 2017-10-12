@@ -17,7 +17,7 @@ public class AlarmTrigger {
         System.out.println("The alarmType is something like com_mycompany_something_specialalarm.");
         System.out.println("The alarmSeverity is WARNING|MINOR|MAJOR|CRITICAL.");
         System.out.println("The alarmText is any user (or device) supplied description. Spaces are allowed.");
-        System.out.println("Note that if you createFromEnvironment multiple alarms with the same type and severity they will " +
+        System.out.println("Note that if you create multiple alarms with the same type and severity they will " +
                            "not be seen as individual alarms, but as one, with an increasing count.");
         System.exit(0);
     }
