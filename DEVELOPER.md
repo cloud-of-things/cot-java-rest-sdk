@@ -69,3 +69,15 @@ Run the integration tests:
 Use the following command to build a jar that contains the SDK and all its dependencies:
 
     mvn -P build-archives -DskipITs -DskipTests package
+
+## Code Conventions/Style ##
+
+- Write tests
+- Keep it simple
+
+### Error Handling ###
+
+In case of errors in communication with Cloud of Things REST API, the 
+[``CotSdkException``](src/main/java/com/telekom/m2m/cot/restsdk/util/CotSdkException.java) should be used to wrap the original error or Exception.
+
+An example usage can be found in [``CloudOfThingsRestClient.doRequestWithIdResponse(..)``](src/main/java/com/telekom/m2m/cot/restsdk/CloudOfThingsRestClient.java)
