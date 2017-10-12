@@ -8,7 +8,15 @@ import java.math.BigInteger;
 import java.security.SecureRandom;
 
 /**
- * Created by Patrick Steinert on 31.01.16.
+ * Initializes the test configuration.
+ *
+ * The configuration must be passed via environment variables. Be sure to provide the required
+ * values on the command line before starting the tests:
+ *
+ *     export COT_CONNECTION_HOST="my-host"
+ *     export COT_CONNECTION_USER="my-user"
+ *     export COT_CONNECTION_PASSWORD="my-password"
+ *     export COT_CONNECTION_TENANT="my-tenant"
  */
 public class TestHelper {
     public static String TEST_HOST = "";
