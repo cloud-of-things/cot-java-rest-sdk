@@ -44,6 +44,12 @@ public class CloudOfThingsRestClient {
     protected Integer realTimeTimeout = 60000;
 
 
+    /**
+     * @param okHttpClient HTTP client that is used to interact with the API.
+     * @param host URL to connect to. Must contain scheme and host, e.g. https://username.int2-ram.m2m.telekom.com
+     * @param user Username for authentication.
+     * @param password Password for authentication.
+     */
     public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
         this.host = host;
         try {
