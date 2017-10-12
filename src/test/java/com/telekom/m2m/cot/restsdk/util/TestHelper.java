@@ -21,8 +21,9 @@ public class TestHelper {
     static {
         try {
             getPropValues();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+        } catch (RuntimeException e) {
+            System.out.println("Exception: " + e);
+            throw e;
         }
     }
 
