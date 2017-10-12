@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.event;
 
+import java.util.Calendar;
 import java.util.Date;
 
 import org.testng.Assert;
@@ -48,13 +49,13 @@ public class EventApiIT {
 
     @Test
     public void testCreateAndRead() throws Exception {
-        Date timeOfEventHappening = new Date();
-        timeOfEventHappening.setSeconds(timeOfEventHappening.getSeconds() - 10);
+        Calendar timeOfEventHappening = Calendar.getInstance();
+        timeOfEventHappening.set(Calendar.SECOND, 10);
 
         Event event = new Event();
         event.setText("Sample Text");
         event.setType("com_telekom_TestType");
-        event.setTime(timeOfEventHappening);
+        event.setTime(timeOfEventHappening.getTime());
         event.setSource(testManagedObject);
 
         EventApi eventApi = cotPlat.getEventApi();
@@ -67,11 +68,11 @@ public class EventApiIT {
         Assert.assertEquals(retrievedEvent.getId(), createdEvent.getId());
         Assert.assertEquals(retrievedEvent.getType(), "com_telekom_TestType");
         Assert.assertEquals(retrievedEvent.getText(), "Sample Text");
-        Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening), 0);
+        Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening.getTime()), 0);
         Assert.assertNotNull(retrievedEvent.getCreationTime());
 
         Assert.assertTrue(
-                retrievedEvent.getCreationTime().after(timeOfEventHappening),
+                retrievedEvent.getCreationTime().after(timeOfEventHappening.getTime()),
                 String.format(
                         "retrievedEvent.getCreationTime(): %s, timeOfEventHappening: %s",
                         retrievedEvent.getCreationTime(),
@@ -83,14 +84,14 @@ public class EventApiIT {
     @Test
     public void testGetEventReturnNull() throws Exception {
         // This test checks whether the getEvent() method returns a null when the event does not exist in the cloud.
-        
-        Date timeOfEventHappening = new Date();
-        timeOfEventHappening.setSeconds(timeOfEventHappening.getSeconds() - 10);
+
+        Calendar timeOfEventHappening = Calendar.getInstance();
+        timeOfEventHappening.set(Calendar.SECOND, 10);
 
         Event event = new Event();
         event.setText("Sample Text");
         event.setType("com_telekom_TestType");
-        event.setTime(timeOfEventHappening);
+        event.setTime(timeOfEventHappening.getTime());
         event.setSource(testManagedObject);
 
         EventApi eventApi = cotPlat.getEventApi();
@@ -104,7 +105,6 @@ public class EventApiIT {
         
         //Now lets try to "get" an event that does not exist in the cloud, get method should return a null:
         Assert.assertNull(eventApi.getEvent("theIdThatDoesNotExist"));
-        
     }
 
 }
