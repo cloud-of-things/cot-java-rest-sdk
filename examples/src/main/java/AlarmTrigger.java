@@ -1,6 +1,7 @@
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
+import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 
 import java.util.Arrays;
@@ -26,7 +27,14 @@ public class AlarmTrigger {
         if (args.length < 4) {
             printHelpAndExit();
         }
-        CloudOfThingsPlatform platform = PlatformFactory.createFromEnvironment();
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
+            Environment.read("host"),
+            new CotCredentials(
+                Environment.read("tenant"),
+                Environment.read("user"),
+                Environment.read("password")
+            )
+        );
         AlarmApi alarmApi = platform.getAlarmApi();
 
         Alarm alarm = new Alarm();

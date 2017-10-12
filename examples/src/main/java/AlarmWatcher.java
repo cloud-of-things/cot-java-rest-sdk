@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.realtime.CepApi;
 import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
 import com.telekom.m2m.cot.restsdk.realtime.Notification;
@@ -17,7 +18,14 @@ public class AlarmWatcher {
 
     public static void main(String[] args) throws InterruptedException {
         // From the platform we can get the numerous APIs, for example the CepApi (ComplexEventProcessing):
-        CloudOfThingsPlatform platform = PlatformFactory.createFromEnvironment();
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
+            Environment.read("host"),
+            new CotCredentials(
+                Environment.read("tenant"),
+                Environment.read("user"),
+                Environment.read("password")
+            )
+        );
         CepApi cepApi = platform.getCepApi();
 
         // With the CepApi you can get the connector, which will receive and distribute the notifications:
