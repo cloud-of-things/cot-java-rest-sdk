@@ -21,7 +21,7 @@ To run the integration tests you should now use 'mvn integration-test':
 
 ### Get Credentials ###
 
-Get a free Cloud od Things demo account at [http://m2m.telekom.com/our-offering/cloud-of-things/](http://m2m.telekom.com/our-offering/cloud-of-things/).
+Get a free Cloud of Things demo account at [http://m2m.telekom.com/our-offering/cloud-of-things/](http://m2m.telekom.com/our-offering/cloud-of-things/).
 
 Export your Cloud of Things credentials as environment variables. These are required by the examples:
 
