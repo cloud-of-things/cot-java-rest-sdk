@@ -30,7 +30,8 @@ public class TestHelper {
         try {
             loadTestConfiguration();
         } catch (RuntimeException e) {
-            System.out.println("Exception: " + e);
+            System.out.println("Configuration exception: " + e);
+            System.out.println("Have a look at " + TestHelper.class.getCanonicalName() + " to learn how to provide the test configuration.");
             throw e;
         }
     }
