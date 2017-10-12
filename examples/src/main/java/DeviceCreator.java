@@ -1,6 +1,7 @@
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
@@ -23,7 +24,14 @@ public class DeviceCreator {
 
     public static void main(String[] args) {
         // From the platform we can get the numerous APIs, for example the InventoryApi:
-        CloudOfThingsPlatform platform = PlatformFactory.createFromEnvironment();
+        CloudOfThingsPlatform platform = new CloudOfThingsPlatform(
+            Environment.read("host"),
+            new CotCredentials(
+                Environment.read("tenant"),
+                Environment.read("user"),
+                Environment.read("password")
+            )
+        );
         inventoryApi = platform.getInventoryApi();
 
         if (args.length == 2) {
