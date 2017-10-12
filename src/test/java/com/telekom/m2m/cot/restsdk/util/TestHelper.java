@@ -20,14 +20,14 @@ public class TestHelper {
 
     static {
         try {
-            getPropValues();
+            loadTestConfiguration();
         } catch (RuntimeException e) {
             System.out.println("Exception: " + e);
             throw e;
         }
     }
 
-    private static void getPropValues() {
+    private static void loadTestConfiguration() {
         TEST_HOST = readFromEnvironment("COT_CONNECTION_HOST");
         TEST_USERNAME = readFromEnvironment("COT_CONNECTION_USER");
         TEST_PASSWORD = readFromEnvironment("COT_CONNECTION_PASSWORD");
