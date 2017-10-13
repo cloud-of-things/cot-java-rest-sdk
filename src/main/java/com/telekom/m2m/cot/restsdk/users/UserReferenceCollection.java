@@ -55,7 +55,7 @@ public class UserReferenceCollection extends JsonArrayPagination {
             }
             return arrayOfUserReferences;
         } else {
-            return null;
+            return new UserReference[0];
         }
     }
 }

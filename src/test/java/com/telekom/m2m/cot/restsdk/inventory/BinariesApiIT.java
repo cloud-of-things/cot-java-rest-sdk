@@ -53,7 +53,7 @@ public class BinariesApiIT {
 
         api.deleteBinary(bin);
         data = api.getData(bin);
-        assertNull(data);
+        assertEquals(data.length, 0);
 
         binaryIds.remove(binaryId);
     }

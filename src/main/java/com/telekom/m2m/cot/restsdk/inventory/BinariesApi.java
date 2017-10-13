@@ -109,7 +109,7 @@ public class BinariesApi {
             binary.setData(data);
             return data;
         } else {
-            return null;
+            return new byte[0];
         }
     }
 }

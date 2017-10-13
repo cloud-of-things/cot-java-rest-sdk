@@ -55,7 +55,7 @@ public class EventCollection extends JsonArrayPagination {
             }
             return arrayOfEvents;
         } else {
-            return null;
+            return new Event[0];
         }
     }
 }

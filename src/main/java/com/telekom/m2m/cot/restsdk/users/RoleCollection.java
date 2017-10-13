@@ -53,7 +53,7 @@ public class RoleCollection extends JsonArrayPagination {
             }
             return arrayOfRoles;
         } else {
-            return null;
+            return new Role[0];
         }
     }
 }

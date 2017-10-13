@@ -53,7 +53,7 @@ public class GroupReferenceCollection extends JsonArrayPagination {
             }
             return arrayOfGroupReferences;
         } else {
-            return null;
+            return new GroupReference[0];
         }
     }
 }
