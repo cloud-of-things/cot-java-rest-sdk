@@ -32,7 +32,7 @@ public class EventApi {
      * Retrieves a specific Event.
      *
      * @param eventId the unique identifier of the desired Event.
-     * @return the Event (or null if not found). TODO: it does _not_ return null. But maybe it should.
+     * @return the Event (or null if not found).
      */
     public Event getEvent(String eventId) {
         String response = cloudOfThingsRestClient.getResponse(eventId, RELATIVE_API_URL, CONTENT_TYPE);
