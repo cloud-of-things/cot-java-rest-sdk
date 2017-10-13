@@ -62,7 +62,7 @@ public class AuditRecordCollectionTest {
         // when
         final AuditRecord[] auditRecords = auditRecordCollectionSpy.getAuditRecords();
 
-        // then it should return an array of lenth 0:
+        // then it should return an array of length 0:
         Assert.assertEquals(auditRecords.length, 0);
     }
 
