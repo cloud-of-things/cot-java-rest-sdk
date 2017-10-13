@@ -50,7 +50,7 @@ public class ModuleCollection extends JsonArrayPagination {
             }
             return arrayOfModules;
         } else {
-            return null;
+            return new Module[0];
         }
     }
 

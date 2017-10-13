@@ -78,7 +78,7 @@ public class UserCollection {
             }
             return arrayOfUsers;
         } else {
-            return null;
+            return new User[0];
         }
     }
 
