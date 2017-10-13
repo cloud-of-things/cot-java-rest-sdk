@@ -1,18 +1,10 @@
 # Todos
 
-* General
- * verify the format of all the IDs (string vs. number)
-
-* Null
- * EventApi: return null if event is not found
-
 * SmartREST real time notifications
- * More robust error handling
  * maybe new SmartRequestTemplate(String csv)
 
 * Real time notifications
  * Timing advice
- * More robust error handling
  * No notification on delete of operations?
 
 * Real time modules
