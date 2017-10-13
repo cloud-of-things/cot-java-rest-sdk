@@ -5,7 +5,6 @@
 
 * Null
  * EventApi: return null if event is not found
- * Array methods: return empty array instead of null?
 
 * SmartREST real time notifications
  * More robust error handling
