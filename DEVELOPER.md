@@ -70,7 +70,7 @@ Run the integration tests:
     mvn integration-test
     
 The integration tests require a Cloud of Things account. You must provide the credentials that are used for testing via environment variables before starting the integration tests.
-    
+
 ## Build the SDK ##
     
 Use the following command to build a jar that contains the SDK and all its dependencies:
