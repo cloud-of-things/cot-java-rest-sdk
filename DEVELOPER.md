@@ -62,7 +62,14 @@ Run the unit tests:
 
 Run the integration tests:
 
+    export COT_CONNECTION_HOST="your-host"
+    export COT_CONNECTION_USER="your-username"
+    export COT_CONNECTION_PASSWORD="your-password"
+    export COT_CONNECTION_TENANT="your-tenant"
+
     mvn integration-test
+    
+The integration tests require a Cloud of Things account. You must provide the credentials that are used for testing via environment variables before starting the integration tests.
     
 ## Build the SDK ##
     
