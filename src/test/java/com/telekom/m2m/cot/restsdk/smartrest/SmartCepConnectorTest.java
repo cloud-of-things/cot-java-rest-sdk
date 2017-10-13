@@ -122,7 +122,7 @@ public class SmartCepConnectorTest {
 
         connector.connect();
 
-        Thread.sleep(50);
+        Thread.sleep(100);
 
         assertEquals(connector.getTimeout(), 1000);
         assertEquals(connector.getInterval(), 100);
