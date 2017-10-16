@@ -7,15 +7,18 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyString;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
 
 
 public class CepConnectorTest {
@@ -23,6 +26,7 @@ public class CepConnectorTest {
     CloudOfThingsRestClient cloudOfThingsRestClient;
 
     CepConnector connector;
+    boolean notedError = false;
 
 
     @BeforeMethod
@@ -103,6 +107,95 @@ public class CepConnectorTest {
 
         assertFalse(connector.isConnected());
         assertNull(connector.getClientId());
+    }
+
+    @Test
+    public void testSubscriptionFailed() throws InterruptedException {
+        // return clientId on handshake
+        when(cloudOfThingsRestClient.doPostRequest(eq("[{\"channel\":\"/meta/handshake\",\"version\":\"1.0\",\"minimumVersion\":\"1.0\",\"supportedConnectionTypes\":[\"long-polling\"],\"advice\":{\"timeout\":1000,\"interval\":10}}]"), anyString(), anyString())).
+                thenReturn("[{\"clientId\" : \"abc123\"}]");
+
+        // return failure on doing initial subscriptions
+        when(cloudOfThingsRestClient.doPostRequest(eq("[{\"channel\":\"/meta/subscribe\",\"clientId\":\"abc123\",\"subscription\":\"/123\"}]"), anyString(), anyString())).
+                thenReturn("[{\"channel\":\"/meta/subscribe\",\"error\":\"402::Unknown client\",\"successful\":false}]");
+
+        final List<String> notedOperations = new ArrayList<>();
+        notedError = false;
+
+        connector = new CepConnector(cloudOfThingsRestClient, CepApi.NOTIFICATION_PATH);
+
+        connector.setTimeout(1000);
+        connector.setInterval(10);
+
+        connector.subscribe("/123");
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedOperations.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                notedError = true;
+            }
+        });
+
+        connector.connect();
+
+        // Wait a bit for things to settle down:
+        Thread.sleep(20);
+
+        assertTrue(notedError);
+
+    }
+
+    @Test
+    public void testConnectionFailed() throws InterruptedException {
+        // return clientId on handshake
+        when(cloudOfThingsRestClient.doPostRequest(eq("[{\"channel\":\"/meta/handshake\",\"version\":\"1.0\",\"minimumVersion\":\"1.0\",\"supportedConnectionTypes\":[\"long-polling\"],\"advice\":{\"timeout\":1000,\"interval\":10}}]"), anyString(), anyString())).
+                thenReturn("[{\"clientId\" : \"abc123\"}]");
+
+        // return failure on connect
+        when(cloudOfThingsRestClient.doRealTimePollingRequest(anyString(), anyString(), anyString(), anyInt())).
+                thenReturn("[\n" +
+                        "  {\n" +
+                        "     \"successful\" : false,\n" +
+                        "     \"error\" : \"402::Unknown client\",\n" +
+                        "     \"channel\" : \"/meta/connect\",\n" +
+                        "     \"advice\" : {\n" +
+                        "        \"reconnect\" : \"handshake\",\n" +
+                        "        \"interval\" : 0\n" +
+                        "     }\n" +
+                        "  }\n" +
+                        "]");
+
+        final List<String> notedOperations = new ArrayList<>();
+        notedError = false;
+
+        connector = new CepConnector(cloudOfThingsRestClient, CepApi.NOTIFICATION_PATH);
+
+        connector.setTimeout(1000);
+        connector.setInterval(10);
+
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedOperations.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                notedError = true;
+            }
+        });
+
+        connector.connect();
+
+        // Wait a bit for things to settle down:
+        Thread.sleep(20);
+
+        assertTrue(notedError);
+
     }
 
 }

@@ -285,7 +285,20 @@ public class CepConnector implements Runnable {
             obj.addProperty("subscription", channel);
             body.add(obj);
         }
-        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
+        String responseBody = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
+        JsonArray responseJson = gson.fromJson(responseBody, JsonArray.class);
+        for (JsonElement channelJson : responseJson) {
+            JsonObject channelObject = (JsonObject) channelJson;
+
+            if (!(channelObject.has("successful") && channelObject.get("successful").getAsBoolean())) {
+                RuntimeException e = new CotSdkException("Subscription failed! " + channelObject.toString());
+                for (SubscriptionListener listener : listeners) {
+                    listener.onError("", e);
+                }
+
+                throw e;
+            }
+        }
     }
 
     /**
@@ -312,8 +325,21 @@ public class CepConnector implements Runnable {
                         String notificationChannel = jsonObject.get("channel").getAsString();
 
                         // We don't pass on failures and meta data to the listeners.
-                        if (!notificationChannel.startsWith("/meta/")) {
+                        if (notificationChannel.startsWith("/meta/")) {
+                            JsonElement success = jsonObject.get("successful");
+                            JsonElement advice = jsonObject.get("advice");
+                            if (success != null
+                                    && !success.getAsBoolean()
+                                    && advice != null
+                                    && "handshake".equals(advice.getAsJsonObject().get("reconnect").getAsString())) {
 
+                                Exception e = new CotSdkException("Connection failed! Redo handshake.");
+                                for (SubscriptionListener listener : listeners) {
+                                    listener.onError("", e);
+                                }
+                                doHandShake();
+                            }
+                        } else {
                             for (SubscriptionListener listener : listeners) {
                                 // Now filter out the unnecessary fields from
                                 // the JsonElement and pass the required
