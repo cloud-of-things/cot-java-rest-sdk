@@ -57,9 +57,9 @@
     <developers>
         <developer>
             <id>marquies</id>
-            <name>Patrick Breucking</name>
-            <email>Patrick.Breucking@t-systems.com</email>
-            <url>http://www.patrickbreucking.de</url>
+            <name>Patrick Steinert</name>
+            <email>Patrick.Steinert@telekom.de</email>
+            <url>http://www.patricksteinert.de</url>
             <organization>T-Systems International GmbH</organization>
             <organizationUrl>http://m2m.telekom.com</organizationUrl>
             <roles>
