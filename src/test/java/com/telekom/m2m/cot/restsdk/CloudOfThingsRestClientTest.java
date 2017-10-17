@@ -26,7 +26,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
     private final static String TEST_PASSWORD = "anything-goes";
 
     @Test(expectedExceptions = CotSdkException.class)
-    public void testDoRequetsWithIdResponseWithException() throws Exception {
+    public void testDoRequestsWithIdResponseWithException() throws Exception {
         OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
 
         PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
@@ -38,7 +38,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
     }
 
     @Test(expectedExceptions = CotSdkException.class)
-    public void testDoRequetsWithIdResponseWithBadResponse() throws Exception {
+    public void testDoRequestsWithIdResponseWithBadResponse() throws Exception {
         OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
         Call call = PowerMockito.mock(Call.class);
 
