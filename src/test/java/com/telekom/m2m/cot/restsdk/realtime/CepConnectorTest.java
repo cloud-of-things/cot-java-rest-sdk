@@ -10,9 +10,7 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertFalse;
@@ -112,11 +110,11 @@ public class CepConnectorTest {
     @Test
     public void testSubscriptionFailed() throws InterruptedException {
         // return clientId on handshake
-        when(cloudOfThingsRestClient.doPostRequest(eq("[{\"channel\":\"/meta/handshake\",\"version\":\"1.0\",\"minimumVersion\":\"1.0\",\"supportedConnectionTypes\":[\"long-polling\"],\"advice\":{\"timeout\":1000,\"interval\":10}}]"), anyString(), anyString())).
+        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/handshake"), anyString(), anyString())).
                 thenReturn("[{\"clientId\" : \"abc123\"}]");
 
         // return failure on doing initial subscriptions
-        when(cloudOfThingsRestClient.doPostRequest(eq("[{\"channel\":\"/meta/subscribe\",\"clientId\":\"abc123\",\"subscription\":\"/123\"}]"), anyString(), anyString())).
+        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/subscribe"), anyString(), anyString())).
                 thenReturn("[{\"channel\":\"/meta/subscribe\",\"error\":\"402::Unknown client\",\"successful\":false}]");
 
         final List<String> notedOperations = new ArrayList<>();
@@ -152,7 +150,7 @@ public class CepConnectorTest {
     @Test
     public void testConnectionFailed() throws InterruptedException {
         // return clientId on handshake
-        when(cloudOfThingsRestClient.doPostRequest(eq("[{\"channel\":\"/meta/handshake\",\"version\":\"1.0\",\"minimumVersion\":\"1.0\",\"supportedConnectionTypes\":[\"long-polling\"],\"advice\":{\"timeout\":1000,\"interval\":10}}]"), anyString(), anyString())).
+        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/handshake"), anyString(), anyString())).
                 thenReturn("[{\"clientId\" : \"abc123\"}]");
 
         // return failure on connect
