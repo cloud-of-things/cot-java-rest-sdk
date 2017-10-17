@@ -293,7 +293,7 @@ public class CepConnector implements Runnable {
             if (!channelObject.has("successful") || !channelObject.get("successful").getAsBoolean()) {
                 RuntimeException e = new CotSdkException("Subscription failed! " + channelObject.toString());
                 for (SubscriptionListener listener : listeners) {
-                    listener.onError("", e);
+                    listener.onError(null, e);
                 }
 
                 throw e;
@@ -335,7 +335,7 @@ public class CepConnector implements Runnable {
 
                                 Exception e = new CotSdkException("Connection failed! Redo handshake.");
                                 for (SubscriptionListener listener : listeners) {
-                                    listener.onError("", e);
+                                    listener.onError(null, e);
                                 }
                                 doHandShake();
                             }
