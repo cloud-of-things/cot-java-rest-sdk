@@ -70,7 +70,8 @@ public class FilterIT {
 	@Test
 	public void testFiltersViaUsers() throws Exception {
 
-		// FOR THE DEVELOPERS (to be deleted during merge request): this test and the associated modifications in the Filter
+		// FOR THE DEVELOPERS (to be deleted during merge request): this test and the
+		// associated modifications in the Filter
 		// and UserApi classes will not be merged with the develop. This is merely a
 		// test to prove a point. Please do have a look at it and give feedback.
 
@@ -228,7 +229,8 @@ public class FilterIT {
 		assertEquals(alarmsWithCertainType[0].getType(), type);
 
 		// Now let's test the "filter by text" feature:
-		// FOR THE DEVELOPERS (to be deleted during merge request): this filter does not work, it is demonstrated below:
+		// FOR THE DEVELOPERS (to be deleted during merge request): this filter does not
+		// work, it is demonstrated below:
 		// given:
 		Filter.FilterBuilder filterBuilderForText = Filter.build().byText(text);
 		alarms = alarmApi.getAlarms(filterBuilderForText, 500);
