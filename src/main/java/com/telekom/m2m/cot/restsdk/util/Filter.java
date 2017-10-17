@@ -202,6 +202,9 @@ public class Filter {
         }
         
         /**
+         * TODO: Below method is to be deleted, 
+         * it is there just for the tests which prove that
+         * filters don't work with users.
          * Adds a build for an userName.
          *
          * @param userName to build for.
