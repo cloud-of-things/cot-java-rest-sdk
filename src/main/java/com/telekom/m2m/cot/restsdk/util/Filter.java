@@ -191,6 +191,28 @@ public class Filter {
         }
 
         /**
+         * Adds a build for an id.
+         *
+         * @param id to build for.
+         * @return an appropriate build Object.
+         */
+        public FilterBuilder byId(String id) {
+            instance.arguments.put("id", id);
+            return this;
+        }
+        
+        /**
+         * Adds a build for an userName.
+         *
+         * @param userName to build for.
+         * @return an appropriate build Object.
+         */
+        public FilterBuilder byUserName(String userName) {
+            instance.arguments.put("userName", userName);
+            return this;
+        }
+        
+        /**
          * Adds a build for an application.
          *
          * @param application to build for.
