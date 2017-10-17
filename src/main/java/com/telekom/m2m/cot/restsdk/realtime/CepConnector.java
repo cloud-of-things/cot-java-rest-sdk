@@ -290,7 +290,7 @@ public class CepConnector implements Runnable {
         for (JsonElement channelJson : responseJson) {
             JsonObject channelObject = (JsonObject) channelJson;
 
-            if (!(channelObject.has("successful") && channelObject.get("successful").getAsBoolean())) {
+            if (!channelObject.has("successful") || !channelObject.get("successful").getAsBoolean()) {
                 RuntimeException e = new CotSdkException("Subscription failed! " + channelObject.toString());
                 for (SubscriptionListener listener : listeners) {
                     listener.onError("", e);
