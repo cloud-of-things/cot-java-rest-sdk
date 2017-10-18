@@ -93,7 +93,7 @@ public class BinariesApiIT {
         binaryIds.add(binaryId);
 
 
-        BinariesCollection c = api.getBinaries(1000);
+        BinariesCollection c = api.getBinaries(null,1000);
         Binary[] bb = c.getBinaries();
 
         // We can't know how many other binaries were there already.
@@ -115,4 +115,45 @@ public class BinariesApiIT {
         assertTrue(foundA);
         assertTrue(foundB);
     }
+    
+    @Test
+    public void testGetCollectionWithFilters() {
+		// A quick test that checks if binaries work with filters at all. Here, we are
+		// going to try the "filter by type" feature as it is known to work with most of
+		// the other objects:
+    	
+    	// Let's upload two binaries with different types:
+        String filenameA = "myFileA-"+System.currentTimeMillis();
+        Binary bin = new Binary(filenameA, "text/plain", "blablabla\nfoobar\nyolo\n".getBytes());
+        String binaryId = api.uploadBinary(bin);
+        binaryIds.add(binaryId);
+    
+        
+        String filenameB = "myFileB-"+System.currentTimeMillis();
+        bin = new Binary(filenameB, "application/xml", "<xml>whatever<tag n=1/></xml>".getBytes());
+        binaryId = api.uploadBinary(bin);
+        binaryIds.add(binaryId);
+   
+        //Now let's create two distinct binary collections using the filter "type":
+        Filter.FilterBuilder filterBuilderForTextType = Filter.build().byType("text/plain");
+        BinariesCollection textTypeCollection =api.getBinaries(filterBuilderForTextType , 1000);
+        
+        Filter.FilterBuilder filterBuilderForXmlType = Filter.build().byType("application/xml");
+        BinariesCollection xmlTypeCollection =api.getBinaries(filterBuilderForXmlType , 1000);
+            
+        Binary[] textTypeArray=textTypeCollection.getBinaries();
+        Binary[] xmlTypeArray=xmlTypeCollection.getBinaries();
+        
+        
+        // Now each collection has to contain only the binaries with their filtered types:
+        for(Binary textBinary : textTypeArray){
+        	assertEquals(textBinary.getType(), "text/plain");
+        }
+    
+        for(Binary xmlBinary : xmlTypeArray){
+        	assertEquals(xmlBinary.getType(), "application/xml");
+        }
+    }
+    
+    
 }
