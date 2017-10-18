@@ -17,16 +17,13 @@ public class BinariesCollection extends JsonArrayPagination {
 
 
 
-    
-    public BinariesCollection(Filter.FilterBuilder filters,CloudOfThingsRestClient cloudOfThingsRestClient,
-            String relativeApiUrl,
-            Gson gson,
-            Integer pageSize) {
-super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filters);
-if (pageSize != null) {
-setPageSize(pageSize);
-}
-}
+	public BinariesCollection(Filter.FilterBuilder filters, CloudOfThingsRestClient cloudOfThingsRestClient,
+			String relativeApiUrl, Gson gson, Integer pageSize) {
+		super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filters);
+		if (pageSize != null) {
+			setPageSize(pageSize);
+		}
+	}
     
     
     /**
