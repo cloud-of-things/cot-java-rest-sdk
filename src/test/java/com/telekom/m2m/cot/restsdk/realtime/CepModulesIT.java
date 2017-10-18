@@ -104,12 +104,6 @@ public class CepModulesIT {
         assertEquals(myModule.getStatements().size(), 1);
         assertEquals(myModule.getStatements().get(0), "@Name(\"s2\")\nselect * from EventCreated.win:time(2 hour);");
 
-        /* TODO: this isn't possible. Neither in the web gui. "Assigned deployment id '152' is already in use". Why?
-        // Now we switch it back to DEPLOYED:
-        myModule.setStatus(Module.Status.DEPLOYED);
-        cepApi.updateModule(myModule);
-        assertEquals(myModule.getStatus(), Module.Status.DEPLOYED);
-        */
     }
     
 }
