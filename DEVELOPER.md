@@ -71,6 +71,15 @@ Run the integration tests:
     
 The integration tests require a Cloud of Things account. You must provide the credentials that are used for testing via environment variables before starting the integration tests.
 
+### Run Integration Tests in IntelliJ IDEA ###
+
+To run and debug the integration tests in [IntelliJ IDEA](https://www.jetbrains.com/idea/), the environment variables must be registered in the *Run Configuration*.
+
+The variables must be registered only once. To do so, choose ``Run`` -> ``Edit Configurations``. Select ``Defaults`` -> ``TestNG`` on the left. Find the line ``Environment Variables`` in the ``JDK Settings`` tab and add the required variables.
+
+Remove the run configurations that have been created before, otherwise the new defaults do not take effect for these. Existing run configurations are shown on the left, above ``Defaults``.
+
+
 ## Build the SDK ##
     
 Use the following command to build a jar that contains the SDK and all its dependencies:
