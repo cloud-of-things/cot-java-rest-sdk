@@ -131,7 +131,7 @@ public class DevicePermission {
 
         // second parameter should be fragment name like "c8y_Restart"
         if(params[1] == null || params[1].isEmpty()) {
-            throw new CotSdkException("Fragment name is empty! in the CoT device permission structure: " + cotDevicePermissionStructure);
+            throw new CotSdkException("Fragment name is empty in the CoT device permission structure: " + cotDevicePermissionStructure);
         }
 
         this.fragmentName = params[1];
@@ -140,7 +140,7 @@ public class DevicePermission {
         try {
             this.permission = Permission.getEnum(params[2]);
         } catch(Exception e) {
-            throw new CotSdkException("Couldn't convert Permission in the CoT device permission structure: " + cotDevicePermissionStructure);
+            throw new CotSdkException("Couldn't convert permission in the CoT device permission structure: " + cotDevicePermissionStructure);
         }
     }
 

@@ -51,10 +51,18 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                 object.add(key, sourceObject);
                 continue;
             }
-            if(value instanceof DevicePermission) {
-                JsonPrimitive primitive = new JsonPrimitive(((DevicePermission) value).toString());
+            // devicePermissions contain a list of DevicePermission objects which are not extending ExtensibleObject class
+            // and should be handled separately
+            if("devicePermissions".equals(key)) {
                 JsonObject sourceObject = new JsonObject();
-                sourceObject.add(null, primitive);
+                for (Map.Entry<String, List<DevicePermission>> permissionsEntry : ((Map<String, List<DevicePermission>>)value).entrySet()) {
+                    JsonArray permissions = new JsonArray();
+                    for(DevicePermission permission : permissionsEntry.getValue()) {
+                        JsonPrimitive jsonPermission = new JsonPrimitive(permission.toString());
+                        permissions.add(jsonPermission);
+                    }
+                    sourceObject.add(permissionsEntry.getKey(), permissions);
+                }
                 object.add(key, sourceObject);
                 continue;
             }
