@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
 
@@ -15,16 +16,16 @@ public class BinariesCollection extends JsonArrayPagination {
     private static final String COLLECTION_ELEMENT_NAME = "managedObjects";
 
 
-    public BinariesCollection(CloudOfThingsRestClient cloudOfThingsRestClient,
-                              String relativeApiUrl,
-                              Gson gson,
-                              Integer pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, null);
-        if (pageSize != null) {
-            setPageSize(pageSize);
-        }
-    }
 
+	public BinariesCollection(Filter.FilterBuilder filters, CloudOfThingsRestClient cloudOfThingsRestClient,
+			String relativeApiUrl, Gson gson, Integer pageSize) {
+		super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filters);
+		if (pageSize != null) {
+			setPageSize(pageSize);
+		}
+	}
+    
+    
     /**
      * Retrieves the current page.
      * <p>

@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
@@ -23,18 +24,19 @@ public class BinariesApi {
     /**
      * Retrieves binaries meta data.
      *
-     * TODO: can we use any filters for binaries?
      * @param pageSize size of the result page (Max. 2000); null = use default ({@link com.telekom.m2m.cot.restsdk.util.JsonArrayPagination#DEFAULT_PAGE_SIZE}
+     *@param filters the build criteria or null if all items should be retrieved
      * @return the pageable BinariesCollection
      */
-    public BinariesCollection getBinaries(Integer pageSize) {
-        return new BinariesCollection(
+
+    
+    public BinariesCollection getBinaries(Filter.FilterBuilder filters,Integer pageSize) {
+        return new BinariesCollection(filters,
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
                 gson,
                 pageSize);
     }
-
 
     /**
      * Upload/create a new Binary.
