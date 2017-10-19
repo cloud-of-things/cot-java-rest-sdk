@@ -15,14 +15,14 @@ public class DevicePermissionTest {
         assertEquals(permission.getFragmentName(), "*");
         assertEquals(permission.getPermission(), DevicePermission.Permission.ADMIN);
 
-        // test setter/getter
-        permission.setApi(DevicePermission.Api.MEASUREMENT);
-        assertEquals(permission.getApi(), DevicePermission.Api.MEASUREMENT);
-
-        permission.setFragmentName("c8y_Restart");
+        permission = new DevicePermission(DevicePermission.Api.OPERATION, "c8y_Restart", DevicePermission.Permission.ALL);
+        assertEquals(permission.getApi(), DevicePermission.Api.OPERATION);
         assertEquals(permission.getFragmentName(), "c8y_Restart");
+        assertEquals(permission.getPermission(), DevicePermission.Permission.ALL);
 
-        permission.setPermission(DevicePermission.Permission.ALL);
+        permission = new DevicePermission(null, null, null);
+        assertEquals(permission.getApi(), DevicePermission.Api.ALL);
+        assertEquals(permission.getFragmentName(), DevicePermission.ALL_FRAGMENTS);
         assertEquals(permission.getPermission(), DevicePermission.Permission.ALL);
     }
 
@@ -43,7 +43,7 @@ public class DevicePermissionTest {
 
     @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*Fragment name is empty.*")
     public void testDevicePermissionEmptyFragment(){
-        new DevicePermission("AUDIT::*");
+        new DevicePermission("AUDIT: :*");
     }
 
     @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*convert permission.*")

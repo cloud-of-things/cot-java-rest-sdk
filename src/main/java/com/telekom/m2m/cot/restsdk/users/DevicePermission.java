@@ -54,6 +54,7 @@ public class DevicePermission {
             }
             throw new IllegalArgumentException(String.format("Couldn't find an enum for requested value: [%s]", value));
         }
+
     }
 
     /**
@@ -86,7 +87,7 @@ public class DevicePermission {
 
     // separator for device permission structure
     private static final String SEPARATOR = ":";
-    private static final String ALL_FRAGMENTS = "*";
+    public static final String ALL_FRAGMENTS = "*";
 
     private Api api;
     private String fragmentName;
@@ -96,12 +97,26 @@ public class DevicePermission {
      * Constructor to set all values provided by the CoT device permission structure.
      *
      * @param api an Api enum like ALARM, EVENT ....
-     * @param fragmentName a String with fragment name like "c8y_Restart" or null if the device does not have any fragment.
-     * @param permission a Permission enum: ADMIN, READ or ALL
+     *            Null-value will be handled as ALL
+     * @param fragmentName a String with fragment name like "c8y_Restart" or "*" if the device does not have any fragment.
+     *                     Null-value will be handled as "*" (ALL_FRAGMENTS)
+     * @param permission a Permission enum: ADMIN, READ or ALL.
+     *                   Null-value will be handled as ALL
      */
     public DevicePermission(Api api, String fragmentName, Permission permission) {
+        if(api == null) {
+            api = Api.ALL;
+        }
         this.api = api;
+
+        if(fragmentName == null || fragmentName.trim().isEmpty()) {
+            fragmentName = ALL_FRAGMENTS;
+        }
         this.fragmentName = fragmentName;
+
+        if(permission == null) {
+            permission = Permission.ALL;
+        }
         this.permission = permission;
     }
 
@@ -111,7 +126,7 @@ public class DevicePermission {
      * @param cotDevicePermissionStructure a String with device permission structure: [API:fragment_name:permission].
      */
     public DevicePermission(String cotDevicePermissionStructure) {
-        if(cotDevicePermissionStructure == null || cotDevicePermissionStructure.isEmpty()) {
+        if(cotDevicePermissionStructure == null || cotDevicePermissionStructure.trim().isEmpty()) {
             throw new CotSdkException("CoT device permission structure is empty!");
         }
 
@@ -130,7 +145,7 @@ public class DevicePermission {
         }
 
         // second parameter should be fragment name like "c8y_Restart"
-        if(params[1] == null || params[1].isEmpty()) {
+        if(params[1].trim().isEmpty()) {
             throw new CotSdkException("Fragment name is empty in the CoT device permission structure: " + cotDevicePermissionStructure);
         }
 
@@ -154,15 +169,6 @@ public class DevicePermission {
     }
 
     /**
-     * Set the Api of the device permission.
-     *
-     * @param api an Api enum of the device permission like ALARM, EVENT ...
-     */
-    public void setApi(Api api) {
-        this.api = api;
-    }
-
-    /**
      * Get fragment name of the device permission.
      *
      * @return String with the fragment name of the device permission like e.g. "c8y_Restart"
@@ -170,16 +176,6 @@ public class DevicePermission {
      */
     public String getFragmentName() {
         return fragmentName;
-    }
-
-    /**
-     * Set fragment name of the device permission.
-     *
-     * @param fragmentName a String with the fragment name of the device permission like e.g. "c8y_Restart"
-     * or null or "*" if the device does not have any fragment.
-     */
-    public void setFragmentName(String fragmentName) {
-        this.fragmentName = fragmentName;
     }
 
     /**
@@ -192,15 +188,6 @@ public class DevicePermission {
     }
 
     /**
-     * Set the permission for an Api and a fragment.
-     *
-     * @param permission a Permission enum for an Api and a fragment. Possible values: ADMIN, READ or ALL.
-     */
-    public void setPermission(Permission permission) {
-        this.permission = permission;
-    }
-
-    /**
      * Overrides the method to get device permission structure which is expected in CoT.
      *
      * @return a String with the device permission structure for the CoT:
@@ -208,6 +195,6 @@ public class DevicePermission {
      */
     @Override
     public String toString() {
-        return api.getValue() + SEPARATOR + (fragmentName==null?ALL_FRAGMENTS:fragmentName) + SEPARATOR + permission.getValue();
+        return api.getValue() + SEPARATOR + fragmentName + SEPARATOR + permission.getValue();
     }
 }
