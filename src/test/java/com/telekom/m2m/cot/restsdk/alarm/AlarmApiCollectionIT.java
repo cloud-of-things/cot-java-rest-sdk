@@ -10,6 +10,11 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
+
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -74,6 +79,161 @@ public class AlarmApiCollectionIT {
         Assert.assertTrue(retrievedAlarm.getType().equals(jsonObject.get("type").getAsString()));
     }
 
+    
+
+	@Test
+	public void testVariousFiltersViaAlarms() throws Exception {
+
+		// Let's test "filter by source" feature by using alarms:
+		// given
+		String text = "new alarm created_for_filter_testing";
+		String type = "com_telekom_alarm_TestType_For_Filter";
+
+		Alarm alarm = new Alarm();
+		alarm.setText(text);
+		alarm.setType(type);
+		alarm.setTime(new Date());
+		alarm.setSource(testManagedObject);
+		alarm.setStatus(Alarm.STATE_ACTIVE);
+		alarm.setSeverity(Alarm.SEVERITY_MAJOR);
+		Filter.FilterBuilder filterBuilder = Filter.build().bySource(testManagedObject.getId());
+
+		// when:
+		AlarmApi alarmApi = cotPlat.getAlarmApi();
+		alarmApi.create(alarm);
+		AlarmCollection alarms = alarmApi.getAlarms(filterBuilder, 5);
+
+		// then:
+		// Since the id of the alarm is unique, the alarm collection array should have a
+		// length of 1:
+
+		Assert.assertEquals(alarms.getAlarms().length, 1);
+
+		// Now let's make sure that it is indeed the alarm that we have just created:
+		Alarm[] alarmarray = alarms.getAlarms();
+		Assert.assertEquals(alarmarray[0].getType(), type);
+
+		// Now let's try to get an alarm that is create in a given date range by using
+		// filters:
+		// given:
+		String typeForDate = "com_telekom_alarm_TestType_For_Date_Filter";
+
+		Alarm alarm2 = new Alarm();
+		alarm2.setText(text);
+		alarm2.setType(typeForDate);
+
+		SimpleDateFormat dateformat = new SimpleDateFormat("dd-M-yyyy hh:mm:ss");
+		String nominalDateStr = "12-12-2012 12:12:12";
+		String beforeDateStr = "11-12-2012 12:12:12";
+		String afterDateStr = "13-12-2012 12:12:12";
+		Date nominalDate = dateformat.parse(nominalDateStr);
+		Date beforeDate = dateformat.parse(beforeDateStr);
+		Date afterDate = dateformat.parse(afterDateStr);
+		alarm2.setTime(nominalDate);
+
+		alarm2.setSource(testManagedObject);
+		alarm2.setStatus(Alarm.STATE_ACTIVE);
+		alarm2.setSeverity(Alarm.SEVERITY_MAJOR);
+
+		// when:
+		Filter.FilterBuilder filterBuilderForDate = Filter.build().byDate(beforeDate, afterDate);
+		alarmApi.create(alarm2);
+		alarms = alarmApi.getAlarms(filterBuilderForDate, 5);
+
+		// then:
+		// Now let's make sure that the alarm collection contains only one alarm, which
+		// is the alarm we created with a specific time stamp:
+
+		assertEquals(alarms.getAlarms().length, 1);
+
+		// Now let's make sure that the alarm that is stored in the alarmCollection
+		// array is indeed the alarm that we created:
+		Alarm[] alarmarray2 = alarms.getAlarms();
+		assertEquals(alarmarray2[0].getTime(), alarm2.getTime());
+
+		// now let's test the status filter with alarms:
+		// At first, let's get all the alarms with a given status. Since there can be
+		// many alarms in the cloud with a given status,
+		// let's create a new alarm with the same status and then let's get all the
+		// alarms from the cloud with the same status again. This time the number of
+		// alarms with that status should be +1 (of course this would not work if
+		// someone creates an alarm with the same status at the same time as ths code
+		// runs)
+
+		Filter.FilterBuilder filterBuilderForStatus = Filter.build().byStatus(Alarm.STATE_ACTIVE);
+
+		alarms = alarmApi.getAlarms(filterBuilderForStatus, 500);
+		Alarm[] alarmsWithCertainStatus = alarms.getAlarms();
+		int alarmCounter = alarmsWithCertainStatus.length;
+
+		// Now let's create an alarm with the same status:
+		Alarm alarmWithCertainStatus = new Alarm();
+		alarmWithCertainStatus.setStatus(Alarm.STATE_ACTIVE);
+		String typeForStatus = "com_telekom_alarm_TestType_For_Status_Filter";
+
+		alarmWithCertainStatus.setText(text);
+		alarmWithCertainStatus.setType(typeForStatus);
+		alarmWithCertainStatus.setTime(new Date());
+
+		alarmWithCertainStatus.setSource(testManagedObject);
+		alarmWithCertainStatus.setStatus(Alarm.STATE_ACTIVE);
+		alarmWithCertainStatus.setSeverity(Alarm.SEVERITY_MAJOR);
+
+		alarmApi.create(alarmWithCertainStatus);
+
+		// Now let's get the alarms again:
+		alarms = alarmApi.getAlarms(filterBuilderForStatus, 500);
+
+		// Now let's check if that worked:
+
+		assertEquals(alarmCounter + 1, alarms.getAlarms().length);
+
+		// Now let's test the "fitler by type" feature:
+
+		// given:
+		Filter.FilterBuilder filterBuilderForType = Filter.build().byType(type);
+
+		// when:
+		alarms = alarmApi.getAlarms(filterBuilderForType, 50);
+
+		// then:
+		assertEquals(alarms.getAlarms().length, 1);
+
+		Alarm[] alarmsWithCertainType = alarms.getAlarms();
+		assertEquals(alarmsWithCertainType[0].getType(), type);
+
+		// Now let's test the "filter by text" feature:
+		// FOR THE DEVELOPERS (to be deleted during merge request): this filter does not
+		// work, it is demonstrated below:
+		// given:
+		Filter.FilterBuilder filterBuilderForText = Filter.build().byText(text);
+		alarms = alarmApi.getAlarms(filterBuilderForText, 500);
+
+		// then:
+		// Two alarms are created in this test and both of them have the same text.
+		// However the filter will fail and when we call the collection of alarms using
+		// this filter, it will retrieve all alarms in the cloud:
+		assertTrue(alarms.getAlarms().length > 2);
+
+		Alarm[] alarmsWithCertainText = alarms.getAlarms();
+		boolean allAlarmsWithSameText = true;
+
+		// A better check:
+		for (Alarm alarmForLoop : alarmsWithCertainText) {
+
+			if (!alarmForLoop.getText().equals(text)) {
+				allAlarmsWithSameText = false;
+			}
+		}
+
+		// The assertion verifies that in the array of alarms, some of them does not
+		// have the text we set.
+		assertFalse(allAlarmsWithSameText);
+
+	}
+    
+    
+    
     @Test
     public void testAlarmCollectionWithFilter() throws Exception {
         // given

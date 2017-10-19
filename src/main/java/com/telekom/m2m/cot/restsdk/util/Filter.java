@@ -189,31 +189,6 @@ public class Filter {
             instance.arguments.put("user", user);
             return this;
         }
-
-        /**
-         * Adds a build for an id.
-         *
-         * @param id to build for.
-         * @return an appropriate build Object.
-         */
-        public FilterBuilder byId(String id) {
-            instance.arguments.put("id", id);
-            return this;
-        }
-        
-        /**
-         * TODO: Below method is to be deleted, 
-         * it is there just for the tests which prove that
-         * filters don't work with users.
-         * Adds a build for an userName.
-         *
-         * @param userName to build for.
-         * @return an appropriate build Object.
-         */
-        public FilterBuilder byUserName(String userName) {
-            instance.arguments.put("userName", userName);
-            return this;
-        }
         
         /**
          * Adds a build for an application.

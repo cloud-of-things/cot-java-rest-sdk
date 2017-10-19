@@ -30,9 +30,6 @@ public class UserApi {
         return new UserCollection(cloudOfThingsRestClient, tenant);
     }
 
-    public UserCollection getUsersWithFilters(FilterBuilder filter, String tenant) {
-        return new UserCollection(filter,cloudOfThingsRestClient, tenant);
-    }
     
     public GroupCollection getGroups(String tenant) {
         return new GroupCollection(cloudOfThingsRestClient, "user/" + tenant + "/groups/", gson, null);
