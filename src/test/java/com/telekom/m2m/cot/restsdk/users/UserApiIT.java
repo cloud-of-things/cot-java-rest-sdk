@@ -450,18 +450,18 @@ public class UserApiIT {
         // permissions to the created user):
         // We can assign more than one device id, and more than one permission
         // type.
-        Map<String, List<String>> devicePermission = new LinkedHashMap<>();
+        Map<String, List<DevicePermission>> devicePermission = new LinkedHashMap<>();
 
-        List<String> list1 = new ArrayList<>();
-        list1.add("ALARM:*:READ");
-        list1.add("AUDIT:*:READ");
+        List<DevicePermission> list1 = new ArrayList<>();
+        list1.add(new DevicePermission(DevicePermission.Api.ALARM, null, DevicePermission.Permission.READ));
+        list1.add(new DevicePermission("AUDIT:*:READ"));
         // These are real device ids, however cloud does not check their
         // validity; one can also provide a random string as a device id.
         devicePermission.put("10481", list1);
 
-        List<String> list2 = new ArrayList<>();
-        list2.add("OPERATION:*:READ");
-        list2.add("EVENT:*:READ");
+        List<DevicePermission> list2 = new ArrayList<>();
+        list2.add(new DevicePermission(DevicePermission.Api.OPERATION, "*", DevicePermission.Permission.READ));
+        list2.add(new DevicePermission("EVENT:*:READ"));
         devicePermission.put("10445", list2);
 
         userInCloud.setDevicePermissions(devicePermission);
@@ -471,18 +471,18 @@ public class UserApiIT {
         // device permissions were assigned as expected):
         User returned = userApi.getUserByName(testUserName, tenant);
 
-        Map<String, List<String>> returnedDevicePermissions = returned.getDevicePermissions();
+        Map<String, List<DevicePermission>> returnedDevicePermissions = returned.getDevicePermissions();
         assertEquals(devicePermission.size(), returnedDevicePermissions.size());
 
-        assertTrue((returnedDevicePermissions.get("10481").contains("ALARM:*:READ")));
-        assertTrue((returnedDevicePermissions.get("10481").contains("AUDIT:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10481").contains("OPERATION:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10481").contains("EVENT:*:READ")));
+        assertTrue(returnedDevicePermissions.get("10481").toString().contains("ALARM:*:READ"));
+        assertTrue(returnedDevicePermissions.get("10481").toString().contains("AUDIT:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10481").toString().contains("OPERATION:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10481").toString().contains("EVENT:*:READ"));
         
-        assertTrue((returnedDevicePermissions.get("10445").contains("OPERATION:*:READ")));
-        assertTrue((returnedDevicePermissions.get("10445").contains("EVENT:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10445").contains("ALARM:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10445").contains("AUDIT:*:READ")));
+        assertTrue(returnedDevicePermissions.get("10445").toString().contains("OPERATION:*:READ"));
+        assertTrue(returnedDevicePermissions.get("10445").toString().contains("EVENT:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10445").toString().contains("ALARM:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10445").toString().contains("AUDIT:*:READ"));
         
         // now delete that user:
         userApi.deleteUserByUserName(testUserName, tenant);
@@ -501,19 +501,19 @@ public class UserApiIT {
         // permissions to the created group):
         // We can assign more than one device id, and more than one permission
         // type.
-        Map<String, List<String>> devicePermission = new LinkedHashMap<>();
-        List<String> list1 = new ArrayList<>();
+        Map<String, List<DevicePermission>> devicePermission = new LinkedHashMap<>();
+        List<DevicePermission> list1 = new ArrayList<>();
 
-        list1.add("ALARM:*:READ");
-        list1.add("AUDIT:*:READ");
+        list1.add(new DevicePermission(DevicePermission.Api.ALARM, null, DevicePermission.Permission.READ));
+        list1.add(new DevicePermission("AUDIT:*:READ"));
 
         // These are real device ids, however cloud does not check their
         // validity; one can also provide a random string as a device id.
         devicePermission.put("10481", list1);
-        List<String> list2 = new ArrayList<>();
+        List<DevicePermission> list2 = new ArrayList<>();
 
-        list2.add("OPERATION:*:READ");
-        list2.add("EVENT:*:READ");
+        list2.add(new DevicePermission(DevicePermission.Api.OPERATION, "*", DevicePermission.Permission.READ));
+        list2.add(new DevicePermission("EVENT:*:READ"));
         devicePermission.put("10445", list2);
         group.setDevicePermissions(devicePermission);
         userApi.updateGroup(group, tenant);
@@ -525,15 +525,15 @@ public class UserApiIT {
 
         assertEquals(devicePermission.keySet().size(), group.getDevicePermissions().keySet().size());
 
-        assertTrue((group.getDevicePermissions().get("10481").contains("ALARM:*:READ")));
-        assertTrue((group.getDevicePermissions().get("10481").contains("AUDIT:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10481").contains("OPERATION:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10481").contains("EVENT:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10481").toString().contains("ALARM:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10481").toString().contains("AUDIT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10481").toString().contains("OPERATION:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10481").toString().contains("EVENT:*:READ")));
         
-        assertTrue((group.getDevicePermissions().get("10445").contains("OPERATION:*:READ")));
-        assertTrue((group.getDevicePermissions().get("10445").contains("EVENT:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10445").contains("ALARM:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10445").contains("AUDIT:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10445").toString().contains("OPERATION:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10445").toString().contains("EVENT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10445").toString().contains("ALARM:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10445").toString().contains("AUDIT:*:READ")));
         
     }
     
