@@ -3,7 +3,7 @@ package com.telekom.m2m.cot.restsdk.users;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 
 /**
- * DevicePermission represents a device permission structure in the CoT which is used to be set for a user.
+ * DevicePermission represents a device permission structure in the CoT which is used to be set for a user or a group.
  * It is possible to set separate device permissions for each device and each fragment assigned to this device.
  *
  * Structure expected in CoT:
