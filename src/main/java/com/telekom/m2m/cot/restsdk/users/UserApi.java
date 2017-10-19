@@ -5,7 +5,6 @@ import java.util.Map;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.Filter.FilterBuilder;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 /**
