@@ -132,7 +132,7 @@ public class Group extends ExtensibleObject {
         if(devicePermissions != null) {
             return new HashMap<>(devicePermissions);
         } else {
-            return null;
+            return new HashMap<>();
         }
     }
 

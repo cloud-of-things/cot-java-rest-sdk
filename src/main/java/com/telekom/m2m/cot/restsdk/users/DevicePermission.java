@@ -52,7 +52,7 @@ public class DevicePermission {
                     return v;
                 }
             }
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("Couldn't find an enum for requested value: [%s]", value));
         }
     }
 
@@ -80,7 +80,7 @@ public class DevicePermission {
                     return v;
                 }
             }
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(String.format("Couldn't find an enum for requested value: [%s]", value));
         }
     }
 
@@ -126,7 +126,7 @@ public class DevicePermission {
         try {
             this.api = Api.getEnum(params[0]);
         } catch(Exception e) {
-            throw new CotSdkException("Couldn't convert Api in the CoT device permission structure: " + cotDevicePermissionStructure);
+            throw new CotSdkException("Couldn't convert Api in the CoT device permission structure: " + cotDevicePermissionStructure, e);
         }
 
         // second parameter should be fragment name like "c8y_Restart"
@@ -140,7 +140,7 @@ public class DevicePermission {
         try {
             this.permission = Permission.getEnum(params[2]);
         } catch(Exception e) {
-            throw new CotSdkException("Couldn't convert permission in the CoT device permission structure: " + cotDevicePermissionStructure);
+            throw new CotSdkException("Couldn't convert permission in the CoT device permission structure: " + cotDevicePermissionStructure, e);
         }
     }
 
