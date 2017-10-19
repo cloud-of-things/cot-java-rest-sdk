@@ -6,7 +6,6 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 
@@ -20,7 +19,6 @@ public class UserCollection {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.userCollection+json;ver=0.9";
     private static final int  defaultPageSize=5;
     
-    private Filter.FilterBuilder criteria = null;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
     private int pageCursor = 1;
     
@@ -43,19 +41,6 @@ public class UserCollection {
         this.tenant = tenant;
     }
 
-    /**
-     * Creates a UserCollection with filters.
-     *
-     * @param filterBuilder
-     *            the build criteria.
-     * @param cloudOfThingsRestClient
-     *            the necessary REST client to send requests to the CoT.
-     */
-    UserCollection(Filter.FilterBuilder filterBuilder, CloudOfThingsRestClient cloudOfThingsRestClient, String tenant) {
-        this.criteria = filterBuilder;
-        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-        this.tenant = tenant;
-    }
 
 
     /**
@@ -86,9 +71,6 @@ public class UserCollection {
     private JsonObject getJsonObject(int page, String tenant) {
         String response;
         String url = "user/" + tenant + "/users?" + "currentPage=" + page + "&pageSize=" + pageSize;
-        if (criteria != null) {
-            url += "&" + criteria.buildFilter();
-        }
         response = cloudOfThingsRestClient.getResponse(url);
 
         return gson.fromJson(response, JsonObject.class);
