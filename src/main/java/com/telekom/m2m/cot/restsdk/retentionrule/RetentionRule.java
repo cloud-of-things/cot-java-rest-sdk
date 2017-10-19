@@ -40,7 +40,6 @@ public class RetentionRule extends ExtensibleObject {
      * Get the unique identifier of the rule.
      * If the rule was retrieved from the platform, it has an ID. If just
      * created, there is no ID.
-     * TODO: verify whether/why this is a number and not a String as in other entities.
      *
      * @return Long the unique identifier of the rule or null if not available.
      */
@@ -136,8 +135,6 @@ public class RetentionRule extends ExtensibleObject {
 
     /**
      * Get the source of the rule.
-     *
-     * TODO: verify whether/why this is a String and not a ManagedObject as in other entities.
      *
      * @return a String with the source or null if not available.
      */

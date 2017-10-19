@@ -231,7 +231,7 @@ public class CloudOfThingsPlatform {
 
 
     public SmartRestApi getSmartRestApi() {
-        return new SmartRestApi(cloudOfThingsRestClient);
+        return new SmartRestApi(cloudOfThingsRestClient, getInventoryApi());
     }
 
     public BinariesApi getBinariesApi() {

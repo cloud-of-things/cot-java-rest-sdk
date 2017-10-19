@@ -45,7 +45,7 @@ public class CepModulesIT {
     @Test
     public void testCreateAndReadModule() {
         Module myModule = new Module();
-        String name = "testmoduleX" + System.currentTimeMillis(); // TODO: validate (e.g. no '-' allowed?)
+        String name = "testmoduleX" + System.currentTimeMillis();
         myModule.setName(name);
 
         List<String> statements = new ArrayList<>();
@@ -70,7 +70,7 @@ public class CepModulesIT {
     @Test
     public void testUpdateModule() throws InterruptedException {
         //given (first create a module:)
-        String name = "testModuleX" + System.currentTimeMillis(); // TODO: validate (e.g. no '-' allowed?)
+        String name = "testModuleX" + System.currentTimeMillis();
         Module myModule = new Module();
         myModule.setName(name);
         List<String> statements = new ArrayList<>();

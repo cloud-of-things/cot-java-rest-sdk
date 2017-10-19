@@ -303,41 +303,6 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
-    /**
-     * Executes an HTTP POST request and returns the response body as String.
-     * Method will throw an exception if the response code is indicating
-     * an unsuccessful request.
-     *
-     * @param json
-     *            Request body, needs to be a json object.
-     * @param api
-     *            the REST API string.
-     * @return the received JSON response body.
-     * TODO: check if this method is redundant enough to delete it
-     */
-    public String doPostRequest(String json, String api) {
-
-        RequestBody body = RequestBody.create(null, json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api)
-                .post(body)
-                .build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
-            }
-            return response.body().string();
-        } catch (IOException e) {
-            throw new CotSdkException("Unexpected error during POST request.", e);
-        } finally {
-            closeResponseBodyIfResponseAndBodyNotNull(response);
-        }
-    }
-
     /**
      * Do a SmartREST real time request.
      *

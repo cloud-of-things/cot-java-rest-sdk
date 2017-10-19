@@ -14,7 +14,6 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  */
 public class ModuleCollection extends JsonArrayPagination {
 
-    //TODO below CONTENT_TYPE might not work. In the cumulocity guide (realtime statements), the CONTENT_TYPE is not fully given.
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.cepModuleCollection+json;ver=0.9";
 
     private static final String COLLECTION_ELEMENT_NAME = "modules";

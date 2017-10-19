@@ -28,7 +28,6 @@ public class CepConnector implements Runnable {
 
     public static final String CONTENT_TYPE = "application/json";
 
-    // TODO: find out what versions exist and which ones we can support:
     public static final String PROTOCOL_VERSION_REQUESTED = "1.0";
     public static final String PROTOCOL_VERSION_MINIMUM = "1.0";
 
@@ -250,7 +249,6 @@ public class CepConnector implements Runnable {
         supportedConnectionTypes.add("long-polling");
         obj.add("supportedConnectionTypes", supportedConnectionTypes);
 
-        // TODO: find out what this advice even does...
         JsonObject advice = new JsonObject();
         advice.addProperty("timeout", timeout);
         advice.addProperty("interval", interval);
@@ -317,9 +315,6 @@ public class CepConnector implements Runnable {
                     JsonArray response = gson.fromJson(responseString, JsonArray.class);
 
                     for (JsonElement element : response) {
-                        // TODO: evaluate advice?
-                        // TODO: pass errors to our listeners?
-
                         JsonObject jsonObject = element.getAsJsonObject();
 
                         String notificationChannel = jsonObject.get("channel").getAsString();
