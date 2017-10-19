@@ -146,6 +146,9 @@ public class BinariesApiIT {
         
         
         // Now each collection has to contain only the binaries with their filtered types:
+        assertTrue(textTypeArray.length>0);
+        assertTrue(xmlTypeArray.length>0);
+
         for(Binary textBinary : textTypeArray){
         	assertEquals(textBinary.getType(), "text/plain");
         }
