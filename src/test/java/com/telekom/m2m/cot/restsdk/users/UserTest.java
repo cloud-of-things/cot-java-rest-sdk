@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.users;
 
+import com.telekom.m2m.cot.restsdk.library.devicemanagement.Battery;
 import org.testng.Assert;
 
 import com.google.gson.Gson;
@@ -55,15 +56,15 @@ public class UserTest {
     @Test
     public void testDevicePermissions() {
         User user = new User();
-        Map<String, List<String>> permissionsIn = user.getDevicePermissions();
+        Map<String, List<DevicePermission>> permissionsIn = user.getDevicePermissions();
         assertNull(permissionsIn);
 
         permissionsIn = new HashMap<>();
-        permissionsIn.put("Device-A", Arrays.asList("EVENT:*:READ", "ALARM:*:*READ"));
-        permissionsIn.put("Device-B", Arrays.asList("*:*:*"));
+        permissionsIn.put("Device-A", Arrays.asList(new DevicePermission("EVENT:c8y_Restart:READ"), new DevicePermission("ALARM:*:ADMIN")));
+        permissionsIn.put("Device-B", Arrays.asList(new DevicePermission(DevicePermission.Api.ALL, null, DevicePermission.Permission.ALL)));
         user.setDevicePermissions(permissionsIn);
 
-        Map<String, List<String>> permissionsOut = user.getDevicePermissions();
+        Map<String, List<DevicePermission>> permissionsOut = user.getDevicePermissions();
         assertEquals(permissionsOut, permissionsIn);
     }
 

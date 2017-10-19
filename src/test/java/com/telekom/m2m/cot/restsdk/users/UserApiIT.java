@@ -450,18 +450,18 @@ public class UserApiIT {
         // permissions to the created user):
         // We can assign more than one device id, and more than one permission
         // type.
-        Map<String, List<String>> devicePermission = new LinkedHashMap<>();
+        Map<String, List<DevicePermission>> devicePermission = new LinkedHashMap<>();
 
-        List<String> list1 = new ArrayList<>();
-        list1.add("ALARM:*:READ");
-        list1.add("AUDIT:*:READ");
+        List<DevicePermission> list1 = new ArrayList<>();
+        list1.add(new DevicePermission("ALARM:*:READ"));
+        list1.add(new DevicePermission("AUDIT:*:READ"));
         // These are real device ids, however cloud does not check their
         // validity; one can also provide a random string as a device id.
         devicePermission.put("10481", list1);
 
-        List<String> list2 = new ArrayList<>();
-        list2.add("OPERATION:*:READ");
-        list2.add("EVENT:*:READ");
+        List<DevicePermission> list2 = new ArrayList<>();
+        list2.add(new DevicePermission("OPERATION:*:READ"));
+        list2.add(new DevicePermission("EVENT:*:READ"));
         devicePermission.put("10445", list2);
 
         userInCloud.setDevicePermissions(devicePermission);
@@ -471,18 +471,18 @@ public class UserApiIT {
         // device permissions were assigned as expected):
         User returned = userApi.getUserByName(testUserName, tenant);
 
-        Map<String, List<String>> returnedDevicePermissions = returned.getDevicePermissions();
+        Map<String, List<DevicePermission>> returnedDevicePermissions = returned.getDevicePermissions();
         assertEquals(devicePermission.size(), returnedDevicePermissions.size());
 
-        assertTrue((returnedDevicePermissions.get("10481").contains("ALARM:*:READ")));
-        assertTrue((returnedDevicePermissions.get("10481").contains("AUDIT:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10481").contains("OPERATION:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10481").contains("EVENT:*:READ")));
+        assertTrue(returnedDevicePermissions.get("10481").contains("ALARM:*:READ"));
+        assertTrue(returnedDevicePermissions.get("10481").contains("AUDIT:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10481").contains("OPERATION:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10481").contains("EVENT:*:READ"));
         
-        assertTrue((returnedDevicePermissions.get("10445").contains("OPERATION:*:READ")));
-        assertTrue((returnedDevicePermissions.get("10445").contains("EVENT:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10445").contains("ALARM:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10445").contains("AUDIT:*:READ")));
+        assertTrue(returnedDevicePermissions.get("10445").contains("OPERATION:*:READ"));
+        assertTrue(returnedDevicePermissions.get("10445").contains("EVENT:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10445").contains("ALARM:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10445").contains("AUDIT:*:READ"));
         
         // now delete that user:
         userApi.deleteUserByUserName(testUserName, tenant);

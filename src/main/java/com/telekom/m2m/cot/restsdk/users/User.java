@@ -193,8 +193,8 @@ public class User extends ExtensibleObject {
      * @return a map of device permissions for this user or null if the user has no permissions
      * TODO: make a copy instead?
      */
-    public Map<String, List<String>> getDevicePermissions() {
-        return (Map<String, List<String>>)anyObject.get("devicePermissions");
+    public Map<String, List<DevicePermission>> getDevicePermissions() {
+        return (Map<String, List<DevicePermission>>)anyObject.get("devicePermissions");
     }
 
 
@@ -207,7 +207,7 @@ public class User extends ExtensibleObject {
      * @param devicePermissions the new permissions for this user.
      * TODO: make a copy instead?
      */
-    public void setDevicePermissions(Map<String, List<String>> devicePermissions) {
+    public void setDevicePermissions(Map<String, List<DevicePermission>> devicePermissions) {
         anyObject.put("devicePermissions", devicePermissions);
     }
 
