@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertNull;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 
 public class UserTest {
@@ -56,12 +57,12 @@ public class UserTest {
     public void testDevicePermissions() {
         User user = new User();
         Map<String, List<DevicePermission>> permissionsIn = user.getDevicePermissions();
-        assertNull(permissionsIn);
+        assertTrue(permissionsIn.isEmpty());
 
         // check empty field
         user.setDevicePermissions(null);
         permissionsIn = user.getDevicePermissions();
-        assertNull(permissionsIn);
+        assertTrue(permissionsIn.isEmpty());
 
         permissionsIn = new HashMap<String, List<DevicePermission>>();
         permissionsIn.put("Device-A", Arrays.asList(new DevicePermission("EVENT:c8y_Restart:READ"), new DevicePermission("ALARM:*:ADMIN")));
