@@ -24,7 +24,7 @@ inventoryApi.get("idOfManagedObject");
 
 ## Java Doc
 
-You can find the Java Doc of the latest release here: http://marquies.github.io/cot-java-rest-sdk/
+You can find the Java Doc of the latest release here: http://cloud-of-things.github.io/cot-java-rest-sdk/
 
 ## Developer Information
 
