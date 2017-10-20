@@ -9,7 +9,7 @@
     <version>0.7.0-SNAPSHOT</version>
 
     <name>Cloud of Things Java REST SDK Examples</name>
-    <url>https://github.com/marquies/cot-java-rest-sdk</url>
+    <url>https://github.com/cloud-of-things/cot-java-rest-sdk</url>
 
     <licenses>
         <license>
