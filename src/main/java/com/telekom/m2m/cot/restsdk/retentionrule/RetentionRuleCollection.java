@@ -1,13 +1,13 @@
 package com.telekom.m2m.cot.restsdk.retentionrule;
 
+import java.util.stream.StreamSupport;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
-
-import java.util.stream.StreamSupport;
 
 
 public class RetentionRuleCollection extends JsonArrayPagination {
@@ -42,7 +42,7 @@ public class RetentionRuleCollection extends JsonArrayPagination {
      */
     public RetentionRule[] getRetentionRules() {
         final JsonArray jsonRules = getJsonArray();
-        return (jsonRules == null) ? null : StreamSupport.stream(jsonRules.spliterator(), false).
+        return (jsonRules == null) ? new RetentionRule[0] : StreamSupport.stream(jsonRules.spliterator(), false).
                 map(rule -> new RetentionRule(gson.fromJson(rule.getAsJsonObject(), ExtensibleObject.class))).
                 toArray(RetentionRule[]::new);
     }

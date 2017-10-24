@@ -47,11 +47,9 @@ public class SmartRestApi {
 
     private static final Gson gson = GsonUtils.createGson();
 
-
-    public SmartRestApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
+    public SmartRestApi(CloudOfThingsRestClient cloudOfThingsRestClient, InventoryApi inventoryApi) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-        // TODO: should we get this from the CloudOfThingsPlatform or is it ok to instantiate our own?
-        this.inventoryApi = new InventoryApi(cloudOfThingsRestClient);
+        this.inventoryApi = inventoryApi;
     }
 
 

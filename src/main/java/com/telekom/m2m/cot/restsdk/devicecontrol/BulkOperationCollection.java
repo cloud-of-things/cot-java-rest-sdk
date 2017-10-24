@@ -1,13 +1,13 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
+import java.util.stream.StreamSupport;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
-
-import java.util.stream.StreamSupport;
 
 /**
  * Represents a pageable BulkOperation collection.
@@ -51,7 +51,7 @@ public class BulkOperationCollection extends JsonArrayPagination {
     public BulkOperation[] getBulkOperations() {
         final JsonArray jsonBulkOperations = getJsonArray();
 
-        return (jsonBulkOperations == null) ? null : StreamSupport.stream(jsonBulkOperations.spliterator(), false).
+        return (jsonBulkOperations == null) ? new BulkOperation[0] : StreamSupport.stream(jsonBulkOperations.spliterator(), false).
                 map(bulkOperation -> new BulkOperation(gson.fromJson(bulkOperation.getAsJsonObject(), ExtensibleObject.class))).
                 toArray(BulkOperation[]::new);
     }

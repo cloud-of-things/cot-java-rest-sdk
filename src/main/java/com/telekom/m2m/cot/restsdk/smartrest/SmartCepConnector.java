@@ -331,6 +331,7 @@ public class SmartCepConnector implements Runnable {
 
                     // TODO: check for errors that should cause us to abort the loop or connection.
                 }
+                
                 try {
                     if (!shallDisconnect) {
                         Thread.sleep(interval);
@@ -352,12 +353,16 @@ public class SmartCepConnector implements Runnable {
                 MSG_REALTIME_CONNECT + "," + clientId);
 
         SmartResponse response = cloudOfThingsRestClient.doSmartRealTimePollingRequest(smartRequest, timeout);
-        String[] responseLines = response.getLines();
-        if (responseLines.length > 0) {
-            // The first line can contain leading spaces, periodically sent by the server as a keep-alive signal.
-            responseLines[0] = responseLines[0].trim();
+        if (response == null) {
+            return new String[0];
+        } else {
+            String[] responseLines = response.getLines();
+            if (responseLines.length > 0) {
+                // The first line can contain leading spaces, periodically sent by the server as a keep-alive signal.
+                responseLines[0] = responseLines[0].trim();
+            }
+            return responseLines;
         }
-        return responseLines;
     }
 
 

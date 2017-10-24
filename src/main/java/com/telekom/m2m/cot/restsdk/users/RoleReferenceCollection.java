@@ -54,7 +54,7 @@ public class RoleReferenceCollection extends JsonArrayPagination {
             }
             return arrayOfRoleReferences;
         } else {
-            return null;
+            return new RoleReference[0];
         }
     }
 }

@@ -4,15 +4,19 @@ import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.security.SecureRandom;
-import java.util.Properties;
 
 /**
- * Created by Patrick Steinert on 31.01.16.
+ * Initializes the test configuration.
+ *
+ * The configuration must be passed via environment variables. Be sure to provide the required
+ * values on the command line before starting the tests:
+ *
+ *     export COT_TEST_CONNECTION_HOST="my-host"
+ *     export COT_TEST_CONNECTION_USER="my-user"
+ *     export COT_TEST_CONNECTION_PASSWORD="my-password"
+ *     export COT_TEST_CONNECTION_TENANT="my-tenant"
  */
 public class TestHelper {
     public static String TEST_HOST = "";
@@ -24,38 +28,18 @@ public class TestHelper {
 
     static {
         try {
-            getPropValues();
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            loadTestConfiguration();
+        } catch (RuntimeException e) {
+            System.out.println("Configuration exception: " + e);
+            System.out.println("Have a look at " + TestHelper.class.getCanonicalName() + " to learn how to provide the test configuration.");
         }
     }
 
-    private static void getPropValues() throws IOException {
-        InputStream inputStream;
-
-        try {
-            Properties prop = new Properties();
-            String propFileName = "test.properties";
-
-            inputStream = TestHelper.class.getClassLoader().getResourceAsStream(propFileName);
-
-            if (inputStream != null) {
-                prop.load(inputStream);
-            } else {
-                throw new FileNotFoundException("property file '" + propFileName + "' not found in the classpath");
-            }
-
-
-            // get the property value and print it out
-            TEST_HOST = prop.getProperty("cot.connection.host");
-            TEST_USERNAME = prop.getProperty("cot.connection.user");
-            TEST_PASSWORD = prop.getProperty("cot.connection.password");
-            TEST_TENANT = prop.getProperty("cot.connection.tenant");
-
-            inputStream.close();
-        } catch (Exception e) {
-            System.out.println("Exception: " + e);
-        }
+    private static void loadTestConfiguration() {
+        TEST_HOST = readFromEnvironment("COT_TEST_CONNECTION_HOST");
+        TEST_USERNAME = readFromEnvironment("COT_TEST_CONNECTION_USER");
+        TEST_PASSWORD = readFromEnvironment("COT_TEST_CONNECTION_PASSWORD");
+        TEST_TENANT = readFromEnvironment("COT_TEST_CONNECTION_TENANT");
     }
 
     public static String getRandom(int length) {
@@ -94,4 +78,24 @@ public class TestHelper {
         );
     }
 
+    /**
+     * Accepts an environment variable name and returns its value.
+     *
+     * Fails if the requested variable is not available.
+     *
+     * Example:
+     *
+     *     String host = readFromEnvironment("COT_CONNECTION_HOST");
+     *
+     * @param name The name of the variable.
+     * @return The variable value.
+     */
+    private static String readFromEnvironment(final String name)
+    {
+        String value = System.getenv(name);
+        if (value == null) {
+            throw new RuntimeException("Cannot read test configuration: No value found for environment variable '" + name + "'.");
+        }
+        return value;
+    }
 }

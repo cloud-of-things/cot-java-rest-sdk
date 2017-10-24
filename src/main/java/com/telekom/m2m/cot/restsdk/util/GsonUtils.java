@@ -8,6 +8,7 @@ import com.telekom.m2m.cot.restsdk.devicecontrol.BulkOperation;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Progress;
 import com.telekom.m2m.cot.restsdk.event.Event;
+import com.telekom.m2m.cot.restsdk.inventory.Binary;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReference;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectReferenceCollection;
@@ -22,8 +23,13 @@ import com.telekom.m2m.cot.restsdk.users.User;
  * Created by Patrick Steinert on 31.01.16.
  */
 public class GsonUtils {
+
     public static Gson createGson() {
-        return new GsonBuilder().registerTypeAdapter(ManagedObject.class, new ManagedObjectSerializer())
+        return createGson(false);
+    }
+
+    public static Gson createGson(boolean pretty) {
+        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(ManagedObject.class, new ManagedObjectSerializer())
                 .registerTypeAdapter(Event.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(Alarm.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(AuditRecord.class, new ExtensibleObjectSerializer())
@@ -39,7 +45,15 @@ public class GsonUtils {
                 .registerTypeAdapter(RetentionRule.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(BulkOperation.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(Progress.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(Binary.class, new BinarySerializer())
 
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX").create();
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+
+        if (pretty) {
+            builder.setPrettyPrinting();
+        }
+
+        return builder.create();
     }
+
 }

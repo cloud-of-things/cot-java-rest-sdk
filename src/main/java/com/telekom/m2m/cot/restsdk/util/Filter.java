@@ -189,7 +189,7 @@ public class Filter {
             instance.arguments.put("user", user);
             return this;
         }
-
+        
         /**
          * Adds a build for an application.
          *

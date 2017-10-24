@@ -55,7 +55,7 @@ public class ExternalIdCollection extends JsonArrayPagination {
             }
             return arrayOfExternalIds;
         } else {
-            return null;
+            return new ExternalId[0];
         }
     }
 }

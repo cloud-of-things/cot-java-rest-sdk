@@ -49,7 +49,7 @@ public class AuditRecordCollection extends JsonArrayPagination {
             }
             return arrayOfAuditRecords;
         } else {
-            return null;
+            return new AuditRecord[0];
         }
     }
 }

@@ -57,35 +57,6 @@ public class ManagedObjectTest {
 
     }
 
-
-    @Test
-    public void testEmptyChildDevices() throws Exception {
-
-        String inventoryJsonExample = "{\n" +
-                "  \"id\" : \"42\",\n" +
-                "  \"name\" : \"SomeName\",\n" +
-                "  \"self\" : \"<<This ManagedObject URL>>\",\n" +
-                "  \"type\" :\"com_nsn_cumulocity_example_Clazz\",\n" +
-                "  \"lastUpdated\": \"2012-05-02T19:48:40.006+02:00\",\n" +
-                "  \"com_othercompany_StrongTypedClass\" : { \"id\": 1}\n" +
-                "}";
-
-        //TODO: Remove this for a simple unit test
-        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
-        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
-        Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));
-        Mockito.when(rc.getResponse(any(String.class), any(String.class), any(String.class))).thenReturn(
-                inventoryJsonExample);
-
-        InventoryApi inventoryApi = platform.getInventoryApi();
-        ManagedObject mo = inventoryApi.get("abc");
-
-
-        ManagedObjectReferenceCollection morc = mo.getChildDevices();
-        Iterable<ManagedObjectReference> cMOs = morc.get();
-        Assert.assertEquals(cMOs.iterator().hasNext(), false);
-    }
-
     @Test
     public void testEmptyChildAssets() throws Exception {
 
