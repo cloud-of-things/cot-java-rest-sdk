@@ -1,6 +1,6 @@
 # Cloud of Things Java Rest SDK
 
-This is an SDK to interface with the [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) by T-Systems International GmbH
+The [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) (German Cloud der Dinge) is a platform for the Internet of Things by T-Systems International GmbH. Inside this repository you will find a Java based SDK to interface with the Cloud of Things API.
 
 _Current version is: 1.0.0_
 
@@ -35,7 +35,6 @@ You can find the Java Doc of the latest release here: http://cloud-of-things.git
 
 Short information about what has changed between releases.
 
-<<<<<<< HEAD
 ### Release 1.0.0
 * Improved Examples: Add examples for SDK-Users (see DEVELOPER.md)
 * Implemented Sensor Library
