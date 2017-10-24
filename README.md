@@ -22,9 +22,7 @@ InventoryApi inventoryApi = cotPlatform.getInventoryApi();
 inventoryApi.get("idOfManagedObject");
 ```
 
-## Developer Information and Examples
-
-Developers can find information in the [Wiki](https://github.com/cloud-of-things/cot-java-rest-sdk/wiki) and DEVELOPER.md file.
+Developers can find further information and ***examples*** in the [DEVELOPER.md](https://github.com/marquies/cot-java-rest-sdk/blob/develop/DEVELOPER.md) file.
 
 ## Java Doc
 
