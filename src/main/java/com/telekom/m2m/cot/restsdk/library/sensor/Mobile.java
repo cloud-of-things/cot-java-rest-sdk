@@ -31,15 +31,33 @@ public class Mobile implements Fragment {
 
     /**
      * This is the partial constructor for c8y_Mobile as described in the device management library.
+     *
+     * @param imei   the International Mobile Equipment Number.
+     * @param cellId the identifier of the current cell tower.
+     * @param iccid  the Integrated Curcuit Identifier.
      */
     public Mobile(String imei, String cellId, String iccid) {
-        this(null, imei, null, null, null, null, null, null, null, null, cellId,  null, iccid);
+        this(null, imei, null, null, null, null, null, null, null, null, cellId, null, iccid);
         isComplete = false;
     }
 
 
     /**
      * This is the full constructor for c8y_Mobile as described in the sensor library.
+     *
+     * @param imsi            the International Mobile Subscriber Identifier.
+     * @param imei            the International Mobile Equipment Number.
+     * @param currentOperator the received mobile operator string, e.g. Telekom.
+     * @param currentBand     the current mobile band, e.g. WCDMA2100.
+     * @param connType        the current connection type, e.g. 3g
+     * @param rssi            the Receive Signal Strength Indicator value as text.
+     * @param ecn0            EcNo is the RSCP divided by the RSSI
+     * @param rcsp            Received Signal Code Power as text.
+     * @param mnc             the Mobile Network Code, e.g. 1 (for Telekom Deutschland).
+     * @param lac             Location Area Code, e.g. 38833 (for Bonn Area in Telekom Deutschland network).
+     * @param cellId          the identifier of the current cell tower.
+     * @param msisdn          the Mobile Station Integrated Services Digital Network Number.
+     * @param iccid           the Integrated Curcuit Identifier.
      */
     public Mobile(String imsi,
                   String imei,
