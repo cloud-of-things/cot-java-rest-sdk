@@ -91,7 +91,6 @@ public class CepApi {
     /**
      * Update a Module.
      * This will cause two separate requests because it needs to update the json as well as the statements.
-     * TODO: maybe we should only update the dirty parts?
      * @param module the Module that shall be updated on the server.
      *               The parameter instance will be updated with the response from the server (esp. lastModified).
      */
@@ -99,7 +98,6 @@ public class CepApi {
         String json = "{\"name\" : \"" + module.getName() + "\", \"status\" : \"" + module.getStatus().name() + "\"}";
 
         // the status can only be updated if it has changed from the default:
-        // DEPLOYED. TODO: investigate why this is the case.
         if (module.getStatus().equals(Module.Status.DEPLOYED)) {
             json = "{\"name\" : \"" + module.getName() + "\"}";
         }

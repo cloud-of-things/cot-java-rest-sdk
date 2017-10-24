@@ -2,9 +2,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
 
@@ -23,7 +21,7 @@ public class ManagedObjectCollection extends JsonArrayPagination {
     private static final String COLLECTION_ELEMENT_NAME = "managedObjects";
 
     /**
-     * Internal contstructor to create an ManagedObjectCollection.
+     * Internal constructor to create a ManagedObjectCollection.
      * Use {@link InventoryApi} to get ManagedObjectCollection.
      *
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
@@ -49,17 +47,9 @@ public class ManagedObjectCollection extends JsonArrayPagination {
      */
     public ManagedObject[] getManagedObjects() {
         final JsonArray jsonManagedObjects = getJsonArray();
+        ManagedObject[] managedObjects = gson.fromJson(jsonManagedObjects, ManagedObject[].class);
 
-        if (jsonManagedObjects != null) {
-            final ManagedObject[] arrayOfManagedObjects = new ManagedObject[jsonManagedObjects.size()];
-            for (int i = 0; i < jsonManagedObjects.size(); i++) {
-                JsonElement jsonManagedObject = jsonManagedObjects.get(i).getAsJsonObject();
-                final ManagedObject managedObject = new ManagedObject(gson.fromJson(jsonManagedObject, ExtensibleObject.class));
-                arrayOfManagedObjects[i] = managedObject;
-            }
-            return arrayOfManagedObjects;
-        } else {
-            return null;
-        }
+        return managedObjects;
     }
+    
 }

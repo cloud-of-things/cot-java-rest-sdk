@@ -1,14 +1,16 @@
 package com.telekom.m2m.cot.restsdk.event;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import java.util.Calendar;
+import java.util.Date;
+
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Date;
+import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -47,32 +49,30 @@ public class EventApiIT {
 
     @Test
     public void testCreateAndRead() throws Exception {
-        Date timeOfEventHappening = new Date();
-        timeOfEventHappening.setSeconds(timeOfEventHappening.getSeconds() - 10);
+        Calendar timeOfEventHappening = Calendar.getInstance();
+        timeOfEventHappening.set(Calendar.SECOND, 10);
 
         Event event = new Event();
         event.setText("Sample Text");
         event.setType("com_telekom_TestType");
-        event.setTime(timeOfEventHappening);
+        event.setTime(timeOfEventHappening.getTime());
         event.setSource(testManagedObject);
 
         EventApi eventApi = cotPlat.getEventApi();
 
-        Thread.sleep(2000);
-
         Event createdEvent = eventApi.createEvent(event);
+            
         Assert.assertNotNull("Should now have an Id", createdEvent.getId());
-
 
         Event retrievedEvent = eventApi.getEvent(createdEvent.getId());
         Assert.assertEquals(retrievedEvent.getId(), createdEvent.getId());
         Assert.assertEquals(retrievedEvent.getType(), "com_telekom_TestType");
         Assert.assertEquals(retrievedEvent.getText(), "Sample Text");
-        Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening), 0);
+        Assert.assertEquals(retrievedEvent.getTime().compareTo(timeOfEventHappening.getTime()), 0);
         Assert.assertNotNull(retrievedEvent.getCreationTime());
 
         Assert.assertTrue(
-                retrievedEvent.getCreationTime().after(timeOfEventHappening),
+                retrievedEvent.getCreationTime().after(timeOfEventHappening.getTime()),
                 String.format(
                         "retrievedEvent.getCreationTime(): %s, timeOfEventHappening: %s",
                         retrievedEvent.getCreationTime(),
@@ -81,6 +81,30 @@ public class EventApiIT {
         );
 
     }
+    @Test
+    public void testGetEventReturnNull() throws Exception {
+        // This test checks whether the getEvent() method returns a null when the event does not exist in the cloud.
 
+        Calendar timeOfEventHappening = Calendar.getInstance();
+        timeOfEventHappening.set(Calendar.SECOND, 10);
+
+        Event event = new Event();
+        event.setText("Sample Text");
+        event.setType("com_telekom_TestType");
+        event.setTime(timeOfEventHappening.getTime());
+        event.setSource(testManagedObject);
+
+        EventApi eventApi = cotPlat.getEventApi();
+
+        Event createdEvent = eventApi.createEvent(event);
+                
+        String id= createdEvent.getId();
+        
+        //The event that exist in the cloud should be gettable:        
+        Assert.assertNotNull(eventApi.getEvent(id));
+        
+        //Now lets try to "get" an event that does not exist in the cloud, get method should return a null:
+        Assert.assertNull(eventApi.getEvent("theIdThatDoesNotExist"));
+    }
 
 }

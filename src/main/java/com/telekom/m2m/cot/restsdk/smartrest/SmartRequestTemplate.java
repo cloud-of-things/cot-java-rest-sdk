@@ -56,12 +56,6 @@ public class SmartRequestTemplate extends SmartTemplate {
         this.values = values.clone();
     }
 
-    public SmartRequestTemplate(String csv) {
-        // TODO: do we need that? Would it be escaped or unescaped?
-        throw new NotImplementedException();
-    }
-
-
     /**
      * @return this template as a CSV-String, with fields escaped as necessary, ready to be sent to the server.
      */

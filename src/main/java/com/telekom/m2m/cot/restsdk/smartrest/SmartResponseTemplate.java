@@ -48,12 +48,6 @@ public class SmartResponseTemplate extends SmartTemplate {
         this.pattern = pattern.clone();
     }
 
-    public SmartResponseTemplate(String csv) {
-        // TODO: do we need that? Would it be escaped or unescaped?
-        throw new NotImplementedException();
-    }
-
-
     /**
      * @return this template as a CSV-String, with fields escaped as necessary, ready to be sent to the server.
      */

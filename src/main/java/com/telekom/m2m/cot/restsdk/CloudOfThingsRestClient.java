@@ -3,11 +3,15 @@ package com.telekom.m2m.cot.restsdk;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.net.SocketTimeoutException;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSyntaxException;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRequest;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartResponse;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
@@ -40,6 +44,12 @@ public class CloudOfThingsRestClient {
     protected Integer realTimeTimeout = 60000;
 
 
+    /**
+     * @param okHttpClient HTTP client that is used to interact with the API.
+     * @param host URL to connect to. Must contain scheme and host, e.g. https://username.int2-ram.m2m.telekom.com
+     * @param user Username for authentication.
+     * @param password Password for authentication.
+     */
     public CloudOfThingsRestClient(OkHttpClient okHttpClient, String host, String user, String password) {
         this.host = host;
         try {
@@ -153,7 +163,7 @@ public class CloudOfThingsRestClient {
 
 
     /**
-     * Executes an HTTP POST request and returns the response body as String.
+     * Executes a multipart form upload of a string and returns the response body as String.
      *
      * @param file Request body, i.e. the first and only form part.
      * @param name The name of the form field.
@@ -183,6 +193,55 @@ public class CloudOfThingsRestClient {
             }
             String bodyContent = response.body().string();
             return bodyContent;
+        } catch (IOException e) {
+            throw new CotSdkException("Unexpected error during POST request.", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
+
+    /**
+     * Executes an HTTP POST request and returns the response body as String.
+     *
+     * @param files array of byte[], one for each form field.
+     * @param names the names of the form field, same order as files.
+     * @param api the URL path (without leading /)
+     * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
+     */
+    public String doFormUpload(byte[][] files, String[] names, String api) {
+        if (files.length != names.length) {
+            throw new CotSdkException("Need to have the same number of files and names to upload (actual: "+files.length+" != "+names.length);
+        }
+
+        MultipartBody.Builder bodyBuilder = new MultipartBody.Builder().setType(MultipartBody.FORM);
+
+        for (int i=0; i<names.length; i++) {
+            bodyBuilder.addFormDataPart(names[i], "", RequestBody.create(MultipartBody.FORM, files[i]));
+        }
+
+        Request request = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", "text/foo")
+                .url(host + "/" + api)
+                .post(bodyBuilder.build())
+                .build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                final String err = getErrorMessage(response);
+                throw new CotSdkException(response.code(), err);
+            }
+
+            String location = response.header("Location");
+            String result = null;
+            if (location != null) {
+                String[] pathParts = location.split("\\/");
+                result = pathParts[pathParts.length - 1];
+            }
+            return result;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -234,41 +293,9 @@ public class CloudOfThingsRestClient {
             }
 
             return response.body().string();
-        } catch (IOException e) {
-            throw new CotSdkException("Unexpected error during POST request.", e);
-        } finally {
-            closeResponseBodyIfResponseAndBodyNotNull(response);
-        }
-    }
-
-
-    /**
-     * Executes an HTTP POST request and returns the response body as String.
-     * Method will throw an exception if the response code is indicating
-     * an unsuccessful request.
-     *
-     * @param json
-     *            Request body, needs to be a json object.
-     * @param api
-     *            the REST API string.
-     * @return the received JSON response body.
-     * TODO: check if this method is redundant enough to delete it
-     */
-    public String doPostRequest(String json, String api) {
-
-        RequestBody body = RequestBody.create(null, json);
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api)
-                .post(body)
-                .build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Unexpected response code for POST request.");
-            }
-            return response.body().string();
+        } catch (SocketTimeoutException e) {
+            // That's ok and normal. There just weren't any new notifications.
+            return null;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -344,6 +371,9 @@ public class CloudOfThingsRestClient {
             }
             String responseBody = response.body().string();
             return new SmartResponse(responseBody);
+        } catch (SocketTimeoutException e) {
+            // That's ok and normal. There just weren't any new notifications.
+            return null;
         } catch (IOException e) {
             throw new CotSdkException("Unexpected error during POST request.", e);
         } finally {
@@ -500,6 +530,45 @@ public class CloudOfThingsRestClient {
     }
 
 
+    /**
+     * Execute a PUT request that will result in a new or changed ID.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
+     */
+    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), data);
+        Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("Authorization", "Basic " + encodedAuthString)
+                .addHeader("Content-Type", contentType)
+                .url(host + "/" + path)
+                .put(requestBody);
+
+        Request request = requestBuilder.build();
+
+        Response response = null;
+        try {
+            response = client.newCall(request).execute();
+            if (!response.isSuccessful()) {
+                throw new CotSdkException(response.code(), "Requested returned error code");
+            }
+            String location = response.header("Location");
+            String result = null;
+            if (location != null) {
+                String[] pathParts = location.split("\\/");
+                result = pathParts[pathParts.length - 1];
+            }
+            return result;
+        } catch (Exception e) {
+            throw new CotSdkException("Error in request", e);
+        } finally {
+            closeResponseBodyIfResponseAndBodyNotNull(response);
+        }
+    }
+
+
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
@@ -565,10 +634,24 @@ public class CloudOfThingsRestClient {
     }
 
     private String getErrorMessage(final Response response) throws IOException {
-        final JsonObject o = gson.fromJson(response.body().string(), JsonObject.class);
         String errorMessage = "Request failed.";
-        if (o.has("error")) {
-            errorMessage += " Platform provided details: '" + o.get("error") + "'";
+        String body = "";
+        try {
+            body = response.body().string();
+            final JsonElement e = gson.fromJson(body, JsonElement.class);
+            if (e instanceof JsonObject) {
+                JsonObject o = (JsonObject) e;
+                if (o.has("error")) {
+                    errorMessage += " Platform provided details: '" + o.get("error") + "'";
+                }
+            } else if (e instanceof JsonPrimitive) {
+                JsonPrimitive p = (JsonPrimitive) e;
+                errorMessage += " Platform provided details: '" + p + "'";
+            }
+        } catch (JsonSyntaxException ex) {
+            errorMessage += " " + body;
+        } catch (NullPointerException ex) {
+            errorMessage += " Response body was empty.";
         }
 
         return errorMessage;

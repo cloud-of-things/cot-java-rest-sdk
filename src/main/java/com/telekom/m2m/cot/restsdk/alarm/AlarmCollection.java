@@ -56,7 +56,7 @@ public class AlarmCollection extends JsonArrayPagination {
             }
             return arrayOfAlarms;
         } else {
-            return null;
+            return new Alarm[0];
         }
     }
 }

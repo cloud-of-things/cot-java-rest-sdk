@@ -46,12 +46,10 @@ public class Module {
     }
 
     public Date getLastModified() {
-        // TODO: maybe we should use java8-date-stuff instead.
         return new Date(lastModified.getTime());
     }
 
     public void setLastModified(Date lastModified) {
-        // TODO: maybe we should use java8-date-stuff instead.
         this.lastModified = new Date(lastModified.getTime());
     }
 

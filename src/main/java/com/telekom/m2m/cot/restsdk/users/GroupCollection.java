@@ -54,7 +54,8 @@ public class GroupCollection extends JsonArrayPagination {
             }
             return arrayOfGroups;
         } else {
-            return null;
+            
+            return new Group[0];
         }
     }
 }

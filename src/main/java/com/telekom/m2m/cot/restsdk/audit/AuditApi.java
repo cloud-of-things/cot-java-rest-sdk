@@ -79,7 +79,6 @@ public class AuditApi {
      * @return the first page of AuditRecordCollection which can be used to navigate through the found AuditRecords.
      */
     public AuditRecordCollection getAuditRecordCollection(final Filter.FilterBuilder filters) {
-        //TODO: extend FilterBuilder to provide a check functionality of allowed filters
         return new AuditRecordCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,

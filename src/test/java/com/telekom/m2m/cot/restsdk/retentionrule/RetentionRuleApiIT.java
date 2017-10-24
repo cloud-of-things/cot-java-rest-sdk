@@ -215,24 +215,6 @@ public class RetentionRuleApiIT {
         // then
         assertTrue(collection.getRetentionRules().length >= 4); // It's >= because we don't know what other data might already be there.
 
-        /*
-        // TODO: filter doesn't have any effect for RetentionRules?
-        collection = retentionRuleApi.getRetentionRules(Filter.build().bySource(source));
-        collection.setPageSize(100);
-        RetentionRule[] rules = collection.getRetentionRules();
-
-        assertEquals(rules.length, 3);
-        assertEquals((long)rules[0].getId(), id0);
-        assertEquals((long)rules[1].getId(), id1);
-        assertEquals((long)rules[2].getId(), id2);
-
-        // TODO: deleting collectins of RetentionRules doesn't work either and would be dangerous, without filters.
-        retentionRuleApi.deleteRetentionRules(Filter.build().bySource(source));
-
-        collection = retentionRuleApi.getRetentionRules(Filter.build().bySource(source));
-        rules = collection.getRetentionRules();
-        assertEquals(rules.length, 0);
-        */
 
         // cleanup
         retentionRuleApi.deleteRetentionRule(id0);
