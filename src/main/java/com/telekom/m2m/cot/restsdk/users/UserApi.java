@@ -29,6 +29,7 @@ public class UserApi {
         return new UserCollection(cloudOfThingsRestClient, tenant);
     }
 
+    
     public GroupCollection getGroups(String tenant) {
         return new GroupCollection(cloudOfThingsRestClient, "user/" + tenant + "/groups/", gson, null);
     }

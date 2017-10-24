@@ -1,16 +1,16 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
+
+import org.mockito.Mockito;
+import org.testng.annotations.Test;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import org.mockito.Mockito;
-import org.testng.annotations.Test;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 /**
  * Created by Andreas Dyck on 26.07.17.
@@ -67,8 +67,8 @@ public class OperationCollectionTest {
         // when
         final Operation[] operations = operationCollectionSpy.getOperations();
 
-        // then
-        assertNull(operations);
+        // then it should return an empty array:
+        assertEquals(operations.length, 0);
     }
 
     private JsonArray createJsonObjectArray(final Gson gson, final int numElements) {

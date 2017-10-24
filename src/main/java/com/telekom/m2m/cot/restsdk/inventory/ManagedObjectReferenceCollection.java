@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Created by Patrick Steinert on 29.08.16.
@@ -22,4 +23,14 @@ public class ManagedObjectReferenceCollection {
     public String getSelf() {
         return self;
     }
+
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder();
+        builder.append("ManagedObjectReferenceCollection[");
+        builder.append(mos.stream().map(ManagedObjectReference::getSelf).collect(Collectors.joining(", ")));
+        builder.append("]");
+        return builder.toString();
+    }
+
 }

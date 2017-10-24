@@ -12,6 +12,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * Created by Patrick Steinert on 04.02.16.
  */
 public class EventApi {
+
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.event+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "event/events/";
 
@@ -31,10 +32,14 @@ public class EventApi {
      * Retrieves a specific Event.
      *
      * @param eventId the unique identifier of the desired Event.
-     * @return the Event (or null if not found). TODO: it does _not_ return null. But maybe it should.
+     * @return the Event (or null if not found).
      */
     public Event getEvent(String eventId) {
         String response = cloudOfThingsRestClient.getResponse(eventId, RELATIVE_API_URL, CONTENT_TYPE);
+        if (response == null) {
+            return null;
+        }
+
         return new Event(gson.fromJson(response, ExtensibleObject.class));
     }
 

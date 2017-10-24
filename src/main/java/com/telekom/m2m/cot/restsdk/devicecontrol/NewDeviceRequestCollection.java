@@ -56,7 +56,7 @@ public class NewDeviceRequestCollection extends JsonArrayPagination {
             }
             return arrayOfNewDeviceRequests;
         } else {
-            return null;
+            return new NewDeviceRequest[0];
         }
     }
 }

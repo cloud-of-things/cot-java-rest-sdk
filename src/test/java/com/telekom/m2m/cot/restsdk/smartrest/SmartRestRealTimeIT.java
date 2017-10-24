@@ -398,13 +398,6 @@ public class SmartRestRealTimeIT {
         }
     }
 
-
-    @Test
-    public void testDisconnect() {
-        // TODO. Should stop the loop and after another handshake we should not be connected to any old subscriptions
-    }
-
-
     private Alarm makeAlarm(String type, String severity, ManagedObject source) {
         Alarm alarm = new Alarm();
         alarm.setText("Strange thing happened!");

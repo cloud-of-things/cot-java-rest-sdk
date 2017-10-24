@@ -62,7 +62,7 @@ public class RetentionRuleApi {
 
         Map<String, Object> attributes = rule.getAttributes();
         attributes.remove("id"); // Because it feels wrong to ask the server to create an object with a predefined id. It is the server which assigns ids.
-        attributes.remove("editable"); // TODO: is there some way to write this via the REST API?
+        attributes.remove("editable");
 
         ExtensibleObject eo = new ExtensibleObject();
         eo.setAttributes(attributes);
@@ -107,7 +107,7 @@ public class RetentionRuleApi {
 
         Map<String, Object> attributes = rule.getAttributes();
         attributes.remove("id"); // It doesn't make sense to change the ID of a rule afterwards.
-        attributes.remove("editable"); // TODO: is there some way to write this via the REST API?
+        attributes.remove("editable");
 
         ExtensibleObject extensibleObject = new ExtensibleObject();
         extensibleObject.setAttributes(attributes);
@@ -135,8 +135,6 @@ public class RetentionRuleApi {
      * Validate a rule and throw {@link CotSdkException} if it is invalid.
      * Some combinations of fields are not valid and it won't be possible to store them on the server.
      *
-     * TODO: maybe turn this into a boolean method and have a parameter to suppress the exceptions, so that application
-     *       programmers can validate themselves, faster?
      * @param rule the rule to validate
      */
     public void validateRule(RetentionRule rule) {
@@ -171,37 +169,5 @@ public class RetentionRuleApi {
                 throw new CotSdkException("RetentionRule cannot have dataType " + rule.getDataType());
         }
     }
-
-
-    /**
-     * Retrieves RetentionRules filtered by criteria.
-     *
-     * @param filters filters of RetentionRule attributes.
-     *
-     * @return the RetentionRuleCollections to navigate through the results.
-     */
-    // TODO: filters do not apply to RetentionRules!?
-    /*
-    public RetentionRuleCollection getRetentionRules(Filter.FilterBuilder filters) {
-        return new RetentionRuleCollection(
-                cloudOfThingsRestClient,
-                RELATIVE_API_URL,
-                gson,
-                filters);
-    }
-    */
-
-
-    /**
-     * Deletes a collection of rules by criteria.
-     *
-     * @param filters filters of RetentionRule attributes.
-     */
-    // TODO: there is no collection-delete endpoint for RetentionRules?
-    /*
-    public void deleteRetentionRules(Filter.FilterBuilder filters) {
-        cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filters.buildFilter() + "&x=");
-    }
-    */
 
 }

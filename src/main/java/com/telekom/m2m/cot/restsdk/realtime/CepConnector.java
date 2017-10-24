@@ -18,6 +18,9 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  * provides methods to perform operations such as handshake,
  * subscribe/unsubscribe and connect which are required to communicate with the
  * notification services.
+ *
+ * Hint: This class implements {@link Runnable}, but it is designed to manage threading internally.
+ *       Please do *not* create a thread that starts a connector instance.
  * 
  * Created by Ozan Arslan on 18.08.2017
  */
@@ -25,7 +28,6 @@ public class CepConnector implements Runnable {
 
     public static final String CONTENT_TYPE = "application/json";
 
-    // TODO: find out what versions exist and which ones we can support:
     public static final String PROTOCOL_VERSION_REQUESTED = "1.0";
     public static final String PROTOCOL_VERSION_MINIMUM = "1.0";
 
@@ -247,7 +249,6 @@ public class CepConnector implements Runnable {
         supportedConnectionTypes.add("long-polling");
         obj.add("supportedConnectionTypes", supportedConnectionTypes);
 
-        // TODO: find out what this advice even does...
         JsonObject advice = new JsonObject();
         advice.addProperty("timeout", timeout);
         advice.addProperty("interval", interval);
@@ -282,10 +283,26 @@ public class CepConnector implements Runnable {
             obj.addProperty("subscription", channel);
             body.add(obj);
         }
-        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
+        String responseBody = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE);
+        JsonArray responseJson = gson.fromJson(responseBody, JsonArray.class);
+        for (JsonElement channelJson : responseJson) {
+            JsonObject channelObject = (JsonObject) channelJson;
+
+            if (!channelObject.has("successful") || !channelObject.get("successful").getAsBoolean()) {
+                RuntimeException e = new CotSdkException("Subscription failed! " + channelObject.toString());
+                for (SubscriptionListener listener : listeners) {
+                    listener.onError(null, e);
+                }
+
+                throw e;
+            }
+        }
     }
 
-
+    /**
+     * Starts the connector in a separate thread. Not meant to be called directly,
+     * please use {@link #connect()} to start the connector.
+     */
     @Override
     public void run() {
         connected = true;
@@ -294,30 +311,43 @@ public class CepConnector implements Runnable {
 
             do {
                 String responseString = doConnect();
-                JsonArray response = gson.fromJson(responseString, JsonArray.class);
+                if (responseString != null) {
+                    JsonArray response = gson.fromJson(responseString, JsonArray.class);
 
-                for (JsonElement element : response) {
-                    // TODO: evaluate advice?
-                    // TODO: pass errors to our listeners?
+                    for (JsonElement element : response) {
+                        JsonObject jsonObject = element.getAsJsonObject();
 
-                    JsonObject jsonObject = element.getAsJsonObject();
+                        String notificationChannel = jsonObject.get("channel").getAsString();
 
-                    String notificationChannel = jsonObject.get("channel").getAsString();
+                        // We don't pass on failures and meta data to the listeners.
+                        if (notificationChannel.startsWith("/meta/")) {
+                            JsonElement success = jsonObject.get("successful");
+                            JsonElement advice = jsonObject.get("advice");
+                            if (success != null
+                                    && !success.getAsBoolean()
+                                    && advice != null
+                                    && "handshake".equals(advice.getAsJsonObject().get("reconnect").getAsString())) {
 
-                    // We don't pass on failures and meta data to the listeners.
-                    if (!notificationChannel.startsWith("/meta/")) {
-
-                        for (SubscriptionListener listener : listeners) {
-                            // Now filter out the unnecessary fields from
-                            // the JsonElement and pass the required
-                            // information to the notification object:
-                            JsonObject jsonNotification = new JsonObject();
-                            jsonNotification.add("data", jsonObject.get("data"));
-                            jsonNotification.add("channel", jsonObject.get("channel"));
-                            listener.onNotification(notificationChannel, new Notification(jsonNotification));
+                                Exception e = new CotSdkException("Connection failed! Redo handshake.");
+                                for (SubscriptionListener listener : listeners) {
+                                    listener.onError(null, e);
+                                }
+                                doHandShake();
+                            }
+                        } else {
+                            for (SubscriptionListener listener : listeners) {
+                                // Now filter out the unnecessary fields from
+                                // the JsonElement and pass the required
+                                // information to the notification object:
+                                JsonObject jsonNotification = new JsonObject();
+                                jsonNotification.add("data", jsonObject.get("data"));
+                                jsonNotification.add("channel", jsonObject.get("channel"));
+                                listener.onNotification(notificationChannel, new Notification(jsonNotification));
+                            }
                         }
                     }
                 }
+
                 try {
                     if (!shallDisconnect) {
                         Thread.sleep(interval);

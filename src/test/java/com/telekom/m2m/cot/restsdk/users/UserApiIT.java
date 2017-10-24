@@ -39,34 +39,42 @@ public class UserApiIT {
     private String exampleGroup = "admins";
 
     private String testUserName = "GenericUserName77";
-    private Group group =new Group();
+    private Group group = new Group();
     private String testGroupName = "GenericGroupName77";
     
     private String email = "mail@mail77.com";
 
+    private List<Group> groupsToDelete = new ArrayList<>();
+    private List<User> usersToDelete = new ArrayList<>();
+
+
     @AfterMethod
     public void tearDown() {
-        try {
-            // We need this in case a test failed in the middle, causing it to
-            // skip the delete call.
-            userApi.deleteUserByUserName(testUserName, tenant);
-        } catch (CotSdkException ex) {
-            // This exception is ok, because then the test method managed to
-            // delete its own user (should be the norm):
-            assertEquals(ex.getHttpStatus(), 404);
-        }
-         
-        try {
-            // We need this in case a test failed in the middle, causing it to
-            // skip the delete call.
-            if (group.getId() != null) {
-                userApi.deleteGroup(group, tenant);
+        // We need this in case a test failed in the middle, causing it to
+        // skip the delete call.
+        for (User user : usersToDelete) {
+            try {
+                userApi.deleteUser(user, tenant);
+            } catch (CotSdkException ex) {
+                // This exception is ok, because then the test method managed to
+                // delete its own user (should be the norm):
+                assertEquals(ex.getHttpStatus(), 404);
             }
-        } catch (CotSdkException ex) {
-            // This exception is ok, because then the test method managed to
-            // delete its own group (should be the norm):
-            assertEquals(ex.getHttpStatus(), 404);
         }
+        usersToDelete.clear();
+
+        for (Group group : groupsToDelete) {
+            try {
+                if (group.getId() != null) {
+                    userApi.deleteGroup(group, tenant);
+                }
+            } catch (CotSdkException ex) {
+                // This exception is ok, because then the test method managed to
+                // delete its own group (should be the norm):
+                assertEquals(ex.getHttpStatus(), 404);
+            }
+        }
+        groupsToDelete.clear();
     }
 
     @Test
@@ -81,6 +89,7 @@ public class UserApiIT {
 
         // when
         final User storedUser = userApi.createUser(user, tenant);
+        usersToDelete.add(user);
 
         // then
         Assert.assertNotNull(storedUser.getId(), "Should now have an Id!");
@@ -134,6 +143,7 @@ public class UserApiIT {
 
         // when:
         User testUser = userApi.createUser(usertocreate, tenant);
+        usersToDelete.add(usertocreate);
 
         // then:
         Assert.assertNotNull(testUser, "The user must exist.");
@@ -154,6 +164,7 @@ public class UserApiIT {
 
         // when:
         userApi.createUser(userForNoReturn, tenant);
+        usersToDelete.add(userForNoReturn);
         User returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
@@ -171,7 +182,8 @@ public class UserApiIT {
         // when:
         // (testing the method that creates a user by taking user fields as
         // input)
-        userApi.createUser(testUserName, tenant, "firstName22", "lastName22", "password22");
+        User user = userApi.createUser(testUserName, tenant, "firstName22", "lastName22", "password22");
+        usersToDelete.add(user);
         returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
@@ -195,6 +207,7 @@ public class UserApiIT {
 
         // when:
         userApi.createUser(userToUpdateFields, tenant);
+        usersToDelete.add(userToUpdateFields);
         returnedUser = userApi.getUserByName(testUserName, tenant);
 
         // then:
@@ -213,6 +226,7 @@ public class UserApiIT {
 
         // Now create this user in the cloud and update its fields:
         User userInCloud = userApi.createUser(userForUpdate, tenant);
+        usersToDelete.add(userForUpdate);
         userInCloud.setFirstName("FirstNameAfterUpdate");
         userInCloud.setLastName("LastNameAfterUpdate");
         userInCloud.setEmail("emailAfterUpdate@something.com");
@@ -243,6 +257,7 @@ public class UserApiIT {
 
         // when:
         Group returnedGroup = userApi.createGroup(group, tenant);
+        groupsToDelete.add(returnedGroup);
 
         // then:
         assertEquals(group.getName(), returnedGroup.getName(),
@@ -277,12 +292,16 @@ public class UserApiIT {
         // given: (Create a user and create two groups. Add this user to these
         // groups and retrieve the groups that this user belongs to)
         User user = userApi.createUser("userToCheckGrp", tenant, "firstName33", "lastName33", password);
+        usersToDelete.add(user);
         Group group1 = new Group();
         group1.setName("testGroup00001");
         Group group2 = new Group();
         group2.setName("testGroup00002");
+
         Group createdGroup1 = userApi.createGroup(group1, tenant);
+        groupsToDelete.add(createdGroup1);
         Group createdGroup2 = userApi.createGroup(group2, tenant);
+        groupsToDelete.add(createdGroup2);
 
         // when:
         userApi.addUserToGroup(user, tenant, createdGroup1);
@@ -319,6 +338,7 @@ public class UserApiIT {
 
         // Create the group in the cloud:
         groupToUpdate = userApi.createGroup(groupToUpdate, tenant);
+        groupsToDelete.add(groupToUpdate);
 
         // when: (Update the name of the group)
         groupToUpdate.setName("FinalGroupName108");
@@ -366,6 +386,7 @@ public class UserApiIT {
 
         // when (testing assigning a role to a user):
         User userForRole = userApi.createUser("TestUserForRole27", tenant, "firstName", "lastName", password);
+        usersToDelete.add(userForRole);
         userApi.assignRoleToUser(userForRole, returnedRole, tenant);
         RoleReferenceCollection roleRefCol = userApi.getRolesReferencesOfUser(userForRole, tenant);
         RoleReference[] arrayOfRoles2 = roleRefCol.getRoleReferences();
@@ -391,6 +412,7 @@ public class UserApiIT {
         Group groupForRoles = new Group();
         groupForRoles.setName("GroupForRoles5");
         Group returnedGroup = userApi.createGroup(groupForRoles, tenant);
+        groupsToDelete.add(returnedGroup);
 
         // when:
         userApi.assignRoleToGroup(returnedGroup, returnedRole, tenant);
@@ -421,24 +443,25 @@ public class UserApiIT {
         usertocreate.setFirstName("FirstName007");
         usertocreate.setPassword("password1234007");
         userApi.createUser(usertocreate, tenant);
+        usersToDelete.add(usertocreate);
         User userInCloud = userApi.getUserByName(testUserName, tenant);
 
         // when (now prepare a map of permissions as below and assign these
         // permissions to the created user):
         // We can assign more than one device id, and more than one permission
         // type.
-        Map<String, List<String>> devicePermission = new LinkedHashMap<>();
+        Map<String, List<DevicePermission>> devicePermission = new LinkedHashMap<>();
 
-        List<String> list1 = new ArrayList<>();
-        list1.add("ALARM:*:READ");
-        list1.add("AUDIT:*:READ");
+        List<DevicePermission> list1 = new ArrayList<>();
+        list1.add(new DevicePermission(DevicePermission.Api.ALARM, null, DevicePermission.Permission.READ));
+        list1.add(new DevicePermission("AUDIT:*:READ"));
         // These are real device ids, however cloud does not check their
         // validity; one can also provide a random string as a device id.
         devicePermission.put("10481", list1);
 
-        List<String> list2 = new ArrayList<>();
-        list2.add("OPERATION:*:READ");
-        list2.add("EVENT:*:READ");
+        List<DevicePermission> list2 = new ArrayList<>();
+        list2.add(new DevicePermission(DevicePermission.Api.OPERATION, "*", DevicePermission.Permission.READ));
+        list2.add(new DevicePermission("EVENT:*:READ"));
         devicePermission.put("10445", list2);
 
         userInCloud.setDevicePermissions(devicePermission);
@@ -448,18 +471,18 @@ public class UserApiIT {
         // device permissions were assigned as expected):
         User returned = userApi.getUserByName(testUserName, tenant);
 
-        Map<String, List<String>> returnedDevicePermissions = returned.getDevicePermissions();
+        Map<String, List<DevicePermission>> returnedDevicePermissions = returned.getDevicePermissions();
         assertEquals(devicePermission.size(), returnedDevicePermissions.size());
 
-        assertTrue((returnedDevicePermissions.get("10481").contains("ALARM:*:READ")));
-        assertTrue((returnedDevicePermissions.get("10481").contains("AUDIT:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10481").contains("OPERATION:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10481").contains("EVENT:*:READ")));
+        assertTrue(returnedDevicePermissions.get("10481").toString().contains("ALARM:*:READ"));
+        assertTrue(returnedDevicePermissions.get("10481").toString().contains("AUDIT:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10481").toString().contains("OPERATION:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10481").toString().contains("EVENT:*:READ"));
         
-        assertTrue((returnedDevicePermissions.get("10445").contains("OPERATION:*:READ")));
-        assertTrue((returnedDevicePermissions.get("10445").contains("EVENT:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10445").contains("ALARM:*:READ")));
-        assertFalse((returnedDevicePermissions.get("10445").contains("AUDIT:*:READ")));
+        assertTrue(returnedDevicePermissions.get("10445").toString().contains("OPERATION:*:READ"));
+        assertTrue(returnedDevicePermissions.get("10445").toString().contains("EVENT:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10445").toString().contains("ALARM:*:READ"));
+        assertFalse(returnedDevicePermissions.get("10445").toString().contains("AUDIT:*:READ"));
         
         // now delete that user:
         userApi.deleteUserByUserName(testUserName, tenant);
@@ -471,25 +494,26 @@ public class UserApiIT {
         // given (first create a group in the cloud where then we can set device permissions):
         group.setName(testGroupName);
         userApi.createGroup(group, tenant);
+        groupsToDelete.add(group);
         group = userApi.getGroupByName(tenant,testGroupName);
 
         // when (now prepare a map of permissions as below and assign these
         // permissions to the created group):
         // We can assign more than one device id, and more than one permission
         // type.
-        Map<String, List<String>> devicePermission = new LinkedHashMap<>();
-        List<String> list1 = new ArrayList<>();
+        Map<String, List<DevicePermission>> devicePermission = new LinkedHashMap<>();
+        List<DevicePermission> list1 = new ArrayList<>();
 
-        list1.add("ALARM:*:READ");
-        list1.add("AUDIT:*:READ");
+        list1.add(new DevicePermission(DevicePermission.Api.ALARM, null, DevicePermission.Permission.READ));
+        list1.add(new DevicePermission("AUDIT:*:READ"));
 
         // These are real device ids, however cloud does not check their
         // validity; one can also provide a random string as a device id.
         devicePermission.put("10481", list1);
-        List<String> list2 = new ArrayList<>();
+        List<DevicePermission> list2 = new ArrayList<>();
 
-        list2.add("OPERATION:*:READ");
-        list2.add("EVENT:*:READ");
+        list2.add(new DevicePermission(DevicePermission.Api.OPERATION, "*", DevicePermission.Permission.READ));
+        list2.add(new DevicePermission("EVENT:*:READ"));
         devicePermission.put("10445", list2);
         group.setDevicePermissions(devicePermission);
         userApi.updateGroup(group, tenant);
@@ -497,19 +521,19 @@ public class UserApiIT {
         // when (now let's return this group from the cloud and check if the
         // device permissions were assigned as expected):
 
-      group = userApi.getGroupByName(tenant, testGroupName);
+        group = userApi.getGroupByName(tenant, testGroupName);
 
         assertEquals(devicePermission.keySet().size(), group.getDevicePermissions().keySet().size());
 
-        assertTrue((group.getDevicePermissions().get("10481").contains("ALARM:*:READ")));
-        assertTrue((group.getDevicePermissions().get("10481").contains("AUDIT:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10481").contains("OPERATION:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10481").contains("EVENT:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10481").toString().contains("ALARM:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10481").toString().contains("AUDIT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10481").toString().contains("OPERATION:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10481").toString().contains("EVENT:*:READ")));
         
-        assertTrue((group.getDevicePermissions().get("10445").contains("OPERATION:*:READ")));
-        assertTrue((group.getDevicePermissions().get("10445").contains("EVENT:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10445").contains("ALARM:*:READ")));
-        assertFalse((group.getDevicePermissions().get("10445").contains("AUDIT:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10445").toString().contains("OPERATION:*:READ")));
+        assertTrue((group.getDevicePermissions().get("10445").toString().contains("EVENT:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10445").toString().contains("ALARM:*:READ")));
+        assertFalse((group.getDevicePermissions().get("10445").toString().contains("AUDIT:*:READ")));
         
     }
     

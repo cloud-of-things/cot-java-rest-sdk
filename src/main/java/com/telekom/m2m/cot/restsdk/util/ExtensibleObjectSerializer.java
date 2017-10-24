@@ -21,6 +21,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.users.DevicePermission;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
@@ -47,6 +48,21 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                 JsonPrimitive primitive = new JsonPrimitive(((ManagedObject) value).getId());
                 JsonObject sourceObject = new JsonObject();
                 sourceObject.add("id", primitive);
+                object.add(key, sourceObject);
+                continue;
+            }
+            // devicePermissions contain a list of DevicePermission objects which are not extending ExtensibleObject class
+            // and should be handled separately
+            if("devicePermissions".equals(key)) {
+                JsonObject sourceObject = new JsonObject();
+                for (Map.Entry<String, List<DevicePermission>> permissionsEntry : ((Map<String, List<DevicePermission>>)value).entrySet()) {
+                    JsonArray permissions = new JsonArray();
+                    for(DevicePermission permission : permissionsEntry.getValue()) {
+                        JsonPrimitive jsonPermission = new JsonPrimitive(permission.toString());
+                        permissions.add(jsonPermission);
+                    }
+                    sourceObject.add(permissionsEntry.getKey(), permissions);
+                }
                 object.add(key, sourceObject);
                 continue;
             }
@@ -146,13 +162,13 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
      * Special method to deserialize the devicePermissions of a User which look like this:
      * {"deviceId" : ["*:*:*", "ALARM:*:READ"], "deviceId" : ["*:*:*"]}
      */
-    private Map<String, List<String>> deserializeDevicePermissions(JsonObject object) {
-        Map<String, List<String>> permissions = new HashMap<>();
+    private Map<String, List<DevicePermission>> deserializeDevicePermissions(JsonObject object) {
+        Map<String, List<DevicePermission>> permissions = new HashMap<>();
         for (Map.Entry<String, JsonElement> entry : object.entrySet()) {
-            List<String> devicePermissions = new ArrayList<>();
+            List<DevicePermission> devicePermissions = new ArrayList<>();
             JsonArray value = (JsonArray)entry.getValue();
             for (JsonElement permission : value) {
-                devicePermissions.add(permission.getAsString());
+                devicePermissions.add(new DevicePermission(permission.getAsString()));
             }
             permissions.put(entry.getKey(), devicePermissions);
         }

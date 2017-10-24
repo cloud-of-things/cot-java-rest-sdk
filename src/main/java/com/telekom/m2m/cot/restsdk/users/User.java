@@ -1,13 +1,8 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 
@@ -191,10 +186,14 @@ public class User extends ExtensibleObject {
      * permissions of different type.
      * 
      * @return a map of device permissions for this user or null if the user has no permissions
-     * TODO: make a copy instead?
      */
-    public Map<String, List<String>> getDevicePermissions() {
-        return (Map<String, List<String>>)anyObject.get("devicePermissions");
+    public Map<String, List<DevicePermission>> getDevicePermissions() {
+        Map<String, List<DevicePermission>> devicePermissions = (Map<String, List<DevicePermission>>)anyObject.get("devicePermissions");
+        if(devicePermissions != null) {
+            return new HashMap<>(devicePermissions);
+        } else {
+            return new HashMap<>();
+        }
     }
 
 
@@ -205,10 +204,13 @@ public class User extends ExtensibleObject {
      * Will overwrite all existing permissions in this User instance.
      * 
      * @param devicePermissions the new permissions for this user.
-     * TODO: make a copy instead?
      */
-    public void setDevicePermissions(Map<String, List<String>> devicePermissions) {
-        anyObject.put("devicePermissions", devicePermissions);
+    public void setDevicePermissions(Map<String, List<DevicePermission>> devicePermissions) {
+        if(devicePermissions != null) {
+            anyObject.put("devicePermissions", new HashMap<>(devicePermissions));
+        } else {
+            anyObject.put("devicePermissions", null);
+        }
     }
 
 

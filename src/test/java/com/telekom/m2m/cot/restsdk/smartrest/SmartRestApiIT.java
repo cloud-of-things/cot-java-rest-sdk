@@ -131,7 +131,6 @@ public class SmartRestApiIT {
                 new SmartResponseTemplate[]{managedObjectResponse1, managedObjectResponse2, managedObjectResponse3});
 
         // We call SmartREST-template number 300 and pass the gId as the parameter.
-        // TODO: we also need a test that executes multiple lines (and one for multiple X-Ids).
         SmartRequest smartRequest = new SmartRequest(xId, SmartRequest.ProcessingMode.TRANSIENT, "300,"+gId);
         SmartResponse response = smartRestApi.execute(smartRequest);
         String[] responseLines = response.getBody().split(SmartRestApi.LINE_BREAK_PATTERN);

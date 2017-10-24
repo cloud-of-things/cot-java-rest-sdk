@@ -59,7 +59,7 @@ public class MeasurementCollection extends JsonArrayPagination {
             }
             return arrayOfMeasurements;
         } else {
-            return null;
+            return new Measurement[0];
         }
     }
 }

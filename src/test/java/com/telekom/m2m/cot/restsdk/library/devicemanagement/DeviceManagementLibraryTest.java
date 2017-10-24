@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
+import com.telekom.m2m.cot.restsdk.library.sensor.Mobile;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -37,19 +38,6 @@ public class DeviceManagementLibraryTest {
         m.addFragment(f);
 
         assertEquals(((JsonObject)m.get("c8y_RequiredAvailability")).get("responseInterval").getAsInt(), 2);
-    }
-
-
-    @Test
-    public void testMobile() {
-        Mobile f = new Mobile("123456789012345", "23FF", "0123456789ABCDEF0123");
-        ManagedObject m = new ManagedObject();
-        m.setName("myObject");
-        m.addFragment(f);
-
-        assertEquals(((JsonObject)m.get("c8y_Mobile")).get("imei").getAsString(), "123456789012345");
-        assertEquals(((JsonObject)m.get("c8y_Mobile")).get("cellId").getAsString(), "23FF");
-        assertEquals(((JsonObject)m.get("c8y_Mobile")).get("iccid").getAsString(), "0123456789ABCDEF0123");
     }
 
 
@@ -93,15 +81,27 @@ public class DeviceManagementLibraryTest {
 
     @Test
     public void testSignalStrength() {
-        SignalStrength f = new SignalStrength(-30.2f, "dBm", 5.5f, "%");
+        // Simple version (sensor lib):
+        SignalStrength f = new SignalStrength(-30.2f, "dBm");
         ManagedObject m = new ManagedObject();
         m.setName("myObject");
         m.addFragment(f);
 
-        assertEquals(((JsonObject) ((JsonObject) m.get("c8y_SignalStrength")).get("rssi")).get("value").getAsFloat(), -30.2f);
-        assertEquals(((JsonObject) ((JsonObject) m.get("c8y_SignalStrength")).get("rssi")).get("unit").getAsString(), "dBm");
-        assertEquals(((JsonObject) ((JsonObject) m.get("c8y_SignalStrength")).get("ber")).get("value").getAsFloat(), 5.5f);
-        assertEquals(((JsonObject) ((JsonObject) m.get("c8y_SignalStrength")).get("ber")).get("unit").getAsString(), "%");
+        JsonObject signalStrengthObject = ((JsonObject) m.get("c8y_SignalStrength"));
+        assertEquals(((JsonObject) signalStrengthObject.get("rssi")).get("value").getAsFloat(), -30.2f);
+        assertEquals(((JsonObject) signalStrengthObject.get("rssi")).get("unit").getAsString(), "dBm");
+        assertFalse(signalStrengthObject.has("ber")); // There should be none of the other fields in this version.
+
+        // Complete version (device management lib):
+        f = new SignalStrength(-30.2f, "dBm", 5.5f, "%");
+        m = new ManagedObject();
+        m.addFragment(f);
+
+        signalStrengthObject = ((JsonObject) m.get("c8y_SignalStrength"));
+        assertEquals(((JsonObject) signalStrengthObject.get("rssi")).get("value").getAsFloat(), -30.2f);
+        assertEquals(((JsonObject) signalStrengthObject.get("rssi")).get("unit").getAsString(), "dBm");
+        assertEquals(((JsonObject) signalStrengthObject.get("ber")).get("value").getAsFloat(), 5.5f);
+        assertEquals(((JsonObject) signalStrengthObject.get("ber")).get("unit").getAsString(), "%");
     }
 
 
