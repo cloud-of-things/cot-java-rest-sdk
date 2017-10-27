@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -409,5 +410,67 @@ public class SmartRestRealTimeIT {
         alarm.setSeverity(severity);
         return alarm;
     }
+
+	@Test
+	public void testDisconnect()  throws InterruptedException {
+		// This test checks the functionality of disconnect method. After the method is
+		// executed, we should not be able to receive notifications anymore.
+	    // Let's create two alarms, one before and one after the disconnect.
+		// We should be able to get a notification for only one of them.
+		
+		
+        // Create template to parse the notification:
+        SmartResponseTemplate responseTemplate = new SmartResponseTemplate(
+                "102", "$", "$", new String[]{"$.id", "$.text", "$.type", "$.severity", "$.count"});
+        gId = smartRestApi.storeTemplates(
+                xId,
+                new SmartRequestTemplate[0],
+                new SmartResponseTemplate[]{responseTemplate});
+
+        connector = smartRestApi.getNotificationsConnector(xId);
+
+        // Prepare subscription:
+        connector.subscribe("/alarms/" + alarmSource1.getId(), null);
+
+        // The asynchronously received alarms will be stored in this list:
+        final List<String> notedAlarms = new ArrayList<>();
+
+        // Prepare listener for the channel of our test device:
+        connector.addListener(new SmartListener() {
+            @Override
+            public void onNotification(SmartNotification notification) {
+                notedAlarms.add(notification.getData());
+            }
+
+            @Override
+            public void onError(Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+        
+        Thread.sleep(DELAY_MILLIS);
+        
+        alarmApi.create(makeAlarm("com_telekom_TestType1", Alarm.SEVERITY_MINOR, alarmSource1));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        //Now let's disconnect and after that add another alarm from the same source that we subscribed to:
+        connector.disconnect();
+        
+        alarmApi.create(makeAlarm("com_telekom_TestType2", Alarm.SEVERITY_MAJOR, alarmSource1));
+
+        Thread.sleep(DELAY_MILLIS);
+
+        //Now we should not receive a notification from for the second one:
+        assertEquals(notedAlarms.size(), 1);
+        // And let's verify that the only notification we have is indeed the first alarm that we created:
+        assertTrue(notedAlarms.get(0).endsWith("MINOR,1"), "Unexpected data at [0]: "+notedAlarms.get(0));
+		// Let's also check if the isConnected() method returns a false:
+        assertFalse(connector.isConnected());
+	
+	}
 
 }
