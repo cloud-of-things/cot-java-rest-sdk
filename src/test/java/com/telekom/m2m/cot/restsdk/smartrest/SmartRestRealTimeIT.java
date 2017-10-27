@@ -16,6 +16,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -467,8 +468,8 @@ public class SmartRestRealTimeIT {
         assertEquals(notedAlarms.size(), 1);
         // And let's verify that the only notification we have is indeed the first alarm that we created:
         assertTrue(notedAlarms.get(0).endsWith("MINOR,1"), "Unexpected data at [0]: "+notedAlarms.get(0));
-		
-		
+		// Let's also check if the isConnected() method returns a false:
+        assertFalse(connector.isConnected());
 	
 	}
 
