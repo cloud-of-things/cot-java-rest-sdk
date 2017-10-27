@@ -36,4 +36,17 @@ public class CloudOfThingsPlatformTestIT {
         inventoryApi.get("test");
     }
 
+    @Test
+    public void testCredentialsWithTenantUsername() throws Exception {
+        CotCredentials cotCredentials = new CotCredentials(TestHelper.TEST_TENANT,
+                TestHelper.TEST_TENANT + "/" + TestHelper.TEST_USERNAME,
+                TestHelper.TEST_PASSWORD);
+        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, cotCredentials);
+
+        InventoryApi inventoryApi = cotPlatform.getInventoryApi();
+        assertNotNull(inventoryApi);
+
+        inventoryApi.get("test");
+    }
+
 }
