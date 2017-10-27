@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static com.telekom.m2m.cot.restsdk.devicecontrol.NewDeviceRequestStatus.WAITING_FOR_CONNECTION;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 
@@ -133,7 +134,7 @@ public class DeviceCredentialsApiIT {
         );
         assertEquals(
                 newDeviceRequest.getStatus(),
-                "WAITING_FOR_CONNECTION"
+                WAITING_FOR_CONNECTION
         );
         assertEquals(
                 newDeviceRequest.getTenantId(),

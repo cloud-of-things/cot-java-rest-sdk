@@ -27,12 +27,12 @@ public class NewDeviceRequest extends ExtensibleObject {
         anyObject.put("tenantId", tenantId);
     }
 
-    public void setStatus(final String status) {
-        anyObject.put("status", status);
+    public void setStatus(final NewDeviceRequestStatus status) {
+        anyObject.put("status", status.toString());
     }
 
-    public String getStatus() {
-        return (String) anyObject.get("status");
+    public NewDeviceRequestStatus getStatus() {
+        return NewDeviceRequestStatus.valueOf((String)anyObject.get("status"));
     }
 
 }
