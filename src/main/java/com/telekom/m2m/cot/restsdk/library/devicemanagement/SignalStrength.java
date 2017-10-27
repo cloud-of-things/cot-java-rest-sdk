@@ -23,6 +23,9 @@ public class SignalStrength implements Fragment {
 
     /**
      * This is the partial constructor for c8y_SignalStrength as described in the sensor library.
+     *
+     * @param rssiValue value of Receive Signal Strength Indicator.
+     * @param rssiUnit SI unit of Receive Signal Strength Indicator.
      */
     public SignalStrength(float rssiValue, String rssiUnit) {
         this(rssiValue, rssiUnit, null, null);
@@ -32,6 +35,11 @@ public class SignalStrength implements Fragment {
 
     /**
      * This is the full constructor for c8y_SignalStrength as described in the device management library.
+     *
+     * @param rssiValue value of Receive Signal Strength Indicator.
+     * @param rssiUnit SI unit of Receive Signal Strength Indicator.
+     * @param berValue value of the Bit Error Rate.
+     * @param berUnit SI unit of the Bit Error Rate.
      */
     public SignalStrength(float rssiValue, String rssiUnit, Float berValue, String berUnit) {
         this.rssiValue = rssiValue;

@@ -97,3 +97,9 @@ In case of errors in communication with Cloud of Things REST API, the
 [``CotSdkException``](src/main/java/com/telekom/m2m/cot/restsdk/util/CotSdkException.java) should be used to wrap the original error or Exception.
 
 An example usage can be found in [``CloudOfThingsRestClient.doRequestWithIdResponse(..)``](src/main/java/com/telekom/m2m/cot/restsdk/CloudOfThingsRestClient.java)
+
+### Contributing ###
+
+We are always happy to consider pull requests with enhancements or bugfixes.
+Please direct those at the _develop_ branch. The _master_ branch is used for
+formal releases only.
