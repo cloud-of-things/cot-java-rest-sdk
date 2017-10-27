@@ -48,7 +48,9 @@ public class CloudOfThingsPlatform {
      */
     public CloudOfThingsPlatform(String host, CotCredentials cotCredentials) {
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(1, TimeUnit.MINUTES).build();
-        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, cotCredentials.getUsername(),
+        String usernameWithTenant = cotCredentials.getTenant() + "/" + cotCredentials.getUsername();
+
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, usernameWithTenant,
                 cotCredentials.getPassword());
     }
 
