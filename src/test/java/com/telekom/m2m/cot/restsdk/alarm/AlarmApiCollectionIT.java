@@ -312,7 +312,7 @@ public class AlarmApiCollectionIT {
         Alarm testAlarm1 = new Alarm();
         testAlarm1.setSource(testManagedObject);
         testAlarm1.setTime(new Date(new Date().getTime() - (2 * 5000)));
-        testAlarm1.setType("mytype");
+        testAlarm1.setType("mytype1");
         testAlarm1.setText("Test");
         testAlarm1.setStatus(Alarm.STATE_ACTIVE);
         testAlarm1.setSeverity(Alarm.SEVERITY_MAJOR);
@@ -322,7 +322,7 @@ public class AlarmApiCollectionIT {
         Alarm testAlarm2 = new Alarm();
         testAlarm2.setSource(testManagedObject);
         testAlarm2.setTime(new Date(new Date().getTime() - (2 * 5000)));
-        testAlarm2.setType("mytype");
+        testAlarm2.setType("mytype2");
         testAlarm2.setText("Test");
         testAlarm2.setStatus(Alarm.STATE_ACKNOWLEDGED);
         testAlarm2.setSeverity(Alarm.SEVERITY_MAJOR);
@@ -333,6 +333,9 @@ public class AlarmApiCollectionIT {
         Alarm[] as = alarms.getAlarms();
         Assert.assertTrue(as.length > 0);
         boolean allAlarmsFromSameStatus = true;
+
+        // The alarms have a different type, otherwise they would be deduplicated and counted (same source and severity).
+        // Only one of them may be ACTIVE, the other one is ACKNOWLEDGED but we don't know the ordering of the collection.
         for (Alarm a : as) {
             if (!a.getStatus().equals(Alarm.STATE_ACTIVE)) {
                 allAlarmsFromSameStatus = false;
