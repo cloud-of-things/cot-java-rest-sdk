@@ -48,7 +48,18 @@ public class CloudOfThingsPlatform {
      */
     public CloudOfThingsPlatform(String host, CotCredentials cotCredentials) {
         OkHttpClient client = new OkHttpClient.Builder().readTimeout(1, TimeUnit.MINUTES).build();
-        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, cotCredentials.getUsername(),
+
+        String usernameWithTenant = cotCredentials.getUsername();
+
+        // Add tenant as prefix to the username in order to make possible to create different CloudOfThingsPlatform
+        // objects for each tenant using the same host instead of using specific (tenant-)host.
+        if(cotCredentials.getUsername() != null &&
+                cotCredentials.getTenant() != null &&
+                !cotCredentials.getUsername().startsWith(cotCredentials.getTenant() + "/")) {
+            usernameWithTenant = cotCredentials.getTenant() + "/" + cotCredentials.getUsername();
+        }
+
+        cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, usernameWithTenant,
                 cotCredentials.getPassword());
     }
 

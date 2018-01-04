@@ -82,7 +82,7 @@ public class AlarmApiIT {
         Alarm alarm = new Alarm();
         alarm.setText("Strange thing happend!");
         alarm.setType("com_telekom_TestType");
-        alarm.setTime(new Date());
+        alarm.setTime(timeOfEventHappening);
         alarm.setSource(testManagedObject);
         alarm.set("foo", "{ \"alt\": 99.9, \"lng\": 8.55436, \"lat\": 50.02868 }");
         alarm.setStatus(Alarm.STATE_ACTIVE);
