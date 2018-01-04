@@ -50,7 +50,7 @@ public class EventApiIT {
     @Test
     public void testCreateAndRead() throws Exception {
         Calendar timeOfEventHappening = Calendar.getInstance();
-        timeOfEventHappening.set(Calendar.SECOND, 10);
+        timeOfEventHappening.add(Calendar.SECOND, -10); // To adjust for smallish clock-mismatch between local machine and CoT.
 
         Event event = new Event();
         event.setText("Sample Text");
@@ -86,7 +86,6 @@ public class EventApiIT {
         // This test checks whether the getEvent() method returns a null when the event does not exist in the cloud.
 
         Calendar timeOfEventHappening = Calendar.getInstance();
-        timeOfEventHappening.set(Calendar.SECOND, 10);
 
         Event event = new Event();
         event.setText("Sample Text");
