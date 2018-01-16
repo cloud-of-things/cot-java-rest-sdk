@@ -25,7 +25,7 @@ public class SmartRestRealTimeIT {
 
     // This delay (i.e. how long we wait for the server to process alarms and send notifications) seems to work,
     // but of course cannot be 100% reliable for a real integration test:
-    private static final int DELAY_MILLIS = 150;
+    private static final int DELAY_MILLIS = 250;
 
     private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 

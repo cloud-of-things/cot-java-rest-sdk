@@ -1,9 +1,9 @@
 package com.telekom.m2m.cot.restsdk;
 
 import java.io.IOException;
+import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
-import java.net.SocketTimeoutException;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
@@ -293,7 +293,7 @@ public class CloudOfThingsRestClient {
             }
 
             return response.body().string();
-        } catch (SocketTimeoutException e) {
+        } catch (InterruptedIOException e) {
             // That's ok and normal. There just weren't any new notifications.
             return null;
         } catch (IOException e) {
@@ -371,7 +371,7 @@ public class CloudOfThingsRestClient {
             }
             String responseBody = response.body().string();
             return new SmartResponse(responseBody);
-        } catch (SocketTimeoutException e) {
+        } catch (InterruptedIOException e) {
             // That's ok and normal. There just weren't any new notifications.
             return null;
         } catch (IOException e) {
