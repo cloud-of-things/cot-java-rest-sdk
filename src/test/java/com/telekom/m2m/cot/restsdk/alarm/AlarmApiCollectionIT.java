@@ -32,6 +32,7 @@ public class AlarmApiCollectionIT {
 
     @AfterMethod
     public void tearDown() {
+        cotPlat.getAlarmApi().deleteAlarms(Filter.build().bySource(testManagedObject.getId()));
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
 
@@ -191,7 +192,7 @@ public class AlarmApiCollectionIT {
 		// Now let's test the "fitler by type" feature:
 
 		// given:
-		Filter.FilterBuilder filterBuilderForType = Filter.build().byType(type);
+		Filter.FilterBuilder filterBuilderForType = Filter.build().byType(type).bySource(testManagedObject.getId());
 
 		// when:
 		alarms = alarmApi.getAlarms(filterBuilderForType, 50);
@@ -229,7 +230,6 @@ public class AlarmApiCollectionIT {
 		// The assertion verifies that in the array of alarms, some of them does not
 		// have the text we set.
 		assertFalse(allAlarmsWithSameText);
-
 	}
     
     
