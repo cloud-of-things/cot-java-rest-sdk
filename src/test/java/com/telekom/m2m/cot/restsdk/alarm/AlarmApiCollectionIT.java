@@ -136,7 +136,7 @@ public class AlarmApiCollectionIT {
 		alarm2.setSeverity(Alarm.SEVERITY_MAJOR);
 
 		// when:
-		Filter.FilterBuilder filterBuilderForDate = Filter.build().byDate(beforeDate, afterDate);
+		Filter.FilterBuilder filterBuilderForDate = Filter.build().byDate(beforeDate, afterDate).bySource(testManagedObject.getId());
 		alarmApi.create(alarm2);
 		alarms = alarmApi.getAlarms(filterBuilderForDate, 5);
 
