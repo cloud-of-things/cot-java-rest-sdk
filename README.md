@@ -33,6 +33,13 @@ You can find the Java Doc of the latest release here: http://cloud-of-things.git
 
 Short information about what has changed between releases.
 
+### Release 1.0.2
+* Update of okhttp.
+* Better integration-tests.
+* Better login-process (include tenant in username).
+* NewDeviceRequestStatus-enum.
+* Refactoring.
+
 ### Release 1.0.0
 * Improved Examples: Add examples for SDK-Users (see DEVELOPER.md)
 * Implemented Sensor Library
