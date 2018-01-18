@@ -32,6 +32,7 @@ public class AlarmApiCollectionIT {
 
     @AfterMethod
     public void tearDown() {
+        cotPlat.getAlarmApi().deleteAlarms(Filter.build().bySource(testManagedObject.getId()));
         TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
 
@@ -136,7 +137,7 @@ public class AlarmApiCollectionIT {
 		alarm2.setSeverity(Alarm.SEVERITY_MAJOR);
 
 		// when:
-		Filter.FilterBuilder filterBuilderForDate = Filter.build().byDate(beforeDate, afterDate);
+		Filter.FilterBuilder filterBuilderForDate = Filter.build().byDate(beforeDate, afterDate).bySource(testManagedObject.getId());
 		alarmApi.create(alarm2);
 		alarms = alarmApi.getAlarms(filterBuilderForDate, 5);
 
@@ -191,7 +192,7 @@ public class AlarmApiCollectionIT {
 		// Now let's test the "fitler by type" feature:
 
 		// given:
-		Filter.FilterBuilder filterBuilderForType = Filter.build().byType(type);
+		Filter.FilterBuilder filterBuilderForType = Filter.build().byType(type).bySource(testManagedObject.getId());
 
 		// when:
 		alarms = alarmApi.getAlarms(filterBuilderForType, 50);
@@ -229,7 +230,6 @@ public class AlarmApiCollectionIT {
 		// The assertion verifies that in the array of alarms, some of them does not
 		// have the text we set.
 		assertFalse(allAlarmsWithSameText);
-
 	}
     
     
@@ -312,7 +312,7 @@ public class AlarmApiCollectionIT {
         Alarm testAlarm1 = new Alarm();
         testAlarm1.setSource(testManagedObject);
         testAlarm1.setTime(new Date(new Date().getTime() - (2 * 5000)));
-        testAlarm1.setType("mytype");
+        testAlarm1.setType("mytype1");
         testAlarm1.setText("Test");
         testAlarm1.setStatus(Alarm.STATE_ACTIVE);
         testAlarm1.setSeverity(Alarm.SEVERITY_MAJOR);
@@ -322,7 +322,7 @@ public class AlarmApiCollectionIT {
         Alarm testAlarm2 = new Alarm();
         testAlarm2.setSource(testManagedObject);
         testAlarm2.setTime(new Date(new Date().getTime() - (2 * 5000)));
-        testAlarm2.setType("mytype");
+        testAlarm2.setType("mytype2");
         testAlarm2.setText("Test");
         testAlarm2.setStatus(Alarm.STATE_ACKNOWLEDGED);
         testAlarm2.setSeverity(Alarm.SEVERITY_MAJOR);
@@ -333,6 +333,9 @@ public class AlarmApiCollectionIT {
         Alarm[] as = alarms.getAlarms();
         Assert.assertTrue(as.length > 0);
         boolean allAlarmsFromSameStatus = true;
+
+        // The alarms have a different type, otherwise they would be deduplicated and counted (same source and severity).
+        // Only one of them may be ACTIVE, the other one is ACKNOWLEDGED but we don't know the ordering of the collection.
         for (Alarm a : as) {
             if (!a.getStatus().equals(Alarm.STATE_ACTIVE)) {
                 allAlarmsFromSameStatus = false;

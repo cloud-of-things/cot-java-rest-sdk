@@ -27,12 +27,23 @@ public class NewDeviceRequest extends ExtensibleObject {
         anyObject.put("tenantId", tenantId);
     }
 
+    /**
+     * @deprecated use {@link #setStatus(NewDeviceRequestStatus)} instead
+     * @param status the status value as String
+     * @throws IllegalArgumentException if the parameter doesn't match one of the NewDeviceRequestStatus
+     */
+    @Deprecated
     public void setStatus(final String status) {
+        NewDeviceRequestStatus.valueOf(status);
         anyObject.put("status", status);
     }
 
-    public String getStatus() {
-        return (String) anyObject.get("status");
+    public void setStatus(final NewDeviceRequestStatus status) {
+        anyObject.put("status", status.toString());
+    }
+
+    public NewDeviceRequestStatus getStatus() {
+        return NewDeviceRequestStatus.valueOf((String)anyObject.get("status"));
     }
 
 }

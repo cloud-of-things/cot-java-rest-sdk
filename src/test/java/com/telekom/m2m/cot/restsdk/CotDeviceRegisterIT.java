@@ -87,7 +87,7 @@ public class CotDeviceRegisterIT {
 
         DeviceControlApi deviceControlApi = cloudOfThingsPlatform.getDeviceControlApi();
 
-        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice("https://management.int2-ram.m2m.telekom.com").getDeviceCredentialsApi();
+        DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice(TestHelper.TEST_HOST).getDeviceCredentialsApi();
 
         // Step 1: (devicemanager) Register Device
         Operation operation = new Operation(deviceId);

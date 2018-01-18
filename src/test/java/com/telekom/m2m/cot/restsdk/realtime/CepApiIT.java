@@ -54,7 +54,7 @@ public class CepApiIT {
     private ManagedObject testObjectForInventory2;
     private ManagedObject testObjectForCreateUpdateDelete;
 
-    private static final int DELAY_MILLIS = 150;
+    private static final int DELAY_MILLIS = 250;
 
     CepConnector connector;
 
