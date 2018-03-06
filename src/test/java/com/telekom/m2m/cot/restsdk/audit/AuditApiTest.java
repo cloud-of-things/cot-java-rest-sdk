@@ -67,7 +67,7 @@ public class AuditApiTest {
         final AuditRecord testAuditRecord = new AuditRecord();
         testAuditRecord.setText(text);
 
-        Mockito.when(cotRestClientMock.doRequestWithIdResponse(any(String.class), any(String.class), any(String.class),any(String.class))).thenReturn(auditRecordId);
+        Mockito.when(cotRestClientMock.doRequestWithIdResponse(any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(auditRecordId);
 
         AuditRecord createdAuditRecord = auditApi.createAuditRecord(testAuditRecord);
 

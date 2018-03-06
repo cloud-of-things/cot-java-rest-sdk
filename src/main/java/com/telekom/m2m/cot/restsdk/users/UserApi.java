@@ -16,7 +16,7 @@ public class UserApi {
     private static final String CONTENT_TYPE_USER = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
     private static final String CONTENT_TYPE_GROUP = "application/vnd.com.nsn.cumulocity.group+json; charset=UTF-8; ver=0.9";
     private static final String ACCEPT_USER = "application/vnd.com.nsn.cumulocity.user+json; charset=UTF-8; ver=0.9";
-    private static final String ACCEPT_GROUP= "application/vnd.com.nsn.cumulocity.group+json; charset=UTF-8; ver=0.9";
+    private static final String ACCEPT_GROUP = "application/vnd.com.nsn.cumulocity.group+json; charset=UTF-8; ver=0.9";
     private static final String CONTENT_TYPE_USER_REF = "application/vnd.com.nsn.cumulocity.userReference+json; charset=UTF-8; ver=0.9";
     private static final String ACCEPT_USER_REF = "application/vnd.com.nsn.cumulocity.userReference+json; charset=UTF-8; ver=0.9";
     private static final String CONTENT_TYPE_ROLE = "application/vnd.com.nsn.cumulocity.role+json; charset=UTF-8; ver=0.9";

@@ -27,7 +27,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 public class CepConnector implements Runnable {
 
     public static final String CONTENT_TYPE = "application/json";
-    public static final String ACCEPT= "application/json";
+    public static final String ACCEPT = "application/json";
     public static final String PROTOCOL_VERSION_REQUESTED = "1.0";
     public static final String PROTOCOL_VERSION_MINIMUM = "1.0";
 
