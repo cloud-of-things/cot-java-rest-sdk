@@ -16,7 +16,7 @@ public class InventoryApi {
     protected Gson gson = GsonUtils.createGson();
 
     private static final String CONTENT_TYPE_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
-    private static final String ACCEPT_MANAGEDOBJECT ="application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "inventory/managedObjects/";

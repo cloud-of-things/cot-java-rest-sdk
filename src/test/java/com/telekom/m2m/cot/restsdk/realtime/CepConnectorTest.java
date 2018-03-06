@@ -43,7 +43,7 @@ public class CepConnectorTest {
     // is sleeping between connect requests. In both situations a clean shutdown must be possible.
     @Test
     public void testDisconnect() throws InterruptedException {
-        when(cloudOfThingsRestClient.doPostRequest(anyString(), anyString(), anyString(),anyString())).
+        when(cloudOfThingsRestClient.doPostRequest(anyString(), anyString(), anyString(), anyString())).
                 thenReturn("[{\"clientId\":\"My-Client-Id\"}]");
         when(cloudOfThingsRestClient.doRealTimePollingRequest(anyString(), anyString(), anyString(), anyInt())).
                 thenAnswer(new Answer<String>() { // First answer, will keep the connect waiting.
@@ -110,11 +110,11 @@ public class CepConnectorTest {
     @Test
     public void testSubscriptionFailed() throws InterruptedException {
         // return clientId on handshake
-        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/handshake"), anyString(), anyString(),anyString())).
+        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/handshake"), anyString(), anyString(), anyString())).
                 thenReturn("[{\"clientId\" : \"abc123\"}]");
 
         // return failure on doing initial subscriptions
-        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/subscribe"), anyString(), anyString(),anyString())).
+        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/subscribe"), anyString(), anyString(), anyString())).
                 thenReturn("[{\"channel\":\"/meta/subscribe\",\"error\":\"402::Unknown client\",\"successful\":false}]");
 
         final List<String> notedOperations = new ArrayList<>();
@@ -150,7 +150,7 @@ public class CepConnectorTest {
     @Test
     public void testConnectionFailed() throws InterruptedException {
         // return clientId on handshake
-        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/handshake"), anyString(), anyString(),anyString())).
+        when(cloudOfThingsRestClient.doPostRequest(contains("/meta/handshake"), anyString(), anyString(), anyString())).
                 thenReturn("[{\"clientId\" : \"abc123\"}]");
 
         // return failure on connect
