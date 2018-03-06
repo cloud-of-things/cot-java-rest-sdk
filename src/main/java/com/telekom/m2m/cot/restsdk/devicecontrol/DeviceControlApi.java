@@ -26,6 +26,11 @@ public class DeviceControlApi {
     private static final String CONTENT_TYPE_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_BULK_OPERATION = "application/vnd.com.nsn.cumulocity.bulkoperation+json;charset=UTF-8;ver=0.9";
 
+    private static final String ACCEPT_NEW_DEVICE_REQUEST = "application/vnd.com.nsn.cumulocity.newDeviceRequest+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_BULK_OPERATION = "application/vnd.com.nsn.cumulocity.bulkoperation+json;charset=UTF-8;ver=0.9";
+
+
     private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
     private static final String RELATIVE_OPERATION_API_URL = "devicecontrol/operations/";
     private static final String RELATIVE_BULK_OPERATION_API_URL = "devicecontrol/bulkoperations/";
@@ -56,7 +61,7 @@ public class DeviceControlApi {
      * @since 0.1.0
      */
     public Operation createNewDevice(Operation operation) {
-        cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST);
+        cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST, ACCEPT_NEW_DEVICE_REQUEST);
         return operation;
     }
 
@@ -98,7 +103,7 @@ public class DeviceControlApi {
     public Operation create(Operation operation) {
         String json = gson.toJson(operation);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION,ACCEPT_OPERATION);
         operation.setId(id);
 
         return operation;
@@ -172,7 +177,7 @@ public class DeviceControlApi {
     public BulkOperation create(BulkOperation bulkOperation) {
         String json = gson.toJson(bulkOperation);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_BULK_OPERATION_API_URL, CONTENT_TYPE_BULK_OPERATION);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_BULK_OPERATION_API_URL, CONTENT_TYPE_BULK_OPERATION,ACCEPT_BULK_OPERATION);
         bulkOperation.setId(id);
 
         return bulkOperation;

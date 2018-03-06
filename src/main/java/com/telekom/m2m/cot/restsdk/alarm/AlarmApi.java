@@ -13,6 +13,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class AlarmApi {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarm+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.alarm+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "/alarm/alarms/";
 
     private final Gson gson = GsonUtils.createGson();
@@ -48,7 +49,7 @@ public class AlarmApi {
      */
     public Alarm create(Alarm alarm) {
         String json = gson.toJson(alarm);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE,ACCEPT);
         alarm.setId(id);
         return alarm;
     }
