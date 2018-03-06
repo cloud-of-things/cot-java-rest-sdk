@@ -13,6 +13,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class IdentityApi {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.externalId+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.externalId+json;charset=UTF-8;ver=0.9";
     protected Gson gson = GsonUtils.createGson();
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -43,7 +44,7 @@ public class IdentityApi {
         externalIdObject.add("type", new JsonPrimitive(externalId.getType()));
         externalIdObject.add("externalId", new JsonPrimitive(externalId.getExternalId()));
 
-        String response = cloudOfThingsRestClient.doPostRequest(externalIdObject.toString(), "/identity/globalIds/" + externalId.getManagedObject().getId() + "/externalIds", CONTENT_TYPE, CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.doPostRequest(externalIdObject.toString(), "/identity/globalIds/" + externalId.getManagedObject().getId() + "/externalIds", CONTENT_TYPE, ACCEPT);
         return gson.fromJson(response, ExternalId.class);
 
     }

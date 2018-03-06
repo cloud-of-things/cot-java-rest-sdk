@@ -73,7 +73,7 @@ public class CloudOfThingsRestClient {
      *            the Content-Type of the JSON Object.
      * @return the id of the Object.
      */
-    public String doRequestWithIdResponse(String json, String api, String contentType) {
+    public String doRequestWithIdResponse(String json, String api, String contentType, String accept) {
 
         Response response = null;
         try {
@@ -81,7 +81,7 @@ public class CloudOfThingsRestClient {
             Request request = new Request.Builder()
                     .addHeader("Authorization", "Basic " + encodedAuthString)
                     .addHeader("Content-Type", contentType)
-                    .addHeader("Accept", contentType)
+                    .addHeader("Accept", accept)
                     // .url(tenant + ".test-ram.m2m.telekom.com/" + api)
                     .url(host + "/" + api)
                     .post(body)
@@ -108,11 +108,6 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
-    // TODO: here the contentType is also used for the Accept header, which is dirty!
-    public String doPostRequest(String json, String api, String contentType) {
-        return doPostRequest(json, api, contentType, contentType);
-    }
 
 
     /**
