@@ -22,8 +22,8 @@ import java.util.List;
  */
 public class MeasurementApi {
 
-    private static final String CONTENT_TYPE_MEASUREMENT = " application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
-    private static final String ACCEPT_MEASUREMENT = " application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE_MEASUREMENT = "application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MEASUREMENT = "application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
 

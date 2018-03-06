@@ -103,7 +103,7 @@ public class DeviceControlApi {
     public Operation create(Operation operation) {
         String json = gson.toJson(operation);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION,ACCEPT_OPERATION);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION, ACCEPT_OPERATION);
         operation.setId(id);
 
         return operation;
@@ -177,7 +177,7 @@ public class DeviceControlApi {
     public BulkOperation create(BulkOperation bulkOperation) {
         String json = gson.toJson(bulkOperation);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_BULK_OPERATION_API_URL, CONTENT_TYPE_BULK_OPERATION,ACCEPT_BULK_OPERATION);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_BULK_OPERATION_API_URL, CONTENT_TYPE_BULK_OPERATION, ACCEPT_BULK_OPERATION);
         bulkOperation.setId(id);
 
         return bulkOperation;

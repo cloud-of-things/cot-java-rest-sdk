@@ -27,7 +27,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 public class CepConnector implements Runnable {
 
     public static final String CONTENT_TYPE = "application/json";
-    public static final String ACCEPT= "application/json";;
+    public static final String ACCEPT= "application/json";
     public static final String PROTOCOL_VERSION_REQUESTED = "1.0";
     public static final String PROTOCOL_VERSION_MINIMUM = "1.0";
 
@@ -93,7 +93,7 @@ public class CepConnector implements Runnable {
             obj.addProperty("clientId", clientId);
             obj.addProperty("subscription", channel);
             body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE,ACCEPT);
+            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
         }
     }
 
@@ -112,7 +112,7 @@ public class CepConnector implements Runnable {
             obj.addProperty("clientId", clientId);
             obj.addProperty("subscription", channel);
             body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE,ACCEPT);
+            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
         }
     }
 
@@ -256,7 +256,7 @@ public class CepConnector implements Runnable {
 
         JsonArray body = new JsonArray();
         body.add(obj);
-        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE,ACCEPT);
+        String result = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
         JsonArray r = gson.fromJson(result, JsonArray.class);
         clientId = r.get(0).getAsJsonObject().get("clientId").getAsString();
     }
@@ -283,7 +283,7 @@ public class CepConnector implements Runnable {
             obj.addProperty("subscription", channel);
             body.add(obj);
         }
-        String responseBody = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE,ACCEPT);
+        String responseBody = cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
         JsonArray responseJson = gson.fromJson(responseBody, JsonArray.class);
         for (JsonElement channelJson : responseJson) {
             JsonObject channelObject = (JsonObject) channelJson;
