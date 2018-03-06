@@ -15,7 +15,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 </dependency>
 ```
 
-Exampe of a basic connect to the platform:
+Example of a basic connect to the platform:
 ```java
 CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform("hostname", new CotCredentials("tenant", "username", "password"));
 InventoryApi inventoryApi = cotPlatform.getInventoryApi();
