@@ -49,7 +49,7 @@ public class AlarmApi {
      */
     public Alarm create(Alarm alarm) {
         String json = gson.toJson(alarm);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE,ACCEPT);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE, ACCEPT);
         alarm.setId(id);
         return alarm;
     }

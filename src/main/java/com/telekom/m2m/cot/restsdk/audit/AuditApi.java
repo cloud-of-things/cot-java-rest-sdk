@@ -51,7 +51,7 @@ public class AuditApi {
     public AuditRecord createAuditRecord(final AuditRecord auditRecord) {
         final String json = gson.toJson(auditRecord);
 
-        final String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE,ACCEPT);
+        final String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE, ACCEPT);
         auditRecord.setId(id);
 
         return auditRecord;
