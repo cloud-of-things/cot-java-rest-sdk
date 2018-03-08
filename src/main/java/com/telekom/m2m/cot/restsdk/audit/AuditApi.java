@@ -13,6 +13,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
  */
 public class AuditApi {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.auditRecord+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.auditRecord+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "audit/auditRecords/";
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -50,7 +51,7 @@ public class AuditApi {
     public AuditRecord createAuditRecord(final AuditRecord auditRecord) {
         final String json = gson.toJson(auditRecord);
 
-        final String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE);
+        final String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE, ACCEPT);
         auditRecord.setId(id);
 
         return auditRecord;

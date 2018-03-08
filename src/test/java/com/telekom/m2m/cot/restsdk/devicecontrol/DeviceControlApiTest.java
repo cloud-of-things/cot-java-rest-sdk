@@ -40,7 +40,7 @@ public class DeviceControlApiTest {
         final Operation testOperation = new Operation();
         testOperation.setDeviceId(deviceId);
 
-        Mockito.when(cotRestClientMock.doRequestWithIdResponse(any(String.class), any(String.class), any(String.class))).thenReturn(operationId);
+        Mockito.when(cotRestClientMock.doRequestWithIdResponse(any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(operationId);
 
         Operation createdOperation = deviceControlApi.create(testOperation);
 
@@ -184,7 +184,7 @@ public class DeviceControlApiTest {
 
         deviceControlApi.createNewDevice(testOperation);
 
-        Mockito.verify(cotRestClientMock, Mockito.times(1)).doPostRequest(contains(deviceId), any(String.class), any(String.class));
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).doPostRequest(contains(deviceId), any(String.class), any(String.class), any(String.class));
     }
 
     @Test

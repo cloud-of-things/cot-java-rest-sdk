@@ -15,6 +15,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 public class RetentionRuleApi {
 
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.retentionRule+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.retentionRule+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "retention/retentions/";
 
     private final Gson gson = GsonUtils.createGson();
@@ -69,7 +70,7 @@ public class RetentionRuleApi {
         RetentionRule filteredRule = new RetentionRule(eo);
 
         String json = gson.toJson(filteredRule);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE, ACCEPT);
         rule.setId(Long.parseLong(id));
 
         return rule;

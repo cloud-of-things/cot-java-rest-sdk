@@ -14,6 +14,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 public class EventApi {
 
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.event+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.event+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "event/events/";
 
     private final Gson gson = GsonUtils.createGson();
@@ -52,7 +53,7 @@ public class EventApi {
     public Event createEvent(Event event) {
         String json = gson.toJson(event);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE, ACCEPT);
         event.setId(id);
 
         return event;

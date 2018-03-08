@@ -16,7 +16,9 @@ public class InventoryApi {
     protected Gson gson = GsonUtils.createGson();
 
     private static final String CONTENT_TYPE_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "inventory/managedObjects/";
 
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
@@ -33,7 +35,7 @@ public class InventoryApi {
     public ManagedObject create(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT, ACCEPT_MANAGEDOBJECT);
         managedObject.setId(id);
 
         return managedObject;
@@ -105,7 +107,7 @@ public class InventoryApi {
         String selfRef = parentManagedObject.getChildDevices().getSelf();
         int idx = selfRef.lastIndexOf("inventory");
 
-        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
+        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF, ACCEPT_MANAGEDOBJECTREF);
     }
 
 
@@ -139,7 +141,7 @@ public class InventoryApi {
         String selfRef = parentManagedObject.getChildAssets().getSelf();
         int idx = selfRef.lastIndexOf("inventory");
 
-        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
+        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF, ACCEPT_MANAGEDOBJECTREF);
     }
 
     /**
@@ -190,7 +192,7 @@ public class InventoryApi {
                 parentDevice.getId()
         );
 
-        cloudOfThingsRestClient.doPostRequest(json, api, CONTENT_TYPE_MANAGEDOBJECTREF);
+        cloudOfThingsRestClient.doPostRequest(json, api, CONTENT_TYPE_MANAGEDOBJECTREF, ACCEPT_MANAGEDOBJECTREF);
     }
 
 }

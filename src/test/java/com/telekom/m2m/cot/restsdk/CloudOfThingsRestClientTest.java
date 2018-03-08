@@ -34,7 +34,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.doRequestWithIdResponse("", "", "");
+        cloudOfThingsRestClient.doRequestWithIdResponse("", "", "", "");
     }
 
     @Test(expectedExceptions = CotSdkException.class)
@@ -52,7 +52,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.doRequestWithIdResponse("", "", "");
+        cloudOfThingsRestClient.doRequestWithIdResponse("", "", "", "");
     }
 
     @Test(expectedExceptions = CotSdkException.class)
@@ -132,7 +132,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.doPostRequest("", "", "");
+        cloudOfThingsRestClient.doPostRequest("", "", "", "");
     }
 
     @Test(expectedExceptions = CotSdkException.class)

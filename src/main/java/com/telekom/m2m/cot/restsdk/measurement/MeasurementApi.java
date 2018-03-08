@@ -22,8 +22,10 @@ import java.util.List;
  */
 public class MeasurementApi {
 
-    private static final String CONTENT_TYPE_MEASUREMENT = " application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE_MEASUREMENT = "application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MEASUREMENT = "application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
 
     private static final String MEASUREMENTS_API = "measurement/measurements/";
 
@@ -62,7 +64,7 @@ public class MeasurementApi {
      */
     public Measurement createMeasurement(Measurement measurement) {
         String json = gson.toJson(measurement);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT, ACCEPT_MEASUREMENT);
         measurement.setId(id);
         return measurement;
     }
@@ -81,7 +83,7 @@ public class MeasurementApi {
 
         final String json = gson.toJson(createJsonObject(measurements));
 
-        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION, CONTENT_TYPE_MEASUREMENT_COLLECTION);
+        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION, ACCEPT_MEASUREMENT_COLLECTION);
 
         return gson.fromJson(response, MeasurementsHolder.class)
                 .getMeasurements();

@@ -13,6 +13,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 public class DeviceCredentialsApi {
 
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.deviceCredentials+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.deviceCredentials+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
 
     protected Gson gson = GsonUtils.createGson();
@@ -36,7 +37,7 @@ public class DeviceCredentialsApi {
     public DeviceCredentials getCredentials(String deviceId) {
         DeviceCredentials deviceCredentials = new DeviceCredentials();
         deviceCredentials.setId(deviceId);
-        String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(deviceCredentials), "devicecontrol/deviceCredentials", CONTENT_TYPE);
+        String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(deviceCredentials), "devicecontrol/deviceCredentials", CONTENT_TYPE, ACCEPT);
 
         return gson.fromJson(response, DeviceCredentials.class);
     }
