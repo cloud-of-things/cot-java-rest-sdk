@@ -34,7 +34,7 @@ public class CloudOfThingsPlatform {
     private static final String REGISTERDEVICE_USERNAME = "ZGV2aWNlYm9vdHN0cmFw";
     private static final String REGISTERDEVICE_PASSWORD = "RmhkdDFiYjFm";
     private static final String REGISTERDEVICE_TENANT = "bWFuYWdlbWVudA==";
-
+    private static final OkHttpClient buildClient = new OkHttpClient();
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
     /**
@@ -47,7 +47,7 @@ public class CloudOfThingsPlatform {
      *            a credentials object with the credentials.
      */
     public CloudOfThingsPlatform(String host, CotCredentials cotCredentials) {
-        OkHttpClient client = new OkHttpClient.Builder().readTimeout(1, TimeUnit.MINUTES).build();
+        OkHttpClient client = buildClient.newBuilder().readTimeout(1, TimeUnit.MINUTES).build();
 
         String usernameWithTenant = cotCredentials.getUsername();
 
@@ -109,7 +109,7 @@ public class CloudOfThingsPlatform {
      *            the username of the platform user.
      */
     public CloudOfThingsPlatform(String host, String username, String password) {
-        OkHttpClient client = new OkHttpClient.Builder().readTimeout(1, TimeUnit.MINUTES).build();
+        OkHttpClient client = buildClient.newBuilder().readTimeout(1, TimeUnit.MINUTES).build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, username, password);
     }
 
@@ -127,7 +127,7 @@ public class CloudOfThingsPlatform {
      *            port of the HTTP proxy server.
      */
     public CloudOfThingsPlatform(String host, CotCredentials cotCredentials, String proxyHost, int proxyPort) {
-        OkHttpClient client = new OkHttpClient.Builder()
+        OkHttpClient client = buildClient.newBuilder()
                 .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
                 .readTimeout(1, TimeUnit.MINUTES).build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, cotCredentials.getUsername(),
@@ -150,7 +150,7 @@ public class CloudOfThingsPlatform {
      *            port of the HTTP proxy server.
      */
     public CloudOfThingsPlatform(String host, String username, String password, String proxyHost, int proxyPort) {
-        OkHttpClient client = new OkHttpClient.Builder()
+        OkHttpClient client = buildClient.newBuilder()
                 .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress(proxyHost, proxyPort)))
                 .readTimeout(1, TimeUnit.MINUTES).build();
         cloudOfThingsRestClient = new CloudOfThingsRestClient(client, host, username, password);
