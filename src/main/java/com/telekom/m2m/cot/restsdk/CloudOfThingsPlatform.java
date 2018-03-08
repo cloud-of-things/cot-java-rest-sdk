@@ -34,6 +34,11 @@ public class CloudOfThingsPlatform {
     private static final String REGISTERDEVICE_USERNAME = "ZGV2aWNlYm9vdHN0cmFw";
     private static final String REGISTERDEVICE_PASSWORD = "RmhkdDFiYjFm";
     private static final String REGISTERDEVICE_TENANT = "bWFuYWdlbWVudA==";
+
+    /**
+     * the buildClient is used to build new OkHttpCLient objects keeping all built objects in one connection pool.
+     * new objects are built with: buildCLient.newBuilder().build()
+     */
     private static final OkHttpClient buildClient = new OkHttpClient();
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
