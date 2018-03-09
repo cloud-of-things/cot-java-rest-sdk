@@ -11,6 +11,11 @@ public class NewDeviceRequest extends ExtensibleObject {
         super(extensibleObject);
     }
 
+    public NewDeviceRequest(String deviceId) {
+        super();
+        anyObject.put("id", deviceId);
+    }
+
     void setId(final String id) {
         anyObject.put("id", id);
     }
