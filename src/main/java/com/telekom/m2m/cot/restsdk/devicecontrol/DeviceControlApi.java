@@ -111,14 +111,24 @@ public class DeviceControlApi {
 
     /**
      * Updates an existing operation state.
+     * If operation Status changes from 'FAILED' with a specific failure reason, the failure reason must be removed by executing the function twice:
+     * one time with status failed and failure reason = ""
+     * and one time for changing the status
+     * In the cloud of things the failure reason will then be ""
      *
      * @param operation the operation with new operation state,
+     *                  failure reason if operation state is 'FAILED'
      *                  Id as existing, not changeable.
      * @return the Operation object.
      * @since 0.1.0
      */
     public Operation update(Operation operation) {
-        String json = "{\"status\" : \"" + operation.getStatus() + "\"}";
+        String json;
+        if(operation.getStatus()==OperationStatus.FAILED) {
+            json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"" + operation.getFailureReason() + "\"}";
+        }else{
+            json = "{\"status\" : \"" + operation.getStatus() + "\"}";
+        }
 
         cloudOfThingsRestClient.doPutRequest(json, RELATIVE_OPERATION_API_URL + operation.getId(), CONTENT_TYPE_OPERATION);
         return operation;
