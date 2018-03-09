@@ -76,6 +76,8 @@ public class DeviceControlApiIT {
 
     @Test
     public void testCreateAndUpdateOperation() throws Exception {
+        Operation updatedOperation;
+
         // given
         Operation operation = createOperation("com_telekom_m2m_cotcommand");
 
@@ -89,10 +91,37 @@ public class DeviceControlApiIT {
         // when
         createdOperation.setStatus(OperationStatus.EXECUTING);
 
-        Operation updatedOperation = deviceControlApi.update(createdOperation);
+        deviceControlApi.update(createdOperation);
+        updatedOperation= deviceControlApi.getOperation(createdOperation.getId());
 
         // then
         assertEquals(updatedOperation.getStatus(), OperationStatus.EXECUTING);
+
+
+        final String failureReason = "AN ERROR HAS OCCURED";
+        //when
+        createdOperation.setStatus(OperationStatus.FAILED);
+        createdOperation.setFailureReason(failureReason);
+
+        deviceControlApi.update(createdOperation);
+        updatedOperation= deviceControlApi.getOperation(createdOperation.getId());
+        assertEquals(updatedOperation.getStatus(), OperationStatus.FAILED);
+
+        //then
+        assertEquals(updatedOperation.getFailureReason(), failureReason);
+
+
+        //when
+        createdOperation.setStatus(OperationStatus.PENDING);
+        createdOperation.setFailureReason(null);
+        deviceControlApi.update(createdOperation);
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
+        assertEquals(updatedOperation.getStatus(), OperationStatus.PENDING);
+
+        //then
+        assertEquals(updatedOperation.getFailureReason(), null);
+
+
     }
 
     @Test
