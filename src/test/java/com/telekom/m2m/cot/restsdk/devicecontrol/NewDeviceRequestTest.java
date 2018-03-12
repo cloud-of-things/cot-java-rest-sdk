@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import org.testng.annotations.Test;
 
 import static org.testng.Assert.assertEquals;
@@ -10,7 +11,7 @@ public class NewDeviceRequestTest {
 
     @Test
     public void invalidStatusThrowsException() {
-        NewDeviceRequest request = new NewDeviceRequest(null);
+        NewDeviceRequest request = new NewDeviceRequest((ExtensibleObject) null);
 
         // valid:
         for (NewDeviceRequestStatus status : NewDeviceRequestStatus.values()) {
