@@ -2,10 +2,7 @@ package com.telekom.m2m.cot.restsdk;
 
 
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
-import okhttp3.Call;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import okhttp3.*;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
@@ -14,6 +11,8 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 
 import static org.mockito.Matchers.any;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.fail;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -54,6 +53,78 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         cloudOfThingsRestClient.doRequestWithIdResponse("", "", "", "");
     }
+
+    @Test
+    public void testGetResponseWithError404() throws Exception {
+        OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
+        Call call = PowerMockito.mock(Call.class);
+
+        Response response = PowerMockito.mock(Response.class);
+
+        PowerMockito.when(response.isSuccessful()).thenReturn(false);
+        PowerMockito.when(response.code()).thenReturn(404);
+        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
+        PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
+        PowerMockito.when(call.execute()).thenReturn(response);
+
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
+        try {
+            cloudOfThingsRestClient.getResponse("1234", "x", "y");
+            fail();
+        }catch(CotSdkException e) {
+            assertEquals(e.getHttpStatus(), 404);
+            assertEquals(e.getMessage(),"Error in request. id: 1234, api: x, accept: y HTTP status code:'404' (see https://http.cat/404)");
+        }
+
+    }
+
+    @Test
+    public void testGetResponseWithErrorNot404() throws Exception {
+        OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
+        Call call = PowerMockito.mock(Call.class);
+
+        Response response = PowerMockito.mock(Response.class);
+
+        PowerMockito.when(response.isSuccessful()).thenReturn(false);
+        PowerMockito.when(response.code()).thenReturn(405);
+        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
+        PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
+        PowerMockito.when(call.execute()).thenReturn(response);
+
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
+        try {
+            cloudOfThingsRestClient.getResponse("1234", "x", "y");
+            fail();
+        }catch(CotSdkException e) {
+            assertEquals(e.getHttpStatus(), 405);
+            assertEquals(e.getMessage(),"Error in request. id: 1234, api: x, accept: y HTTP status code:'405' (see https://http.cat/405)");
+        }
+
+    }
+
+    @Test
+    public void testGetResponse() throws Exception {
+        OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
+        Call call = PowerMockito.mock(Call.class);
+        ResponseBody body = PowerMockito.mock(ResponseBody.class);
+        Response response = PowerMockito.mock(Response.class);
+
+        PowerMockito.when(response.isSuccessful()).thenReturn(true);
+        PowerMockito.when(response.code()).thenReturn(200);
+        PowerMockito.whenNew(OkHttpClient.class).withAnyArguments().thenReturn(clientMock);
+        PowerMockito.when(clientMock.newCall(any(Request.class))).thenReturn(call);
+        PowerMockito.when(call.execute()).thenReturn(response);
+        PowerMockito.when(response.body()).thenReturn(body);
+        PowerMockito.doReturn("").when(body,"string");
+
+
+        CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
+
+        cloudOfThingsRestClient.getResponse("1234", "x", "y");
+
+
+    }
+
 
     @Test(expectedExceptions = CotSdkException.class)
     public void testDoPutRequestWithException() throws Exception {
