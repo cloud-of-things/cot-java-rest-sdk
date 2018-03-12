@@ -7,13 +7,23 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class NewDeviceRequest extends ExtensibleObject {
 
+    /**
+     * Constructor to create new operations
+     */
+    public NewDeviceRequest() { super(); }
+
     public NewDeviceRequest(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }
 
+
+    /**
+     * creates new NewDeviceRequest object
+     * @param deviceId the unique identifier of the device
+     */
     public NewDeviceRequest(String deviceId) {
         super();
-        anyObject.put("id", deviceId);
+        setId(deviceId);
     }
 
     void setId(final String id) {
