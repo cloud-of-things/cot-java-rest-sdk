@@ -47,8 +47,9 @@ public class DeviceCredentialsApiIT {
         DeviceCredentialsApi deviceCredentialsApi = platform.getDeviceCredentialsApi();
 
         // Step 1: (devicemanager) Register Device
-        Operation operation = new Operation(deviceId);
-        deviceControlApi.createNewDevice(operation);
+        NewDeviceRequest response = deviceControlApi.createNewDevice(deviceId);
+        //device status should be WAITING_ FOR_CONNECTION, because device does not respond directly
+        assertEquals(response.getStatus(), NewDeviceRequestStatus.WAITING_FOR_CONNECTION);
 
         // Step 2: (device) Device request
 //        unregDevCred.getCredentials(deviceId);
