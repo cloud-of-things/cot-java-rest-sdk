@@ -50,9 +50,6 @@ public class MeasurementApi {
      */
     public Measurement getMeasurement(String id) {
         String response = cloudOfThingsRestClient.getResponse(id, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT);
-        if (response == null) {
-            throw new CotSdkException("Measurement not found (id='" + id + "')");
-        }
         return new Measurement(gson.fromJson(response, ExtensibleObject.class));
     }
 
