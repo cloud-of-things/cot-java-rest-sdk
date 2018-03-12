@@ -5,6 +5,7 @@ import com.google.gson.GsonBuilder;
 import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.audit.AuditRecord;
 import com.telekom.m2m.cot.restsdk.devicecontrol.BulkOperation;
+import com.telekom.m2m.cot.restsdk.devicecontrol.NewDeviceRequest;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Progress;
 import com.telekom.m2m.cot.restsdk.event.Event;
@@ -34,6 +35,7 @@ public class GsonUtils {
                 .registerTypeAdapter(Alarm.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(AuditRecord.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(Operation.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(NewDeviceRequest.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(Measurement.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(ExtensibleObject.class, new ExtensibleObjectSerializer())
                 .registerTypeAdapter(ManagedObjectReferenceCollection.class, new ManagedObjectReferenceCollectionSerializer())
