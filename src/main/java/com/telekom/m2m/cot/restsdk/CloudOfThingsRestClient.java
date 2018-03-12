@@ -433,12 +433,13 @@ public class CloudOfThingsRestClient {
             if (response.isSuccessful()) {
                 result = response.body().string();
             } else {
-                if (response.code() != HttpURLConnection.HTTP_NOT_FOUND) {
-                    throw new CotSdkException(response.code(), "Error in request.");
-                }
+                    throw new CotSdkException(response.code(), "Error in request. id: " + id + ", api: " + api + ", accept: " + accept );
             }
             return result;
+        } catch (CotSdkException e) {
+            throw e;
         } catch (Exception e) {
+            e.printStackTrace();
             throw new CotSdkException("Error in request", e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
