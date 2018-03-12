@@ -55,14 +55,30 @@ public class DeviceControlApi {
 
     /**
      * Creates a new Device Request to register new devices.
+     * Use the method createNewDevice with deviceId as parameter
      *
      * @param operation {@link Operation} just with the deviceId to register.
      * @return the created operation.
      * @since 0.1.0
      */
+    @Deprecated
     public Operation createNewDevice(Operation operation) {
         cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST, ACCEPT_NEW_DEVICE_REQUEST);
         return operation;
+    }
+
+    /**
+     * Creates a new Device Request to register new devices
+     *
+     * @param deviceId Id for device after registration
+     * @return NewDeviceRequest object with response information from the cloud of things
+     * Status is also provided by this object
+     */
+    public NewDeviceRequest createNewDevice(String deviceId){
+        NewDeviceRequest newDeviceRequest = new NewDeviceRequest(deviceId);
+        final String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(newDeviceRequest), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST, ACCEPT_NEW_DEVICE_REQUEST);
+        newDeviceRequest= new NewDeviceRequest(gson.fromJson(response, ExtensibleObject.class));
+        return newDeviceRequest;
     }
 
     /**
