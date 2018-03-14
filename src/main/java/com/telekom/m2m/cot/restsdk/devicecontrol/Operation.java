@@ -144,10 +144,10 @@ public class Operation extends ExtensibleObject {
      * Setting failure reason in case of failing
      * @param failureReason a String with failure Reason, e.g. "Operation cancelled by user"
      */
-    public void setFailureReason(String failureReason){
-        if( failureReason==null){
+    public void setFailureReason(String failureReason) {
+        if (failureReason==null) {
             anyObject.remove("failureReason");
-        }else{
+        } else {
             anyObject.put("failureReason",failureReason);
         }
     }
@@ -157,10 +157,10 @@ public class Operation extends ExtensibleObject {
      * Getting FailureReason, when status is 'FAILED'
      * @return a String with the failure reason from the Operation
      */
-    public String getFailureReason(){
-        if(getStatus() == OperationStatus.FAILED) {
+    public String getFailureReason() {
+        if (getStatus() == OperationStatus.FAILED) {
             return (String) anyObject.get("failureReason");
-        }else{
+        } else {
             return null;
         }
     }

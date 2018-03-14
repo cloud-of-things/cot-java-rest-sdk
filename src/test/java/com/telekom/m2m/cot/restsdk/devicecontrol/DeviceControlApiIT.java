@@ -92,11 +92,10 @@ public class DeviceControlApiIT {
         createdOperation.setStatus(OperationStatus.EXECUTING);
 
         deviceControlApi.update(createdOperation);
-        updatedOperation= deviceControlApi.getOperation(createdOperation.getId());
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
 
         // then
         assertEquals(updatedOperation.getStatus(), OperationStatus.EXECUTING);
-
 
         final String failureReason = "AN ERROR HAS OCCURED";
         //when
@@ -110,7 +109,6 @@ public class DeviceControlApiIT {
         //then
         assertEquals(updatedOperation.getFailureReason(), failureReason);
 
-
         //when
         createdOperation.setStatus(OperationStatus.PENDING);
         createdOperation.setFailureReason(null);
@@ -120,7 +118,6 @@ public class DeviceControlApiIT {
 
         //then
         assertEquals(updatedOperation.getFailureReason(), null);
-
 
     }
 

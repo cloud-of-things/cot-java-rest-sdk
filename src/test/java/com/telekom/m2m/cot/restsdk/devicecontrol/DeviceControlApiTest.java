@@ -136,7 +136,7 @@ public class DeviceControlApiTest {
 
 
     @Test(expectedExceptions = CotSdkException.class)
-     public void testAcceptDeviceWithFailure() throws Exception {
+    public void testAcceptDeviceWithFailure() throws Exception {
         // given
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         DeviceControlApi deviceControlApi = new DeviceControlApi(rc);
