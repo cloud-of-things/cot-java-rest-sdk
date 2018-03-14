@@ -77,8 +77,7 @@ public class DeviceControlApi {
     public NewDeviceRequest createNewDevice(String deviceId){
         NewDeviceRequest newDeviceRequest = new NewDeviceRequest(deviceId);
         final String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(newDeviceRequest), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST, ACCEPT_NEW_DEVICE_REQUEST);
-        newDeviceRequest= new NewDeviceRequest(gson.fromJson(response, ExtensibleObject.class));
-        return newDeviceRequest;
+        return new NewDeviceRequest(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
