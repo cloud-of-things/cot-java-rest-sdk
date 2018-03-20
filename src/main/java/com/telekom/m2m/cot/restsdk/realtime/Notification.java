@@ -14,6 +14,10 @@ public  class Notification {
         this.data = data;
     }
 
+    /**
+     * get the realtime action out of the json data
+     * @return enum value for realtime action
+     */
     public Enum<RealtimeAction> getRealtimeAction() {
         try {
             String realtimeAction = data.get("realtimeAction").getAsString();
@@ -24,6 +28,10 @@ public  class Notification {
 
     }
 
+    /**
+     *
+     * @return the data part of the json data
+     */
     public String getDataPart() {
         try {
             return data.get("data").getAsString();
