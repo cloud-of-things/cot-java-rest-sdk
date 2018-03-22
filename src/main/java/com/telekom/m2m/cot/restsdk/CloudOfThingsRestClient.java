@@ -418,6 +418,21 @@ public class CloudOfThingsRestClient {
 
 
     public String getResponse(String id, String api, String accept) {
+        byte[] result = getResponseInBytes(id, api, accept);
+        if (result != null){
+            return new String(result);
+        }
+        return null;
+    }
+
+    /**
+     * get the response of a request in bytes
+     * @param id part of url for request
+     * @param api part of the url for request
+     * @param accept accpet header for request
+     * @return the response from cloud of things
+     */
+    public byte[] getResponseInBytes(String id, String api, String accept){
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .url(host + "/" + api + "/" + id);
@@ -429,9 +444,9 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(requestBuilder.build()).execute();
-            String result = null;
+            byte[] result = null;
             if (response.isSuccessful()) {
-                result = response.body().string();
+                result = response.body().bytes();
             } else {
                 if (response.code() != HttpURLConnection.HTTP_NOT_FOUND) {
                     throw new CotSdkException(response.code(), "Error in request.");
@@ -524,16 +539,15 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
     /**
      * Execute a PUT request that will result in a new or changed ID.
      *
-     * @param data the body to send
+     * @param data the body to send in bytes
      * @param path the URL path (without leading '/')
      * @param contentType the Content-Type header
      * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
      */
-    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+    public String doPutRequestWithIdResponseInBytes(byte[] data, String path, String contentType) {
         RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), data);
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
@@ -561,6 +575,19 @@ public class CloudOfThingsRestClient {
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
+    }
+
+
+    /**
+     * Execute a PUT request that will result in a new or changed ID.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
+     */
+    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+       return doPutRequestWithIdResponseInBytes(data.getBytes(), path, contentType);
     }
 
 
