@@ -5,12 +5,15 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * DeviceControl API is used to work with operations.
@@ -34,6 +37,7 @@ public class DeviceControlApi {
     private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
     private static final String RELATIVE_OPERATION_API_URL = "devicecontrol/operations/";
     private static final String RELATIVE_BULK_OPERATION_API_URL = "devicecontrol/bulkoperations/";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYSTATUS, FilterBy.BYAGENTID, FilterBy.BYDEVICEID, FilterBy.BYDATEFROM, FilterBy.BYDATETO);
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
@@ -149,6 +153,8 @@ public class DeviceControlApi {
      * @return the first page of OperationCollection which can be used to navigate through the found Operations.
      */
     public OperationCollection getOperationCollection(Filter.FilterBuilder filters, int resultSize) {
+        if(filters != null)
+            filters.testSupportedFilter(acceptedFilters);
         return new OperationCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_OPERATION_API_URL,
@@ -163,6 +169,8 @@ public class DeviceControlApi {
      * @param filters filters of Operation attributes.
      */
     public void deleteOperations(Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.testSupportedFilter(acceptedFilters);
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_OPERATION_API_URL);
     }
 
