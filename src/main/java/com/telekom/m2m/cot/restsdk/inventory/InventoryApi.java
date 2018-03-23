@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents the API to retrieve and manipulate ManagedObjects.
@@ -20,6 +23,7 @@ public class InventoryApi {
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "inventory/managedObjects/";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYTYPE, FilterBy.BYFRAGMENTTYPE, FilterBy.BYLISTOFIDs, FilterBy.BYTEXT, FilterBy.BYAGENTID);
 
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -169,6 +173,8 @@ public class InventoryApi {
      * @since 0.3.0
      */
     public ManagedObjectCollection getManagedObjects(Filter.FilterBuilder filters, int pageSize) {
+        if(filters != null)
+            filters.testSupportedFilter(acceptedFilters);
         return new ManagedObjectCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
