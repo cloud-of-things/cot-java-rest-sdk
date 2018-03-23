@@ -6,7 +6,6 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -38,7 +37,7 @@ public class BinariesApi {
     
     public BinariesCollection getBinaries(Filter.FilterBuilder filters,Integer pageSize) {
         if(filters != null)
-        filters.testSupportedFilter(acceptedFilters);
+        filters.testSupportedFilters(acceptedFilters);
         return new BinariesCollection(filters,
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,

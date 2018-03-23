@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -99,7 +98,7 @@ public class AlarmApi {
      */
     public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
         if(filters != null)
-            filters.testSupportedFilter(acceptedFilters);
+            filters.testSupportedFilters(acceptedFilters);
         return new AlarmCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -115,7 +114,7 @@ public class AlarmApi {
      */
     public void deleteAlarms(Filter.FilterBuilder filters) {
         if(filters != null)
-            filters.testSupportedFilter(acceptedFilters);
+            filters.testSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.delete("", RELATIVE_API_URL+ "?" + filters.buildFilter() + "&x=");
     }
 }

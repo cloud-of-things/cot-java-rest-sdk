@@ -122,7 +122,7 @@ public class MeasurementApi {
      */
     public MeasurementCollection getMeasurements(Filter.FilterBuilder filters, int resultSize) {
         if(filters != null)
-            filters.testSupportedFilter(acceptedFilters);
+            filters.testSupportedFilters(acceptedFilters);
         return new MeasurementCollection(
                 cloudOfThingsRestClient,
                 MEASUREMENTS_API,
@@ -138,7 +138,7 @@ public class MeasurementApi {
      */
     public void deleteMeasurements(Filter.FilterBuilder filters) {
         if(filters != null)
-            filters.testSupportedFilter(acceptedFilters);
+            filters.testSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.delete("", MEASUREMENTS_API + "?" + filters.buildFilter() + "&x=");
     }
 

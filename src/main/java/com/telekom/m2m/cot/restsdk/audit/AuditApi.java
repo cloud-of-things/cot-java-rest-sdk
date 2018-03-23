@@ -85,7 +85,7 @@ public class AuditApi {
      */
     public AuditRecordCollection getAuditRecordCollection(final Filter.FilterBuilder filters) {
         if(filters != null)
-            filters.testSupportedFilter(acceptedFilters);
+            filters.testSupportedFilters(acceptedFilters);
         return new AuditRecordCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -100,7 +100,7 @@ public class AuditApi {
      */
     public void deleteAuditRecords(Filter.FilterBuilder filters) {
         if(filters != null)
-            filters.testSupportedFilter(acceptedFilters);
+            filters.testSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_API_URL);
     }
 }

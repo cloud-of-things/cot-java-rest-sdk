@@ -174,7 +174,7 @@ public class InventoryApi {
      */
     public ManagedObjectCollection getManagedObjects(Filter.FilterBuilder filters, int pageSize) {
         if(filters != null)
-            filters.testSupportedFilter(acceptedFilters);
+            filters.testSupportedFilters(acceptedFilters);
         return new ManagedObjectCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,

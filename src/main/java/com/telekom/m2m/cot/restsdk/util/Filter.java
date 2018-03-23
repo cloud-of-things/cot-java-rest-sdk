@@ -237,7 +237,7 @@ public class Filter {
          * test if all set filters are allowed by the api
          * @param filters list of filters, which have to be checked
          */
-        public void testSupportedFilter( List filters) {
+        public void testSupportedFilters(List filters) {
             //do nothing, when filters is null
             if (filters != null) {
                 for (Map.Entry e : instance.arguments.entrySet()) {
