@@ -61,6 +61,7 @@ public class BinariesApiIT {
 
     @Test
     public void testReplace() {
+        // use a random sequence of not printable characters for test purposes
         byte[] dataSent = new byte[] {-47, 1, 16, 84, 2, 101, 110, 83, 111, 109, 101, 32, 78, 70, 67, 32, 68, 97, 116, 97};
         Binary bin = new Binary("myFile4", "text/plain", dataSent);
         String binaryId = api.uploadBinary(bin);
