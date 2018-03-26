@@ -50,7 +50,7 @@ public class CepModulesIT {
 
         List<String> statements = new ArrayList<>();
         statements.add("@Name(\"s1\") select * from EventCreated.win:time(1 hour)");
-        statements.add("@Name(\"s2\") insert into CreatedEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events");
+        statements.add("@Name(\"s2\") insert into CreateEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events");
         myModule.setStatements(statements);
 
         cepApi.createModule(myModule);
@@ -63,7 +63,7 @@ public class CepModulesIT {
         assertEquals(myModule.getStatus(), Module.Status.DEPLOYED);
         assertEquals(myModule.getStatements().size(), 2);
         assertEquals(myModule.getStatements().get(0), "@Name(\"s1\") select * from EventCreated.win:time(1 hour);");
-        assertEquals(myModule.getStatements().get(1), "@Name(\"s2\") insert into CreatedEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events;");
+        assertEquals(myModule.getStatements().get(1), "@Name(\"s2\") insert into CreateEvent select * from EventCreated e where getObject(e, \"c8y_LocationUpdate\") is not null output first every 60 events;");
     }
 
     

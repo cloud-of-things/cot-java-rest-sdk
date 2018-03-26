@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.AfterMethod;
@@ -543,11 +544,66 @@ public class CepApiIT {
     @Test
     public void testNotificationsForUpdateDelete() throws InterruptedException {
 
+        connector = cepApi.getCepStatementConnector();
+
+        final List<String> notedInventoryObjects = new ArrayList<>();
+
+        connector.subscribe("/devices/deleted");
+
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                System.out.println(channel);
+                System.out.println(notification.getData().toString());
+//                notedInventoryObjects.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        // Connect, starting background listener:
+        connector.connect();
+
+        //Now let's update the object and see if we receive a notification:
+        while(true) {
+            Thread.sleep(DELAY_MILLIS);
+        }
+//        invApi.update(prepareForUpdate("first_test_object", "cot_managed_object1", testObjectForCreateUpdateDelete));
+//
+//        Thread.sleep(DELAY_MILLIS);
+//
+//
+//        // Now let's update the alarm and see if we will get notified:
+//        assertEquals(notedInventoryObjects.size(), 1);
+//        assertTrue(notedInventoryObjects.get(0).contains("UPDATE"));
+//
+//        Thread.sleep(DELAY_MILLIS);
+//
+//        // Now let's delete the object and see what happens:
+//        invApi.delete(testObjectForCreateUpdateDelete.getId());
+//
+//        Thread.sleep(DELAY_MILLIS);
+//
+//        assertEquals(notedInventoryObjects.size(), 2);
+//        assertTrue(notedInventoryObjects.get(1).contains("DELETE"));
+        
+    }
+
+
+
+    // This test will create one subscriber, and an inventory object. It will check if a
+    // notification is received upon update and deletion of the managed object.
+    @Test
+    public void testNotificationsForUpdateDeleteOfDeviceCredentials() throws InterruptedException {
+
         connector = cepApi.getCepConnector();
 
         final List<String> notedInventoryObjects = new ArrayList<>();
 
-        connector.subscribe("/managedobjects/" + testObjectForCreateUpdateDelete.getId());
+        connector.subscribe("/managedobjects/*");
 
         connector.addListener(new SubscriptionListener() {
             @Override
@@ -565,30 +621,62 @@ public class CepApiIT {
         connector.connect();
 
         //Now let's update the object and see if we receive a notification:
-        
+
         Thread.sleep(DELAY_MILLIS);
-        invApi.update(prepareForUpdate("first_test_object", "cot_managed_object1", testObjectForCreateUpdateDelete));
+
+        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+
+        String deviceId = "mydevice-name_" + System.currentTimeMillis();
+
+        Operation operation = new Operation(deviceId);
+        deviceControlApi.createNewDevice(operation);
 
         Thread.sleep(DELAY_MILLIS);
 
 
         // Now let's update the alarm and see if we will get notified:
         assertEquals(notedInventoryObjects.size(), 1);
-        assertTrue(notedInventoryObjects.get(0).contains("UPDATE"));
+        assertTrue(notedInventoryObjects.get(0).contains("CREATE"));
 
         Thread.sleep(DELAY_MILLIS);
 
         // Now let's delete the object and see what happens:
-        invApi.delete(testObjectForCreateUpdateDelete.getId());
-        
+//        deviceControlApi.delete(testObjectForCreateUpdateDelete.getId());
+
         Thread.sleep(DELAY_MILLIS);
 
         assertEquals(notedInventoryObjects.size(), 2);
         assertTrue(notedInventoryObjects.get(1).contains("DELETE"));
-        
+
     }
-    
-    
+
+
+//    @Test
+//    public void notificationsForDeleteOfDevices() {
+//
+//        CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform("HOST", "USERNAME", "PASSWORD");
+//
+//        CepConnector connector = cotPlatform.getCepApi().getCepConnector();
+//
+//        connector.subscribe("/managedobjects/*");
+//
+//        connector.addListener(new SubscriptionListener() {
+//            @Override
+//            public void onNotification(String channel, Notification notification) {
+//                process(notification);
+//            }
+//
+//            @Override
+//            public void onError(String channel, Throwable error) {
+//                //...
+//            }
+//        });
+//
+//        // Connect, starting background listener:
+//        connector.connect();
+//    }
+
+
 
 
     private Alarm makeAlarm(String type, String severity, ManagedObject source) {

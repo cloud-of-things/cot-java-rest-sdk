@@ -20,8 +20,8 @@ public class CepApi {
 
     private final Gson gson = GsonUtils.createGson();
 
-    private final static String MODULES_API= "cep/modules";
-    private final static String CONTENT_TYPE_MODULES= "application/vnd.com.nsn.cumulocity.cepModule+json";
+    private final static String MODULES_API = "cep/modules";
+    private final static String CONTENT_TYPE_MODULES = "application/vnd.com.nsn.cumulocity.cepModule+json";
 
     public CepApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -35,6 +35,10 @@ public class CepApi {
      */
     public CepConnector getCepConnector() {
         return new CepConnector(cloudOfThingsRestClient, NOTIFICATION_PATH);
+    }
+
+    public CepConnector getCepStatementConnector() {
+        return new CepConnector(cloudOfThingsRestClient, "cep/notifications");
     }
 
 

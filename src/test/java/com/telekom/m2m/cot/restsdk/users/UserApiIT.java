@@ -536,5 +536,42 @@ public class UserApiIT {
         assertFalse((group.getDevicePermissions().get("10445").toString().contains("AUDIT:*:READ")));
         
     }
-    
+
+
+    @Test
+    public void showRoles() {
+        RoleCollection rc = userApi.getRoles();
+        rc.setPageSize(1000);
+        Role[] allRoles = rc.getRoles();
+
+        User u = userApi.getUserByName("testuser-CoT-SDK", "adyck");
+        RoleReferenceCollection c = userApi.getRolesReferencesOfUser(u, "adyck");
+        c.setPageSize(1000);
+        RoleReference[] r = c.getRoleReferences();
+        System.out.println("my roles: ");
+        for (RoleReference rr : r) {
+            System.out.println(rr.getRole().getId() + ": " + rr.getRole().getName());
+        }
+
+        System.out.println("all roles: ");
+        for (Role rr : allRoles) {
+            System.out.println(rr.getId()+": "+rr.getName());
+//            System.out.println((includes(rr, r)?"[x] ":"[ ] ")+rr.getId()+": "+rr.getName());
+        }
+    }
+
+    @Test
+    public void grabAllRoles() {
+        User u = userApi.getUserByName("testuser-CoT-SDK", "adyck");
+//        User u = userApi.getUserByName("r.linden@tarent.de", "rlinden");
+        RoleCollection rc = userApi.getRoles();
+        rc.setPageSize(100);
+        Role[] allRoles = rc.getRoles();
+        for (Role r : allRoles) {
+            //userApi.assignRoleToUser(u, r, "adyck");
+            userApi.assignRoleToUser(u, r, "adyck");
+            System.out.println("assigned role "+r.getName());
+        }
+    }
+
 }
