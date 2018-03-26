@@ -7,11 +7,6 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
  */
 public class NewDeviceRequest extends ExtensibleObject {
 
-    /**
-     * Constructor to create new operations
-     */
-    public NewDeviceRequest() { super(); }
-
     public NewDeviceRequest(ExtensibleObject extensibleObject) {
         super(extensibleObject);
     }
