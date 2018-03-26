@@ -16,8 +16,8 @@ public  class Notification {
 
     /**
      * get the realtime action out of the json data
-     * the realtime action is the action which resulted in the given object in the CoT
-     * e.g. CREATE, UPDATE or DELETE for an operation
+     * the realtime action is
+     * e.g. CREATE, UPDATE or DELETE for an operation, when send a request with the operation to the CoT
      *
      * @return enum value for realtime action
      */
