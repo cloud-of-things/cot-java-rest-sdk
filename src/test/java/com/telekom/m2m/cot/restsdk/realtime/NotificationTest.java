@@ -4,32 +4,35 @@ import com.google.gson.JsonObject;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import static org.testng.Assert.fail;
+
 public class NotificationTest {
     @Test
     public void testNotification() {
         String value = "939762";
         RealtimeAction action = RealtimeAction.DELETE;
-        JsonObject o = new JsonObject();
-        o.addProperty("realtimeAction", action.toString());
-        o.addProperty("data", value);
-        Notification x = new Notification(o);
-        Assert.assertEquals(x.getDataPart(), value);
-        Assert.assertEquals(x.getRealtimeAction(), action);
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("realtimeAction", action.toString());
+        jsonObject.addProperty("data", value);
+        Notification notification = new Notification(jsonObject);
+        Assert.assertEquals(notification.getDataPart(), value);
+        Assert.assertEquals(notification.getRealtimeAction(), action);
     }
 
     @Test
     public void testNotificationWithFailure() {
         String value = "939762";
         String action = "NODELETED";
-        JsonObject o = new JsonObject();
-        o.addProperty("realtimeAction", action);
-        o.addProperty("data", value + "ERROR");
-        Notification x = new Notification(o);
-        Assert.assertNotEquals(x.getDataPart(), value);
+        JsonObject failJsonObject = new JsonObject();
+        failJsonObject.addProperty("realtimeAction", action);
+        failJsonObject.addProperty("data", value + "ERROR");
+        Notification notification = new Notification(failJsonObject);
+        Assert.assertNotEquals(notification.getDataPart(), value);
         try {
-            x.getRealtimeAction();
+            notification.getRealtimeAction();
+            fail();
         } catch (IllegalArgumentException e) {
-            Assert.assertEquals(e.getMessage(), "No enum constant com.telekom.m2m.cot.restsdk.realtime.RealtimeAction." + action);
+            Assert.assertTrue(e.getMessage().contains(action) && e.getMessage().contains("No enum constant"));
         }
     }
 }
