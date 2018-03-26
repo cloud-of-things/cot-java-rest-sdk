@@ -55,7 +55,7 @@ public class DeviceControlApi {
 
     /**
      * Creates a new Device Request to register new devices.
-     * Use the method createNewDevice with deviceId as parameter
+     * As this method is deprecated, use the method createNewDevice(String deviceId) instead.
      *
      * @param operation {@link Operation} just with the deviceId to register.
      * @return the created operation.
@@ -68,11 +68,11 @@ public class DeviceControlApi {
     }
 
     /**
-     * Creates a new Device Request to register new devices
+     * Creates a new Device Request to register new devices.
      *
-     * @param deviceId Id for device after registration
-     * @return NewDeviceRequest object with response information from the cloud of things
-     * Status is also provided by this object
+     * @param deviceId Id for device after registration (e.g. ICCID, IMEI, serial number ...).
+     * @return NewDeviceRequest object with response information from the cloud of things.
+     * Status is also provided by this object.
      */
     public NewDeviceRequest createNewDevice(String deviceId){
         NewDeviceRequest newDeviceRequest = new NewDeviceRequest(deviceId);
