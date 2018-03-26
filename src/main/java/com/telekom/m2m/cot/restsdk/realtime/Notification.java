@@ -16,6 +16,9 @@ public  class Notification {
 
     /**
      * get the realtime action out of the json data
+     * the realtime action is the action which resulted in the given object in the CoT
+     * e.g. CREATE, UPDATE or DELETE for an operation
+     *
      * @return enum value for realtime action
      */
     public Enum<RealtimeAction> getRealtimeAction() {
@@ -23,7 +26,7 @@ public  class Notification {
             String realtimeAction = data.get("realtimeAction").getAsString();
             return RealtimeAction.valueOf(realtimeAction);
         } catch (NullPointerException e) {
-            throw new CotSdkException("No member realtimeAction in Json Object");
+            throw new CotSdkException("No member realtimeAction in Json Object", e);
         }
 
     }
@@ -36,7 +39,7 @@ public  class Notification {
         try {
             return data.get("data").getAsString();
         } catch (NullPointerException e) {
-            throw new CotSdkException("No member data in Json Object");
+            throw new CotSdkException("No member data in Json Object", e);
         }
     }
 
