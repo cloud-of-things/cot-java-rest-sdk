@@ -84,7 +84,6 @@ public class CloudOfThingsRestClient {
                     .addHeader("Authorization", "Basic " + encodedAuthString)
                     .addHeader("Content-Type", contentType)
                     .addHeader("Accept", accept)
-                    // .url(tenant + ".test-ram.m2m.telekom.com/" + api)
                     .url(host + "/" + api)
                     .post(body)
                     .build();
@@ -422,10 +421,7 @@ public class CloudOfThingsRestClient {
     public String getResponse(String id, String api, String accept) {
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" +
-                        api +
-                        (api.endsWith("/")?"":"/") +
-                        id);
+                .url(host + "/" + removeTrailingSlash(api) + "/" + id);
 
         if (accept != null) {
             requestBuilder.addHeader("Accept", accept);
@@ -572,10 +568,7 @@ public class CloudOfThingsRestClient {
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" +
-                        api +
-                        (api.endsWith("/")?"":"/") +
-                        id)
+                .url(host + "/" + removeTrailingSlash(api) + "/" + id)
                 .delete()
                 .build();
         Response response = null;
@@ -597,7 +590,7 @@ public class CloudOfThingsRestClient {
     public void deleteBy(final String filter, final String api) {
         final Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "?" + filter)
+                .url(host + "/" + removeTrailingSlash(api) + "?" + filter)
                 .delete()
                 .build();
         Response response = null;
@@ -666,4 +659,13 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    private String removeTrailingSlash(String path) {
+        if(path != null) {
+            if(path.endsWith("/")) {
+                path = path.substring(0, path.length()-1);
+            }
+        }
+
+        return path;
+    }
 }
