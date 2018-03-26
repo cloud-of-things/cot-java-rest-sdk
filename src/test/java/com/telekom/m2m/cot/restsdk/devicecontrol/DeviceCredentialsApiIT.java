@@ -48,7 +48,7 @@ public class DeviceCredentialsApiIT {
 
         // Step 1: (devicemanager) Register Device
         NewDeviceRequest response = deviceControlApi.createNewDevice(deviceId);
-        //device status should be WAITING_ FOR_CONNECTION, because device does not respond directly
+        //device status should be WAITING_FOR_CONNECTION, because device does not respond directly
         assertEquals(response.getStatus(), NewDeviceRequestStatus.WAITING_FOR_CONNECTION);
 
         // Step 2: (device) Device request
