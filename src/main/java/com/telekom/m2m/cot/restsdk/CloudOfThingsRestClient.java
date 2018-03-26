@@ -71,6 +71,8 @@ public class CloudOfThingsRestClient {
      *            the REST API string.
      * @param contentType
      *            the Content-Type of the JSON Object.
+     * @param accept
+     *            the accept header of the response JSON Object.
      * @return the id of the Object.
      */
     public String doRequestWithIdResponse(String json, String api, String contentType, String accept) {
@@ -420,7 +422,10 @@ public class CloudOfThingsRestClient {
     public String getResponse(String id, String api, String accept) {
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id);
+                .url(host + "/" +
+                        api +
+                        (api.endsWith("/")?"":"/") +
+                        id);
 
         if (accept != null) {
             requestBuilder.addHeader("Accept", accept);
@@ -567,7 +572,10 @@ public class CloudOfThingsRestClient {
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
+                .url(host + "/" +
+                        api +
+                        (api.endsWith("/")?"":"/") +
+                        id)
                 .delete()
                 .build();
         Response response = null;
