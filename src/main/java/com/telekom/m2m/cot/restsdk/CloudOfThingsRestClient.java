@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
@@ -416,8 +417,31 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
+    /**
+     * get the response of a request as String
+     *
+     * @param id id of managed object
+     * @param api api name e.g. measurement
+     * @param accept accept header for request
+     * @return the response from cloud of things
+     */
     public String getResponse(String id, String api, String accept) {
+        byte[] result = getResponseInBytes(id, api, accept);
+        if (result != null){
+            return new String(result, Charset.forName("UTF-8"));
+        }
+        return null;
+    }
+
+    /**
+     * get the response of a request in bytes
+     *
+     * @param id id of managed object
+     * @param api api name e.g. measurement
+     * @param accept accept header for request
+     * @return the response from cloud of things
+     */
+    public byte[] getResponseInBytes(String id, String api, String accept){
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .url(host + "/" + api + "/" + id);
@@ -429,17 +453,21 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(requestBuilder.build()).execute();
-            String result = null;
             if (response.isSuccessful()) {
-                result = response.body().string();
-            } else {
-                if (response.code() != HttpURLConnection.HTTP_NOT_FOUND) {
-                    throw new CotSdkException(response.code(), "Error in request.");
-                }
+                return response.body().bytes();
             }
-            return result;
+            if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+                return null;
+            }
+            String message = String.format("Error in request. API: %s, id: %s, accepted content type: %s",
+                    api, id, accept);
+            throw new CotSdkException(response.code(), message);
+        } catch (CotSdkException e) {
+            throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Error in request: " + e.getMessage(), e);
+            String message = String.format("Error in request. API: %s, id: %s, accepted content type: %s, message: %s",
+                    api, id, accept, e.getMessage());
+            throw new CotSdkException(message, e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
@@ -524,16 +552,15 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
     /**
      * Execute a PUT request that will result in a new or changed ID.
      *
-     * @param data the body to send
+     * @param data the body to send in bytes
      * @param path the URL path (without leading '/')
      * @param contentType the Content-Type header
      * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
      */
-    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+    public String doPutRequestWithIdResponseInBytes(byte[] data, String path, String contentType) {
         RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), data);
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
@@ -561,6 +588,19 @@ public class CloudOfThingsRestClient {
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
+    }
+
+
+    /**
+     * Execute a PUT request that will result in a new or changed ID.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
+     */
+    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+       return doPutRequestWithIdResponseInBytes(data.getBytes(Charset.forName("UTF-8")), path, contentType);
     }
 
 

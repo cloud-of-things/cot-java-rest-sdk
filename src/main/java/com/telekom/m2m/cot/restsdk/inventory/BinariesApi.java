@@ -88,8 +88,8 @@ public class BinariesApi {
      * @return the new ID of the binary.
      */
     public String replaceBinary(Binary binary) {
-        String newId = cloudOfThingsRestClient.doPutRequestWithIdResponse(
-                new String(binary.getData()),
+        String newId = cloudOfThingsRestClient.doPutRequestWithIdResponseInBytes(
+                binary.getData(),
                 RELATIVE_API_URL + "/" + binary.getId(),
                 binary.getType());
         binary.setId(newId);
@@ -105,11 +105,10 @@ public class BinariesApi {
      * @return the original byte[] from the response or null, if the body is empty.
      */
     public byte[] getData(Binary binary) {
-        String responseBody = cloudOfThingsRestClient.getResponse(binary.getId(), RELATIVE_API_URL, binary.getType());
+        byte[] responseBody = cloudOfThingsRestClient.getResponseInBytes(binary.getId(), RELATIVE_API_URL, binary.getType());
         if (responseBody != null) {
-            byte[] data = responseBody.getBytes();
-            binary.setData(data);
-            return data;
+            binary.setData(responseBody);
+            return responseBody;
         } else {
             return new byte[0];
         }
