@@ -453,17 +453,17 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(requestBuilder.build()).execute();
-            byte[] result = null;
             if (response.isSuccessful()) {
-                result = response.body().bytes();
-            } else {
-                if (response.code() != HttpURLConnection.HTTP_NOT_FOUND) {
-                    throw new CotSdkException(response.code(), "Error in request.");
-                }
+                return response.body().bytes();
             }
-            return result;
+            if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+                return null;
+            }
+            throw new CotSdkException(response.code(), "Error in request. API: " + api + " id: " + id + " accepted content type: " + accept);
+        } catch (CotSdkException e) {
+            throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
+            throw new CotSdkException("Error in request. API: " + api + " id: " + id + " accepted content type: " + accept + " message: " + e.getMessage() , e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
