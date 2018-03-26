@@ -124,9 +124,9 @@ public class DeviceControlApi {
      */
     public Operation update(Operation operation) {
         String json;
-        if(operation.getStatus()==OperationStatus.FAILED) {
+        if(operation.getStatus() == OperationStatus.FAILED) {
             json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"" + operation.getFailureReason() + "\"}";
-        }else{
+        } else {
             json = "{\"status\" : \"" + operation.getStatus() + "\"}";
         }
 

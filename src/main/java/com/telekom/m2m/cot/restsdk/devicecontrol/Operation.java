@@ -145,7 +145,7 @@ public class Operation extends ExtensibleObject {
      * @param failureReason a String with failure Reason, e.g. "Operation cancelled by user"
      */
     public void setFailureReason(String failureReason) {
-        if (failureReason==null) {
+        if (failureReason == null) {
             anyObject.remove("failureReason");
         } else {
             anyObject.put("failureReason",failureReason);
