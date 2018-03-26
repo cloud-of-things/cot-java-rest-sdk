@@ -5,6 +5,7 @@ import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
@@ -660,10 +661,10 @@ public class CloudOfThingsRestClient {
     }
 
     private String removeTrailingSlash(String path) {
-        if(path != null) {
-            if(path.endsWith("/")) {
-                path = path.substring(0, path.length()-1);
-            }
+        Objects.requireNonNull(path);
+
+        if(path.endsWith("/")) {
+            path = path.substring(0, path.length()-1);
         }
 
         return path;
