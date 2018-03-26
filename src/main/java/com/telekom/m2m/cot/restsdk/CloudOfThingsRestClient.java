@@ -6,6 +6,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.nio.charset.Charset;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
@@ -72,6 +73,8 @@ public class CloudOfThingsRestClient {
      *            the REST API string.
      * @param contentType
      *            the Content-Type of the JSON Object.
+     * @param accept
+     *            the accept header of the response JSON Object.
      * @return the id of the Object.
      */
     public String doRequestWithIdResponse(String json, String api, String contentType, String accept) {
@@ -83,7 +86,6 @@ public class CloudOfThingsRestClient {
                     .addHeader("Authorization", "Basic " + encodedAuthString)
                     .addHeader("Content-Type", contentType)
                     .addHeader("Accept", accept)
-                    // .url(tenant + ".test-ram.m2m.telekom.com/" + api)
                     .url(host + "/" + api)
                     .post(body)
                     .build();
@@ -444,7 +446,7 @@ public class CloudOfThingsRestClient {
     public byte[] getResponseInBytes(String id, String api, String accept){
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id);
+                .url(host + "/" + removeTrailingSlash(api) + "/" + id);
 
         if (accept != null) {
             requestBuilder.addHeader("Accept", accept);
@@ -607,7 +609,7 @@ public class CloudOfThingsRestClient {
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
+                .url(host + "/" + removeTrailingSlash(api) + "/" + id)
                 .delete()
                 .build();
         Response response = null;
@@ -629,7 +631,7 @@ public class CloudOfThingsRestClient {
     public void deleteBy(final String filter, final String api) {
         final Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "?" + filter)
+                .url(host + "/" + removeTrailingSlash(api) + "?" + filter)
                 .delete()
                 .build();
         Response response = null;
@@ -698,4 +700,13 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    private String removeTrailingSlash(String path) {
+        Objects.requireNonNull(path);
+
+        if(path.endsWith("/")) {
+            path = path.substring(0, path.length()-1);
+        }
+
+        return path;
+    }
 }
