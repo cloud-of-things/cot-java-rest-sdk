@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.Base64;
 import java.util.concurrent.TimeUnit;
 
@@ -416,20 +417,28 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
+    /**
+     * get the response of a request as String
+     *
+     * @param id id of managed object
+     * @param api api name e.g. measurement
+     * @param accept accept header for request
+     * @return the response from cloud of things
+     */
     public String getResponse(String id, String api, String accept) {
         byte[] result = getResponseInBytes(id, api, accept);
         if (result != null){
-            return new String(result);
+            return new String(result, Charset.forName("UTF-8"));
         }
         return null;
     }
 
     /**
      * get the response of a request in bytes
-     * @param id part of url for request
-     * @param api part of the url for request
-     * @param accept accpet header for request
+     *
+     * @param id id of managed object
+     * @param api api name e.g. measurement
+     * @param accept accept header for request
      * @return the response from cloud of things
      */
     public byte[] getResponseInBytes(String id, String api, String accept){
@@ -587,7 +596,7 @@ public class CloudOfThingsRestClient {
      * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
      */
     public String doPutRequestWithIdResponse(String data, String path, String contentType) {
-       return doPutRequestWithIdResponseInBytes(data.getBytes(), path, contentType);
+       return doPutRequestWithIdResponseInBytes(data.getBytes(Charset.forName("UTF-8")), path, contentType);
     }
 
 
