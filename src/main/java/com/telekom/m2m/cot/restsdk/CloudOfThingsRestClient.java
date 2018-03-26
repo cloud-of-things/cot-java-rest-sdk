@@ -439,7 +439,7 @@ public class CloudOfThingsRestClient {
             }
             return result;
         } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
+            throw new CotSdkException("Error in request: " + e.getMessage(), e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
