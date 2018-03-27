@@ -420,7 +420,7 @@ public class CloudOfThingsRestClient {
     }
 
     /**
-     * get the response of a request as String
+     * Executes an HTTP GET request and returns the response body as String.
      *
      * @param id id of managed object
      * @param api api name e.g. measurement
@@ -436,7 +436,7 @@ public class CloudOfThingsRestClient {
     }
 
     /**
-     * get the response of a request in bytes
+     * Executes an HTTP GET request and returns the response body as byte array.
      *
      * @param id id of managed object
      * @param api api name e.g. measurement

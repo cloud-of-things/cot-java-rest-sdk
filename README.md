@@ -33,6 +33,16 @@ You can find the Java Doc of the latest release here: http://cloud-of-things.git
 
 Short information about what has changed between releases.
 
+### Release 1.0.3
+* Improve usage of accept and content-type headers in rest client
+* Improve usage of OkHttpClient so that lesser resources will be used
+* Fix handling of binary data using byte array
+* Remove double slashes in rest api paths to avoid http code 404
+* Resolve [issue #51] https://github.com/cloud-of-things/cot-java-rest-sdk/issues/51: provide failure reason for failed operations
+* Resolve [issue #53] https://github.com/cloud-of-things/cot-java-rest-sdk/issues/53: provide a new method for creation NewDeviceRequests
+* Handle filters as enum and validate filters supported by cot
+* Improve Notification class which now provides realtime action
+
 ### Release 1.0.2
 * Update of okhttp.
 * Better integration-tests.
