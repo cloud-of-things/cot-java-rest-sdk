@@ -2,7 +2,7 @@
 
 The [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) (German Cloud der Dinge) is a platform for the Internet of Things by T-Systems International GmbH. Inside this repository you will find a Java based SDK to interface with the Cloud of Things API.
 
-_Current version is: 1.0.2_
+_Current version is: 1.0.3_
 
 ## Usage
 
@@ -11,7 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>1.0.2</version>
+    <version>1.0.3</version>
 </dependency>
 ```
 
