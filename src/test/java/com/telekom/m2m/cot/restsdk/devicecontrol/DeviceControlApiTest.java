@@ -220,6 +220,19 @@ public class DeviceControlApiTest {
     }
 
     @Test
+    public void testCreateNewDeviceWithDeviceId() throws Exception {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
+        final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
+
+        final String deviceId = "dev1234";
+
+        deviceControlApi.createNewDevice(deviceId);
+
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).doPostRequest(contains(deviceId), anyString(), anyString(), anyString());
+    }
+
+    @Test
     public void testGetBulkOperation() throws Exception {
 
         // given

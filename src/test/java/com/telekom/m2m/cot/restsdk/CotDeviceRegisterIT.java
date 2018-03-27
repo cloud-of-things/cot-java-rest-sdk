@@ -90,8 +90,7 @@ public class CotDeviceRegisterIT {
         DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice(TestHelper.TEST_HOST).getDeviceCredentialsApi();
 
         // Step 1: (devicemanager) Register Device
-        Operation operation = new Operation(deviceId);
-        deviceControlApi.createNewDevice(operation);
+        deviceControlApi.createNewDevice(deviceId);
 
         // Step 2: (device) Device request
         try {

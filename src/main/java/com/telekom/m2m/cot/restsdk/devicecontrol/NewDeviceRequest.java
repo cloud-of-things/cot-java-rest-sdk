@@ -11,6 +11,16 @@ public class NewDeviceRequest extends ExtensibleObject {
         super(extensibleObject);
     }
 
+
+    /**
+     * creates new NewDeviceRequest object
+     * @param deviceId the unique identifier of the device
+     */
+    public NewDeviceRequest(String deviceId) {
+        super();
+        setId(deviceId);
+    }
+
     void setId(final String id) {
         anyObject.put("id", id);
     }
