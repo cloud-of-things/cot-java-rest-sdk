@@ -5,12 +5,15 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * DeviceControl API is used to work with operations.
@@ -26,9 +29,15 @@ public class DeviceControlApi {
     private static final String CONTENT_TYPE_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_BULK_OPERATION = "application/vnd.com.nsn.cumulocity.bulkoperation+json;charset=UTF-8;ver=0.9";
 
+    private static final String ACCEPT_NEW_DEVICE_REQUEST = "application/vnd.com.nsn.cumulocity.newDeviceRequest+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_OPERATION = "application/vnd.com.nsn.cumulocity.operation+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_BULK_OPERATION = "application/vnd.com.nsn.cumulocity.bulkoperation+json;charset=UTF-8;ver=0.9";
+
+
     private static final String RELATIVE_NEW_DEVICE_REQUEST_API_URL = "devicecontrol/newDeviceRequests/";
     private static final String RELATIVE_OPERATION_API_URL = "devicecontrol/operations/";
     private static final String RELATIVE_BULK_OPERATION_API_URL = "devicecontrol/bulkoperations/";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYSTATUS, FilterBy.BYAGENTID, FilterBy.BYDEVICEID, FilterBy.BYDATEFROM, FilterBy.BYDATETO);
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
@@ -50,14 +59,29 @@ public class DeviceControlApi {
 
     /**
      * Creates a new Device Request to register new devices.
+     * As this method is deprecated, use the method createNewDevice(String deviceId) instead.
      *
      * @param operation {@link Operation} just with the deviceId to register.
      * @return the created operation.
      * @since 0.1.0
      */
+    @Deprecated
     public Operation createNewDevice(Operation operation) {
-        cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST);
+        cloudOfThingsRestClient.doPostRequest(gson.toJson(operation), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST, ACCEPT_NEW_DEVICE_REQUEST);
         return operation;
+    }
+
+    /**
+     * Creates a new Device Request to register new devices.
+     *
+     * @param deviceId Id for device after registration (e.g. ICCID, IMEI, serial number ...).
+     * @return NewDeviceRequest object with response information from the cloud of things.
+     * Status is also provided by this object.
+     */
+    public NewDeviceRequest createNewDevice(String deviceId){
+        NewDeviceRequest newDeviceRequest = new NewDeviceRequest(deviceId);
+        final String response = cloudOfThingsRestClient.doPostRequest(gson.toJson(newDeviceRequest), RELATIVE_NEW_DEVICE_REQUEST_API_URL, CONTENT_TYPE_NEW_DEVICE_REQUEST, ACCEPT_NEW_DEVICE_REQUEST);
+        return new NewDeviceRequest(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
@@ -98,7 +122,7 @@ public class DeviceControlApi {
     public Operation create(Operation operation) {
         String json = gson.toJson(operation);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_OPERATION_API_URL, CONTENT_TYPE_OPERATION, ACCEPT_OPERATION);
         operation.setId(id);
 
         return operation;
@@ -106,14 +130,31 @@ public class DeviceControlApi {
 
     /**
      * Updates an existing operation state.
+     * If operation Status changes from 'FAILED' with a specific failure reason, 
+     * the failure reason must be removed by executing the function twice:
+     * one time with status failed and failure reason = ""
+     * and one time for changing the status
+     * In the cloud of things the failure reason will then be ""
      *
      * @param operation the operation with new operation state,
+     *                  failure reason if operation state is 'FAILED'
      *                  Id as existing, not changeable.
      * @return the Operation object.
      * @since 0.1.0
      */
     public Operation update(Operation operation) {
-        String json = "{\"status\" : \"" + operation.getStatus() + "\"}";
+        String json;
+        if(operation.getStatus() == OperationStatus.FAILED) {
+            if(operation.getFailureReason() != null) {
+                json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"" + operation.getFailureReason() + "\"}";
+            } else {
+                // when failure reason was set to null it will be handled as an empty string
+                // because cot ignores null values for failure reason
+                json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"\"}";
+            }
+        } else {
+            json = "{\"status\" : \"" + operation.getStatus() + "\"}";
+        }
 
         cloudOfThingsRestClient.doPutRequest(json, RELATIVE_OPERATION_API_URL + operation.getId(), CONTENT_TYPE_OPERATION);
         return operation;
@@ -144,6 +185,8 @@ public class DeviceControlApi {
      * @return the first page of OperationCollection which can be used to navigate through the found Operations.
      */
     public OperationCollection getOperationCollection(Filter.FilterBuilder filters, int resultSize) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         return new OperationCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_OPERATION_API_URL,
@@ -158,6 +201,8 @@ public class DeviceControlApi {
      * @param filters filters of Operation attributes.
      */
     public void deleteOperations(Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_OPERATION_API_URL);
     }
 
@@ -172,7 +217,7 @@ public class DeviceControlApi {
     public BulkOperation create(BulkOperation bulkOperation) {
         String json = gson.toJson(bulkOperation);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_BULK_OPERATION_API_URL, CONTENT_TYPE_BULK_OPERATION);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_BULK_OPERATION_API_URL, CONTENT_TYPE_BULK_OPERATION, ACCEPT_BULK_OPERATION);
         bulkOperation.setId(id);
 
         return bulkOperation;

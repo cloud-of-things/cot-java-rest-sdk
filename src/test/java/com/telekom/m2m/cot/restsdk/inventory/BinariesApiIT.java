@@ -61,20 +61,23 @@ public class BinariesApiIT {
 
     @Test
     public void testReplace() {
-        Binary bin = new Binary("myFile4", "text/plain", "foo=bar".getBytes());
+        // use a random sequence of not printable characters for test purposes
+        byte[] dataSent = new byte[] {-47, 1, 16, 84, 2, 101, 110, 83, 111, 109, 101, 32, 78, 70, 67, 32, 68, 97, 116, 97};
+        Binary bin = new Binary("myFile4", "text/plain", dataSent);
         String binaryId = api.uploadBinary(bin);
         binaryIds.add(binaryId);
         assertNotNull(binaryId);
 
-        String data = new String(api.getData(bin));
-        assertEquals(data, "foo=bar");
+        byte[] dataReceived = api.getData(bin);
+        assertEquals(dataSent, dataReceived);
 
+        byte[] replaceData = new byte[] {-47, 1, 16, 84, 2, 101, 110, 83, 111, 109, 101, 32, 78, 70, 67, 32, 68, 97, 116, 98};
         bin.set("type", "application/json");
-        bin.set("data", "{\"foo\":\"bar\"}".getBytes());
+        bin.set("data", replaceData);
         String id = api.replaceBinary(bin);
 
-        data = new String(api.getData(bin));
-        assertEquals(data, "{\"foo\":\"bar\"}");
+        byte[] data = api.getData(bin);
+        assertEquals(data, replaceData);
         assertEquals(id, bin.getId()); // Replacing the content changes the id!
     }
 

@@ -70,7 +70,7 @@ public class InventoryApiTest {
         inventoryApi.registerAsChildDevice(parentDevice, childDevice);
 
         // then
-        Mockito.verify(rc).doPostRequest(anyString(), anyString(), anyString());
+        Mockito.verify(rc).doPostRequest(anyString(), anyString(), anyString(), anyString());
     }
 
 }

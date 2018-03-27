@@ -13,6 +13,7 @@ import java.util.Date;
 import static org.mockito.Matchers.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 
 /**
  * Created by Patrick Steinert on 03.02.16.
@@ -40,7 +41,7 @@ public class DeviceControlApiTest {
         final Operation testOperation = new Operation();
         testOperation.setDeviceId(deviceId);
 
-        Mockito.when(cotRestClientMock.doRequestWithIdResponse(any(String.class), any(String.class), any(String.class))).thenReturn(operationId);
+        Mockito.when(cotRestClientMock.doRequestWithIdResponse(any(String.class), any(String.class), any(String.class), any(String.class))).thenReturn(operationId);
 
         Operation createdOperation = deviceControlApi.create(testOperation);
 
@@ -70,6 +71,37 @@ public class DeviceControlApiTest {
         assertNotNull(updatedOperation);
         assertEquals(updatedOperation.getId(), operationId);
         assertEquals(updatedOperation.getStatus(), operationStatus);
+    }
+
+    /**
+     * Test failure reason in update operation, when status ist 'FAILED'
+     *
+     */
+    @Test
+    public void testUpdateOperationStatusFailedWithFailureReason() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
+        final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
+
+        final String operationId ="234";
+        final OperationStatus operationStatus = OperationStatus.FAILED;
+        //Failure reason, which should be updated
+        final String failureReason = "Abortion by user";
+
+        final Operation testOperation = new Operation();
+        testOperation.setId(operationId);
+        testOperation.setStatus(operationStatus);
+        testOperation.setFailureReason(failureReason);
+
+        Operation updatedOperation = deviceControlApi.update(testOperation);
+
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).
+                doPutRequest(contains(operationStatus.toString()), contains(operationId), any(String.class));
+
+        assertNotNull(updatedOperation);
+        assertEquals(updatedOperation.getId(), operationId);
+        assertEquals(updatedOperation.getStatus(), operationStatus);
+        assertEquals(updatedOperation.getFailureReason(),failureReason);
     }
 
     @Test(expectedExceptions = CotSdkException.class)
@@ -184,7 +216,20 @@ public class DeviceControlApiTest {
 
         deviceControlApi.createNewDevice(testOperation);
 
-        Mockito.verify(cotRestClientMock, Mockito.times(1)).doPostRequest(contains(deviceId), any(String.class), any(String.class));
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).doPostRequest(contains(deviceId), any(String.class), any(String.class), any(String.class));
+    }
+
+    @Test
+    public void testCreateNewDeviceWithDeviceId() throws Exception {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+
+        final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
+
+        final String deviceId = "dev1234";
+
+        deviceControlApi.createNewDevice(deviceId);
+
+        Mockito.verify(cotRestClientMock, Mockito.times(1)).doPostRequest(contains(deviceId), anyString(), anyString(), anyString());
     }
 
     @Test

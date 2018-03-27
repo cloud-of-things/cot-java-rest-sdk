@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
+import java.nio.charset.Charset;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
@@ -71,9 +73,11 @@ public class CloudOfThingsRestClient {
      *            the REST API string.
      * @param contentType
      *            the Content-Type of the JSON Object.
+     * @param accept
+     *            the accept header of the response JSON Object.
      * @return the id of the Object.
      */
-    public String doRequestWithIdResponse(String json, String api, String contentType) {
+    public String doRequestWithIdResponse(String json, String api, String contentType, String accept) {
 
         Response response = null;
         try {
@@ -81,8 +85,7 @@ public class CloudOfThingsRestClient {
             Request request = new Request.Builder()
                     .addHeader("Authorization", "Basic " + encodedAuthString)
                     .addHeader("Content-Type", contentType)
-                    .addHeader("Accept", contentType)
-                    // .url(tenant + ".test-ram.m2m.telekom.com/" + api)
+                    .addHeader("Accept", accept)
                     .url(host + "/" + api)
                     .post(body)
                     .build();
@@ -108,11 +111,6 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
-    // TODO: here the contentType is also used for the Accept header, which is dirty!
-    public String doPostRequest(String json, String api, String contentType) {
-        return doPostRequest(json, api, contentType, contentType);
-    }
 
 
     /**
@@ -421,11 +419,34 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
+    /**
+     * Executes an HTTP GET request and returns the response body as String.
+     *
+     * @param id id of managed object
+     * @param api api name e.g. measurement
+     * @param accept accept header for request
+     * @return the response from cloud of things
+     */
     public String getResponse(String id, String api, String accept) {
+        byte[] result = getResponseInBytes(id, api, accept);
+        if (result != null){
+            return new String(result, Charset.forName("UTF-8"));
+        }
+        return null;
+    }
+
+    /**
+     * Executes an HTTP GET request and returns the response body as byte array.
+     *
+     * @param id id of managed object
+     * @param api api name e.g. measurement
+     * @param accept accept header for request
+     * @return the response from cloud of things
+     */
+    public byte[] getResponseInBytes(String id, String api, String accept){
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id);
+                .url(host + "/" + removeTrailingSlash(api) + "/" + id);
 
         if (accept != null) {
             requestBuilder.addHeader("Accept", accept);
@@ -434,17 +455,21 @@ public class CloudOfThingsRestClient {
         Response response = null;
         try {
             response = client.newCall(requestBuilder.build()).execute();
-            String result = null;
             if (response.isSuccessful()) {
-                result = response.body().string();
-            } else {
-                if (response.code() != HttpURLConnection.HTTP_NOT_FOUND) {
-                    throw new CotSdkException(response.code(), "Error in request.");
-                }
+                return response.body().bytes();
             }
-            return result;
+            if (response.code() == HttpURLConnection.HTTP_NOT_FOUND) {
+                return null;
+            }
+            String message = String.format("Error in request. API: %s, id: %s, accepted content type: %s",
+                    api, id, accept);
+            throw new CotSdkException(response.code(), message);
+        } catch (CotSdkException e) {
+            throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
+            String message = String.format("Error in request. API: %s, id: %s, accepted content type: %s, message: %s",
+                    api, id, accept, e.getMessage());
+            throw new CotSdkException(message, e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
@@ -529,16 +554,15 @@ public class CloudOfThingsRestClient {
         }
     }
 
-
     /**
      * Execute a PUT request that will result in a new or changed ID.
      *
-     * @param data the body to send
+     * @param data the body to send in bytes
      * @param path the URL path (without leading '/')
      * @param contentType the Content-Type header
      * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
      */
-    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+    public String doPutRequestWithIdResponseInBytes(byte[] data, String path, String contentType) {
         RequestBody requestBody = RequestBody.create(MediaType.parse(contentType), data);
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
@@ -569,10 +593,23 @@ public class CloudOfThingsRestClient {
     }
 
 
+    /**
+     * Execute a PUT request that will result in a new or changed ID.
+     *
+     * @param data the body to send
+     * @param path the URL path (without leading '/')
+     * @param contentType the Content-Type header
+     * @return the ID from the Location header (for newly created objects), or null if there's no Location header.
+     */
+    public String doPutRequestWithIdResponse(String data, String path, String contentType) {
+       return doPutRequestWithIdResponseInBytes(data.getBytes(Charset.forName("UTF-8")), path, contentType);
+    }
+
+
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "/" + id)
+                .url(host + "/" + removeTrailingSlash(api) + "/" + id)
                 .delete()
                 .build();
         Response response = null;
@@ -594,7 +631,7 @@ public class CloudOfThingsRestClient {
     public void deleteBy(final String filter, final String api) {
         final Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api + "?" + filter)
+                .url(host + "/" + removeTrailingSlash(api) + "?" + filter)
                 .delete()
                 .build();
         Response response = null;
@@ -663,4 +700,13 @@ public class CloudOfThingsRestClient {
         }
     }
 
+    private String removeTrailingSlash(String path) {
+        Objects.requireNonNull(path);
+
+        if(path.endsWith("/")) {
+            path = path.substring(0, path.length()-1);
+        }
+
+        return path;
+    }
 }

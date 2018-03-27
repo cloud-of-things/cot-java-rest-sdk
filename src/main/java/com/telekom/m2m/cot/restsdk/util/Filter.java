@@ -1,11 +1,7 @@
 package com.telekom.m2m.cot.restsdk.util;
 
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
-
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Filter to build as criteria for collection queries.
@@ -47,17 +43,6 @@ public class Filter {
         private Filter instance = new Filter();
 
         /**
-         * Adds a build for source id.
-         *
-         * @param id ID of the source ({@link com.telekom.m2m.cot.restsdk.inventory.ManagedObject}) to build for.
-         * @return an appropriate build Object.
-         */
-        public FilterBuilder bySource(String id) {
-            instance.arguments.put("source", id);
-            return this;
-        }
-
-        /**
          * Creates a parameter string.
          *
          * @return a string in pattern <code>arg1=val1&amp;arg2=val2</code>
@@ -73,11 +58,24 @@ public class Filter {
         }
 
         /**
+         * Adds a build for source id.
+         *
+         * @param id ID of the source ({@link com.telekom.m2m.cot.restsdk.inventory.ManagedObject}) to build for.
+         * @return an appropriate build Object.
+         */
+        @Deprecated
+        public FilterBuilder bySource(String id) {
+            instance.arguments.put("source", id);
+            return this;
+        }
+
+        /**
          * Adds a build for type.
          *
          * @param type type to build for.
          * @return an appropriate build Object.
          */
+        @Deprecated
         public FilterBuilder byType(String type) {
             //instance.type = type;
             instance.arguments.put("type", type);
@@ -91,6 +89,7 @@ public class Filter {
          * @param to   end of the date range (more in the future).
          * @return an appropriate build Object.
          */
+        @Deprecated
         public FilterBuilder byDate(Date from, Date to) {
             //instance.dateFrom = from;
             //instance.dateTo = to;
@@ -105,6 +104,7 @@ public class Filter {
          * @param fragmentType to build for.
          * @return an appropriate build Object.
          */
+        @Deprecated
         public FilterBuilder byFragmentType(String fragmentType) {
             instance.arguments.put("fragmentType", fragmentType);
             return this;
@@ -116,6 +116,7 @@ public class Filter {
          * @param deviceId to build for.
          * @return an appropriate build Object.
          */
+        @Deprecated
         public FilterBuilder byDeviceId(String deviceId) {
             instance.arguments.put("deviceId", deviceId);
             return this;
@@ -127,6 +128,7 @@ public class Filter {
          * @param operationStatus to build for.
          * @return an appropriate build Object.
          */
+        @Deprecated
         public FilterBuilder byStatus(OperationStatus operationStatus) {
             instance.arguments.put("status", operationStatus.toString());
             return this;
@@ -138,6 +140,7 @@ public class Filter {
          * @param text to build for.
          * @return an appropriate build Object.
          */
+        @Deprecated
         public FilterBuilder byText(String text) {
             instance.arguments.put("text", text);
             return this;
@@ -149,6 +152,7 @@ public class Filter {
          * @param listOfIds to build for (comma separated).
          * @return an appropriate build Object.
          */
+        @Deprecated
         public FilterBuilder byListOfIds(String listOfIds) {
             instance.arguments.put("ids", listOfIds);
             return this;
@@ -161,6 +165,7 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.3.0
          */
+        @Deprecated
         public FilterBuilder byStatus(String status) {
             instance.arguments.put("status", status);
             return this;
@@ -173,6 +178,7 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.3.1
          */
+        @Deprecated
         public FilterBuilder byAgentId(String agentId) {
             instance.arguments.put("agentId", agentId);
             return this;
@@ -185,6 +191,7 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.6.0
          */
+        @Deprecated
         public FilterBuilder byUser(String user) {
             instance.arguments.put("user", user);
             return this;
@@ -197,9 +204,51 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.6.0
          */
+        @Deprecated
         public FilterBuilder byApplication(String application) {
             instance.arguments.put("application", application);
             return this;
+        }
+
+        /**
+         * adds a build for a filter
+         *
+         * @param filterBy enum value, which filter should to be added
+         * @param value value for filter, which should be added
+         * @return an appropriate build Object
+         */
+        public FilterBuilder setFilter(FilterBy filterBy, String value) {
+           instance.arguments.put(filterBy.getFilterKey(), value);
+           return this;
+        }
+
+        /**
+         * adds a build for a hashmap of filters
+         *
+         * @param hashmap contains enum values and vaslues for filter builds
+         * @return an appropriate build Object
+         */
+        public FilterBuilder setFilters(HashMap<FilterBy, String> hashmap){
+            for ( Map.Entry e : hashmap.entrySet() ){
+                instance.arguments.put(((FilterBy)e.getKey()).getFilterKey(), (String) e.getValue());
+            }
+            return this;
+        }
+
+        /**
+         * validate all set filters allowed by the api
+         *
+         * @param filters list of filters, which have to be checked
+         */
+        public void validateSupportedFilters(List filters) {
+            //do nothing, when filters is null
+            if (filters != null) {
+                for (Map.Entry e : instance.arguments.entrySet()) {
+                    if (!filters.contains(FilterBy.getFilterBy((String) e.getKey()))) {
+                        throw new CotSdkException(String.format("This filter is not avaible in used api [%s]", e.getKey()));
+                    }
+                }
+            }
         }
 
     }

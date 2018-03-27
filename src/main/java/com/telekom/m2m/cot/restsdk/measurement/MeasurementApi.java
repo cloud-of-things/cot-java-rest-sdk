@@ -5,11 +5,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.CotSdkException;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.*;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -22,8 +20,11 @@ import java.util.List;
  */
 public class MeasurementApi {
 
-    private static final String CONTENT_TYPE_MEASUREMENT = " application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String CONTENT_TYPE_MEASUREMENT = "application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MEASUREMENT = "application/vnd.com.nsn.cumulocity.measurement+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MEASUREMENT_COLLECTION = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYSOURCE, FilterBy.BYDATEFROM, FilterBy.BYDATETO, FilterBy.BYFRAGMENTTYPE, FilterBy.BYTYPE);
 
     private static final String MEASUREMENTS_API = "measurement/measurements/";
 
@@ -62,7 +63,7 @@ public class MeasurementApi {
      */
     public Measurement createMeasurement(Measurement measurement) {
         String json = gson.toJson(measurement);
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT, ACCEPT_MEASUREMENT);
         measurement.setId(id);
         return measurement;
     }
@@ -81,7 +82,7 @@ public class MeasurementApi {
 
         final String json = gson.toJson(createJsonObject(measurements));
 
-        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION, CONTENT_TYPE_MEASUREMENT_COLLECTION);
+        final String response = cloudOfThingsRestClient.doPostRequest(json, MEASUREMENTS_API, CONTENT_TYPE_MEASUREMENT_COLLECTION, ACCEPT_MEASUREMENT_COLLECTION);
 
         return gson.fromJson(response, MeasurementsHolder.class)
                 .getMeasurements();
@@ -120,6 +121,8 @@ public class MeasurementApi {
      * @since 0.2.0
      */
     public MeasurementCollection getMeasurements(Filter.FilterBuilder filters, int resultSize) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         return new MeasurementCollection(
                 cloudOfThingsRestClient,
                 MEASUREMENTS_API,
@@ -134,6 +137,8 @@ public class MeasurementApi {
      * @param filters filters of measurement attributes.
      */
     public void deleteMeasurements(Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.delete("", MEASUREMENTS_API + "?" + filters.buildFilter() + "&x=");
     }
 

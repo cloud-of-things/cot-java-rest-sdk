@@ -140,4 +140,27 @@ public class Operation extends ExtensibleObject {
         return (String) anyObject.get("deliveryType");
     }
 
+    /**
+     * Setting failure reason in case of failing
+     * 
+     * @param failureReason a String with failure Reason, e.g. "Operation cancelled by user"
+     */
+    public void setFailureReason(String failureReason) {
+        if (failureReason == null) {
+            anyObject.remove("failureReason");
+        } else {
+            anyObject.put("failureReason", failureReason);
+        }
+    }
+
+
+    /**
+     * Getting FailureReason. Makes only sense if status is 'FAILED'
+     * 
+     * @return a String with the failure reason from the Operation
+     */
+    public String getFailureReason() {
+        return (String) anyObject.get("failureReason");
+    }
 }
+

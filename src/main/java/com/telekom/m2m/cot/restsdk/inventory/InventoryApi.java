@@ -4,7 +4,10 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Represents the API to retrieve and manipulate ManagedObjects.
@@ -16,8 +19,11 @@ public class InventoryApi {
     protected Gson gson = GsonUtils.createGson();
 
     private static final String CONTENT_TYPE_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
+    private static final String ACCEPT_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "inventory/managedObjects/";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYTYPE, FilterBy.BYFRAGMENTTYPE, FilterBy.BYLISTOFIDs, FilterBy.BYTEXT, FilterBy.BYAGENTID);
 
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -33,7 +39,7 @@ public class InventoryApi {
     public ManagedObject create(ManagedObject managedObject) {
         String json = gson.toJson(managedObject);
 
-        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
+        String id = cloudOfThingsRestClient.doRequestWithIdResponse(json, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT, ACCEPT_MANAGEDOBJECT);
         managedObject.setId(id);
 
         return managedObject;
@@ -105,7 +111,7 @@ public class InventoryApi {
         String selfRef = parentManagedObject.getChildDevices().getSelf();
         int idx = selfRef.lastIndexOf("inventory");
 
-        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
+        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF, ACCEPT_MANAGEDOBJECTREF);
     }
 
 
@@ -139,7 +145,7 @@ public class InventoryApi {
         String selfRef = parentManagedObject.getChildAssets().getSelf();
         int idx = selfRef.lastIndexOf("inventory");
 
-        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF);
+        cloudOfThingsRestClient.doPostRequest(json, selfRef.substring(idx), CONTENT_TYPE_MANAGEDOBJECTREF, ACCEPT_MANAGEDOBJECTREF);
     }
 
     /**
@@ -167,6 +173,8 @@ public class InventoryApi {
      * @since 0.3.0
      */
     public ManagedObjectCollection getManagedObjects(Filter.FilterBuilder filters, int pageSize) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         return new ManagedObjectCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -190,7 +198,7 @@ public class InventoryApi {
                 parentDevice.getId()
         );
 
-        cloudOfThingsRestClient.doPostRequest(json, api, CONTENT_TYPE_MANAGEDOBJECTREF);
+        cloudOfThingsRestClient.doPostRequest(json, api, CONTENT_TYPE_MANAGEDOBJECTREF, ACCEPT_MANAGEDOBJECTREF);
     }
 
 }

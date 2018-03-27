@@ -3,7 +3,9 @@ package com.telekom.m2m.cot.restsdk.alarm;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
@@ -16,6 +18,7 @@ import static org.testng.Assert.assertTrue;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 
 /**
  * @author chuhlich
@@ -203,33 +206,7 @@ public class AlarmApiCollectionIT {
 		Alarm[] alarmsWithCertainType = alarms.getAlarms();
 		assertEquals(alarmsWithCertainType[0].getType(), type);
 
-		// Now let's test the "filter by text" feature:
-		// FOR THE DEVELOPERS (to be deleted during merge request): this filter does not
-		// work, it is demonstrated below:
-		// given:
-		Filter.FilterBuilder filterBuilderForText = Filter.build().byText(text);
-		alarms = alarmApi.getAlarms(filterBuilderForText, 500);
 
-		// then:
-		// Two alarms are created in this test and both of them have the same text.
-		// However the filter will fail and when we call the collection of alarms using
-		// this filter, it will retrieve all alarms in the cloud:
-		assertTrue(alarms.getAlarms().length > 2);
-
-		Alarm[] alarmsWithCertainText = alarms.getAlarms();
-		boolean allAlarmsWithSameText = true;
-
-		// A better check:
-		for (Alarm alarmForLoop : alarmsWithCertainText) {
-
-			if (!alarmForLoop.getText().equals(text)) {
-				allAlarmsWithSameText = false;
-			}
-		}
-
-		// The assertion verifies that in the array of alarms, some of them does not
-		// have the text we set.
-		assertFalse(allAlarmsWithSameText);
 	}
     
     
@@ -366,6 +343,87 @@ public class AlarmApiCollectionIT {
 
         AlarmCollection alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE)
                 .bySource(testManagedObject.getId()), 5);
+
+        Alarm[] as = alarms.getAlarms();
+        Assert.assertEquals(as.length, 1);
+
+        alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACKNOWLEDGED)
+                .bySource(testManagedObject.getId()), 5);
+
+        as = alarms.getAlarms();
+        Assert.assertEquals(as.length, 0);
+    }
+
+    /**
+     * fails, because filter byText is not allowed in alarm api
+     */
+    @Test(expectedExceptions = CotSdkException.class)
+    public void testFilterNotALlowed() {
+        AlarmApi alarmApi = cotPlat.getAlarmApi();
+        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().byText(Alarm.STATE_ACTIVE), 5);
+    }
+
+    @Test
+    public void testAlarmCollectionWithFilterSetFilter() throws Exception {
+        // given
+        final String text = "new alarm created";
+        final String type = "com_telekom_alarm_TestType";
+
+        final Alarm alarm = new Alarm();
+        alarm.setText(text);
+        alarm.setType(type);
+        alarm.setTime(new Date());
+        alarm.setSource(testManagedObject);
+        alarm.setStatus(Alarm.STATE_ACTIVE);
+        alarm.setSeverity(Alarm.SEVERITY_MAJOR);
+        final Filter.FilterBuilder filterBuilder = Filter.build().setFilter(FilterBy.BYSOURCE, testManagedObject.getId());
+
+        final AlarmApi alarmApi = cotPlat.getAlarmApi();
+
+        alarmApi.create(alarm);
+
+        // when
+        final AlarmCollection alarmCollection = alarmApi.getAlarms(filterBuilder, 5);
+
+        // then
+        Assert.assertNotNull(alarmCollection);
+
+        final Alarm[] alarms = alarmCollection.getAlarms();
+
+        Assert.assertEquals(alarms.length, 1);
+        Assert.assertEquals(alarms.length, alarmCollection.getJsonArray().size());
+
+        final Alarm retrievedAlarm = alarms[0];
+        final JsonObject jsonObject = alarmCollection.getJsonArray().get(0).getAsJsonObject();
+
+        Assert.assertTrue(retrievedAlarm.getId() != null);
+        Assert.assertFalse(retrievedAlarm.getId().isEmpty());
+        Assert.assertTrue(retrievedAlarm.getId().equals(jsonObject.get("id").getAsString()));
+
+        Assert.assertTrue(retrievedAlarm.getTime() != null);
+        Assert.assertTrue(retrievedAlarm.getTime().compareTo(new Date()) < 0);
+
+        Assert.assertTrue(retrievedAlarm.getType() != null);
+        Assert.assertFalse(retrievedAlarm.getType().isEmpty());
+        Assert.assertTrue(retrievedAlarm.getType().equals(jsonObject.get("type").getAsString()));
+    }
+
+    @Test
+    public void testMultipleAlarmsBySourceAndStatusSetFilters() throws Exception {
+        AlarmApi alarmApi = cotPlat.getAlarmApi();
+
+        Alarm testAlarm = new Alarm();
+        testAlarm.setSource(testManagedObject);
+        testAlarm.setTime(new Date());
+        testAlarm.setType("mytype");
+        testAlarm.setText("Test");
+        testAlarm.setStatus(Alarm.STATE_ACTIVE);
+        testAlarm.setSeverity(Alarm.SEVERITY_MAJOR);
+        alarmApi.create(testAlarm);
+        HashMap<FilterBy, String> filters = new HashMap<>();
+        filters.put(FilterBy.BYSTATUS, Alarm.STATE_ACTIVE);
+        filters.put(FilterBy.BYSOURCE, testManagedObject.getId());
+        AlarmCollection alarms = alarmApi.getAlarms(Filter.build().setFilters(filters), 5);
 
         Alarm[] as = alarms.getAlarms();
         Assert.assertEquals(as.length, 1);

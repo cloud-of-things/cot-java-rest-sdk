@@ -3,7 +3,11 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Store and retrieve binaries in the CoT inventory.
@@ -14,6 +18,7 @@ public class BinariesApi {
     protected Gson gson = GsonUtils.createGson();
 
     public static final String RELATIVE_API_URL = "inventory/binaries";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYTYPE);
 
 
     public BinariesApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
@@ -31,6 +36,8 @@ public class BinariesApi {
 
     
     public BinariesCollection getBinaries(Filter.FilterBuilder filters,Integer pageSize) {
+        if(filters != null)
+        filters.validateSupportedFilters(acceptedFilters);
         return new BinariesCollection(filters,
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -88,8 +95,8 @@ public class BinariesApi {
      * @return the new ID of the binary.
      */
     public String replaceBinary(Binary binary) {
-        String newId = cloudOfThingsRestClient.doPutRequestWithIdResponse(
-                new String(binary.getData()),
+        String newId = cloudOfThingsRestClient.doPutRequestWithIdResponseInBytes(
+                binary.getData(),
                 RELATIVE_API_URL + "/" + binary.getId(),
                 binary.getType());
         binary.setId(newId);
@@ -105,11 +112,10 @@ public class BinariesApi {
      * @return the original byte[] from the response or null, if the body is empty.
      */
     public byte[] getData(Binary binary) {
-        String responseBody = cloudOfThingsRestClient.getResponse(binary.getId(), RELATIVE_API_URL, binary.getType());
+        byte[] responseBody = cloudOfThingsRestClient.getResponseInBytes(binary.getId(), RELATIVE_API_URL, binary.getType());
         if (responseBody != null) {
-            byte[] data = responseBody.getBytes();
-            binary.setData(data);
-            return data;
+            binary.setData(responseBody);
+            return responseBody;
         } else {
             return new byte[0];
         }
