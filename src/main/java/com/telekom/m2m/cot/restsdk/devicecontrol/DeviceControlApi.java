@@ -111,7 +111,8 @@ public class DeviceControlApi {
 
     /**
      * Updates an existing operation state.
-     * If operation Status changes from 'FAILED' with a specific failure reason, the failure reason must be removed by executing the function twice:
+     * If operation Status changes from 'FAILED' with a specific failure reason, 
+     * the failure reason must be removed by executing the function twice:
      * one time with status failed and failure reason = ""
      * and one time for changing the status
      * In the cloud of things the failure reason will then be ""
@@ -125,7 +126,13 @@ public class DeviceControlApi {
     public Operation update(Operation operation) {
         String json;
         if(operation.getStatus() == OperationStatus.FAILED) {
-            json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"" + operation.getFailureReason() + "\"}";
+            if(operation.getFailureReason() != null) {
+                json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"" + operation.getFailureReason() + "\"}";
+            } else {
+                // when failure reason was set to null it will be handled as an empty string
+                // because cot ignores null values for failure reason
+                json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"\"}";
+            }
         } else {
             json = "{\"status\" : \"" + operation.getStatus() + "\"}";
         }
