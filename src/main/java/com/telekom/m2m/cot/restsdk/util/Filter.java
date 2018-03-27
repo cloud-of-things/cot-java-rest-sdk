@@ -212,6 +212,7 @@ public class Filter {
 
         /**
          * adds a build for a filter
+         *
          * @param filterBy enum value, which filter should to be added
          * @param value value for filter, which should be added
          * @return an appropriate build Object
@@ -223,6 +224,7 @@ public class Filter {
 
         /**
          * adds a build for a hashmap of filters
+         *
          * @param hashmap contains enum values and vaslues for filter builds
          * @return an appropriate build Object
          */
@@ -235,6 +237,7 @@ public class Filter {
 
         /**
          * test if all set filters are allowed by the api
+         *
          * @param filters list of filters, which have to be checked
          */
         public void testSupportedFilters(List filters) {
