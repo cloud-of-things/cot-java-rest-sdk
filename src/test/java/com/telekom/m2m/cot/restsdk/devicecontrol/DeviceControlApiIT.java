@@ -110,14 +110,22 @@ public class DeviceControlApiIT {
         assertEquals(updatedOperation.getFailureReason(), failureReason);
 
         //when
-        createdOperation.setStatus(OperationStatus.PENDING);
+        // first step: remove failureReason before changing status
         createdOperation.setFailureReason(null);
         deviceControlApi.update(createdOperation);
-        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
-        assertEquals(updatedOperation.getStatus(), OperationStatus.PENDING);
 
         //then
-        assertEquals(updatedOperation.getFailureReason(), null);
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
+        // when failure reason was set to null it will be handled as an empty string
+        // because cot ignores null values for failure reason
+        assertEquals(updatedOperation.getFailureReason(), "");
+
+        // second step: change status
+        createdOperation.setStatus(OperationStatus.PENDING);
+        deviceControlApi.update(createdOperation);
+
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
+        assertEquals(updatedOperation.getStatus(), OperationStatus.PENDING);
 
     }
 
