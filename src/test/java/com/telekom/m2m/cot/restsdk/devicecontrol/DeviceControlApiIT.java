@@ -76,6 +76,8 @@ public class DeviceControlApiIT {
 
     @Test
     public void testCreateAndUpdateOperation() throws Exception {
+        Operation updatedOperation;
+
         // given
         Operation operation = createOperation("com_telekom_m2m_cotcommand");
 
@@ -89,10 +91,42 @@ public class DeviceControlApiIT {
         // when
         createdOperation.setStatus(OperationStatus.EXECUTING);
 
-        Operation updatedOperation = deviceControlApi.update(createdOperation);
+        deviceControlApi.update(createdOperation);
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
 
         // then
         assertEquals(updatedOperation.getStatus(), OperationStatus.EXECUTING);
+
+        final String failureReason = "AN ERROR HAS OCCURED";
+        //when
+        createdOperation.setStatus(OperationStatus.FAILED);
+        createdOperation.setFailureReason(failureReason);
+
+        deviceControlApi.update(createdOperation);
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
+        assertEquals(updatedOperation.getStatus(), OperationStatus.FAILED);
+
+        //then
+        assertEquals(updatedOperation.getFailureReason(), failureReason);
+
+        //when
+        // first step: remove failureReason before changing status
+        createdOperation.setFailureReason(null);
+        deviceControlApi.update(createdOperation);
+
+        //then
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
+        // when failure reason was set to null it will be handled as an empty string
+        // because cot ignores null values for failure reason
+        assertEquals(updatedOperation.getFailureReason(), "");
+
+        // second step: change status
+        createdOperation.setStatus(OperationStatus.PENDING);
+        deviceControlApi.update(createdOperation);
+
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
+        assertEquals(updatedOperation.getStatus(), OperationStatus.PENDING);
+
     }
 
     @Test
