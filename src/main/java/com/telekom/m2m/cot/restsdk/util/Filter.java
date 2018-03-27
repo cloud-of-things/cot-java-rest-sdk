@@ -236,11 +236,11 @@ public class Filter {
         }
 
         /**
-         * test if all set filters are allowed by the api
+         * validate all set filters allowed by the api
          *
          * @param filters list of filters, which have to be checked
          */
-        public void testSupportedFilters(List filters) {
+        public void validateSupportedFilters(List filters) {
             //do nothing, when filters is null
             if (filters != null) {
                 for (Map.Entry e : instance.arguments.entrySet()) {

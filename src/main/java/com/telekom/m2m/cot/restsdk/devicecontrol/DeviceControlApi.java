@@ -154,7 +154,7 @@ public class DeviceControlApi {
      */
     public OperationCollection getOperationCollection(Filter.FilterBuilder filters, int resultSize) {
         if(filters != null)
-            filters.testSupportedFilters(acceptedFilters);
+            filters.validateSupportedFilters(acceptedFilters);
         return new OperationCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_OPERATION_API_URL,
@@ -170,7 +170,7 @@ public class DeviceControlApi {
      */
     public void deleteOperations(Filter.FilterBuilder filters) {
         if(filters != null)
-            filters.testSupportedFilters(acceptedFilters);
+            filters.validateSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_OPERATION_API_URL);
     }
 
