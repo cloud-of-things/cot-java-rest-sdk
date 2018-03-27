@@ -2,9 +2,10 @@ package com.telekom.m2m.cot.restsdk.alarm;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.*;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Use AlarmApi to work with Alarms.
@@ -15,7 +16,8 @@ public class AlarmApi {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarm+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.alarm+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "/alarm/alarms/";
-
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(
+            FilterBy.BYSTATUS, FilterBy.BYSOURCE, FilterBy.BYDATEFROM, FilterBy.BYDATETO, FilterBy.BYTYPE);
     private final Gson gson = GsonUtils.createGson();
     CloudOfThingsRestClient cloudOfThingsRestClient;
 
@@ -95,6 +97,8 @@ public class AlarmApi {
      * @since 0.3.0
      */
     public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         return new AlarmCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -109,6 +113,8 @@ public class AlarmApi {
      * @param filters filters of Alarm attributes.
      */
     public void deleteAlarms(Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.delete("", RELATIVE_API_URL+ "?" + filters.buildFilter() + "&x=");
     }
 }

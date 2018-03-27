@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-
+import java.util.Arrays;
+import java.util.List;
 /**
  * Use the AuditApi to work with audit records.
  * <p>
@@ -15,6 +17,8 @@ public class AuditApi {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.auditRecord+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.auditRecord+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "audit/auditRecords/";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(
+            FilterBy.BYUSER, FilterBy.BYTYPE, FilterBy.BYAPPLICATION, FilterBy.BYDATETO, FilterBy.BYDATEFROM);
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private final Gson gson = GsonUtils.createGson();
@@ -80,6 +84,8 @@ public class AuditApi {
      * @return the first page of AuditRecordCollection which can be used to navigate through the found AuditRecords.
      */
     public AuditRecordCollection getAuditRecordCollection(final Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         return new AuditRecordCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -93,6 +99,8 @@ public class AuditApi {
      * @param filters filters of audit record attributes.
      */
     public void deleteAuditRecords(Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_API_URL);
     }
 }

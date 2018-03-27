@@ -4,7 +4,11 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Use the Event to work with Events.
@@ -16,6 +20,7 @@ public class EventApi {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.event+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT = "application/vnd.com.nsn.cumulocity.event+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "event/events/";
+    private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYTYPE, FilterBy.BYSOURCE, FilterBy.BYDATETO, FilterBy.BYDATEFROM, FilterBy.BYFRAGMENTTYPE);
 
     private final Gson gson = GsonUtils.createGson();
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
@@ -89,6 +94,8 @@ public class EventApi {
      * @since 0.2.0
      */
     public EventCollection getEvents(Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         return new EventCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -102,6 +109,8 @@ public class EventApi {
      * @param filters filters of Event attributes.
      */
     public void deleteEvents(Filter.FilterBuilder filters) {
+        if(filters != null)
+            filters.validateSupportedFilters(acceptedFilters);
         cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filters.buildFilter() + "&x=");
     }
 }
