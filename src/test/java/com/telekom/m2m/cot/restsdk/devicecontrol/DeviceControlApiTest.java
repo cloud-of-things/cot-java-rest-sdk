@@ -104,37 +104,6 @@ public class DeviceControlApiTest {
         assertEquals(updatedOperation.getFailureReason(),failureReason);
     }
 
-    /**
-     * If status is not 'FAILED', failure reason must be null
-     */
-    @Test
-    public void testUpdateOperationStatusNotFailedFailureReason() {
-        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
-
-        final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
-
-        final String operationId ="234";
-        final OperationStatus operationStatus = OperationStatus.EXECUTING;
-        //Failure reason, which should be updated
-        final String failureReason = "Abortion by user";
-
-        final Operation testOperation = new Operation();
-        testOperation.setId(operationId);
-        testOperation.setStatus(operationStatus);
-        testOperation.setFailureReason(failureReason);
-
-        Operation updatedOperation = deviceControlApi.update(testOperation);
-
-        Mockito.verify(cotRestClientMock, Mockito.times(1)).
-                doPutRequest(contains(operationStatus.toString()), contains(operationId), any(String.class));
-
-        assertNotNull(updatedOperation);
-        assertEquals(updatedOperation.getId(), operationId);
-        assertEquals(updatedOperation.getStatus(), operationStatus);
-        assertNull(updatedOperation.getFailureReason());
-    }
-
-
     @Test(expectedExceptions = CotSdkException.class)
     public void testAcceptDeviceWithFailure() throws Exception {
         // given
