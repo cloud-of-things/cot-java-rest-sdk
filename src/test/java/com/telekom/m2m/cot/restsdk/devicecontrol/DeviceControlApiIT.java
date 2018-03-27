@@ -103,7 +103,7 @@ public class DeviceControlApiIT {
         createdOperation.setFailureReason(failureReason);
 
         deviceControlApi.update(createdOperation);
-        updatedOperation= deviceControlApi.getOperation(createdOperation.getId());
+        updatedOperation = deviceControlApi.getOperation(createdOperation.getId());
         assertEquals(updatedOperation.getStatus(), OperationStatus.FAILED);
 
         //then
