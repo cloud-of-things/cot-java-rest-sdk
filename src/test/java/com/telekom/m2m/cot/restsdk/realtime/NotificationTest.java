@@ -15,7 +15,7 @@ public class NotificationTest {
         jsonObject.addProperty("realtimeAction", action.toString());
         jsonObject.addProperty("data", value);
         Notification notification = new Notification(jsonObject);
-        Assert.assertEquals(notification.getDataPart(), value);
+        Assert.assertEquals(notification.getPayload(), value);
         Assert.assertEquals(notification.getRealtimeAction(), action);
     }
 
@@ -27,7 +27,7 @@ public class NotificationTest {
         failJsonObject.addProperty("realtimeAction", action);
         failJsonObject.addProperty("data", value + "ERROR");
         Notification notification = new Notification(failJsonObject);
-        Assert.assertNotEquals(notification.getDataPart(), value);
+        Assert.assertNotEquals(notification.getPayload(), value);
         try {
             notification.getRealtimeAction();
             fail();

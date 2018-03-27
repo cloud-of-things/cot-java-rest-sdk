@@ -33,9 +33,9 @@ public  class Notification {
 
     /**
      *
-     * @return the data part of the json data
+     * @return the payload of the json data
      */
-    public String getDataPart() {
+    public String getPayload() {
         try {
             return data.get("data").getAsString();
         } catch (NullPointerException e) {
