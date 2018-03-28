@@ -11,8 +11,6 @@ import org.testng.annotations.Test;
 import java.io.IOException;
 
 import static org.mockito.Matchers.any;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.fail;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
