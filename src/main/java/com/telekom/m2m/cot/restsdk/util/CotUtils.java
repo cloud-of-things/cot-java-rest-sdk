@@ -11,6 +11,8 @@ import java.util.Locale;
 public class CotUtils {
     private static final DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.US);
 
+    public static final int MAX_PAGE_SIZE = 2000;
+
     public static String convertDateToTimestring(Date date) {
         return df.format(date).replace("+", "%2B");
     }
