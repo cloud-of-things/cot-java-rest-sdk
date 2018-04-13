@@ -1,7 +1,5 @@
 package com.telekom.m2m.cot.restsdk.smartrest;
 
-import static com.telekom.m2m.cot.restsdk.util.CotUtils.MAX_PAGE_SIZE;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
@@ -12,7 +10,6 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -122,12 +119,18 @@ public class SmartRestApi {
      *
      * @return Array containing instances of {@link SmartRequestTemplate} and/or {@link SmartResponseTemplate}.
      *         Can be empty if no templates for this X-ID are found.
+     *
+     * @throws CotSdkException if more than one managed object with the given xId was found
      */
     public SmartTemplate[] getTemplatesByXId(String xId) {
 
         Filter.FilterBuilder filterBuilder = new Filter.FilterBuilder();
         filterBuilder.setFilter(FilterBy.BYTYPE, xId);
-        ManagedObjectCollection managedObjectCollection = inventoryApi.getManagedObjects(filterBuilder, MAX_PAGE_SIZE);
+        ManagedObjectCollection managedObjectCollection = inventoryApi.getManagedObjects(filterBuilder, 2);
+
+        if (managedObjectCollection.getManagedObjects().length > 1) {
+            throw new CotSdkException("Got more than one managed object with xId: " + xId);
+        }
 
         ArrayList<SmartTemplate> templateList = new ArrayList<>();
 
