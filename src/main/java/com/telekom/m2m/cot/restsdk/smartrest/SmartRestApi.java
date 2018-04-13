@@ -51,8 +51,8 @@ public class SmartRestApi {
     private static final Gson gson = GsonUtils.createGson();
 
     public SmartRestApi(CloudOfThingsRestClient cloudOfThingsRestClient, InventoryApi inventoryApi) {
-        this.cloudOfThingsRestClient = Objects.requireNonNull(cloudOfThingsRestClient);
-        this.inventoryApi = Objects.requireNonNull(inventoryApi);
+        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        this.inventoryApi = inventoryApi;
     }
 
 

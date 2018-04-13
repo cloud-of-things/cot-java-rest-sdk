@@ -44,26 +44,6 @@ public class SmartRestApiTest {
         assertNotNull(smartRestApi);
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
-    public void testConstructorNullParameterA() {
-        // given: mocks for dependencies
-        CloudOfThingsRestClient cloudOfThingsRestClient = mock(CloudOfThingsRestClient.class);
-
-        // when: the constructor is called with null parameter
-        SmartRestApi smartRestApi = new SmartRestApi(cloudOfThingsRestClient, null);
-        // then: exception is thrown
-    }
-
-    @Test(expectedExceptions = NullPointerException.class)
-    public void testConstructorNullParameterB() {
-        // given: mocks for dependencies
-        InventoryApi inventoryApi = mock(InventoryApi.class);
-
-        // when: the constructor is called with null parameter
-        SmartRestApi smartRestApi = new SmartRestApi(null, inventoryApi);
-        // then: exception is thrown
-    }
-
     @Test
     public void getTemplatesByGId() {
 
@@ -71,12 +51,7 @@ public class SmartRestApiTest {
         CloudOfThingsRestClient cloudOfThingsRestClientMock = mock(CloudOfThingsRestClient.class);
 
         // and: a ManagedObjectCollection with one test object that has a request and a response template
-        JsonParser jsonParser = new JsonParser();
-        ManagedObject managedObject = new ManagedObject();
-        managedObject.setType("someXID");
-        managedObject.set("com_cumulocity_model_smartrest_SmartRestTemplate", jsonParser.parse(
-                "{requestTemplates:[{templateString: 'REQ_TPL'}]," +
-                        "responseTemplates:[{condition: 'RESP_TPL'}]}"));
+        ManagedObject managedObject = createTestManagedObject();
 
         // and: a mock for the inventory API with a argument checker for the FilterBuilder
         InventoryApi inventoryApiMock = mock(InventoryApi.class);
@@ -94,6 +69,8 @@ public class SmartRestApiTest {
         assertEquals(((SmartResponseTemplate)result[1]).getCondition(), "RESP_TPL");
     }
 
+
+
     @Test
     public void getTemplatesByXId() {
 
@@ -101,13 +78,8 @@ public class SmartRestApiTest {
         CloudOfThingsRestClient cloudOfThingsRestClientMock = mock(CloudOfThingsRestClient.class);
 
         // and: a ManagedObjectCollection with one test object that has a request and a response template
-        JsonParser jsonParser = new JsonParser();
         ManagedObject[] managedObjects = new ManagedObject[1];
-        managedObjects[0] = new ManagedObject();
-        managedObjects[0].setType("someXID");
-        managedObjects[0].set("com_cumulocity_model_smartrest_SmartRestTemplate", jsonParser.parse(
-                "{requestTemplates:[{templateString: 'REQ_TPL'}]," +
-                     "responseTemplates:[{condition: 'RESP_TPL'}]}"));
+        managedObjects[0] = createTestManagedObject();
 
         ManagedObjectCollection managedObjectCollectionMock = mock(ManagedObjectCollection.class);
         when(managedObjectCollectionMock.getManagedObjects()).thenReturn(managedObjects);
@@ -139,10 +111,8 @@ public class SmartRestApiTest {
         // and: a ManagedObjectCollection with one test object that has a request and a response template
         JsonParser jsonParser = new JsonParser();
         ManagedObject[] managedObjects = new ManagedObject[2];
-        managedObjects[0] = new ManagedObject();
-        managedObjects[0].setType("sameXID");
-        managedObjects[1] = new ManagedObject();
-        managedObjects[1].setType("sameXID");
+        managedObjects[0] = createTestManagedObject();
+        managedObjects[1] = createTestManagedObject();
 
         ManagedObjectCollection managedObjectCollectionMock = mock(ManagedObjectCollection.class);
         when(managedObjectCollectionMock.getManagedObjects()).thenReturn(managedObjects);
@@ -159,7 +129,16 @@ public class SmartRestApiTest {
         testSubject.getTemplatesByXId("someXID");
 
         // then: exception is thrown
+    }
 
+    private ManagedObject createTestManagedObject() {
+        JsonParser jsonParser = new JsonParser();
+        ManagedObject managedObject = new ManagedObject();
+        managedObject.setType("someXID");
+        managedObject.set("com_cumulocity_model_smartrest_SmartRestTemplate", jsonParser.parse(
+                "{requestTemplates:[{templateString: 'REQ_TPL'}]," +
+                        "responseTemplates:[{condition: 'RESP_TPL'}]}"));
+        return managedObject;
     }
 
 }
