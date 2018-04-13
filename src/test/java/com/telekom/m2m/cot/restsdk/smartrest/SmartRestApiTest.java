@@ -31,6 +31,26 @@ public class SmartRestApiTest {
         assertNotNull(smartRestApi);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void testConstructorNullParameterA() {
+        // given: mocks for dependencies
+        CloudOfThingsRestClient cloudOfThingsRestClient = mock(CloudOfThingsRestClient.class);
+
+        // when: the constructor is called with null parameter
+        SmartRestApi smartRestApi = new SmartRestApi(cloudOfThingsRestClient, null);
+        // then: exception is thrown
+    }
+
+    @Test(expectedExceptions = NullPointerException.class)
+    public void testConstructorNullParameterB() {
+        // given: mocks for dependencies
+        InventoryApi inventoryApi = mock(InventoryApi.class);
+
+        // when: the constructor is called with null parameter
+        SmartRestApi smartRestApi = new SmartRestApi(null, inventoryApi);
+        // then: exception is thrown
+    }
+
     @Test
     public void getTemplatesByGId() {
 

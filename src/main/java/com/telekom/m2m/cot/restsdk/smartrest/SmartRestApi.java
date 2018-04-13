@@ -16,6 +16,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -53,8 +54,8 @@ public class SmartRestApi {
     private static final Gson gson = GsonUtils.createGson();
 
     public SmartRestApi(CloudOfThingsRestClient cloudOfThingsRestClient, InventoryApi inventoryApi) {
-        this.cloudOfThingsRestClient = cloudOfThingsRestClient;
-        this.inventoryApi = inventoryApi;
+        this.cloudOfThingsRestClient = Objects.requireNonNull(cloudOfThingsRestClient);
+        this.inventoryApi = Objects.requireNonNull(inventoryApi);
     }
 
 
