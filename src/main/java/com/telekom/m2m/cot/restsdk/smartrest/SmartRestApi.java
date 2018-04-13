@@ -5,12 +5,15 @@ import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObjectCollection;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -106,10 +109,42 @@ public class SmartRestApi {
      */
     public SmartTemplate[] getTemplatesByGId(String gId) {
         ManagedObject mo = inventoryApi.get(gId);
+        return getSmartTemplatesFromManagedObject(mo);
+    }
 
-        if ((mo != null) && (mo.has(JSON_TEMPLATE_ATTRIBUTE))) {
+    /**
+     * Get all the templates that belong to this X-ID.
+     *
+     * @param xId the X-ID of the managedObject that contains the templates.
+     *
+     * @return Array containing instances of {@link SmartRequestTemplate} and/or {@link SmartResponseTemplate}.
+     *         Can be empty if no templates for this X-ID are found.
+     *
+     * @throws CotSdkException if more than one managed object with the given xId was found
+     */
+    public SmartTemplate[] getTemplatesByXId(String xId) {
+
+        Filter.FilterBuilder filterBuilder = new Filter.FilterBuilder();
+        filterBuilder.setFilter(FilterBy.BYTYPE, xId);
+        ManagedObjectCollection managedObjectCollection = inventoryApi.getManagedObjects(filterBuilder, 2);
+
+        if (managedObjectCollection.getManagedObjects().length > 1) {
+            throw new CotSdkException("Got more than one managed object with xId: " + xId);
+        }
+
+        ArrayList<SmartTemplate> templateList = new ArrayList<>();
+
+        for(ManagedObject managedObject : managedObjectCollection.getManagedObjects()) {
+            SmartTemplate[] templates = getSmartTemplatesFromManagedObject(managedObject);
+            templateList.addAll(Arrays.asList(templates));
+        }
+        return templateList.toArray(new SmartTemplate[0]);
+    }
+
+    private SmartTemplate[] getSmartTemplatesFromManagedObject(final ManagedObject managedObject) {
+        if ((managedObject != null) && (managedObject.has(JSON_TEMPLATE_ATTRIBUTE))) {
             List<SmartTemplate> templates = new ArrayList<>();
-            JsonObject templateJson = (JsonObject) mo.getAttributes().get(JSON_TEMPLATE_ATTRIBUTE);
+            JsonObject templateJson = (JsonObject) managedObject.getAttributes().get(JSON_TEMPLATE_ATTRIBUTE);
             if (templateJson.has("requestTemplates")) {
                 SmartRequestTemplate[] requests = gson.fromJson(templateJson.get("requestTemplates"), SmartRequestTemplate[].class);
                 templates.addAll(Arrays.asList(requests));
@@ -118,12 +153,10 @@ public class SmartRestApi {
                 SmartResponseTemplate[] responses = gson.fromJson(templateJson.get("responseTemplates"), SmartResponseTemplate[].class);
                 templates.addAll(Arrays.asList(responses));
             }
-            return templates.toArray(new SmartTemplate[templates.size()]);
-
+            return templates.toArray(new SmartTemplate[0]);
         }
         return new SmartTemplate[0];
     }
-
 
     /**
      * Send SmartTemplates to the server.
