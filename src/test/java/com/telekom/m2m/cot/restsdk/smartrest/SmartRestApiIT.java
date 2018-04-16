@@ -58,19 +58,25 @@ public class SmartRestApiIT {
 
         assertEquals(id, gId, "The IDs returned from template creation and checking are not the same!");
 
-        SmartTemplate[] templates = smartRestApi.getTemplatesByGId(gId);
-        assertEquals(templates.length, 3, "Now we have created three templates.");
-        assertTrue(templates[0] instanceof SmartRequestTemplate);
-        assertTrue(templates[1] instanceof SmartRequestTemplate);
-        assertTrue(templates[2] instanceof SmartResponseTemplate);
-        assertEquals(templates[0].toString(), "101,POST,/inventory/managedObjects,application/vnd.com.nsn.cumulocity.managedObject+json,application/vnd.com.nsn.cumulocity.managedObject+json,,STRING,\"{\"\"name\"\":\"\"foo\"\",\"\"type\"\":\"\"com_example_TestDevice\"\",\"\"c8y_IsDevice\"\":{}}\"");
-        assertEquals(templates[1].toString(), "999,DELETE,/inventory/foo/managedObjects/&&,,,&&,,");
-        assertEquals(templates[2].toString(), "102,$,$.c8y_IsDevice,$.id");
+        SmartTemplate[] templatesByGId = smartRestApi.getTemplatesByGId(gId);
+        assertEquals(templatesByGId.length, 3, "Now we have created three templates.");
+        assertTrue(templatesByGId[0] instanceof SmartRequestTemplate);
+        assertTrue(templatesByGId[1] instanceof SmartRequestTemplate);
+        assertTrue(templatesByGId[2] instanceof SmartResponseTemplate);
+        assertEquals(templatesByGId[0].toString(), "101,POST,/inventory/managedObjects,application/vnd.com.nsn.cumulocity.managedObject+json,application/vnd.com.nsn.cumulocity.managedObject+json,,STRING,\"{\"\"name\"\":\"\"foo\"\",\"\"type\"\":\"\"com_example_TestDevice\"\",\"\"c8y_IsDevice\"\":{}}\"");
+        assertEquals(templatesByGId[1].toString(), "999,DELETE,/inventory/foo/managedObjects/&&,,,&&,,");
+        assertEquals(templatesByGId[2].toString(), "102,$,$.c8y_IsDevice,$.id");
+
+        // X-ID and GroupID denote the same collection, so they just need to be equal.
+        SmartTemplate[] templatesByXId = smartRestApi.getTemplatesByXId(xId);
+        String XIdString = templatesByXId[0].toString() + templatesByXId[1].toString() + templatesByXId[2].toString();
+        String GIdString = templatesByGId[0].toString() + templatesByGId[1].toString() + templatesByGId[2].toString();
+        assertEquals(XIdString, GIdString);
 
         smartRestApi.deleteByGId(gId);
 
-        templates = smartRestApi.getTemplatesByGId(gId);
-        assertEquals(templates.length, 0, "All templates should be gone.");
+        templatesByGId = smartRestApi.getTemplatesByGId(gId);
+        assertEquals(templatesByGId.length, 0, "All templates should be gone.");
         gId = null;
     }
 
