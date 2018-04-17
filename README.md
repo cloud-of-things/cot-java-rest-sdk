@@ -2,7 +2,7 @@
 
 The [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) (German Cloud der Dinge) is a platform for the Internet of Things by T-Systems International GmbH. Inside this repository you will find a Java based SDK to interface with the Cloud of Things API.
 
-_Current version is: 1.0.4_
+_Current version is: 1.0.5_
 
 ## Usage
 
@@ -11,7 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>1.0.4</version>
+    <version>1.0.5</version>
 </dependency>
 ```
 
@@ -33,13 +33,17 @@ You can find the Java Doc of the latest release here: http://cloud-of-things.git
 
 Short information about what has changed between releases.
 
+### Release 1.0.5
+* Provide functionality to get all SmartREST Templates by X-ID
+* Resolve [issue #52](https://github.com/cloud-of-things/cot-java-rest-sdk/issues/52): provide http status code in thrown exception in getMeasurement()
+
 ### Release 1.0.4
 * Improve usage of accept and content-type headers in rest client
 * Improve usage of OkHttpClient so that lesser resources will be used
 * Fix handling of binary data using byte array
 * Remove double slashes in rest api paths to avoid http code 404
-* Resolve [issue #51] https://github.com/cloud-of-things/cot-java-rest-sdk/issues/51: provide failure reason for failed operations
-* Resolve [issue #53] https://github.com/cloud-of-things/cot-java-rest-sdk/issues/53: provide a new method for creation NewDeviceRequests
+* Resolve [issue #51](https://github.com/cloud-of-things/cot-java-rest-sdk/issues/51): provide failure reason for failed operations
+* Resolve [issue #53](https://github.com/cloud-of-things/cot-java-rest-sdk/issues/53): provide a new method for creation NewDeviceRequests
 * Handle filters as enum and validate filters supported by cot
 * Improve Notification class which now provides realtime action
 
