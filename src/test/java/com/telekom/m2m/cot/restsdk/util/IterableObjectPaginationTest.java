@@ -14,10 +14,12 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotSame;
 import static org.testng.Assert.assertTrue;
 
 public class IterableObjectPaginationTest {
@@ -61,6 +63,18 @@ public class IterableObjectPaginationTest {
         final List<ExtensibleObject> objects = pagination.stream().collect(Collectors.toList());
 
         assertEquals(objects.size(), 10);
+    }
+
+    @Test
+    public void streamReturnsDifferentObjectsOnEachCall() {
+        simulateNumberOfObjectsOnPages(10);
+
+        try (
+            final Stream<ExtensibleObject> first = pagination.stream();
+            final Stream<ExtensibleObject> second = pagination.stream()
+        ) {
+            assertNotSame(first, second);
+        }
     }
 
     @Test
