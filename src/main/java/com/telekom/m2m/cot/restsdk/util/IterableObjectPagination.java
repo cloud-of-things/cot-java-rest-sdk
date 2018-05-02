@@ -79,6 +79,13 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
         );
     }
 
+    /**
+     * Returns a {@link Stream} that reads objects until the last page is reached.
+     *
+     * The stream can be used only *once* for iteration.
+     *
+     * @return Object stream.
+     */
     @Nonnull
     public Stream<T> stream() {
         return null;
