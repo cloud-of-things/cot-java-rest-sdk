@@ -79,8 +79,8 @@ public class IterableObjectPaginationTest {
         final List<ExtensibleObject> objects = pagination.stream().limit(5).collect(Collectors.toList());
 
         assertEquals(objects.size(), 5);
-        assertPageNotRequested(3);
         assertPageNotRequested(4);
+        assertPageNotRequested(3);
     }
 
     @Test
@@ -90,10 +90,10 @@ public class IterableObjectPaginationTest {
         final List<ExtensibleObject> objects = pagination.stream().limit(0).collect(Collectors.toList());
 
         assertEquals(objects.size(), 0);
-        assertPageNotRequested(1);
-        assertPageNotRequested(2);
-        assertPageNotRequested(3);
         assertPageNotRequested(4);
+        assertPageNotRequested(3);
+        assertPageNotRequested(2);
+        assertPageNotRequested(1);
     }
 
     @Test
