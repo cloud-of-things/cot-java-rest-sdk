@@ -1,13 +1,25 @@
 package com.telekom.m2m.cot.restsdk.util;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Objects;
+import java.util.stream.Stream;
 
-public class IterableObjectPagination<T> extends JsonArrayPagination {
+/**
+ * Simplifies iteration over paged result by providing access to paged objects
+ * via {@link Stream}.
+ *
+ * The object stream can be accessed via {@link #stream()}. It will read pages
+ * *only* if necessary and forward until the end of result (the last page) is
+ * reached.
+ *
+ * @param <T> The type of objects on the pages.
+ */
+abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
     /**
      * Creates a pagination with default page size.
      *
@@ -66,4 +78,18 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
             pageSize
         );
     }
+
+    @Nonnull
+    public Stream<T> stream() {
+        return null;
+    }
+
+    /**
+     * Converts the given JSON data into an object.
+     *
+     * @param element The element.
+     * @return An object created from the JSON data.
+     */
+    @Nonnull
+    abstract protected T convertJsonToObject(@Nonnull final JsonElement element);
 }
