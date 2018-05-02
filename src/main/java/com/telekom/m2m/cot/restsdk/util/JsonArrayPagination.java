@@ -21,7 +21,7 @@ public class JsonArrayPagination {
     private int pageCursor = 1;
     private boolean nextAvailable = false;
     private boolean previousAvailable = false;
-    private int pageSize = 5;
+    private int pageSize = DEFAULT_PAGE_SIZE;
 
     private Filter.FilterBuilder criteria = null;
 
