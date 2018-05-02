@@ -14,6 +14,7 @@ public class JsonArrayPagination {
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private final String relativeApiUrl;
+    @Deprecated
     private final String contentType;
     private final String collectionElementName;
 
