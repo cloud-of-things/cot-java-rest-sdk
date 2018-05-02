@@ -88,6 +88,15 @@ public class IterableObjectPaginationTest {
         assertPageNotRequested(3);
     }
 
+    @Test
+    public void returnsNoObjectsIfPageIsEmpty() {
+        simulateNumberOfObjectsOnPages(0);
+
+        final List<ExtensibleObject> objects = pagination.stream().collect(Collectors.toList());
+
+        assertEquals(0, objects.size());
+    }
+
     private void simulateNumberOfObjectsOnPages(final int numberOfObjects) {
 
     }
