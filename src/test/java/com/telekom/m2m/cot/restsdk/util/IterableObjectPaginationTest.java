@@ -36,7 +36,7 @@ public class IterableObjectPaginationTest {
 
     @BeforeTest
     public void setup() {
-        cloudOfThingsRestClient = mock(CloudOfThingsRestClient.class);
+        cloudOfThingsRestClient = createRestClient();
         pagination = new IterableObjectPagination<ExtensibleObject>(
             cloudOfThingsRestClient,
             "test/url",
@@ -60,7 +60,7 @@ public class IterableObjectPaginationTest {
 
         final List<ExtensibleObject> objects = pagination.stream().collect(Collectors.toList());
 
-        assertEquals( objects.size(), 10);
+        assertEquals(objects.size(), 10);
     }
 
     @Test
@@ -186,5 +186,21 @@ public class IterableObjectPaginationTest {
 
     private int ceilDiv(final int dividend, final int divisor){
         return -Math.floorDiv(-dividend,divisor);
+    }
+
+    /**
+     * Creates a mocked test client.
+     *
+     * The client returns empty responses per default.
+     *
+     * @return The mocked test client.
+     */
+    @Nonnull
+    private CloudOfThingsRestClient createRestClient() {
+        final CloudOfThingsRestClient client = mock(CloudOfThingsRestClient.class);
+        doAnswer(invocation -> readTemplate("pages/no-filter/empty-page.json"))
+            .when(client)
+            .getResponse(anyString());
+        return client;
     }
 }
