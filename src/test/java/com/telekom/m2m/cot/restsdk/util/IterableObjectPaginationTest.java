@@ -64,6 +64,16 @@ public class IterableObjectPaginationTest {
     }
 
     @Test
+    public void multipleStreamCallsReturnSameNumberOfObjects() {
+        simulateNumberOfObjectsOnPages(10);
+
+        final List<ExtensibleObject> first = pagination.stream().collect(Collectors.toList());
+        final List<ExtensibleObject> second = pagination.stream().collect(Collectors.toList());
+
+        assertEquals(first.size(), second.size());
+    }
+
+    @Test
     public void streamReadsObjectsIfThereIsOnlyOnePage() {
         simulateNumberOfObjectsOnPages(2);
 
