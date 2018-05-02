@@ -5,6 +5,8 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
+import javax.annotation.Nullable;
+
 /**
  * Created by Andreas Dyck on 26.07.17.
  */
@@ -87,6 +89,7 @@ public class JsonArrayPagination {
      *
      * @return JsonArray of found JsonElements
      */
+    @Nullable
     public JsonArray getJsonArray() {
         final JsonObject object = getJsonObject(pageCursor);
 
