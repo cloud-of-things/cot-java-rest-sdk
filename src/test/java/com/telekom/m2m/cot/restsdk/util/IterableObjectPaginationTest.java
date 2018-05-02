@@ -115,7 +115,7 @@ public class IterableObjectPaginationTest {
         final int totalPages = ceilDiv(numberOfObjects, PAGE_SIZE_IN_TESTS);
         for (int page = 1; page <= totalPages; page++) {
             final int itemsOnPage = (page == totalPages) ? numberOfObjects % PAGE_SIZE_IN_TESTS : PAGE_SIZE_IN_TESTS;
-            final String itemsJson = IntStream.range(1, itemsOnPage)
+            final String itemsJson = IntStream.range(1, itemsOnPage + 1)
                 .mapToObj(id -> itemTemplate.replace("%%id%%", String.valueOf(id)))
                 .collect(Collectors.joining(","));
             final String body = pageTemplate
