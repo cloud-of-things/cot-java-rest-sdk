@@ -3,6 +3,8 @@ package com.telekom.m2m.cot.restsdk.util;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class IterableObjectPagination<T> extends JsonArrayPagination {
@@ -17,12 +19,12 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      */
     public IterableObjectPagination(
-        final CloudOfThingsRestClient cloudOfThingsRestClient,
-        final String relativeApiUrl,
-        final Gson gson,
-        final String contentType,
-        final String collectionElementName,
-        final Filter.FilterBuilder filterBuilder
+        @Nonnull final CloudOfThingsRestClient cloudOfThingsRestClient,
+        @Nonnull final String relativeApiUrl,
+        @Nonnull final Gson gson,
+        @Nonnull final String contentType,
+        @Nonnull final String collectionElementName,
+        @Nullable final Filter.FilterBuilder filterBuilder
     ) {
         super(
             Objects.requireNonNull(cloudOfThingsRestClient),
@@ -30,7 +32,7 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
             Objects.requireNonNull(gson),
             Objects.requireNonNull(contentType),
             Objects.requireNonNull(collectionElementName),
-            Objects.requireNonNull(filterBuilder)
+            filterBuilder
         );
     }
 
@@ -46,12 +48,12 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
      * @param pageSize                max number of retrieved elements per page.
      */
     public IterableObjectPagination(
-        final CloudOfThingsRestClient cloudOfThingsRestClient,
-        final String relativeApiUrl,
-        final Gson gson,
-        final String contentType,
-        final String collectionElementName,
-        final Filter.FilterBuilder filterBuilder,
+        @Nonnull final CloudOfThingsRestClient cloudOfThingsRestClient,
+        @Nonnull final String relativeApiUrl,
+        @Nonnull final Gson gson,
+        @Nonnull final String contentType,
+        @Nonnull final String collectionElementName,
+        @Nullable final Filter.FilterBuilder filterBuilder,
         final int pageSize
     ) {
         super(
@@ -60,7 +62,7 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
             Objects.requireNonNull(gson),
             Objects.requireNonNull(contentType),
             Objects.requireNonNull(collectionElementName),
-            Objects.requireNonNull(filterBuilder),
+            filterBuilder,
             pageSize
         );
     }
