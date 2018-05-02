@@ -1,13 +1,15 @@
 package com.telekom.m2m.cot.restsdk.util;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 /**
  * Simplifies iteration over paged result by providing access to paged objects
@@ -88,7 +90,24 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
      */
     @Nonnull
     public Stream<T> stream() {
-        return null;
+        return StreamSupport.stream(
+            Spliterators.spliteratorUnknownSize(
+                createPageIterator(),
+                // Iteration attributes:
+                // DISTINCT: There are no duplicates in the returned items.
+                // NONNULL: There are *only* item objects in the list.
+                Spliterator.DISTINCT | Spliterator.NONNULL
+            ),
+            false
+        )
+            .peek(page -> {
+                int x = 1;
+            })
+            .flatMap(jsonArray -> StreamSupport.stream(jsonArray.spliterator(), false))
+            .map(this::convertJsonToObject)
+            .peek(item -> {
+                int x = 1;
+            });
     }
 
     /**
@@ -99,4 +118,35 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
      */
     @Nonnull
     abstract protected T convertJsonToObject(@Nonnull final JsonElement element);
+
+    @Nonnull
+    private Iterator<JsonArray> createPageIterator() {
+        final IterableObjectPagination<T> pagination = this;
+        return new Iterator<JsonArray>() {
+            /**
+             * Indicates if another item page is available.
+             *
+             * Initialized as `true` as we always want to present the first page and
+             * {@link JsonArrayPagination#hasNext()} would return `false` if there
+             * is no following page.
+             */
+            private boolean hasNext = true;
+
+            @Override
+            public boolean hasNext() {
+                return hasNext;
+            }
+
+            @Override
+            @Nonnull
+            public JsonArray next() {
+                final JsonArray itemsOnPage = pagination.getJsonArray();
+                hasNext = pagination.hasNext();
+                if (hasNext) {
+                    pagination.next();
+                }
+                return Optional.ofNullable(itemsOnPage).orElseGet(JsonArray::new);
+            }
+        };
+    }
 }
