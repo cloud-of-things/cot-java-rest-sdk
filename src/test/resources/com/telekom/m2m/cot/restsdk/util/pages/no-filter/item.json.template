@@ -1,0 +1,12 @@
+{
+  "creationTime": "2018-05-02T15:15:50.064+02:00",
+  "deviceId": "%%id%%",
+  "deviceName": "%%id%%",
+  "id": "%%id%%",
+  "self": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations/%%id%%",
+  "status": "PENDING",
+  "c8y_Command": {
+    "text": "ls -la"
+  },
+  "description": "Execute shell command"
+}
