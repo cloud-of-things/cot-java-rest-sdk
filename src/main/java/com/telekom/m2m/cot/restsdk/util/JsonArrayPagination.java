@@ -5,6 +5,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 /**
@@ -102,6 +103,7 @@ public class JsonArrayPagination {
         }
     }
 
+    @Nonnull
     private JsonObject getJsonObject(final int page) {
         final String response;
         String url = relativeApiUrl +
