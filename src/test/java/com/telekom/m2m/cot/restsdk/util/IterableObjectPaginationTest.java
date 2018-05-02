@@ -42,7 +42,7 @@ public class IterableObjectPaginationTest {
             "test/url",
             GsonUtils.createGson(),
             "application/json",
-            "test-objects",
+            "operations",
             null,
             PAGE_SIZE_IN_TESTS
         ) {
@@ -60,7 +60,7 @@ public class IterableObjectPaginationTest {
 
         final List<ExtensibleObject> objects = pagination.stream().collect(Collectors.toList());
 
-        assertEquals(10, objects.size());
+        assertEquals( objects.size(), 10);
     }
 
     @Test
@@ -69,7 +69,7 @@ public class IterableObjectPaginationTest {
 
         final List<ExtensibleObject> objects = pagination.stream().collect(Collectors.toList());
 
-        assertEquals(2, objects.size());
+        assertEquals(objects.size(), 2);
     }
 
     @Test
@@ -78,7 +78,7 @@ public class IterableObjectPaginationTest {
 
         final List<ExtensibleObject> objects = pagination.stream().limit(5).collect(Collectors.toList());
 
-        assertEquals(5, objects.size());
+        assertEquals(objects.size(), 5);
         assertPageNotRequested(3);
         assertPageNotRequested(4);
     }
@@ -89,7 +89,7 @@ public class IterableObjectPaginationTest {
 
         final List<ExtensibleObject> objects = pagination.stream().limit(0).collect(Collectors.toList());
 
-        assertEquals(0, objects.size());
+        assertEquals(objects.size(), 0);
         assertPageNotRequested(1);
         assertPageNotRequested(2);
         assertPageNotRequested(3);
@@ -102,7 +102,7 @@ public class IterableObjectPaginationTest {
 
         final List<ExtensibleObject> objects = pagination.stream().collect(Collectors.toList());
 
-        assertEquals(0, objects.size());
+        assertEquals(objects.size(), 0);
     }
 
     private void simulateNumberOfObjectsOnPages(final int numberOfObjects) {
