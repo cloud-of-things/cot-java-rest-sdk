@@ -173,4 +173,20 @@ public class JsonArrayPagination {
             this.pageSize = DEFAULT_PAGE_SIZE;
         }
     }
+
+    /**
+     * @return A copy of this pagination in its current state.
+     */
+    @Nonnull
+    public JsonArrayPagination copy() {
+        return new JsonArrayPagination(
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            contentType,
+            collectionElementName,
+            criteria,
+            pageSize
+        );
+    }
 }

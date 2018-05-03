@@ -121,7 +121,7 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
 
     @Nonnull
     private Iterator<JsonArray> createPageIterator() {
-        final IterableObjectPagination<T> pagination = this;
+        final JsonArrayPagination pagination = this.copy();
         return new Iterator<JsonArray>() {
             /**
              * Indicates if another item page is available.
