@@ -105,7 +105,6 @@ public class JsonArrayPagination {
 
     @Nonnull
     private JsonObject getJsonObject(final int page) {
-        final String response;
         String url = relativeApiUrl +
                 "?currentPage=" + page +
                 "&pageSize=" + pageSize;
@@ -114,7 +113,7 @@ public class JsonArrayPagination {
         if (criteria != null) {
             url += "&" + criteria.buildFilter();
         }
-        response = cloudOfThingsRestClient.getResponse(url);
+        final String response = cloudOfThingsRestClient.getResponse(url);
 
         return gson.fromJson(response, JsonObject.class);
     }
