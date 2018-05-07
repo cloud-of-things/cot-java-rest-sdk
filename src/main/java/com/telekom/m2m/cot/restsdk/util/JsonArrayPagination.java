@@ -177,7 +177,7 @@ public class JsonArrayPagination {
      * @return A copy of this pagination in its current state.
      */
     @Nonnull
-    public JsonArrayPagination copy() {
+    protected JsonArrayPagination copy() {
         return new JsonArrayPagination(
             cloudOfThingsRestClient,
             relativeApiUrl,
