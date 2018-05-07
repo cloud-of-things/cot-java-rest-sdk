@@ -3,7 +3,7 @@ package com.telekom.m2m.cot.restsdk.util;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
@@ -36,7 +36,7 @@ public class IterableObjectPaginationTest {
      */
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
-    @BeforeTest
+    @BeforeMethod
     public void setup() {
         cloudOfThingsRestClient = createRestClient();
         pagination = new IterableObjectPagination<ExtensibleObject>(
