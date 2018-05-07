@@ -158,7 +158,7 @@ public class JsonArrayPagination {
             return false;
         }
         final JsonObject pageStats = page.get("statistics").getAsJsonObject();
-        if (pageStats.has("totalPages")) {
+        if (pageStats.has("totalPages") && !pageStats.get("totalPages").isJsonNull()) {
             // The whole number of pages is known. Check if there is a next page.
             return pageStats.get("currentPage").getAsInt() < pageStats.get("totalPages").getAsInt();
         }
