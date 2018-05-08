@@ -22,7 +22,6 @@ public class JsonArrayPagination {
     private final String collectionElementName;
 
     private int pageCursor = 1;
-    private boolean nextAvailable = false;
     private boolean previousAvailable = false;
     private int pageSize = DEFAULT_PAGE_SIZE;
 
