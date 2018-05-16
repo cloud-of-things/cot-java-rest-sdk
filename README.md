@@ -35,7 +35,7 @@ Short information about what has changed between releases.
 
 ### Upcoming Release 1.1.0
 
-* Efficiently iterate over all objects in a collection via Java 8 Stream (accessible via `stream()`): pagination is automatically performed in the background
+* Includes [Pull Request #73](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/73): Efficiently iterate over all objects in a collection via Java 8 Stream (accessible via `stream()`): pagination is automatically performed in the background
 * Resolve [issue #72](https://github.com/cloud-of-things/cot-java-rest-sdk/issues/72): Improved paging performance 
 
 ### Release 1.0.5
