@@ -58,9 +58,7 @@ public class ManagedObjectCollection extends IterableObjectPagination<ManagedObj
      */
     public ManagedObject[] getManagedObjects() {
         final JsonArray jsonManagedObjects = getJsonArray();
-        ManagedObject[] managedObjects = gson.fromJson(jsonManagedObjects, ManagedObject[].class);
-
-        return managedObjects;
+        return gson.fromJson(jsonManagedObjects, ManagedObject[].class);
     }
     
 }
