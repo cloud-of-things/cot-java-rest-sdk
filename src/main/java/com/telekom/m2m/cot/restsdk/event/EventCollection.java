@@ -1,6 +1,3 @@
-/**
- * 
- */
 package com.telekom.m2m.cot.restsdk.event;
 
 import com.google.gson.Gson;
