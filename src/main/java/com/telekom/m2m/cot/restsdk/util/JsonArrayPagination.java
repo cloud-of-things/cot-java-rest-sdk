@@ -210,7 +210,7 @@ public class JsonArrayPagination {
      */
     @Nonnull
     protected JsonArrayPagination copy() {
-        return new JsonArrayPagination(
+        final JsonArrayPagination pagination = new JsonArrayPagination(
             cloudOfThingsRestClient,
             relativeApiUrl,
             gson,
@@ -219,6 +219,8 @@ public class JsonArrayPagination {
             criteria,
             pageSize
         );
+        pagination.pageCursor = pageCursor;
+        return pagination;
     }
 
     /**
