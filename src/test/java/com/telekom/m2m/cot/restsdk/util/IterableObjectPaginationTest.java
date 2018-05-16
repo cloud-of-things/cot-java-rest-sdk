@@ -126,6 +126,18 @@ public class IterableObjectPaginationTest {
         assertEquals(objects.size(), 0);
     }
 
+    @Test
+    public void startsStreamingFromCurrentPage() {
+        simulateNumberOfObjectsOnPages(10);
+
+        // Skip one page...
+        pagination.next();
+        // ... and start streaming objects from page 2.
+        final List<ExtensibleObject> objects = pagination.stream().collect(Collectors.toList());
+
+        assertEquals(objects.size(), 10 - PAGE_SIZE_IN_TESTS);
+    }
+
     private void simulateNumberOfObjectsOnPages(final int numberOfObjects) {
         if (numberOfObjects == 0) {
             simulatePageResponse(1, readTemplate("pages/no-filter/empty-page.json"));
