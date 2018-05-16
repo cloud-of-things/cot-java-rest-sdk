@@ -8,6 +8,7 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -21,10 +22,18 @@ import java.util.stream.StreamSupport;
  *
  * @param <T> The type of objects on the pages.
  */
-abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
+public class IterableObjectPagination<T> extends JsonArrayPagination {
+
+    /**
+     * Converts JSON objects into the object that are provided during iteration.
+     */
+    @Nonnull
+    private final Function<JsonElement, T> objectMapper;
+
     /**
      * Creates a pagination with default page size.
      *
+     * @param objectMapper            maps page items into objects that this class iterates over.
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      * @param relativeApiUrl          relative url of the REST API without leading slash.
      * @param gson                    the necessary json De-/serializer.
@@ -33,6 +42,7 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      */
     public IterableObjectPagination(
+        @Nonnull final Function<JsonElement, T> objectMapper,
         @Nonnull final CloudOfThingsRestClient cloudOfThingsRestClient,
         @Nonnull final String relativeApiUrl,
         @Nonnull final Gson gson,
@@ -48,11 +58,13 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
             Objects.requireNonNull(collectionElementName),
             filterBuilder
         );
+        this.objectMapper = Objects.requireNonNull(objectMapper);
     }
 
     /**
      * Creates a pagination with custom page size.
      *
+     * @param objectMapper            maps page items into objects that this class iterates over.
      * @param cloudOfThingsRestClient the necessary REST client to send requests to the CoT.
      * @param relativeApiUrl          relative url of the REST API without leading slash.
      * @param gson                    the necessary json De-/serializer.
@@ -62,6 +74,7 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
      * @param pageSize                max number of retrieved elements per page.
      */
     public IterableObjectPagination(
+        @Nonnull final Function<JsonElement, T> objectMapper,
         @Nonnull final CloudOfThingsRestClient cloudOfThingsRestClient,
         @Nonnull final String relativeApiUrl,
         @Nonnull final Gson gson,
@@ -79,6 +92,7 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
             filterBuilder,
             pageSize
         );
+        this.objectMapper = Objects.requireNonNull(objectMapper);
     }
 
     /**
@@ -104,20 +118,11 @@ abstract public class IterableObjectPagination<T> extends JsonArrayPagination {
                 int x = 1;
             })
             .flatMap(jsonArray -> StreamSupport.stream(jsonArray.spliterator(), false))
-            .map(this::convertJsonToObject)
+            .map(this.objectMapper)
             .peek(item -> {
                 int x = 1;
             });
     }
-
-    /**
-     * Converts the given JSON data into an object.
-     *
-     * @param element The element.
-     * @return An object created from the JSON data.
-     */
-    @Nonnull
-    abstract protected T convertJsonToObject(@Nonnull final JsonElement element);
 
     @Nonnull
     private Iterator<JsonArray> createPageIterator() {

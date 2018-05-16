@@ -1,5 +1,6 @@
 package com.telekom.m2m.cot.restsdk.util;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
@@ -39,7 +40,9 @@ public class IterableObjectPaginationTest {
     @BeforeMethod
     public void setup() {
         cloudOfThingsRestClient = createRestClient();
-        pagination = new IterableObjectPagination<ExtensibleObject>(
+        final Gson gson = GsonUtils.createGson();
+        pagination = new IterableObjectPagination<>(
+            (json) -> gson.fromJson(json, ExtensibleObject.class),
             cloudOfThingsRestClient,
             "test/url",
             GsonUtils.createGson(),
@@ -47,13 +50,7 @@ public class IterableObjectPaginationTest {
             "operations",
             null,
             PAGE_SIZE_IN_TESTS
-        ) {
-            @Nonnull
-            @Override
-            protected ExtensibleObject convertJsonToObject(@Nonnull final JsonElement element) {
-                return gson.fromJson(element, ExtensibleObject.class);
-            }
-        };
+        );
     }
 
     @Test
