@@ -114,7 +114,7 @@ public class JsonArrayPaginationTest {
         Mockito.when(cotRestClientMock.getResponse(url)).thenThrow(new CotSdkException("exception was thrown"));
 
         // when
-        JsonArray jsonArray = jsonArrayPagination.getJsonArray();
+        jsonArrayPagination.getJsonArray();
 
         // then an exception should be thrown
     }
