@@ -22,7 +22,6 @@ public class JsonArrayPagination {
     private final String collectionElementName;
 
     private int pageCursor = 1;
-    private boolean previousAvailable = false;
     private int pageSize = DEFAULT_PAGE_SIZE;
 
     private Filter.FilterBuilder criteria = null;
@@ -100,8 +99,6 @@ public class JsonArrayPagination {
     @Nullable
     public JsonArray getJsonArray() {
         final JsonObject currentPage = getCurrentPage();
-
-        previousAvailable = currentPage.has("prev");
 
         if (currentPage.has(collectionElementName)) {
             return currentPage.get(collectionElementName).getAsJsonArray();
@@ -182,10 +179,10 @@ public class JsonArrayPagination {
     /**
      * Checks if there is a previous page.
      *
-     * @return true if next page has audit records, otherwise false.
+     * @return true if there is a previous page.
      */
     public boolean hasPrevious() {
-        return previousAvailable;
+        return pageCursor > 1;
     }
 
     /**
