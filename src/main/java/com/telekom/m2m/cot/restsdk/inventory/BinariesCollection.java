@@ -46,8 +46,7 @@ public class BinariesCollection extends IterableObjectPagination<Binary> {
      */
     public Binary[] getBinaries() {
         final JsonArray jsonBinaries = getJsonArray();
-        Binary[] binaries = gson.fromJson(jsonBinaries, Binary[].class);
-        return binaries;
+        return gson.fromJson(jsonBinaries, Binary[].class);
     }
 
 }
