@@ -9,13 +9,13 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * @author chuhlich
  *
  */
-public class EventCollection extends JsonArrayPagination {
+public class EventCollection extends IterableObjectPagination<Event> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.eventCollection+json;charset=UTF-8;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "events";
@@ -29,11 +29,21 @@ public class EventCollection extends JsonArrayPagination {
      * @param gson                    the necessary json De-/serializer.
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      */
-    EventCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-                    final String relativeApiUrl,
-                    final Gson gson,
-                    final Filter.FilterBuilder filterBuilder) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder);
+    EventCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder
+    ) {
+        super(
+            eventJson -> new Event(gson.fromJson(eventJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder
+        );
     }
 
     /**
@@ -50,7 +60,7 @@ public class EventCollection extends JsonArrayPagination {
             final Event[] arrayOfEvents = new Event[jsonEvents.size()];
             for (int i = 0; i < jsonEvents.size(); i++) {
                 JsonElement jsonEvent = jsonEvents.get(i).getAsJsonObject();
-                final Event event = new Event(gson.fromJson(jsonEvent, ExtensibleObject.class));
+                final Event event = objectMapper.apply(jsonEvent);
                 arrayOfEvents[i] = event;
             }
             return arrayOfEvents;

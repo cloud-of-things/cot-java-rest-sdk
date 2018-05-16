@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * Created by Patrick Steinert on 24.11.16.
@@ -14,7 +14,7 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  * @author Patrick Steinert
  * @since 0.3.0
  */
-public class AlarmCollection extends JsonArrayPagination {
+public class AlarmCollection extends IterableObjectPagination<Alarm> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.alarmCollection+json;charset=UTF-8;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "alarms";
@@ -29,12 +29,23 @@ public class AlarmCollection extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      * @param pageSize                max number of retrieved elements per page.
      */
-    AlarmCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-    final String relativeApiUrl,
-    final Gson gson,
-    final Filter.FilterBuilder filterBuilder,
-    final int pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
+    AlarmCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder,
+        final int pageSize
+    ) {
+        super(
+            jsonAlarm -> new Alarm(gson.fromJson(jsonAlarm, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder,
+            pageSize
+        );
     }
 
     /**
@@ -51,7 +62,7 @@ public class AlarmCollection extends JsonArrayPagination {
             final Alarm[] arrayOfAlarms = new Alarm[jsonAlarms.size()];
             for (int i = 0; i < jsonAlarms.size(); i++) {
                 JsonElement jsonAlarm = jsonAlarms.get(i).getAsJsonObject();
-                final Alarm alarm = new Alarm(gson.fromJson(jsonAlarm, ExtensibleObject.class));
+                final Alarm alarm = objectMapper.apply(jsonAlarm);
                 arrayOfAlarms[i] = alarm;
             }
             return arrayOfAlarms;

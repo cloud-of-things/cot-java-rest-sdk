@@ -28,7 +28,7 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
      * Converts JSON objects into the object that are provided during iteration.
      */
     @Nonnull
-    private final Function<JsonElement, T> objectMapper;
+    protected final Function<JsonElement, T> objectMapper;
 
     /**
      * Creates a pagination with default page size.
