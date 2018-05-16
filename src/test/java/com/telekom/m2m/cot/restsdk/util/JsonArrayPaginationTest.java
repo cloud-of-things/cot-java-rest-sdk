@@ -7,6 +7,8 @@ import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by Andreas Dyck on 27.07.17.
  */
@@ -141,20 +143,10 @@ public class JsonArrayPaginationTest {
     @Test
     public void testPagination() {
         // given
-        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final CloudOfThingsRestClient cotRestClientMock = simulateRestClientWith2PagesAndPageSizeOf2();
+
         final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
         jsonArrayPagination.setPageSize(2);
-
-        final String jsonResultPageEmpty = "{\"auditRecords\":[], \"statistics\": {\"currentPage\": 4, \"pageSize\": 2}}";
-        final String jsonResultPage1 = "{\"auditRecords\":[{\"id\":\"1\"}, {\"id\":\"2\"}], \"next\": \"page2\", \"statistics\": {\"currentPage\": 1, \"pageSize\": 2}}";
-        final String jsonResultPage2 = "{\"auditRecords\":[{\"id\":\"3\"}],\"prev\":\"page1\", \"next\": \"page3\", \"statistics\": {\"currentPage\": 2, \"pageSize\": 2}}";
-        final String urlPage1 = relativeApiUrl + "?currentPage=1&pageSize=2";
-        final String urlPage2 = relativeApiUrl + "?currentPage=2&pageSize=2";
-        final String urlPage3 = relativeApiUrl + "?currentPage=3&pageSize=2";
-
-        Mockito.when(cotRestClientMock.getResponse(urlPage1)).thenReturn(jsonResultPage1);
-        Mockito.when(cotRestClientMock.getResponse(urlPage2)).thenReturn(jsonResultPage2);
-        Mockito.when(cotRestClientMock.getResponse(urlPage3)).thenReturn(jsonResultPageEmpty);
 
         // when you retrieve the current page of collection at first time
         JsonArray jsonArray = jsonArrayPagination.getJsonArray();
@@ -205,6 +197,22 @@ public class JsonArrayPaginationTest {
     }
 
     @Test
+    public void hasPreviousReturnsCorrectValueEventIfPageIsSwitchedDirectly() {
+        // given
+        final CloudOfThingsRestClient cotRestClientMock = simulateRestClientWith2PagesAndPageSizeOf2();
+
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+        jsonArrayPagination.setPageSize(2);
+
+        // when
+        // Directly switch to page 2, not loading any content from page 1.
+        jsonArrayPagination.next();
+
+        // then
+        Assert.assertTrue(jsonArrayPagination.hasPrevious(), "Previous page not detected.");
+    }
+
+    @Test
     public void testSetPageSize() {
         // given
         final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
@@ -251,5 +259,21 @@ public class JsonArrayPaginationTest {
         // then
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 2);
+    }
+
+    @Nonnull
+    private CloudOfThingsRestClient simulateRestClientWith2PagesAndPageSizeOf2() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final String jsonResultPageEmpty = "{\"auditRecords\":[], \"statistics\": {\"currentPage\": 4, \"pageSize\": 2}}";
+        final String jsonResultPage1 = "{\"auditRecords\":[{\"id\":\"1\"}, {\"id\":\"2\"}], \"next\": \"page2\", \"statistics\": {\"currentPage\": 1, \"pageSize\": 2}}";
+        final String jsonResultPage2 = "{\"auditRecords\":[{\"id\":\"3\"}],\"prev\":\"page1\", \"next\": \"page3\", \"statistics\": {\"currentPage\": 2, \"pageSize\": 2}}";
+        final String urlPage1 = relativeApiUrl + "?currentPage=1&pageSize=2";
+        final String urlPage2 = relativeApiUrl + "?currentPage=2&pageSize=2";
+        final String urlPage3 = relativeApiUrl + "?currentPage=3&pageSize=2";
+
+        Mockito.when(cotRestClientMock.getResponse(urlPage1)).thenReturn(jsonResultPage1);
+        Mockito.when(cotRestClientMock.getResponse(urlPage2)).thenReturn(jsonResultPage2);
+        Mockito.when(cotRestClientMock.getResponse(urlPage3)).thenReturn(jsonResultPageEmpty);
+        return cotRestClientMock;
     }
 }
