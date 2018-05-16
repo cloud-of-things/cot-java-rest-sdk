@@ -114,14 +114,8 @@ public class IterableObjectPagination<T> extends JsonArrayPagination {
             ),
             false
         )
-            .peek(page -> {
-                int x = 1;
-            })
             .flatMap(jsonArray -> StreamSupport.stream(jsonArray.spliterator(), false))
-            .map(this.objectMapper)
-            .peek(item -> {
-                int x = 1;
-            });
+            .map(this.objectMapper);
     }
 
     @Nonnull
