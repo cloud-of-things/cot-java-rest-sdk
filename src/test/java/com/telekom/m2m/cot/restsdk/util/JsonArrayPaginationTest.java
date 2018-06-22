@@ -103,6 +103,7 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 0);
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
+        Assert.assertFalse(jsonArrayPagination.hasNext());
     }
 
     @Test(expectedExceptions = CotSdkException.class)
