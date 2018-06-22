@@ -124,6 +124,11 @@ public class JsonArrayPagination {
 
     /**
      * Moves cursor to the next page.
+     *
+     * Please note: When calling next(), but there is no next page,
+     * then the behavior is undefined.
+     * Use {@link #hasNext()} to check page availability before
+     * calling next().
      */
     public void next() {
         pageCursor += 1;
