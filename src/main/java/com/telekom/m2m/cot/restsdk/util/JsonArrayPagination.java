@@ -31,7 +31,7 @@ public class JsonArrayPagination {
     /**
      * The cached response of the current page.
      *
-     * Null if the page has not been requested yet.
+     * Null if the page has not been requested yet or after switching pages via {@link #next()} or {@link #previous()}.
      */
     @Nullable
     private JsonObject currentPageContent = null;
