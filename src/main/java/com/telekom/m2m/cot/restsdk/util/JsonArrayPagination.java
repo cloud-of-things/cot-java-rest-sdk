@@ -5,6 +5,9 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 /**
  * Created by Andreas Dyck on 26.07.17.
  */
@@ -14,17 +17,24 @@ public class JsonArrayPagination {
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private final String relativeApiUrl;
+    @Deprecated
     private final String contentType;
     private final String collectionElementName;
 
     private int pageCursor = 1;
-    private boolean nextAvailable = false;
-    private boolean previousAvailable = false;
-    private int pageSize = 5;
+    private int pageSize = DEFAULT_PAGE_SIZE;
 
     private Filter.FilterBuilder criteria = null;
 
     protected final Gson gson;
+
+    /**
+     * The cached response of the current page.
+     *
+     * Null if the page has not been requested yet or after switching pages via {@link #next()} or {@link #previous()}.
+     */
+    @Nullable
+    private JsonObject currentPageContent = null;
 
     /**
      * Creates a JsonArrayPagination.
@@ -86,20 +96,19 @@ public class JsonArrayPagination {
      *
      * @return JsonArray of found JsonElements
      */
+    @Nullable
     public JsonArray getJsonArray() {
-        final JsonObject object = getJsonObject(pageCursor);
+        final JsonObject currentPage = getCurrentPage();
 
-        previousAvailable = object.has("prev");
-
-        if (object.has(collectionElementName)) {
-            return object.get(collectionElementName).getAsJsonArray();
+        if (currentPage.has(collectionElementName)) {
+            return currentPage.get(collectionElementName).getAsJsonArray();
         } else {
             return null;
         }
     }
 
+    @Nonnull
     private JsonObject getJsonObject(final int page) {
-        final String response;
         String url = relativeApiUrl +
                 "?currentPage=" + page +
                 "&pageSize=" + pageSize;
@@ -108,16 +117,22 @@ public class JsonArrayPagination {
         if (criteria != null) {
             url += "&" + criteria.buildFilter();
         }
-        response = cloudOfThingsRestClient.getResponse(url);
+        final String response = cloudOfThingsRestClient.getResponse(url);
 
         return gson.fromJson(response, JsonObject.class);
     }
 
     /**
      * Moves cursor to the next page.
+     *
+     * Please note: When calling next(), but there is no next page,
+     * then the behavior is undefined.
+     * Use {@link #hasNext()} to check page availability before
+     * calling next().
      */
     public void next() {
         pageCursor += 1;
+        clearPageCache();
     }
 
     /**
@@ -126,30 +141,53 @@ public class JsonArrayPagination {
     public void previous() {
         if (pageCursor > 1) {
             pageCursor -= 1;
+            clearPageCache();
         }
     }
 
     /**
-     * Checks if the next page has elements. <b>Use with caution, it does a seperate HTTP request, so it is considered as slow</b>
+     * Checks if the next page has elements.
      *
-     * @return true if next page has audit records, otherwise false.
+     * <b>Use with caution</b>: In worst case it does a separate HTTP request, so it is considered as slow
+     *
+     * @return true if next page has records, otherwise false.
      */
     public boolean hasNext() {
-        final JsonObject object = getJsonObject(pageCursor + 1);
-        if (object.has(collectionElementName)) {
-            final JsonArray jsonArray = object.get(collectionElementName).getAsJsonArray();
-            nextAvailable = (jsonArray.size() > 0);
+        final JsonObject page = getCurrentPage();
+        if (!page.has("next")) {
+            // No link to next page, there are no more results available.
+            return false;
         }
-        return nextAvailable;
+        final JsonObject pageStats = page.get("statistics").getAsJsonObject();
+        if (pageStats.has("totalPages") && !pageStats.get("totalPages").isJsonNull()) {
+            // The whole number of pages is known. Check if there is a next page.
+            return pageStats.get("currentPage").getAsInt() < pageStats.get("totalPages").getAsInt();
+        }
+        // The page might be filtered. When a filter is applied, the total number
+        // of pages is unknown.
+        final int numberOfItemsOnPage = page.has(collectionElementName) ? page.get(collectionElementName).getAsJsonArray().size() : 0;
+        if (numberOfItemsOnPage < pageStats.get("pageSize").getAsInt()) {
+            // There are less items on this page than allowed by the page size.
+            // There will be no next page.
+            return false;
+        }
+        // There *might* be a next page, we can't be sure. Fetch the following page to check.
+        // This is an expensive operation, but it should not be necessary too often.
+        final JsonObject nextPage = getJsonObject(pageCursor + 1);
+        if (nextPage.has(collectionElementName)) {
+            final JsonArray itemsOnNextPage = nextPage.get(collectionElementName).getAsJsonArray();
+            return itemsOnNextPage.size() > 0;
+        }
+        return false;
     }
 
     /**
      * Checks if there is a previous page.
      *
-     * @return true if next page has audit records, otherwise false.
+     * @return true if there is a previous page.
      */
     public boolean hasPrevious() {
-        return previousAvailable;
+        return pageCursor > 1;
     }
 
     /**
@@ -166,5 +204,44 @@ public class JsonArrayPagination {
         } else {
             this.pageSize = DEFAULT_PAGE_SIZE;
         }
+        clearPageCache();
+    }
+
+    /**
+     * @return A copy of this pagination in its current state.
+     */
+    @Nonnull
+    protected JsonArrayPagination copy() {
+        final JsonArrayPagination pagination = new JsonArrayPagination(
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            contentType,
+            collectionElementName,
+            criteria,
+            pageSize
+        );
+        pagination.pageCursor = pageCursor;
+        return pagination;
+    }
+
+    /**
+     * Loads the content of the current page. Returns it from cache, if possible.
+     *
+     * @return The current page content.
+     */
+    @Nonnull
+    private JsonObject getCurrentPage() {
+        if (currentPageContent == null) {
+            currentPageContent = getJsonObject(pageCursor);
+        }
+        return currentPageContent;
+    }
+
+    /**
+     * Clears the cache that contains the current page response.
+     */
+    private void clearPageCache() {
+        currentPageContent = null;
     }
 }

@@ -1,0 +1,9 @@
+{
+  "next": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=4&currentPage=2&status=EXECUTING",
+  "operations": [],
+  "statistics": {
+    "currentPage": 1,
+    "pageSize": 4
+  },
+  "self": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=4&currentPage=1&status=EXECUTING"
+}

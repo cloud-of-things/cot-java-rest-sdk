@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * Represents a pageable ManagedObject collection.
@@ -15,7 +15,7 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  *
  * @since 0.3.0
  */
-public class ManagedObjectCollection extends JsonArrayPagination {
+public class ManagedObjectCollection extends IterableObjectPagination<ManagedObject> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.managedObjectCollection+json;charset=UTF-8;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "managedObjects";
@@ -30,12 +30,23 @@ public class ManagedObjectCollection extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      * @param pageSize                max number of retrieved elements per page.
      */
-    ManagedObjectCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-                         final String relativeApiUrl,
-                         final Gson gson,
-                         final Filter.FilterBuilder filterBuilder,
-                         final int pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
+    ManagedObjectCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder,
+        final int pageSize
+    ) {
+        super(
+            managedObjectJson -> gson.fromJson(managedObjectJson, ManagedObject.class),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder,
+            pageSize
+        );
     }
 
     /**
@@ -47,9 +58,7 @@ public class ManagedObjectCollection extends JsonArrayPagination {
      */
     public ManagedObject[] getManagedObjects() {
         final JsonArray jsonManagedObjects = getJsonArray();
-        ManagedObject[] managedObjects = gson.fromJson(jsonManagedObjects, ManagedObject[].class);
-
-        return managedObjects;
+        return gson.fromJson(jsonManagedObjects, ManagedObject[].class);
     }
     
 }

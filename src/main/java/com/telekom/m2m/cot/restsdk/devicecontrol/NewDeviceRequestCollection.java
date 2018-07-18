@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * Represents a pageable NewDeviceRequest collection.
@@ -14,7 +14,7 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  * @since 0.3.0
  * Created by Patrick Steinert on 19.12.16.
  */
-public class NewDeviceRequestCollection extends JsonArrayPagination {
+public class NewDeviceRequestCollection extends IterableObjectPagination<NewDeviceRequest> {
 
     private static final String CONTENT_TYPE_NEW_DEVICE_REQUEST_COLLECTION = "application/vnd.com.nsn.cumulocity.newDeviceRequestCollection+json;charset=UTF-8;ver=0.9";
     private static final String NEW_DEVICE_REQUEST_COLLECTION_ELEMENT_NAME = "newDeviceRequests";
@@ -29,12 +29,23 @@ public class NewDeviceRequestCollection extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      * @param pageSize                max number of retrieved elements per page.
      */
-    NewDeviceRequestCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-                    final String relativeApiUrl,
-                    final Gson gson,
-                    final Filter.FilterBuilder filterBuilder,
-                    final int pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, CONTENT_TYPE_NEW_DEVICE_REQUEST_COLLECTION, NEW_DEVICE_REQUEST_COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
+    NewDeviceRequestCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder,
+        final int pageSize
+    ) {
+        super(
+            newDeviceRequestJson -> new NewDeviceRequest(gson.fromJson(newDeviceRequestJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            CONTENT_TYPE_NEW_DEVICE_REQUEST_COLLECTION,
+            NEW_DEVICE_REQUEST_COLLECTION_ELEMENT_NAME,
+            filterBuilder,
+            pageSize
+        );
     }
 
     /**
@@ -51,7 +62,7 @@ public class NewDeviceRequestCollection extends JsonArrayPagination {
             final NewDeviceRequest[] arrayOfNewDeviceRequests = new NewDeviceRequest[jsonNewDeviceRequests.size()];
             for (int i = 0; i < jsonNewDeviceRequests.size(); i++) {
                 JsonElement jsonNewDeviceRequest = jsonNewDeviceRequests.get(i).getAsJsonObject();
-                final NewDeviceRequest newDeviceRequest = new NewDeviceRequest(gson.fromJson(jsonNewDeviceRequest, ExtensibleObject.class));
+                final NewDeviceRequest newDeviceRequest =objectMapper.apply(jsonNewDeviceRequest);
                 arrayOfNewDeviceRequests[i] = newDeviceRequest;
             }
             return arrayOfNewDeviceRequests;

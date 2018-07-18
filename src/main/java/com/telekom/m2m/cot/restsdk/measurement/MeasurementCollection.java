@@ -6,7 +6,7 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * Represents a pageable Measurement collection.
@@ -17,7 +17,7 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  * @since 0.1.0
  * Created by Patrick Steinert on 14.02.16.
  */
-public class MeasurementCollection extends JsonArrayPagination {
+public class MeasurementCollection extends IterableObjectPagination<Measurement> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.measurementCollection+json;charset=UTF-8;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "measurements";
@@ -32,12 +32,23 @@ public class MeasurementCollection extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      * @param pageSize                max number of retrieved elements per page.
      */
-    MeasurementCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-                         final String relativeApiUrl,
-                         final Gson gson,
-                         final Filter.FilterBuilder filterBuilder,
-                         final int pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
+    MeasurementCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder,
+        final int pageSize
+    ) {
+        super(
+            measurementJson -> new Measurement(gson.fromJson(measurementJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder,
+            pageSize
+        );
     }
 
     /**
@@ -54,7 +65,7 @@ public class MeasurementCollection extends JsonArrayPagination {
             final Measurement[] arrayOfMeasurements = new Measurement[jsonMeasurements.size()];
             for (int i = 0; i < jsonMeasurements.size(); i++) {
                 JsonElement jsonMeasurement = jsonMeasurements.get(i).getAsJsonObject();
-                final Measurement measurement = new Measurement(gson.fromJson(jsonMeasurement, ExtensibleObject.class));
+                final Measurement measurement =objectMapper.apply(jsonMeasurement);
                 arrayOfMeasurements[i] = measurement;
             }
             return arrayOfMeasurements;

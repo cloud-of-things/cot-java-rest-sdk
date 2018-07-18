@@ -1,0 +1,13 @@
+{
+  "next": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=%%pageSize%%&currentPage=%%nextPage%%",
+  "operations": [
+    %%items%%
+  ],
+  "statistics": {
+    "currentPage": %%currentPage%%,
+    "pageSize": %%pageSize%%,
+    "totalPages": %%totalPages%%
+  },
+  "prev": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=%%pageSize%%&currentPage=%%previousPage%%",
+  "self": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=%%pageSize%%&currentPage=%%currentPage%%"
+}

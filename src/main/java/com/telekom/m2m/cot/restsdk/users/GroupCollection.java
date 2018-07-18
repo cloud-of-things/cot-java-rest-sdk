@@ -6,15 +6,14 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
-
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * Class that defines the methods of group collection. Group collections are
  * objects that hold several groups. They define methods on a collection of
  * groups.Created by Ozan Arslan on 13.07.2017
  */
-public class GroupCollection extends JsonArrayPagination {
+public class GroupCollection extends IterableObjectPagination<Group> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.groupCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "groups";
@@ -31,10 +30,21 @@ public class GroupCollection extends JsonArrayPagination {
      * @param filterBuilder
      *            the build criteria or null if all items should be retrieved.
      */
-    GroupCollection(final CloudOfThingsRestClient cloudOfThingsRestClient, final String relativeApiUrl, final Gson gson,
-            final Filter.FilterBuilder filterBuilder) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME,
-                filterBuilder);
+    GroupCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder
+    ) {
+        super(
+            groupJson -> new Group(gson.fromJson(groupJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder
+        );
     }
 
     /**
@@ -48,8 +58,8 @@ public class GroupCollection extends JsonArrayPagination {
         if (jsonGroups != null) {
             final Group[] arrayOfGroups = new Group[jsonGroups.size()];
             for (int i = 0; i < jsonGroups.size(); i++) {
-                JsonElement jsonGroup = jsonGroups.get(i).getAsJsonObject();
-                final Group group = new Group(gson.fromJson(jsonGroup, ExtensibleObject.class));
+                JsonElement jsonGroup = jsonGroups.get(i);
+                final Group group = objectMapper.apply(jsonGroup);
                 arrayOfGroups[i] = group;
             }
             return arrayOfGroups;
