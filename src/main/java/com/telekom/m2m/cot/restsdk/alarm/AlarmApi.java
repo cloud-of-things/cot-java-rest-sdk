@@ -97,8 +97,9 @@ public class AlarmApi {
      * @since 0.3.0
      */
     public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
-        if(filters != null)
+        if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
+        }
         return new AlarmCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -113,8 +114,9 @@ public class AlarmApi {
      * @param filters filters of Alarm attributes.
      */
     public void deleteAlarms(Filter.FilterBuilder filters) {
-        if(filters != null)
+        if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
+        }
         cloudOfThingsRestClient.delete("", RELATIVE_API_URL+ "?" + filters.buildFilter() + "&x=");
     }
 }
