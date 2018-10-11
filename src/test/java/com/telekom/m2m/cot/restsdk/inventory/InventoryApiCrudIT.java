@@ -3,52 +3,55 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Iterator;
-
 import static org.testng.Assert.*;
+
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
  */
 public class InventoryApiCrudIT {
 
-    private static final String MANAGED_OBJECT_NAME = "managedObjectName";
+    private static final String PARENT_MANAGED_OBJECT_NAME = "managedObjectName";
     private static final String CHILD_MANAGED_OBJECT_NAME = "RaspPi 8fef9ec2 Sensor BMP180";
 
     private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
 
-    private ManagedObject managedObject;
-    private ManagedObject childManagedObject;
-
-    @BeforeClass
-    public void setUp() {
-        managedObject = TestHelper.createRandomManagedObjectInPlatform(cloudOfThingsPlatform, MANAGED_OBJECT_NAME);
-        childManagedObject = TestHelper.createRandomManagedObjectInPlatform(cloudOfThingsPlatform, CHILD_MANAGED_OBJECT_NAME);
-    }
+    private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
 
     @AfterMethod
     public void tearDown() {
-        TestHelper.deleteManagedObjectInPlatform(cloudOfThingsPlatform, managedObject);
-        TestHelper.deleteManagedObjectInPlatform(cloudOfThingsPlatform, childManagedObject);
+        for (ManagedObject managedObject: managedObjectsToDelete) {
+            try {
+                TestHelper.deleteManagedObjectInPlatform(cloudOfThingsPlatform, managedObject);
+            } catch (CotSdkException e) {
+                assertEquals(e.getHttpStatus(), 404);
+            }
+        }
     }
 
     @Test
     public void testCreateManagedObject() {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(managedObject);
         ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
 
         assertNotNull(managedObject.getId(), "Created managed object should have an ID.");
         assertEquals(retrievedMo.getId(), managedObject.getId(), "ID of created managed object and managed object retrieved from cloud should be the same.");
-        assertEquals(retrievedMo.getName(), MANAGED_OBJECT_NAME, "Name of created managed object and managed object retrieved from cloud should be the same.");
+        assertEquals(retrievedMo.getName(), PARENT_MANAGED_OBJECT_NAME, "Name of created managed object and managed object retrieved from cloud should be the same.");
     }
 
     @Test
     public void testDeleteManagedObject() {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
         ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
 
         assertNotNull(retrievedMo.getId(), "Created managed object should have an ID.");
@@ -61,8 +64,13 @@ public class InventoryApiCrudIT {
 
     @Test
     public void testRegisterAsChildDevice() {
-        inventoryApi.registerAsChildDevice(managedObject, childManagedObject);
-        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        ManagedObject parentMo = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        ManagedObject childMo = createManagedObjectInCot(CHILD_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(parentMo);
+        managedObjectsToDelete.add(childMo);
+
+        inventoryApi.registerAsChildDevice(parentMo, childMo);
+        ManagedObject retrievedMo = inventoryApi.get(parentMo.getId());
         ManagedObjectReferenceCollection childDevices = retrievedMo.getChildDevices();
 
         assertNotNull(childDevices.getSelf());
@@ -76,7 +84,10 @@ public class InventoryApiCrudIT {
     }
 
     @Test
-    public void testCreateReadUpdateDelete() {
+    public void testUpdateManagedObject() {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(managedObject);
+
         ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
 
         JsonObject obj = new JsonObject();
@@ -97,5 +108,12 @@ public class InventoryApiCrudIT {
         JsonObject playObj = (JsonObject) retrievedObject;
         assertTrue(playObj.has("foo"));
         assertEquals(playObj.get("foo").getAsString(), "bar");
+    }
+
+    private ManagedObject createManagedObjectInCot(String name) {
+        ManagedObject managedObject = new ManagedObject();
+        managedObject.setName(name);
+
+        return inventoryApi.create(managedObject);
     }
 }

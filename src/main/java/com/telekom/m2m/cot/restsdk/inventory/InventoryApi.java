@@ -1,11 +1,11 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
+import com.google.gson.reflect.TypeToken;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
-import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.FilterBy;
-import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import com.telekom.m2m.cot.restsdk.util.*;
+
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,6 +23,7 @@ public class InventoryApi {
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "inventory/managedObjects/";
+    private static final String SUPPORTED_MEASUREMENTS = "c8y_SupportedMeasurements";
     private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYTYPE, FilterBy.BYFRAGMENTTYPE, FilterBy.BYLISTOFIDs, FilterBy.BYTEXT, FilterBy.BYAGENTID);
 
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
@@ -201,4 +202,17 @@ public class InventoryApi {
         cloudOfThingsRestClient.doPostRequest(json, api, CONTENT_TYPE_MANAGEDOBJECTREF, ACCEPT_MANAGEDOBJECTREF);
     }
 
+    /**
+     * Retrieve supported measurements of a managed object
+     *
+     * @param managedObjectId ID of the device for which supported measurements need to be retrieved
+     */
+    public ArrayList<String> getSupportedMeasurements(String managedObjectId) {
+        String supportedMeasurementsApi = RELATIVE_API_URL + managedObjectId + "/supportedMeasurements";
+        String response = cloudOfThingsRestClient.getResponse(supportedMeasurementsApi);
+        JsonParser jsonParser = new JsonParser();
+        JsonArray responseJsonArray = jsonParser.parse(response).getAsJsonObject().getAsJsonArray(SUPPORTED_MEASUREMENTS);
+        ArrayList<String> supportedMeasurements = gson.fromJson(responseJsonArray, new TypeToken<List<String>>(){}.getType());
+        return supportedMeasurements;
+    }
 }
