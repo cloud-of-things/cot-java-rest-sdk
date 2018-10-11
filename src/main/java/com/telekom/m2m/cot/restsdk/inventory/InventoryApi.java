@@ -212,7 +212,6 @@ public class InventoryApi {
         String response = cloudOfThingsRestClient.getResponse(supportedMeasurementsApi);
         JsonParser jsonParser = new JsonParser();
         JsonArray responseJsonArray = jsonParser.parse(response).getAsJsonObject().getAsJsonArray(SUPPORTED_MEASUREMENTS);
-        ArrayList<String> supportedMeasurements = gson.fromJson(responseJsonArray, new TypeToken<List<String>>(){}.getType());
-        return supportedMeasurements;
+        return gson.fromJson(responseJsonArray, new TypeToken<List<String>>(){}.getType());
     }
 }
