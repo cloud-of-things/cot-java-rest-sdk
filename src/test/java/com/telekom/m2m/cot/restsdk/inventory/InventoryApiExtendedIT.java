@@ -189,6 +189,22 @@ public class InventoryApiExtendedIT {
         }
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void testSupportedMeasurementsNullDeviceId() {
+        inventoryApi.getSupportedMeasurements(null);
+    }
+
+    @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*inventory/Not Found.*")
+    public void testSupportedMeasurementsDeviceNotFound() {
+        inventoryApi.getSupportedMeasurements("nonExistentDeviceId");
+    }
+
+    @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*security/Unauthorized.*")
+    public void testSupportedMeasurementsNotAuthorized() {
+        InventoryApi inventoryApi = new CloudOfThingsPlatform(TestHelper.TEST_HOST, "fakeUsername", "fakePassword").getInventoryApi();
+        inventoryApi.getSupportedMeasurements("deviceId");
+    }
+
     @Test
     public void testNoSupportedMeasurements() {
         ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS);

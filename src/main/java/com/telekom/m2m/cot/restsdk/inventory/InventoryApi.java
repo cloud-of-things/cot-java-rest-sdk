@@ -8,6 +8,7 @@ import com.telekom.m2m.cot.restsdk.util.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Represents the API to retrieve and manipulate ManagedObjects.
@@ -209,6 +210,7 @@ public class InventoryApi {
      * @param managedObjectId ID of the device for which supported measurements need to be retrieved
      */
     public ArrayList<String> getSupportedMeasurements(String managedObjectId) {
+        Objects.requireNonNull(managedObjectId);
         String supportedMeasurementsApi = RELATIVE_API_URL + managedObjectId + "/supportedMeasurements";
         String response = cloudOfThingsRestClient.getResponse(supportedMeasurementsApi);
         JsonParser jsonParser = new JsonParser();
