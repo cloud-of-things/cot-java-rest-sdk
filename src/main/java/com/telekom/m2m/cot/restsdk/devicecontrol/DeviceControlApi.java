@@ -185,9 +185,8 @@ public class DeviceControlApi {
      * @return the first page of OperationCollection which can be used to navigate through the found Operations.
      */
     public OperationCollection getOperationCollection(Filter.FilterBuilder filters, int resultSize) {
-        if(filters != null) {
+        if(filters != null)
             filters.validateSupportedFilters(acceptedFilters);
-        }
         return new OperationCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_OPERATION_API_URL,
@@ -202,9 +201,8 @@ public class DeviceControlApi {
      * @param filters filters of Operation attributes.
      */
     public void deleteOperations(Filter.FilterBuilder filters) {
-        if(filters != null) {
+        if(filters != null)
             filters.validateSupportedFilters(acceptedFilters);
-        }
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_OPERATION_API_URL);
     }
 

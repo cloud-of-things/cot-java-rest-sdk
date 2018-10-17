@@ -3,92 +3,82 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.annotations.AfterMethod;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
-
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
  */
 public class InventoryApiCrudIT {
 
-    private static final String PARENT_MANAGED_OBJECT_NAME = "managedObjectName";
-    private static final String CHILD_MANAGED_OBJECT_NAME = "RaspPi 8fef9ec2 Sensor BMP180";
+    @Test
+    public void testCreateManagedObject() throws Exception {
+        ManagedObject mo = new ManagedObject();
+        mo.setName("Hello!");
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
+        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
-    private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
-
-    @AfterMethod
-    public void tearDown() {
-        for (ManagedObject managedObject: managedObjectsToDelete) {
-            try {
-                TestHelper.deleteManagedObjectInPlatform(cloudOfThingsPlatform, managedObject);
-            } catch (CotSdkException e) {
-                assertEquals(e.getHttpStatus(), 404);
-            }
-        }
+        ManagedObject createdMo = inventoryApi.create(mo);
+        Assert.assertNotNull("Should now have an Id", mo.getId());
     }
 
     @Test
-    public void testCreateManagedObject() {
-        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        managedObjectsToDelete.add(managedObject);
-        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+    public void testCreateAndRead() throws Exception {
 
-        assertNotNull(managedObject.getId(), "Created managed object should have an ID.");
-        assertEquals(retrievedMo.getId(), managedObject.getId(), "ID of created managed object and managed object retrieved from cloud should be the same.");
-        assertEquals(retrievedMo.getName(), PARENT_MANAGED_OBJECT_NAME, "Name of created managed object and managed object retrieved from cloud should be the same.");
-    }
+        ManagedObject mo = new ManagedObject();
+        final String moName = "MyTest-testCreateAndRead";
+        mo.setName(moName);
 
-    @Test
-    public void testDeleteManagedObject() {
-        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        ManagedObject moChild = new ManagedObject();
+        final String moChildName = "RaspPi 8fef9ec2 Sensor BMP180";
+        moChild.setName(moChildName);
 
-        assertNotNull(retrievedMo.getId(), "Created managed object should have an ID.");
+        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        ManagedObject createdMo = inventoryApi.create(mo);
+        ManagedObject createdMoChild = inventoryApi.create(moChild);
 
-        inventoryApi.delete(retrievedMo.getId());
-        retrievedMo = inventoryApi.get(managedObject.getId());
+        inventoryApi.registerAsChildDevice(createdMo, createdMoChild);
 
-        assertNull(retrievedMo, "After deletion managed object should not exist anymore in the cloud.");
-    }
+        Assert.assertNotNull("Should now have an Id", createdMo.getId());
 
-    @Test
-    public void testRegisterAsChildDevice() {
-        ManagedObject parentMo = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        ManagedObject childMo = createManagedObjectInCot(CHILD_MANAGED_OBJECT_NAME);
-        managedObjectsToDelete.add(parentMo);
-        managedObjectsToDelete.add(childMo);
+        ManagedObject retrievedMo = inventoryApi.get(createdMo.getId());
 
-        inventoryApi.registerAsChildDevice(parentMo, childMo);
-        ManagedObject retrievedMo = inventoryApi.get(parentMo.getId());
+        Assert.assertEquals(retrievedMo.getId(), createdMo.getId(), "Should have the same Id");
+        Assert.assertEquals(retrievedMo.getName(), moName, "Should have the same Name");
+
         ManagedObjectReferenceCollection childDevices = retrievedMo.getChildDevices();
-
-        assertNotNull(childDevices.getSelf());
+        Assert.assertNotNull(childDevices.getSelf());
 
         Iterable<ManagedObjectReference> children = childDevices.get();
-        Iterator<ManagedObjectReference> childDevicesIterator = children.iterator();
+        Iterator<ManagedObjectReference> iter = children.iterator();
 
-        assertTrue(childDevicesIterator.hasNext());
-        ManagedObject child = childDevicesIterator.next().getManagedObject();
-        assertEquals(child.getName(), CHILD_MANAGED_OBJECT_NAME);
+        Assert.assertTrue(iter.hasNext());
+        ManagedObject child = iter.next().getManagedObject();
+        Assert.assertEquals(child.getName(), moChildName);
+
     }
 
     @Test
-    public void testUpdateManagedObject() {
-        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        managedObjectsToDelete.add(managedObject);
+    public void testCreateReadUpdateDelete() throws Exception {
 
-        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
+
+        CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+        ManagedObject createdMo = inventoryApi.create(mo);
+
+        Assert.assertNotNull("Should now have an Id", createdMo.getId());
+
+        ManagedObject retrievedMo = inventoryApi.get(createdMo.getId());
+
+        Assert.assertEquals(retrievedMo.getId(), createdMo.getId(), "Should have the same Id");
+        Assert.assertEquals(retrievedMo.getName(), "MyTest-testCreateAndRead", "Should have the same Name");
 
         JsonObject obj = new JsonObject();
         obj.add("foo", new JsonPrimitive("bar"));
@@ -97,23 +87,22 @@ public class InventoryApiCrudIT {
         retrievedMo.set("play", obj);
 
         inventoryApi.update(retrievedMo);
-        ManagedObject updatedMo = inventoryApi.get(managedObject.getId());
 
-        assertEquals(updatedMo.getId(), managedObject.getId(), "ID of created and updated managed object should be the same.");
-        assertEquals(updatedMo.getName(), "NewName", "Name of the managed object should have been updated in the cloud.");
+        ManagedObject aretrievedMo = inventoryApi.get(createdMo.getId());
 
-        Object retrievedObject = retrievedMo.get("play");
-        assertNotNull(retrievedObject);
-        assertTrue(retrievedObject instanceof JsonObject);
-        JsonObject playObj = (JsonObject) retrievedObject;
-        assertTrue(playObj.has("foo"));
-        assertEquals(playObj.get("foo").getAsString(), "bar");
+        Assert.assertEquals(aretrievedMo.getId(), createdMo.getId(), "Should have the same Id");
+        Assert.assertEquals(aretrievedMo.getName(), "NewName", "Should have the same Name");
+
+        Object play = retrievedMo.get("play");
+        Assert.assertNotNull(play);
+        Assert.assertTrue(play instanceof JsonObject);
+        JsonObject playObj = (JsonObject) play;
+        Assert.assertTrue(playObj.has("foo"));
+        Assert.assertEquals(playObj.get("foo").getAsString(), "bar");
+
+        inventoryApi.delete(retrievedMo.getId());
+        retrievedMo = inventoryApi.get(createdMo.getId());
+        Assert.assertNull(retrievedMo);
     }
 
-    private ManagedObject createManagedObjectInCot(String name) {
-        ManagedObject managedObject = new ManagedObject();
-        managedObject.setName(name);
-
-        return inventoryApi.create(managedObject);
-    }
 }

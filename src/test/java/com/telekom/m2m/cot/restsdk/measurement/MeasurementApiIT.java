@@ -21,10 +21,7 @@ import static org.testng.Assert.assertNotNull;
  */
 public class MeasurementApiIT {
 
-    private static final String MEASUREMENT_TYPE = "com_telekom_TestType";
-
     private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
     private ManagedObject testManagedObject;
 
     @BeforeClass
@@ -38,60 +35,91 @@ public class MeasurementApiIT {
     }
 
     @Test
-    public void testCreateMeasurement() {
-        Measurement measurement = createMeasurement();
-        Measurement createdMeasurement = measurementApi.createMeasurement(measurement);
+    public void testCreateMeasurement() throws Exception {
+        Measurement measurement = new Measurement();
+        measurement.setTime(new Date());
+        measurement.setType("com_telekom_TestType");
+        measurement.setSource(testManagedObject);
 
-        assertNotNull(createdMeasurement.getId(), "Measurement created in the cloud should have an ID.");
+        MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+
+        Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
+
+        assertNotNull("Should now have an Id", createdMeasurements.getId());
     }
 
     @Test
-    public void testCreateAndRead() {
-        Measurement measurement = createMeasurement();
-        Measurement createdMeasurement = measurementApi.createMeasurement(measurement);
-        Measurement retrievedMeasurement = measurementApi.getMeasurement(createdMeasurement.getId());
+    public void testCreateAndRead() throws Exception {
+        Date timeOfEventHappening = new Date();
 
-        Assert.assertEquals(retrievedMeasurement.getId(), createdMeasurement.getId(), "ID of measurement created in the cloud should be equal to returned measurement ID.");
-        Assert.assertEquals(retrievedMeasurement.getType(), createdMeasurement.getType(), "Type of measurement created in the cloud should be equal to returned measurement type.");
-        Assert.assertEquals(retrievedMeasurement.getTime(), createdMeasurement.getTime(), "Time of measurement created in the cloud should be equal to returned measurement time.");
+        Measurement measurement = new Measurement();
+        measurement.setTime(timeOfEventHappening);
+        measurement.setType("com_telekom_TestType");
+        measurement.setSource(testManagedObject);
+
+        MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+
+        Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
+
+        Measurement retrievedMeasurement = measurementApi.getMeasurement(createdMeasurements.getId());
+
+        Assert.assertEquals(retrievedMeasurement.getId(), createdMeasurements.getId());
+        Assert.assertEquals(retrievedMeasurement.getType(), "com_telekom_TestType");
+        Assert.assertEquals(retrievedMeasurement.getTime().compareTo(timeOfEventHappening), 0);
     }
 
     @Test(expectedExceptions = {CotSdkException.class})
-    public void testCreateAndReadAndDelete() {
-        Measurement measurement = createMeasurement();
-        Measurement createdMeasurement = measurementApi.createMeasurement(measurement);
-        Measurement retrievedMeasurement = measurementApi.getMeasurement(createdMeasurement.getId());
+    public void testCreateAndReadAndDelete() throws Exception {
+        Date timeOfEventHappening = new Date();
 
-        Assert.assertEquals(retrievedMeasurement.getId(), createdMeasurement.getId());
+        Measurement measurement = new Measurement();
+        measurement.setTime(timeOfEventHappening);
+        measurement.setType("com_telekom_TestType");
+        measurement.setSource(testManagedObject);
+
+        MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+
+        Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
+
+        Measurement retrievedMeasurement = measurementApi.getMeasurement(createdMeasurements.getId());
+
+        Assert.assertEquals(retrievedMeasurement.getId(), createdMeasurements.getId());
 
         measurementApi.delete(retrievedMeasurement);
 
-        Measurement deletedMeasurement = measurementApi.getMeasurement(createdMeasurement.getId());
+        Measurement deletedMeasurement = measurementApi.getMeasurement(createdMeasurements.getId());
     }
 
     @Test
     public void createMeasurements() {
-        final Measurement measurement1 = createMeasurement();
-        final Measurement measurement2 = createMeasurement();
+
+        // given
+        final Measurement measurement = createMeasurement(testManagedObject);
+        final Measurement measurement2 = createMeasurement(testManagedObject);
 
         final List<Measurement> measurements = Arrays.asList(
-                measurement1,
+                measurement,
                 measurement2
         );
 
+        final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+
+        // when
         final List<Measurement> createdMeasurements = measurementApi.createMeasurements(
                 measurements
         );
 
+        // then
         assertNotNull(createdMeasurements);
         assertEquals(measurements.size(), createdMeasurements.size());
+
     }
 
-    private Measurement createMeasurement() {
+    private static Measurement createMeasurement(final ManagedObject source) {
         final Measurement measurement = new Measurement();
         measurement.setTime(new Date());
-        measurement.setType(MEASUREMENT_TYPE);
-        measurement.setSource(testManagedObject);
+        measurement.setType("com_telekom_TestType");
+        measurement.setSource(source);
         return measurement;
     }
 }
