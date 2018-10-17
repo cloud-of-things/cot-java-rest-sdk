@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class MotionMeasurement implements Fragment {
 
-    private static final String MOTION_VALUE_TYPE ="BOOLEAN";
-    private static final String DETECTED_MOTION_UNIT = "";
+    private static final String motionValueType="BOOLEAN";
+    private static final String detectedMotionUnit="";
 
     private boolean detectedMotionValue;
     private float motionSpeedValue;
@@ -26,7 +26,7 @@ public class MotionMeasurement implements Fragment {
     }
 
     public String getDetectedMotionUnit() {
-        return DETECTED_MOTION_UNIT;
+        return detectedMotionUnit;
     }
 
     public float getMotionSpeedValue() {
@@ -48,8 +48,8 @@ public class MotionMeasurement implements Fragment {
     public JsonElement getJson() {
         JsonObject motionDetected = new JsonObject();
         motionDetected.addProperty("value", detectedMotionValue);
-        motionDetected.addProperty("unit", DETECTED_MOTION_UNIT);
-        motionDetected.addProperty("type", MOTION_VALUE_TYPE);
+        motionDetected.addProperty("unit", detectedMotionUnit);
+        motionDetected.addProperty("type", motionValueType);
 
         JsonObject speed = new JsonObject();
         speed.addProperty("value", motionSpeedValue);

@@ -1,17 +1,14 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.annotations.AfterMethod;
+import org.testng.Assert;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.NoSuchElementException;
-
-import static org.testng.Assert.*;
 
 /**
  * Created by Patrick Steinert on 14.10.16.
@@ -19,212 +16,177 @@ import static org.testng.Assert.*;
  * @author Patrick Steinert
  */
 public class InventoryApiExtendedIT {
+    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private ManagedObject testManagedObject;
 
-    private static final String PARENT_MANAGED_OBJECT_NAME = "parentTestManagedObject";
-    private static final String CHILD_MANAGED_OBJECT_NAME = "childTestManagedObject";
-    private static final String DEVICE_ID_WITH_SUPPORTED_MEASUREMENTS = "38345";
-    private static final String DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS = "10575";
+    @BeforeClass
+    public void setUp() {
+        testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_name");
+    }
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
-
-    private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
-
-    @AfterMethod
+    @AfterClass
     public void tearDown() {
-        for (ManagedObject managedObject: managedObjectsToDelete) {
-            try {
-                TestHelper.deleteManagedObjectInPlatform(cloudOfThingsPlatform, managedObject);
-            } catch (CotSdkException e) {
-                assertEquals(e.getHttpStatus(), 404);
-            }
-        }
+        TestHelper.deleteManagedObjectInPlatform(cotPlat, testManagedObject);
     }
 
     @Test
-    public void testAddAndRemoveChildren() {
-        ManagedObject parentManagedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        ManagedObject childManagedObject = createManagedObjectInCot(CHILD_MANAGED_OBJECT_NAME);
-        managedObjectsToDelete.add(parentManagedObject);
-        managedObjectsToDelete.add(childManagedObject);
+    public void testAddAndRemoveChildren() throws Exception {
 
-        ManagedObject parentMoFromCloud = inventoryApi.get(parentManagedObject.getId());
-        ManagedObjectReference childMoReference = new ManagedObjectReference(childManagedObject);
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
-        assertNotNull(childManagedObject.getId(), "Created managed object should contain an ID.");
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
 
-        inventoryApi.addChildDeviceToManagedObject(parentMoFromCloud, childMoReference);
-        ManagedObject reloadedParentMoFromCloud = inventoryApi.get(parentManagedObject.getId());
-        Iterator<ManagedObjectReference> childDevicesIterator = reloadedParentMoFromCloud.getChildDevices().get().iterator();
 
-        assertTrue(childDevicesIterator.hasNext(), "Parent device should contain one child by now.");
+        ManagedObject createdChildMo = inventoryApi.create(mo);
+        ManagedObject moFromPlatform = inventoryApi.get(testManagedObject.getId());
+        ManagedObjectReference managedObjectReference = new ManagedObjectReference(createdChildMo);
 
-        ManagedObjectReference next = childDevicesIterator.next();
+        Assert.assertNotNull("Should now have an Id", createdChildMo.getId());
 
-        assertEquals(next.getManagedObject().getId(), childManagedObject.getId());
-        assertTrue(next.getSelf().startsWith("http"));
+        inventoryApi.addChildDeviceToManagedObject(moFromPlatform, managedObjectReference);
+
+        ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
+        Iterator<ManagedObjectReference> iter = reloadedMo.getChildDevices().get().iterator();
+        Assert.assertTrue(iter.hasNext());
+        ManagedObjectReference next = iter.next();
+        Assert.assertEquals(next.getManagedObject().getId(), createdChildMo.getId());
+        Assert.assertTrue(next.getSelf().startsWith("http"));
 
         inventoryApi.removeManagedObjectReference(next);
 
-        reloadedParentMoFromCloud = inventoryApi.get(parentManagedObject.getId());
-        childDevicesIterator = reloadedParentMoFromCloud.getChildDevices().get().iterator();
-        assertFalse(childDevicesIterator.hasNext());
+        reloadedMo = inventoryApi.get(testManagedObject.getId());
+        iter = reloadedMo.getChildDevices().get().iterator();
+        Assert.assertFalse(iter.hasNext());
         try {
-            next = childDevicesIterator.next();
-            fail("Needs to throw an NSEE b/c no ref anymore.");
+            next = iter.next();
+            Assert.fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
         }
     }
 
     @Test
-    public void testAddAndRemoveDeviceParents() {
-        ManagedObject parentManagedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        ManagedObject childManagedObject = createManagedObjectInCot(CHILD_MANAGED_OBJECT_NAME);
-        managedObjectsToDelete.add(parentManagedObject);
-        managedObjectsToDelete.add(childManagedObject);
+    public void testAddAndRemoveDeviceParents() throws Exception {
 
-        assertNotNull(parentManagedObject.getId(), "Created parent object should contain an ID.");
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
-        ManagedObject parentMoFromCloud = inventoryApi.get(parentManagedObject.getId());
-        ManagedObject childMoFromCloud = inventoryApi.get(childManagedObject.getId());
-        ManagedObjectReference childMoReference = new ManagedObjectReference(childMoFromCloud);
-        inventoryApi.addChildDeviceToManagedObject(parentMoFromCloud, childMoReference);
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
 
-        //Reload objects
-        childMoFromCloud = inventoryApi.get(childManagedObject.getId(), true);
-        parentMoFromCloud = inventoryApi.get(parentManagedObject.getId(), true);
 
-        Iterator<ManagedObjectReference> parentDevicesIterator = childMoFromCloud.getParentDevices().get().iterator();
-
-        assertTrue(parentDevicesIterator.hasNext());
-        ManagedObjectReference next = parentDevicesIterator.next();
-        assertEquals(next.getManagedObject().getId(), parentMoFromCloud.getId());
-        assertTrue(next.getSelf().startsWith("http"));
-
-        ManagedObjectReference childDevice = parentMoFromCloud.getChildDevices().get().iterator().next();
-        inventoryApi.removeManagedObjectReference(childDevice);
-
-        childMoFromCloud = inventoryApi.get(childManagedObject.getId());
-        parentDevicesIterator = childMoFromCloud.getParentDevices().get().iterator();
-        assertFalse(parentDevicesIterator.hasNext());
-        try {
-            next = parentDevicesIterator.next();
-            fail("Needs to throw an NSEE b/c no ref anymore.");
-        } catch (NoSuchElementException e) {
-
-        }
-    }
-
-    @Test
-    public void testAddAndRemoveAssetParents() {
-        ManagedObject parentMo = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        ManagedObject childMo = createManagedObjectInCot(CHILD_MANAGED_OBJECT_NAME);
-        managedObjectsToDelete.add(parentMo);
-        managedObjectsToDelete.add(childMo);
-
-        assertNotNull(parentMo.getId(), "Created parent object should contain an ID.");
+        ManagedObject parentMo = inventoryApi.create(mo);
+        Assert.assertNotNull("Should now have an Id", parentMo.getId());
         parentMo = inventoryApi.get(parentMo.getId());
 
-        childMo = inventoryApi.get(childMo.getId());
-        ManagedObjectReference childMoReference = new ManagedObjectReference(childMo);
+        ManagedObject childMo = inventoryApi.get(testManagedObject.getId());
+        ManagedObjectReference refToChild = new ManagedObjectReference(childMo);
 
-        inventoryApi.addChildAssetToManagedObject(parentMo, childMoReference);
+
+        inventoryApi.addChildDeviceToManagedObject(parentMo, refToChild);
 
         //Reload objects
         childMo = inventoryApi.get(childMo.getId(), true);
         parentMo = inventoryApi.get(parentMo.getId(), true);
 
-        Iterator<ManagedObjectReference> iterator = childMo.getParentAssets().get().iterator();
-        assertTrue(iterator.hasNext());
-        ManagedObjectReference next = iterator.next();
-        assertEquals(next.getManagedObject().getId(), parentMo.getId());
-        assertTrue(next.getSelf().startsWith("http"));
+        Iterator<ManagedObjectReference> iter = childMo.getParentDevices().get().iterator();
+        Assert.assertTrue(iter.hasNext());
+        ManagedObjectReference next = iter.next();
+        Assert.assertEquals(next.getManagedObject().getId(), parentMo.getId());
+        Assert.assertTrue(next.getSelf().startsWith("http"));
 
-        ManagedObjectReference managedObjectReference = parentMo.getChildAssets().get().iterator().next();
-        inventoryApi.removeManagedObjectReference(managedObjectReference);
+        ManagedObjectReference del = parentMo.getChildDevices().get().iterator().next();
+        inventoryApi.removeManagedObjectReference(del);
 
         childMo = inventoryApi.get(childMo.getId());
-        iterator = childMo.getParentAssets().get().iterator();
-        assertFalse(iterator.hasNext());
+        iter = childMo.getParentDevices().get().iterator();
+        Assert.assertFalse(iter.hasNext());
         try {
-            next = iterator.next();
-            fail("Needs to throw an NSEE b/c no ref anymore.");
+            next = iter.next();
+            Assert.fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
         }
     }
 
     @Test
-    public void testAddAndRemoveAssets() {
-        ManagedObject parentMo = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
-        ManagedObject childMo = createManagedObjectInCot(CHILD_MANAGED_OBJECT_NAME);
-        managedObjectsToDelete.add(parentMo);
-        managedObjectsToDelete.add(childMo);
+    public void testAddAndRemoveAssetParents() throws Exception {
 
-        ManagedObject parentMoFromPlatform = inventoryApi.get(parentMo.getId());
-        ManagedObjectReference managedObjectReference = new ManagedObjectReference(childMo);
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
-        assertNotNull(childMo.getId(), "Created child object should contain an ID.");
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
 
-        inventoryApi.addChildAssetToManagedObject(parentMoFromPlatform, managedObjectReference);
 
-        ManagedObject reloadedMo = inventoryApi.get(parentMo.getId());
-        Iterator<ManagedObjectReference> iterator = reloadedMo.getChildAssets().get().iterator();
-        assertTrue(iterator.hasNext());
-        ManagedObjectReference next = iterator.next();
-        assertEquals(next.getManagedObject().getId(), childMo.getId());
-        assertTrue(next.getSelf().startsWith("http"));
+        ManagedObject parentMo = inventoryApi.create(mo);
+        Assert.assertNotNull("Should now have an Id", parentMo.getId());
+        parentMo = inventoryApi.get(parentMo.getId());
+
+        ManagedObject childMo = inventoryApi.get(testManagedObject.getId());
+        ManagedObjectReference refToChild = new ManagedObjectReference(childMo);
+
+
+        inventoryApi.addChildAssetToManagedObject(parentMo, refToChild);
+
+        //Reload objects
+        childMo = inventoryApi.get(childMo.getId(), true);
+        parentMo = inventoryApi.get(parentMo.getId(), true);
+
+        Iterator<ManagedObjectReference> iter = childMo.getParentAssets().get().iterator();
+        Assert.assertTrue(iter.hasNext());
+        ManagedObjectReference next = iter.next();
+        Assert.assertEquals(next.getManagedObject().getId(), parentMo.getId());
+        Assert.assertTrue(next.getSelf().startsWith("http"));
+
+        ManagedObjectReference del = parentMo.getChildAssets().get().iterator().next();
+        inventoryApi.removeManagedObjectReference(del);
+
+        childMo = inventoryApi.get(childMo.getId());
+        iter = childMo.getParentAssets().get().iterator();
+        Assert.assertFalse(iter.hasNext());
+        try {
+            next = iter.next();
+            Assert.fail("Needs to throw an NSEE b/c no ref anymore.");
+        } catch (NoSuchElementException e) {
+
+        }
+    }
+
+    @Test
+    public void testAddAndRemoveAssets() throws Exception {
+
+        InventoryApi inventoryApi = cotPlat.getInventoryApi();
+
+        ManagedObject mo = new ManagedObject();
+        mo.setName("MyTest-testCreateAndRead");
+
+
+        ManagedObject createdChildMo = inventoryApi.create(mo);
+        ManagedObject moFromPlatform = inventoryApi.get(testManagedObject.getId());
+        ManagedObjectReference managedObjectReference = new ManagedObjectReference(createdChildMo);
+
+        Assert.assertNotNull("Should now have an Id", createdChildMo.getId());
+
+        inventoryApi.addChildAssetToManagedObject(moFromPlatform, managedObjectReference);
+
+        ManagedObject reloadedMo = inventoryApi.get(testManagedObject.getId());
+        Iterator<ManagedObjectReference> iter = reloadedMo.getChildAssets().get().iterator();
+        Assert.assertTrue(iter.hasNext());
+        ManagedObjectReference next = iter.next();
+        Assert.assertEquals(next.getManagedObject().getId(), createdChildMo.getId());
+        Assert.assertTrue(next.getSelf().startsWith("http"));
 
         inventoryApi.removeManagedObjectReference(next);
 
-        reloadedMo = inventoryApi.get(parentMo.getId());
-        iterator = reloadedMo.getChildAssets().get().iterator();
-        assertFalse(iterator.hasNext());
+        reloadedMo = inventoryApi.get(testManagedObject.getId());
+        iter = reloadedMo.getChildAssets().get().iterator();
+        Assert.assertFalse(iter.hasNext());
         try {
-            next = iterator.next();
-            fail("Needs to throw an NSEE b/c no ref anymore.");
+            next = iter.next();
+            Assert.fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
         }
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
-    public void testSupportedMeasurementsNullDeviceId() {
-        inventoryApi.getSupportedMeasurements(null);
-    }
-
-    @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*inventory/Not Found.*")
-    public void testSupportedMeasurementsDeviceNotFound() {
-        inventoryApi.getSupportedMeasurements("nonExistentDeviceId");
-    }
-
-    @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*security/Unauthorized.*")
-    public void testSupportedMeasurementsNotAuthorized() {
-        InventoryApi inventoryApi = new CloudOfThingsPlatform(TestHelper.TEST_HOST, "fakeUsername", "fakePassword").getInventoryApi();
-        inventoryApi.getSupportedMeasurements("deviceId");
-    }
-
-    @Test
-    public void testNoSupportedMeasurements() {
-        ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS);
-
-        assertTrue(supportedMeasurements.isEmpty(), String.format("List of supported measurements for device with ID %s should be empty", DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS));
-    }
-
-    @Test
-    public void testGetSupportedMeasurements() {
-        ArrayList<String> supportedMeasurements = new ArrayList<>();
-        supportedMeasurements.add("Spannung");
-        ArrayList<String> supportedMeasurementsFromCloud = inventoryApi.getSupportedMeasurements(DEVICE_ID_WITH_SUPPORTED_MEASUREMENTS);
-
-        assertEquals(supportedMeasurementsFromCloud, supportedMeasurements);
-    }
-
-    private ManagedObject createManagedObjectInCot(String name) {
-        ManagedObject mo = new ManagedObject();
-        mo.setName(name);
-
-        return inventoryApi.create(mo);
-    }
 }

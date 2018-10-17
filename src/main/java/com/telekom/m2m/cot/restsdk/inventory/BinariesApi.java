@@ -36,9 +36,8 @@ public class BinariesApi {
 
     
     public BinariesCollection getBinaries(Filter.FilterBuilder filters,Integer pageSize) {
-        if(filters != null) {
-            filters.validateSupportedFilters(acceptedFilters);
-        }
+        if(filters != null)
+        filters.validateSupportedFilters(acceptedFilters);
         return new BinariesCollection(filters,
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
