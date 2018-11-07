@@ -87,13 +87,7 @@ public class CepConnector implements Runnable {
         channels.add(channel);
 
         if (clientId != null) {
-            JsonArray body = new JsonArray();
-            JsonObject obj = new JsonObject();
-            obj.addProperty("channel", "/meta/subscribe");
-            obj.addProperty("clientId", clientId);
-            obj.addProperty("subscription", channel);
-            body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+            doSubscribe(channel);
         }
     }
 
@@ -106,13 +100,7 @@ public class CepConnector implements Runnable {
      */
     public void unsubscribe(String channel) {
         if (channels.remove(channel)) {
-            JsonArray body = new JsonArray();
-            JsonObject obj = new JsonObject();
-            obj.addProperty("channel", "/meta/unsubscribe");
-            obj.addProperty("clientId", clientId);
-            obj.addProperty("subscription", channel);
-            body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+            doUnsubscribe(channel);
         }
     }
 
@@ -123,8 +111,6 @@ public class CepConnector implements Runnable {
      * it starts the run cycle.
      */
     public void connect() {
-        shallDisconnect = false;
-
         if (connected) {
             throw new CotSdkException("Already connected. Please disconnect first.");
         }
@@ -137,20 +123,36 @@ public class CepConnector implements Runnable {
             throw new CotSdkException("Handshake failed, could not get clientId.");
         }
 
+        shallDisconnect = false;
+        connected = true;
+        
         pollingThread = new Thread(this);
         pollingThread.setName("CepConnector.pollingThread");
         pollingThread.start();
     }
 
-
+    /**
+     *
+     */
     public void disconnect() {
         shallDisconnect = true;
+        connected = false;
+
         if (pollingThread != null) {
             pollingThread.interrupt();
             try {
                 pollingThread.join(THREAD_JOIN_GRACE_MILLIS); // One second should be more than enough to end the loop.
             } catch (InterruptedException ex) {
                 throw new CotSdkException("Real time polling thread didn't finish properly when asked to disconnect.", ex);
+            }
+            finally {
+                //its necessary to close the opened subscriptions to the channels to allow reconnection,
+                // otherwise it will throw an exception when reconnects. To keep the old functionality we only unsubscribe
+                //remotely
+                for (String channel : channels) {
+                    doUnsubscribe(channel);
+                }
+                clientId = null;
             }
         }
     }
@@ -300,16 +302,43 @@ public class CepConnector implements Runnable {
     }
 
     /**
+     * Subscribe to a given channel remotely
+     * @param channel
+     */
+    private void doSubscribe(String channel) {
+        JsonArray body = new JsonArray();
+        JsonObject obj = new JsonObject();
+        obj.addProperty("channel", "/meta/subscribe");
+        obj.addProperty("clientId", clientId);
+        obj.addProperty("subscription", channel);
+        body.add(obj);
+        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+    }
+
+    /**
+     * Unsubscribe to a given channel remotely.
+     * @param channel
+     */
+    private void doUnsubscribe(String channel) {
+        JsonArray body = new JsonArray();
+        JsonObject obj = new JsonObject();
+        obj.addProperty("channel", "/meta/unsubscribe");
+        obj.addProperty("clientId", clientId);
+        obj.addProperty("subscription", channel);
+        body.add(obj);
+        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+    }
+
+    /**
      * Starts the connector in a separate thread. Not meant to be called directly,
      * please use {@link #connect()} to start the connector.
      */
     @Override
     public void run() {
-        connected = true;
         try {
             doInitialSubscriptions();
 
-            do {
+            while (!shallDisconnect) {
                 String responseString = doConnect();
                 if (responseString != null) {
                     JsonArray response = gson.fromJson(responseString, JsonArray.class);
@@ -349,13 +378,11 @@ public class CepConnector implements Runnable {
                 }
 
                 try {
-                    if (!shallDisconnect) {
-                        Thread.sleep(interval);
-                    }
+                    Thread.sleep(interval);
                 } catch (InterruptedException e) {
                     shallDisconnect = true;
                 }
-            } while (!shallDisconnect);
+            }
         } finally {
             clientId = null;
             connected = false;
