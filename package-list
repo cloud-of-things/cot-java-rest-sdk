@@ -1,0 +1,16 @@
+com.telekom.m2m.cot.restsdk
+com.telekom.m2m.cot.restsdk.alarm
+com.telekom.m2m.cot.restsdk.audit
+com.telekom.m2m.cot.restsdk.devicecontrol
+com.telekom.m2m.cot.restsdk.event
+com.telekom.m2m.cot.restsdk.identity
+com.telekom.m2m.cot.restsdk.inventory
+com.telekom.m2m.cot.restsdk.library
+com.telekom.m2m.cot.restsdk.library.devicemanagement
+com.telekom.m2m.cot.restsdk.library.sensor
+com.telekom.m2m.cot.restsdk.measurement
+com.telekom.m2m.cot.restsdk.realtime
+com.telekom.m2m.cot.restsdk.retentionrule
+com.telekom.m2m.cot.restsdk.smartrest
+com.telekom.m2m.cot.restsdk.users
+com.telekom.m2m.cot.restsdk.util
