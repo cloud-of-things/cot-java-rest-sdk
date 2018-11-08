@@ -6,14 +6,13 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
-
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * Class that defines the methods of role collection. A role collection is a
  * group of roles. Created by Ozan Arslan on 13.07.2017
  */
-public class RoleCollection extends JsonArrayPagination {
+public class RoleCollection extends IterableObjectPagination<Role> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.roleCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "roles";
@@ -30,10 +29,21 @@ public class RoleCollection extends JsonArrayPagination {
      * @param filterBuilder
      *            the build criteria or null if all items should be retrieved.
      */
-    RoleCollection(final CloudOfThingsRestClient cloudOfThingsRestClient, final String relativeApiUrl, final Gson gson,
-            final Filter.FilterBuilder filterBuilder) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME,
-                filterBuilder);
+    RoleCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder
+    ) {
+        super(
+            roleJson -> new Role(gson.fromJson(roleJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder
+        );
     }
 
     /**
@@ -48,7 +58,7 @@ public class RoleCollection extends JsonArrayPagination {
             final Role[] arrayOfRoles = new Role[jsonRoles.size()];
             for (int i = 0; i < jsonRoles.size(); i++) {
                 JsonElement jsonRole = jsonRoles.get(i).getAsJsonObject();
-                final Role role = new Role(gson.fromJson(jsonRole, ExtensibleObject.class));
+                final Role role = objectMapper.apply(jsonRole);
                 arrayOfRoles[i] = role;
             }
             return arrayOfRoles;

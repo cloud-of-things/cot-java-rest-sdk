@@ -6,15 +6,14 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
-
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * The class that defines methods related to the role reference collections.
  * Role reference collections are a group of references to the roles. Created by
  * Ozan Arslan on 27.07.2017
  */
-public class RoleReferenceCollection extends JsonArrayPagination {
+public class RoleReferenceCollection extends IterableObjectPagination<RoleReference> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.roleReferenceCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "references";
@@ -31,10 +30,21 @@ public class RoleReferenceCollection extends JsonArrayPagination {
      * @param filterBuilder
      *            the build criteria or null if all items should be retrieved.
      */
-    RoleReferenceCollection(final CloudOfThingsRestClient cloudOfThingsRestClient, final String relativeApiUrl,
-            final Gson gson, final Filter.FilterBuilder filterBuilder) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME,
-                filterBuilder);
+    RoleReferenceCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder
+    ) {
+        super(
+            roleReferenceJson -> new RoleReference(gson.fromJson(roleReferenceJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder
+        );
     }
 
     /**
@@ -49,7 +59,7 @@ public class RoleReferenceCollection extends JsonArrayPagination {
             final RoleReference[] arrayOfRoleReferences = new RoleReference[jsonRoleReferences.size()];
             for (int i = 0; i < jsonRoleReferences.size(); i++) {
                 JsonElement jsonRole = jsonRoleReferences.get(i).getAsJsonObject();
-                final RoleReference rolereference = new RoleReference(gson.fromJson(jsonRole, ExtensibleObject.class));
+                final RoleReference rolereference = objectMapper.apply(jsonRole);
                 arrayOfRoleReferences[i] = rolereference;
             }
             return arrayOfRoleReferences;

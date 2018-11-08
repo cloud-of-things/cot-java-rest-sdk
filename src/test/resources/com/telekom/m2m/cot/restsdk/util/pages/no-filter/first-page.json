@@ -1,0 +1,35 @@
+{
+  "next": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=2&currentPage=2",
+  "operations": [
+    {
+      "creationTime": "2018-05-02T15:15:37.664+02:00",
+      "deviceId": "17415",
+      "deviceName": "123456787654333",
+      "id": "18039",
+      "self": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations/18039",
+      "status": "PENDING",
+      "c8y_Command": {
+        "text": "ls -la"
+      },
+      "description": "Execute shell command"
+    },
+    {
+      "creationTime": "2018-05-02T15:15:44.678+02:00",
+      "deviceId": "17415",
+      "deviceName": "123456787654333",
+      "id": "18041",
+      "self": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations/18041",
+      "status": "PENDING",
+      "c8y_Command": {
+        "text": "ls -la"
+      },
+      "description": "Execute shell command"
+    }
+  ],
+  "statistics": {
+    "currentPage": 1,
+    "pageSize": 2,
+    "totalPages": 7
+  },
+  "self": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=2&currentPage=1"
+}

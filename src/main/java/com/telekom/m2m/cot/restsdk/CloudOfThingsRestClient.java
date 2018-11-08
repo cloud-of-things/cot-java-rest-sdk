@@ -86,7 +86,7 @@ public class CloudOfThingsRestClient {
                     .addHeader("Authorization", "Basic " + encodedAuthString)
                     .addHeader("Content-Type", contentType)
                     .addHeader("Accept", accept)
-                    .url(host + "/" + api)
+                    .url(host + "/" + trimSlashes(api))
                     .post(body)
                     .build();
             response = client.newCall(request).execute();
@@ -132,7 +132,7 @@ public class CloudOfThingsRestClient {
         RequestBody body = RequestBody.create(MediaType.parse(contentType), json);
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api)
+                .url(host + "/" + trimSlashes(api))
                 .post(body);
 
         if (contentType != null) {
@@ -178,7 +178,7 @@ public class CloudOfThingsRestClient {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
-                .url(host + "/" + api)
+                .url(host + "/" + trimSlashes(api))
                 .post(body)
                 .build();
 
@@ -221,7 +221,7 @@ public class CloudOfThingsRestClient {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", "text/foo")
-                .url(host + "/" + api)
+                .url(host + "/" + trimSlashes(api))
                 .post(bodyBuilder.build())
                 .build();
 
@@ -272,7 +272,7 @@ public class CloudOfThingsRestClient {
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
                 .addHeader("Accept", contentType)
-                .url(host + "/" + api)
+                .url(host + "/" + trimSlashes(api))
                 .post(body)
                 .build();
 
@@ -446,7 +446,7 @@ public class CloudOfThingsRestClient {
     public byte[] getResponseInBytes(String id, String api, String accept){
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + removeTrailingSlash(api) + "/" + id);
+                .url(host + "/" + trimSlashes(api) + "/" + id);
 
         if (accept != null) {
             requestBuilder.addHeader("Accept", accept);
@@ -478,7 +478,7 @@ public class CloudOfThingsRestClient {
     public String getResponse(String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + api)
+                .url(host + "/" + trimSlashes(api))
                 .build();
 
         Response response = null;
@@ -530,7 +530,7 @@ public class CloudOfThingsRestClient {
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
-                .url(host + "/" + path)
+                .url(host + "/" + trimSlashes(path))
                 .put(requestBody);
 
         if (accept != null) {
@@ -567,7 +567,7 @@ public class CloudOfThingsRestClient {
         Request.Builder requestBuilder = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .addHeader("Content-Type", contentType)
-                .url(host + "/" + path)
+                .url(host + "/" + trimSlashes(path))
                 .put(requestBody);
 
         Request request = requestBuilder.build();
@@ -609,7 +609,7 @@ public class CloudOfThingsRestClient {
     public void delete(String id, String api) {
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + removeTrailingSlash(api) + "/" + id)
+                .url(host + "/" + trimSlashes(api) + "/" + id)
                 .delete()
                 .build();
         Response response = null;
@@ -631,7 +631,7 @@ public class CloudOfThingsRestClient {
     public void deleteBy(final String filter, final String api) {
         final Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + removeTrailingSlash(api) + "?" + filter)
+                .url(host + "/" + trimSlashes(api) + "?" + filter)
                 .delete()
                 .build();
         Response response = null;
@@ -700,8 +700,12 @@ public class CloudOfThingsRestClient {
         }
     }
 
-    private String removeTrailingSlash(String path) {
+    private String trimSlashes(String path) {
         Objects.requireNonNull(path);
+
+        if(path.startsWith("/")) {
+            path = path.substring(1);
+        }
 
         if(path.endsWith("/")) {
             path = path.substring(0, path.length()-1);

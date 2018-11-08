@@ -7,6 +7,8 @@ import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import javax.annotation.Nonnull;
+
 /**
  * Created by Andreas Dyck on 27.07.17.
  */
@@ -101,6 +103,7 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 0);
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
+        Assert.assertFalse(jsonArrayPagination.hasNext());
     }
 
     @Test(expectedExceptions = CotSdkException.class)
@@ -114,7 +117,7 @@ public class JsonArrayPaginationTest {
         Mockito.when(cotRestClientMock.getResponse(url)).thenThrow(new CotSdkException("exception was thrown"));
 
         // when
-        JsonArray jsonArray = jsonArrayPagination.getJsonArray();
+        jsonArrayPagination.getJsonArray();
 
         // then an exception should be thrown
     }
@@ -141,28 +144,17 @@ public class JsonArrayPaginationTest {
     @Test
     public void testPagination() {
         // given
-        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final CloudOfThingsRestClient cotRestClientMock = simulateRestClientWith2PagesAndPageSizeOf2();
+
         final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
-
-        final String jsonResultPageEmpty = "{\"auditRecords\":[]}";
-        final String jsonResultPage1 = "{\"auditRecords\":[{\"id\":\"1\"}]}";
-        final String jsonResultPage2 = "{\"auditRecords\":[{\"id\":\"2\"}],\"prev\":\"page1\"}";
-        final String urlPage0 = relativeApiUrl + "?currentPage=0&pageSize=5";
-        final String urlPage1 = relativeApiUrl + "?currentPage=1&pageSize=5";
-        final String urlPage2 = relativeApiUrl + "?currentPage=2&pageSize=5";
-        final String urlPage3 = relativeApiUrl + "?currentPage=3&pageSize=5";
-
-        Mockito.when(cotRestClientMock.getResponse(urlPage0)).thenReturn(jsonResultPage1);
-        Mockito.when(cotRestClientMock.getResponse(urlPage1)).thenReturn(jsonResultPage1);
-        Mockito.when(cotRestClientMock.getResponse(urlPage2)).thenReturn(jsonResultPage2);
-        Mockito.when(cotRestClientMock.getResponse(urlPage3)).thenReturn(jsonResultPageEmpty);
+        jsonArrayPagination.setPageSize(2);
 
         // when you retrieve the current page of collection at first time
         JsonArray jsonArray = jsonArrayPagination.getJsonArray();
 
         // then you'll get the first page
         Assert.assertNotNull(jsonArray);
-        Assert.assertEquals(jsonArray.size(), 1);
+        Assert.assertEquals(jsonArray.size(), 2);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
         Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("1"));
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
@@ -176,7 +168,7 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 1);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
-        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("2"));
+        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("3"));
         Assert.assertTrue(jsonArrayPagination.hasPrevious());
         Assert.assertFalse(jsonArrayPagination.hasNext());
 
@@ -186,7 +178,7 @@ public class JsonArrayPaginationTest {
 
         // then you'll get the first page again
         Assert.assertNotNull(jsonArray);
-        Assert.assertEquals(jsonArray.size(), 1);
+        Assert.assertEquals(jsonArray.size(), 2);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
         Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("1"));
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
@@ -198,11 +190,27 @@ public class JsonArrayPaginationTest {
 
         // then you'll still stay at the first page
         Assert.assertNotNull(jsonArray);
-        Assert.assertEquals(jsonArray.size(), 1);
+        Assert.assertEquals(jsonArray.size(), 2);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
         Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("1"));
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
         Assert.assertTrue(jsonArrayPagination.hasNext());
+    }
+
+    @Test
+    public void hasPreviousReturnsCorrectValueEventIfPageIsSwitchedDirectly() {
+        // given
+        final CloudOfThingsRestClient cotRestClientMock = simulateRestClientWith2PagesAndPageSizeOf2();
+
+        final JsonArrayPagination jsonArrayPagination = createJsonArrayPagination(cotRestClientMock);
+        jsonArrayPagination.setPageSize(2);
+
+        // when
+        // Directly switch to page 2, not loading any content from page 1.
+        jsonArrayPagination.next();
+
+        // then
+        Assert.assertTrue(jsonArrayPagination.hasPrevious(), "Previous page not detected.");
     }
 
     @Test
@@ -252,5 +260,21 @@ public class JsonArrayPaginationTest {
         // then
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 2);
+    }
+
+    @Nonnull
+    private CloudOfThingsRestClient simulateRestClientWith2PagesAndPageSizeOf2() {
+        final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
+        final String jsonResultPageEmpty = "{\"auditRecords\":[], \"statistics\": {\"currentPage\": 4, \"pageSize\": 2}}";
+        final String jsonResultPage1 = "{\"auditRecords\":[{\"id\":\"1\"}, {\"id\":\"2\"}], \"next\": \"page2\", \"statistics\": {\"currentPage\": 1, \"pageSize\": 2}}";
+        final String jsonResultPage2 = "{\"auditRecords\":[{\"id\":\"3\"}],\"prev\":\"page1\", \"next\": \"page3\", \"statistics\": {\"currentPage\": 2, \"pageSize\": 2}}";
+        final String urlPage1 = relativeApiUrl + "?currentPage=1&pageSize=2";
+        final String urlPage2 = relativeApiUrl + "?currentPage=2&pageSize=2";
+        final String urlPage3 = relativeApiUrl + "?currentPage=3&pageSize=2";
+
+        Mockito.when(cotRestClientMock.getResponse(urlPage1)).thenReturn(jsonResultPage1);
+        Mockito.when(cotRestClientMock.getResponse(urlPage2)).thenReturn(jsonResultPage2);
+        Mockito.when(cotRestClientMock.getResponse(urlPage3)).thenReturn(jsonResultPageEmpty);
+        return cotRestClientMock;
     }
 }
