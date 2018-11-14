@@ -1,15 +1,15 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.measurement.Measurement;
+import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.SampleTemperatureSensor;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.testng.Assert.*;
 
@@ -22,11 +22,10 @@ public class InventoryApiExtendedIT {
 
     private static final String PARENT_MANAGED_OBJECT_NAME = "parentTestManagedObject";
     private static final String CHILD_MANAGED_OBJECT_NAME = "childTestManagedObject";
-    private static final String DEVICE_ID_WITH_SUPPORTED_MEASUREMENTS = "38345";
-    private static final String DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS = "10575";
 
     private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
+    private MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
     private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
 
@@ -207,16 +206,33 @@ public class InventoryApiExtendedIT {
 
     @Test
     public void testNoSupportedMeasurements() {
-        ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS);
+        ManagedObject managedObject = createManagedObjectInCot("device");
+        managedObjectsToDelete.add(managedObject);
 
-        assertTrue(supportedMeasurements.isEmpty(), String.format("List of supported measurements for device with ID %s should be empty", DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS));
+        ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(managedObject.getId());
+
+        assertTrue(supportedMeasurements.isEmpty(), String.format("List of supported measurements for device with ID %s should be empty", managedObject.getId()));
     }
+
 
     @Test
     public void testGetSupportedMeasurements() {
+        ManagedObject managedObject = createManagedObjectInCot("device");
+        managedObjectsToDelete.add(managedObject);
+
+        SampleTemperatureSensor sampleTemperatureSensor = new SampleTemperatureSensor();
+        sampleTemperatureSensor.setTemperature(100);
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(managedObject);
+        testMeasurement.setTime(new Date());
+        testMeasurement.setType("Temperature");
+        testMeasurement.set(sampleTemperatureSensor);
+        measurementApi.createMeasurement(testMeasurement);
+
         ArrayList<String> supportedMeasurements = new ArrayList<>();
-        supportedMeasurements.add("Spannung");
-        ArrayList<String> supportedMeasurementsFromCloud = inventoryApi.getSupportedMeasurements(DEVICE_ID_WITH_SUPPORTED_MEASUREMENTS);
+        supportedMeasurements.add("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor");
+
+        ArrayList<String> supportedMeasurementsFromCloud = inventoryApi.getSupportedMeasurements(managedObject.getId());
 
         assertEquals(supportedMeasurementsFromCloud, supportedMeasurements);
     }
