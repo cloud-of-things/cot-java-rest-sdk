@@ -70,6 +70,11 @@ public class FilterTest {
     }
 
     @Test
+    public void settingSameFilterAgainOverwritesPreviousValue() {
+
+    }
+
+    @Test
     public void setFilterAddsProvidedFilter() {
 
     }
