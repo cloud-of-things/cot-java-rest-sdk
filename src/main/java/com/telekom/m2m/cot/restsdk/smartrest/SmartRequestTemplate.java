@@ -1,8 +1,5 @@
 package com.telekom.m2m.cot.restsdk.smartrest;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-
 /**
  * A SmartRequestTemplate is used server side to transform a SmartREST request into a regular REST request.
  *

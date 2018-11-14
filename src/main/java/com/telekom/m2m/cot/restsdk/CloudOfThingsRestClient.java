@@ -496,7 +496,7 @@ public class CloudOfThingsRestClient {
             // We need to rethrow this in order to not loose the status code.
             throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
+            throw new CotSdkException("Error in request: " + e.getMessage(), e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
