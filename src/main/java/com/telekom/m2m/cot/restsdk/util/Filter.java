@@ -265,7 +265,7 @@ public class Filter {
             if (filters != null) {
                 for (Map.Entry<String, String> e : instance.arguments.entrySet()) {
                     if (!filters.contains(FilterBy.getFilterBy(e.getKey()))) {
-                        throw new CotSdkException(String.format("This filter is not avaible in used api [%s]", e.getKey()));
+                        throw new CotSdkException(String.format("This filter is not available in used api [%s]", e.getKey()));
                     }
                 }
             }
