@@ -2,7 +2,7 @@ package com.telekom.m2m.cot.restsdk.util;
 
 public enum FilterBy {
     /**
-     * perrmitted filters from all apis
+     * permitted filters from all apis
      */
     BYSOURCE ("source"),
     BYSTATUS ("status"),
