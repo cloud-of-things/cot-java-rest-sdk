@@ -246,7 +246,7 @@ public class Filter {
         /**
          * adds a build for a hashmap of filters
          *
-         * @param hashmap contains enum values and vaslues for filter builds
+         * @param hashmap contains enum values and values for filter builds
          * @return an appropriate build Object
          */
         @Nonnull
