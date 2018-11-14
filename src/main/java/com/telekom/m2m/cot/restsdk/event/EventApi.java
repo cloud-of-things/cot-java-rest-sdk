@@ -94,8 +94,9 @@ public class EventApi {
      * @since 0.2.0
      */
     public EventCollection getEvents(Filter.FilterBuilder filters) {
-        if(filters != null)
+        if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
+        }
         return new EventCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -109,8 +110,9 @@ public class EventApi {
      * @param filters filters of Event attributes.
      */
     public void deleteEvents(Filter.FilterBuilder filters) {
-        if(filters != null)
+        if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
+        }
         cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filters.buildFilter() + "&x=");
     }
 }

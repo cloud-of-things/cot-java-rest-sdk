@@ -84,8 +84,9 @@ public class AuditApi {
      * @return the first page of AuditRecordCollection which can be used to navigate through the found AuditRecords.
      */
     public AuditRecordCollection getAuditRecordCollection(final Filter.FilterBuilder filters) {
-        if(filters != null)
+        if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
+        }
         return new AuditRecordCollection(
                 cloudOfThingsRestClient,
                 RELATIVE_API_URL,
@@ -99,8 +100,9 @@ public class AuditApi {
      * @param filters filters of audit record attributes.
      */
     public void deleteAuditRecords(Filter.FilterBuilder filters) {
-        if(filters != null)
+        if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
+        }
         cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_API_URL);
     }
 }
