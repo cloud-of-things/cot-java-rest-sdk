@@ -103,12 +103,12 @@ public class ExtensibleObject {
 
         ExtensibleObject that = (ExtensibleObject) o;
 
-        return anyObject != null ? anyObject.equals(that.anyObject) : that.anyObject == null;
+        return anyObject.equals(that.anyObject);
     }
 
     @Override
     public int hashCode() {
-        return anyObject != null ? anyObject.hashCode() : 0;
+        return anyObject.hashCode();
     }
 
 }
