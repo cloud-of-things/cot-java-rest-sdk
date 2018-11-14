@@ -56,7 +56,7 @@ public class InventoryManagedObjectCollectionIT {
 
         ManagedObject managedObject = managedObjects[0];
 
-        Assert.assertTrue(managedObject.getId() != null);
+        Assert.assertNotNull(managedObject.getId());
         Assert.assertTrue(managedObject.getId().length() > 0);
 
 
