@@ -263,8 +263,8 @@ public class Filter {
         public void validateSupportedFilters(@Nullable List filters) {
             //do nothing, when filters is null
             if (filters != null) {
-                for (Map.Entry e : instance.arguments.entrySet()) {
-                    if (!filters.contains(FilterBy.getFilterBy((String) e.getKey()))) {
+                for (Map.Entry<String, String> e : instance.arguments.entrySet()) {
+                    if (!filters.contains(FilterBy.getFilterBy(e.getKey()))) {
                         throw new CotSdkException(String.format("This filter is not avaible in used api [%s]", e.getKey()));
                     }
                 }
