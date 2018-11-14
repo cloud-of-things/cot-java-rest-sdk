@@ -3,6 +3,7 @@ package com.telekom.m2m.cot.restsdk.util;
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -244,7 +245,7 @@ public class Filter {
          *
          * @param filters list of filters, which have to be checked
          */
-        public void validateSupportedFilters(List filters) {
+        public void validateSupportedFilters(@Nullable List filters) {
             //do nothing, when filters is null
             if (filters != null) {
                 for (Map.Entry e : instance.arguments.entrySet()) {
