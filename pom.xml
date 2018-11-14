@@ -130,14 +130,10 @@
                 <version>2.13</version>
                 <executions>
                     <execution>
-                        <id>integration-test</id>
+                        <id>run-integration-tests</id>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
                             <goal>verify</goal>
                         </goals>
                     </execution>
