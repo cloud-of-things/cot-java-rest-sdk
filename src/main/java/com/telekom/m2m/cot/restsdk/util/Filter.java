@@ -52,6 +52,7 @@ public class Filter {
          *
          * @return a string in pattern <code>arg1=val1&amp;arg2=val2</code>
          */
+        @Nonnull
         public String buildFilter() {
             String qs = "";
             Set<Map.Entry<String, String>> set = instance.arguments.entrySet();
@@ -69,6 +70,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder bySource(String id) {
             instance.arguments.put("source", id);
             return this;
@@ -81,6 +83,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byType(String type) {
             //instance.type = type;
             instance.arguments.put("type", type);
@@ -95,6 +98,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byDate(Date from, Date to) {
             //instance.dateFrom = from;
             //instance.dateTo = to;
@@ -110,6 +114,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byFragmentType(String fragmentType) {
             instance.arguments.put("fragmentType", fragmentType);
             return this;
@@ -122,6 +127,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byDeviceId(String deviceId) {
             instance.arguments.put("deviceId", deviceId);
             return this;
@@ -134,6 +140,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byStatus(OperationStatus operationStatus) {
             instance.arguments.put("status", operationStatus.toString());
             return this;
@@ -146,6 +153,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byText(String text) {
             instance.arguments.put("text", text);
             return this;
@@ -158,6 +166,7 @@ public class Filter {
          * @return an appropriate build Object.
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byListOfIds(String listOfIds) {
             instance.arguments.put("ids", listOfIds);
             return this;
@@ -171,6 +180,7 @@ public class Filter {
          * @since 0.3.0
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byStatus(String status) {
             instance.arguments.put("status", status);
             return this;
@@ -184,6 +194,7 @@ public class Filter {
          * @since 0.3.1
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byAgentId(String agentId) {
             instance.arguments.put("agentId", agentId);
             return this;
@@ -197,6 +208,7 @@ public class Filter {
          * @since 0.6.0
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byUser(String user) {
             instance.arguments.put("user", user);
             return this;
@@ -210,6 +222,7 @@ public class Filter {
          * @since 0.6.0
          */
         @Deprecated
+        @Nonnull
         public FilterBuilder byApplication(String application) {
             instance.arguments.put("application", application);
             return this;
@@ -222,6 +235,7 @@ public class Filter {
          * @param value value for filter, which should be added
          * @return an appropriate build Object
          */
+        @Nonnull
         public FilterBuilder setFilter(FilterBy filterBy, String value) {
            instance.arguments.put(filterBy.getFilterKey(), value);
            return this;
@@ -233,7 +247,8 @@ public class Filter {
          * @param hashmap contains enum values and vaslues for filter builds
          * @return an appropriate build Object
          */
-        public FilterBuilder setFilters(HashMap<FilterBy, String> hashmap){
+        @Nonnull
+        public FilterBuilder setFilters(@Nonnull HashMap<FilterBy, String> hashmap){
             for (Map.Entry<FilterBy, String> e : hashmap.entrySet()){
                 instance.arguments.put(e.getKey().getFilterKey(), e.getValue());
             }
