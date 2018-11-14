@@ -263,7 +263,7 @@ public class Filter {
          * @param acceptedFilters list of filters, which are allowed. Pass null if all filters are allowed.
          * @throws CotSdkException If a filter that is not allowed is detected.
          */
-        public void validateSupportedFilters(@Nullable final List acceptedFilters) {
+        public void validateSupportedFilters(@Nullable final List<FilterBy> acceptedFilters) {
             // Do nothing, when all filters are accepted.
             if (acceptedFilters != null) {
                 for (final Map.Entry<String, String> definedFilter : instance.arguments.entrySet()) {
