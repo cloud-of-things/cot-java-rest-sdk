@@ -234,8 +234,8 @@ public class Filter {
          * @return an appropriate build Object
          */
         public FilterBuilder setFilters(HashMap<FilterBy, String> hashmap){
-            for (Map.Entry e : hashmap.entrySet()){
-                instance.arguments.put(((FilterBy)e.getKey()).getFilterKey(), (String) e.getValue());
+            for (Map.Entry<FilterBy, String> e : hashmap.entrySet()){
+                instance.arguments.put(e.getKey().getFilterKey(), e.getValue());
             }
             return this;
         }
