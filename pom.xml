@@ -4,7 +4,7 @@
 
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>Cloud of Things Java REST SDK</name>
     <description>This is an SDK to interfere with the Cloud of Things by
@@ -70,6 +70,8 @@
 
     <properties>
         <license.licenseName>mit</license.licenseName>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
         <powermock.version>1.6.4</powermock.version>
@@ -130,14 +132,10 @@
                 <version>2.13</version>
                 <executions>
                     <execution>
-                        <id>integration-test</id>
+                        <id>run-integration-tests</id>
+                        <phase>integration-test</phase>
                         <goals>
                             <goal>integration-test</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>verify</id>
-                        <goals>
                             <goal>verify</goal>
                         </goals>
                     </execution>
@@ -160,6 +158,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>2.9.1</version>
+                <configuration>
+                    <quiet>true</quiet>
+                </configuration>
                 <executions>
                     <execution>
                         <id>attach-javadocs</id>
