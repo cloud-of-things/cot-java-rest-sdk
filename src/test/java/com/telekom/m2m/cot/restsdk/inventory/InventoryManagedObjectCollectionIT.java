@@ -42,7 +42,7 @@ public class InventoryManagedObjectCollectionIT {
     }
 
     @Test
-    public void testMultipleManagedObjects() throws Exception {
+    public void testMultipleManagedObjects() {
         // Expects a tenant with already multiple measurements
 
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
@@ -63,7 +63,7 @@ public class InventoryManagedObjectCollectionIT {
     }
 
     @Test
-    public void testMultipleManagedObjectsWithPaging() throws Exception {
+    public void testMultipleManagedObjectsWithPaging() {
         // Expects a tenant with already multiple measurements
 
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
@@ -112,7 +112,7 @@ public class InventoryManagedObjectCollectionIT {
     }
 
     @Test
-    public void testMultipleManagedObjectsByText() throws Exception {
+    public void testMultipleManagedObjectsByText() {
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
         ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "my_specialxxyyzz_name");
 
@@ -131,7 +131,7 @@ public class InventoryManagedObjectCollectionIT {
     }
 
     @Test
-    public void testMultipleManagedObjectsByListOfIDs() throws Exception {
+    public void testMultipleManagedObjectsByListOfIDs() {
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
         ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "my_specialxxyyzz_name");
 
