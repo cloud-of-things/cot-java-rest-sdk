@@ -260,14 +260,14 @@ public class Filter {
         /**
          * validate all set filters allowed by the api
          *
-         * @param notAllowedFilters list of filters, which are not allowed.
+         * @param acceptedFilters list of filters, which are allowed. Pass null if all filters are allowed.
          * @throws CotSdkException If a filter that is not allowed is detected.
          */
-        public void validateSupportedFilters(@Nullable final List notAllowedFilters) {
-            // Do nothing, when no filters are blacklisted.
-            if (notAllowedFilters != null) {
+        public void validateSupportedFilters(@Nullable final List acceptedFilters) {
+            // Do nothing, when all filters are accepted.
+            if (acceptedFilters != null) {
                 for (final Map.Entry<String, String> definedFilter : instance.arguments.entrySet()) {
-                    if (!notAllowedFilters.contains(FilterBy.getFilterBy(definedFilter.getKey()))) {
+                    if (!acceptedFilters.contains(FilterBy.getFilterBy(definedFilter.getKey()))) {
                         throw new CotSdkException(String.format("This filter is not available in used api [%s]", definedFilter.getKey()));
                     }
                 }
