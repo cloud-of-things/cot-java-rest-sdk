@@ -18,6 +18,7 @@ public enum FilterBy {
     BYAPPLICATION ("application");
 
     private String filterKey;
+
     FilterBy(String filterKey) {
         this.filterKey = filterKey;
     }

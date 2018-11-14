@@ -1,6 +1,8 @@
 package com.telekom.m2m.cot.restsdk.util;
 
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
+
+import javax.annotation.Nonnull;
 import java.util.*;
 
 /**
@@ -21,6 +23,7 @@ public class Filter {
      *
      * @return FilterBuilder.
      */
+    @Nonnull
     public static FilterBuilder build() {
         return new FilterBuilder();
     }
@@ -229,7 +232,7 @@ public class Filter {
          * @return an appropriate build Object
          */
         public FilterBuilder setFilters(HashMap<FilterBy, String> hashmap){
-            for ( Map.Entry e : hashmap.entrySet() ){
+            for (Map.Entry e : hashmap.entrySet()){
                 instance.arguments.put(((FilterBy)e.getKey()).getFilterKey(), (String) e.getValue());
             }
             return this;
