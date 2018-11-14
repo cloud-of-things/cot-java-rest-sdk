@@ -4,7 +4,7 @@
 
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>1.1.0</version>
+    <version>1.1.1-SNAPSHOT</version>
 
     <name>Cloud of Things Java REST SDK</name>
     <description>This is an SDK to interfere with the Cloud of Things by
