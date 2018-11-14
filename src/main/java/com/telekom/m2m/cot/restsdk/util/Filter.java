@@ -45,7 +45,9 @@ public class Filter {
      * </pre>
      */
     public static class FilterBuilder {
-        private Filter instance = new Filter();
+
+        @Nonnull
+        private final Filter instance = new Filter();
 
         /**
          * Creates a parameter string.
