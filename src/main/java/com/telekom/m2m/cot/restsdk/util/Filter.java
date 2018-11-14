@@ -13,7 +13,8 @@ import java.util.*;
  */
 public class Filter {
 
-    private HashMap<String, String> arguments = new HashMap<>();
+    @Nonnull
+    private final HashMap<String, String> arguments = new HashMap<>();
 
     private Filter() {
     }
