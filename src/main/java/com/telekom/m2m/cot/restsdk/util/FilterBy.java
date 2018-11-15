@@ -12,9 +12,9 @@ public enum FilterBy {
     BYDATETO ("dateTo"),
     BYFRAGMENTTYPE ("fragmentType"),
     BYDEVICEID ("deviceId"),
-    BYTEXT ("Text"),
+    BYTEXT ("text"),
     BYLISTOFIDs ("ids"),
-    BYUSER ("User"),
+    BYUSER ("user"),
     BYAPPLICATION ("application");
 
     private String filterKey;
