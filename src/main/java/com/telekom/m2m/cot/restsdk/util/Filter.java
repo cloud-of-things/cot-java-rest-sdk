@@ -238,13 +238,13 @@ public class Filter {
         }
 
         /**
-         * adds a build for a hashmap of filters
+         * adds a build for a map of filters
          *
          * @param filtersToAdd contains enum values and values for filter builds
          * @return an appropriate build Object
          */
         @Nonnull
-        public FilterBuilder setFilters(@Nonnull final HashMap<FilterBy, String> filtersToAdd){
+        public FilterBuilder setFilters(@Nonnull final Map<FilterBy, String> filtersToAdd){
             instance.arguments.putAll(filtersToAdd);
             return this;
         }
