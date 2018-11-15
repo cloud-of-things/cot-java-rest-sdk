@@ -245,9 +245,7 @@ public class Filter {
          */
         @Nonnull
         public FilterBuilder setFilters(@Nonnull final HashMap<FilterBy, String> filtersToAdd){
-            for (final Map.Entry<FilterBy, String> filter : filtersToAdd.entrySet()){
-                instance.arguments.put(filter.getKey(), filter.getValue());
-            }
+            instance.arguments.putAll(filtersToAdd);
             return this;
         }
 
