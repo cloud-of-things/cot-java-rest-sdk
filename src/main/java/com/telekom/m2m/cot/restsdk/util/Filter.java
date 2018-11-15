@@ -240,13 +240,13 @@ public class Filter {
         /**
          * adds a build for a hashmap of filters
          *
-         * @param hashmap contains enum values and values for filter builds
+         * @param filtersToAdd contains enum values and values for filter builds
          * @return an appropriate build Object
          */
         @Nonnull
-        public FilterBuilder setFilters(@Nonnull final HashMap<FilterBy, String> hashmap){
-            for (final Map.Entry<FilterBy, String> e : hashmap.entrySet()){
-                instance.arguments.put(e.getKey(), e.getValue());
+        public FilterBuilder setFilters(@Nonnull final HashMap<FilterBy, String> filtersToAdd){
+            for (final Map.Entry<FilterBy, String> filter : filtersToAdd.entrySet()){
+                instance.arguments.put(filter.getKey(), filter.getValue());
             }
             return this;
         }
