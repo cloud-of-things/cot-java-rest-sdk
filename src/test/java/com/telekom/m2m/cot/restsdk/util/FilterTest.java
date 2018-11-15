@@ -183,6 +183,15 @@ public class FilterTest {
     }
 
     @Test
+    public void usesCorrectFilterName() {
+        final String filter = Filter.build()
+            .byDeviceId("42")
+            .buildFilter();
+
+        assertThat(filter, containsString(FilterBy.BYDEVICEID.getFilterKey()));
+    }
+
+    @Test
     public void validateSupportedFiltersDoesNotThrowExceptionIfNullIsPassed() {
         final Filter.FilterBuilder builder = Filter.build()
             .byAgentId("42");
