@@ -58,7 +58,7 @@ public class Filter {
         @Nonnull
         public String buildFilter() {
             return instance.arguments.entrySet().stream()
-                .map(entry -> entry.getKey().getFilterKey() + "=" + entry.getValue())
+                .map(filter -> filter.getKey().getFilterKey() + "=" + filter.getValue())
                 .collect(Collectors.joining("&"));
         }
 
