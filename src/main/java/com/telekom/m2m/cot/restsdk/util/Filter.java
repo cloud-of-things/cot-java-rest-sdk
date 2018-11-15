@@ -15,7 +15,7 @@ import java.util.*;
 public class Filter {
 
     @Nonnull
-    private final HashMap<String, String> arguments = new HashMap<>();
+    private final HashMap<FilterBy, String> arguments = new HashMap<>();
 
     private Filter() {
     }
@@ -57,10 +57,8 @@ public class Filter {
         @Nonnull
         public String buildFilter() {
             String qs = "";
-            Set<Map.Entry<String, String>> set = instance.arguments.entrySet();
-
-            for (Map.Entry<String, String> entry : set) {
-                qs += entry.getKey() + "=" + entry.getValue() + "&";
+            for (final Map.Entry<FilterBy, String> entry : instance.arguments.entrySet()) {
+                qs += entry.getKey().toString() + "=" + entry.getValue() + "&";
             }
             return qs.substring(0, qs.length() - 1);
         }
@@ -74,7 +72,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder bySource(String id) {
-            instance.arguments.put("source", id);
+            instance.arguments.put(FilterBy.BYSOURCE, id);
             return this;
         }
 
@@ -87,8 +85,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byType(String type) {
-            //instance.type = type;
-            instance.arguments.put("type", type);
+            instance.arguments.put(FilterBy.BYTYPE, type);
             return this;
         }
 
@@ -102,10 +99,8 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byDate(Date from, Date to) {
-            //instance.dateFrom = from;
-            //instance.dateTo = to;
-            instance.arguments.put("dateFrom", CotUtils.convertDateToTimestring(from));
-            instance.arguments.put("dateTo", CotUtils.convertDateToTimestring(to));
+            instance.arguments.put(FilterBy.BYDATEFROM, CotUtils.convertDateToTimestring(from));
+            instance.arguments.put(FilterBy.BYDATETO, CotUtils.convertDateToTimestring(to));
             return this;
         }
 
@@ -118,7 +113,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byFragmentType(String fragmentType) {
-            instance.arguments.put("fragmentType", fragmentType);
+            instance.arguments.put(FilterBy.BYFRAGMENTTYPE, fragmentType);
             return this;
         }
 
@@ -131,7 +126,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byDeviceId(String deviceId) {
-            instance.arguments.put("deviceId", deviceId);
+            instance.arguments.put(FilterBy.BYDEVICEID, deviceId);
             return this;
         }
 
@@ -144,7 +139,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byStatus(OperationStatus operationStatus) {
-            instance.arguments.put("status", operationStatus.toString());
+            instance.arguments.put(FilterBy.BYSTATUS, operationStatus.toString());
             return this;
         }
 
@@ -157,7 +152,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byText(String text) {
-            instance.arguments.put("text", text);
+            instance.arguments.put(FilterBy.BYTEXT, text);
             return this;
         }
 
@@ -170,7 +165,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byListOfIds(String listOfIds) {
-            instance.arguments.put("ids", listOfIds);
+            instance.arguments.put(FilterBy.BYLISTOFIDs, listOfIds);
             return this;
         }
 
@@ -184,7 +179,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byStatus(String status) {
-            instance.arguments.put("status", status);
+            instance.arguments.put(FilterBy.BYSTATUS, status);
             return this;
         }
 
@@ -198,7 +193,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byAgentId(String agentId) {
-            instance.arguments.put("agentId", agentId);
+            instance.arguments.put(FilterBy.BYAGENTID, agentId);
             return this;
         }
 
@@ -212,7 +207,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byUser(String user) {
-            instance.arguments.put("user", user);
+            instance.arguments.put(FilterBy.BYUSER, user);
             return this;
         }
         
@@ -226,7 +221,7 @@ public class Filter {
         @Deprecated
         @Nonnull
         public FilterBuilder byApplication(String application) {
-            instance.arguments.put("application", application);
+            instance.arguments.put(FilterBy.BYAPPLICATION, application);
             return this;
         }
 
@@ -238,8 +233,8 @@ public class Filter {
          * @return an appropriate build Object
          */
         @Nonnull
-        public FilterBuilder setFilter(FilterBy filterBy, String value) {
-           instance.arguments.put(filterBy.getFilterKey(), value);
+        public FilterBuilder setFilter(@Nonnull final FilterBy filterBy, @Nonnull final String value) {
+           instance.arguments.put(filterBy, value);
            return this;
         }
 
@@ -250,9 +245,9 @@ public class Filter {
          * @return an appropriate build Object
          */
         @Nonnull
-        public FilterBuilder setFilters(@Nonnull HashMap<FilterBy, String> hashmap){
-            for (Map.Entry<FilterBy, String> e : hashmap.entrySet()){
-                instance.arguments.put(e.getKey().getFilterKey(), e.getValue());
+        public FilterBuilder setFilters(@Nonnull final HashMap<FilterBy, String> hashmap){
+            for (final Map.Entry<FilterBy, String> e : hashmap.entrySet()){
+                instance.arguments.put(e.getKey(), e.getValue());
             }
             return this;
         }
@@ -266,14 +261,13 @@ public class Filter {
         public void validateSupportedFilters(@Nullable final List<FilterBy> acceptedFilters) {
             // Do nothing, when all filters are accepted.
             if (acceptedFilters != null) {
-                for (final Map.Entry<String, String> definedFilter : instance.arguments.entrySet()) {
-                    if (!acceptedFilters.contains(FilterBy.getFilterBy(definedFilter.getKey()))) {
+                for (final Map.Entry<FilterBy, String> definedFilter : instance.arguments.entrySet()) {
+                    if (!acceptedFilters.contains(definedFilter.getKey())) {
                         throw new CotSdkException(String.format("This filter is not available in used api [%s]", definedFilter.getKey()));
                     }
                 }
             }
         }
-
     }
 
 }
