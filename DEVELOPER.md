@@ -67,7 +67,7 @@ Run the integration tests:
     export COT_TEST_CONNECTION_PASSWORD="your-password"
     export COT_TEST_CONNECTION_TENANT="your-tenant"
 
-    mvn integration-test
+    mvn -Dgpg.skip=true integration-test
     
 The integration tests require a Cloud of Things account. You must provide the credentials that are used for testing via environment variables before starting the integration tests.
 
