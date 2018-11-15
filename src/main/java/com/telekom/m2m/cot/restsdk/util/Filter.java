@@ -5,6 +5,7 @@ import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Filter to build as criteria for collection queries.
@@ -56,11 +57,9 @@ public class Filter {
          */
         @Nonnull
         public String buildFilter() {
-            String qs = "";
-            for (final Map.Entry<FilterBy, String> entry : instance.arguments.entrySet()) {
-                qs += entry.getKey().toString() + "=" + entry.getValue() + "&";
-            }
-            return qs.substring(0, qs.length() - 1);
+            return instance.arguments.entrySet().stream()
+                .map(entry -> entry.getKey().toString() + "=" + entry.getValue())
+                .collect(Collectors.joining("&"));
         }
 
         /**
