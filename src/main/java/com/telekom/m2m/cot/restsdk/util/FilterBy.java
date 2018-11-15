@@ -32,14 +32,14 @@ public enum FilterBy {
     }
 
     @Nonnull
-    public static FilterBy getFilterBy(@Nonnull final String filter) {
+    public static FilterBy getFilterBy(@Nonnull final String filterKey) {
 
-      for(FilterBy b : values()) {
-          if(b.getFilterKey().equalsIgnoreCase(filter)) {
-              return b;
+      for(final FilterBy filter : values()) {
+          if(filter.getFilterKey().equalsIgnoreCase(filterKey)) {
+              return filter;
           }
       }
-      throw new IllegalArgumentException(String.format("Couldn't find an enum for requested filter: [%s]", filter));
+      throw new IllegalArgumentException(String.format("Couldn't find an enum for requested filter: [%s]", filterKey));
     }
 
 }
