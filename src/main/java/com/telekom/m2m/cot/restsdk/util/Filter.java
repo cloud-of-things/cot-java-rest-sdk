@@ -65,7 +65,6 @@ public class Filter {
          * @param id ID of the source ({@link com.telekom.m2m.cot.restsdk.inventory.ManagedObject}) to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder bySource(String id) {
             filters.put(FilterBy.BYSOURCE, id);
@@ -78,7 +77,6 @@ public class Filter {
          * @param type type to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byType(String type) {
             filters.put(FilterBy.BYTYPE, type);
@@ -92,7 +90,6 @@ public class Filter {
          * @param to   end of the date range (more in the future).
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byDate(Date from, Date to) {
             filters.put(FilterBy.BYDATEFROM, CotUtils.convertDateToTimestring(from));
@@ -106,7 +103,6 @@ public class Filter {
          * @param fragmentType to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byFragmentType(String fragmentType) {
             filters.put(FilterBy.BYFRAGMENTTYPE, fragmentType);
@@ -119,7 +115,6 @@ public class Filter {
          * @param deviceId to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byDeviceId(String deviceId) {
             filters.put(FilterBy.BYDEVICEID, deviceId);
@@ -132,7 +127,6 @@ public class Filter {
          * @param operationStatus to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byStatus(OperationStatus operationStatus) {
             filters.put(FilterBy.BYSTATUS, operationStatus.toString());
@@ -145,7 +139,6 @@ public class Filter {
          * @param text to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byText(String text) {
             filters.put(FilterBy.BYTEXT, text);
@@ -158,7 +151,6 @@ public class Filter {
          * @param listOfIds to build for (comma separated).
          * @return an appropriate build Object.
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byListOfIds(String listOfIds) {
             filters.put(FilterBy.BYLISTOFIDs, listOfIds);
@@ -172,7 +164,6 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.3.0
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byStatus(String status) {
             filters.put(FilterBy.BYSTATUS, status);
@@ -186,7 +177,6 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.3.1
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byAgentId(String agentId) {
             filters.put(FilterBy.BYAGENTID, agentId);
@@ -200,7 +190,6 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.6.0
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byUser(String user) {
             filters.put(FilterBy.BYUSER, user);
@@ -214,7 +203,6 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.6.0
          */
-        @Deprecated
         @Nonnull
         public FilterBuilder byApplication(String application) {
             filters.put(FilterBy.BYAPPLICATION, application);
