@@ -57,13 +57,20 @@ public class AlarmApiTest {
         Assert.assertNotNull(alarm.get("com_mycorp_MyProp"));
     }
 
+    @Test
+    public void deleteAlarmsWithoutFilterDoesNotThrowException() {
+        alarmApi.deleteAlarms(null);
+    }
+
     /**
      * @return A mocked Cloud of Things REST client.
      */
     @Nonnull
     private CloudOfThingsRestClient createClient() {
-        CloudOfThingsRestClient client = Mockito.mock(CloudOfThingsRestClient.class);
-        Mockito.when(client.getResponse(any(String.class), any(String.class), any(String.class))).thenReturn(ALARM_JSON_EXAMPLE);
+        final CloudOfThingsRestClient client = Mockito.mock(CloudOfThingsRestClient.class);
+        Mockito.doReturn(ALARM_JSON_EXAMPLE)
+            .when(client)
+            .getResponse(any(String.class), any(String.class), any(String.class));
         return client;
     }
 }
