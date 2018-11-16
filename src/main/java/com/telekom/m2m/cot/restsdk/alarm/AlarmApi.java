@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.util.*;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Use AlarmApi to work with Alarms.
@@ -114,10 +115,13 @@ public class AlarmApi {
      *
      * @param filters filters of Alarm attributes.
      */
-    public void deleteAlarms(@Nullable Filter.FilterBuilder filters) {
+    public void deleteAlarms(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.delete("", RELATIVE_API_URL+ "?" + filters.buildFilter() + "&x=");
+        final String filterParams = Optional.ofNullable(filters)
+            .map(filterBuilder -> filterBuilder.buildFilter() + "&")
+            .orElse("");
+        cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filterParams + "x=");
     }
 }
