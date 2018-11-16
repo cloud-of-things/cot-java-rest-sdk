@@ -41,8 +41,7 @@ public class AlarmApi {
      */
     public Alarm getAlarm(String alarmId) {
         String response = cloudOfThingsRestClient.getResponse(alarmId, RELATIVE_API_URL, CONTENT_TYPE);
-        Alarm alarm = new Alarm(gson.fromJson(response, ExtensibleObject.class));
-        return alarm;
+        return new Alarm(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
