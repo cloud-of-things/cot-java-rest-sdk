@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk.alarm;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.Filter;
 import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
@@ -60,6 +61,11 @@ public class AlarmApiTest {
     @Test
     public void deleteAlarmsWithoutFilterDoesNotThrowException() {
         alarmApi.deleteAlarms(null);
+    }
+
+    @Test
+    public void deleteAlarmsWithFilterDoesNotThrowException() {
+        alarmApi.deleteAlarms(Filter.build().bySource("test"));
     }
 
     /**
