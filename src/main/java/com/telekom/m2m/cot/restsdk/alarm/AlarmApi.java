@@ -122,6 +122,7 @@ public class AlarmApi {
         final String filterParams = Optional.ofNullable(filters)
             .map(filterBuilder -> filterBuilder.buildFilter() + "&")
             .orElse("");
+        // The x query parameter is a workaround. Without, it seems as if there are cases where deletion does not work.
         cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filterParams + "x=");
     }
 }
