@@ -14,16 +14,6 @@ import static org.mockito.Matchers.any;
  * Created by Patrick Steinert on 03.02.16.
  */
 public class AlarmApiTest {
-//    @Test(expectedExceptions = CotSdkException.class)
-//    public void testGetEventWithFailure() throws Exception {
-//        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
-//        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
-//        Mockito.when(platform.getEventApi()).thenReturn(new EventApi(rc));
-//        Mockito.doThrow(CotSdkException.class).when(rc).getResponse(any(String.class), any(String.class), any(String.class));
-//
-//        EventApi eventApi = platform.getEventApi();
-//        eventApi.getEvent("foo");
-//    }
 
     @Test
     public void testGetAlarm() throws Exception {
@@ -61,7 +51,5 @@ public class AlarmApiTest {
         Assert.assertEquals(alarm.getTime().compareTo(new Date(1315310607845L)), 0);
 
         Assert.assertNotNull(alarm.get("com_mycorp_MyProp"));
-        //Assert.assertEquals(alarm.getSource().getId(), "12345");
-
     }
 }
