@@ -35,13 +35,11 @@ public class AlarmApiTest {
                 "  }\n" +
                 "}";
 
-        CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
-        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
-        Mockito.when(platform.getAlarmApi()).thenReturn(new AlarmApi(rc));
-        Mockito.when(rc.getResponse(any(String.class), any(String.class), any(String.class))).thenReturn(alarmJsonExample);
+        CloudOfThingsRestClient client = Mockito.mock(CloudOfThingsRestClient.class);
+        Mockito.when(client.getResponse(any(String.class), any(String.class), any(String.class))).thenReturn(alarmJsonExample);
 
 
-        AlarmApi alarmApi = platform.getAlarmApi();
+        AlarmApi alarmApi = new AlarmApi(client);
         Alarm alarm = alarmApi.getAlarm("10");
 
         Assert.assertEquals(alarm.getId(), "10");
