@@ -1,9 +1,9 @@
 package com.telekom.m2m.cot.restsdk.alarm;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import org.mockito.Mockito;
 import org.testng.Assert;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
@@ -33,13 +33,19 @@ public class AlarmApiTest {
         "  }\n" +
         "}";
 
+    /**
+     * System under test.
+     */
+    private AlarmApi alarmApi;
+
+    @BeforeMethod
+    public void setup() {
+        CloudOfThingsRestClient client = createClient();
+        alarmApi = new AlarmApi(client);
+    }
+
     @Test
     public void testGetAlarm() {
-
-        CloudOfThingsRestClient client = createClient();
-
-
-        AlarmApi alarmApi = new AlarmApi(client);
         Alarm alarm = alarmApi.getAlarm("10");
 
         Assert.assertEquals(alarm.getId(), "10");
