@@ -1,6 +1,5 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import org.mockito.Mockito;
@@ -14,13 +13,11 @@ import static org.mockito.Matchers.any;
 public class MeasurementApiTest {
 
     @Test(expectedExceptions = CotSdkException.class)
-    public void testGetEventWithFailure() throws Exception {
+    public void testGetEventWithFailure() {
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
-        CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
-        Mockito.when(platform.getMeasurementApi()).thenReturn(new MeasurementApi(rc));
         Mockito.doThrow(CotSdkException.class).when(rc).getResponse(any(String.class), any(String.class), any(String.class));
 
-        MeasurementApi measurementApi = platform.getMeasurementApi();
+        MeasurementApi measurementApi = new MeasurementApi(rc);
         measurementApi.getMeasurement("1234");
     }
 
