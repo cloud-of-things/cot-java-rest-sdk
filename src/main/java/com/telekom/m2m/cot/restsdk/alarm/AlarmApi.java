@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.*;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
@@ -96,7 +97,7 @@ public class AlarmApi {
      * @return the found Alarms in a pageable collection.
      * @since 0.3.0
      */
-    public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
+    public AlarmCollection getAlarms(@Nullable Filter.FilterBuilder filters, int resultSize) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
@@ -113,7 +114,7 @@ public class AlarmApi {
      *
      * @param filters filters of Alarm attributes.
      */
-    public void deleteAlarms(Filter.FilterBuilder filters) {
+    public void deleteAlarms(@Nullable Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
