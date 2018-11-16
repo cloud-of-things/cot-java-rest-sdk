@@ -16,7 +16,7 @@ import static org.mockito.Matchers.any;
 public class AlarmApiTest {
 
     @Test
-    public void testGetAlarm() throws Exception {
+    public void testGetAlarm() {
 
         String alarmJsonExample = "{\n" +
                 "  \"id\" : \"10\",\n" +
