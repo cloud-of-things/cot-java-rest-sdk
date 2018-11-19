@@ -4,8 +4,10 @@ import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.*;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Use AlarmApi to work with Alarms.
@@ -39,8 +41,7 @@ public class AlarmApi {
      */
     public Alarm getAlarm(String alarmId) {
         String response = cloudOfThingsRestClient.getResponse(alarmId, RELATIVE_API_URL, CONTENT_TYPE);
-        Alarm alarm = new Alarm(gson.fromJson(response, ExtensibleObject.class));
-        return alarm;
+        return new Alarm(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
@@ -96,7 +97,7 @@ public class AlarmApi {
      * @return the found Alarms in a pageable collection.
      * @since 0.3.0
      */
-    public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
+    public AlarmCollection getAlarms(@Nullable Filter.FilterBuilder filters, int resultSize) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
@@ -113,10 +114,14 @@ public class AlarmApi {
      *
      * @param filters filters of Alarm attributes.
      */
-    public void deleteAlarms(Filter.FilterBuilder filters) {
+    public void deleteAlarms(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.delete("", RELATIVE_API_URL+ "?" + filters.buildFilter() + "&x=");
+        final String filterParams = Optional.ofNullable(filters)
+            .map(filterBuilder -> filterBuilder.buildFilter() + "&")
+            .orElse("");
+        // The x query parameter is a workaround. Without, it seems as if there are cases where deletion does not work.
+        cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filterParams + "x=");
     }
 }
