@@ -3,6 +3,9 @@ package com.telekom.m2m.cot.restsdk.inventory;
 import com.google.gson.*;
 import com.google.gson.reflect.TypeToken;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
+import com.telekom.m2m.cot.restsdk.realtime.Notification;
+import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 import com.telekom.m2m.cot.restsdk.util.*;
 
 import java.util.ArrayList;
@@ -16,9 +19,6 @@ import java.util.Objects;
  * Created by Patrick Steinert on 30.01.16.
  */
 public class InventoryApi {
-    private final CloudOfThingsRestClient cloudOfThingsRestClient;
-    protected Gson gson = GsonUtils.createGson();
-
     private static final String CONTENT_TYPE_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
     private static final String ACCEPT_MANAGEDOBJECT = "application/vnd.com.nsn.cumulocity.managedObject+json;charset=UTF-8;ver=0.9";
     private static final String CONTENT_TYPE_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
@@ -27,8 +27,15 @@ public class InventoryApi {
     private static final String SUPPORTED_MEASUREMENTS = "c8y_SupportedMeasurements";
     private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYTYPE, FilterBy.BYFRAGMENTTYPE, FilterBy.BYLISTOFIDs, FilterBy.BYTEXT, FilterBy.BYAGENTID);
 
+    protected Gson gson = GsonUtils.createGson();
+
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
+    private final CepConnector cepConnector;
+    private ArrayList<String> notifications = new ArrayList<>();
+
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        cepConnector = new CepConnector(cloudOfThingsRestClient, "cep/realtime");
     }
 
     /**
@@ -210,11 +217,77 @@ public class InventoryApi {
      * @param managedObjectId ID of the device for which supported measurements need to be retrieved
      */
     public ArrayList<String> getSupportedMeasurements(String managedObjectId) {
-        Objects.requireNonNull(managedObjectId);
-        String supportedMeasurementsApi = RELATIVE_API_URL + managedObjectId + "/supportedMeasurements";
-        String response = cloudOfThingsRestClient.getResponse(supportedMeasurementsApi);
-        JsonParser jsonParser = new JsonParser();
-        JsonArray responseJsonArray = jsonParser.parse(response).getAsJsonObject().getAsJsonArray(SUPPORTED_MEASUREMENTS);
-        return gson.fromJson(responseJsonArray, new TypeToken<List<String>>(){}.getType());
+        if (managedObjectIdIsValid(managedObjectId)) {
+            String supportedMeasurementsApi = RELATIVE_API_URL + managedObjectId + "/supportedMeasurements";
+            String response = cloudOfThingsRestClient.getResponse(supportedMeasurementsApi);
+            JsonParser jsonParser = new JsonParser();
+            JsonArray responseJsonArray = jsonParser.parse(response).getAsJsonObject().getAsJsonArray(SUPPORTED_MEASUREMENTS);
+            return gson.fromJson(responseJsonArray, new TypeToken<List<String>>() {}.getType());
+        }
+        return new ArrayList<>();
+    }
+
+    public void subscribeToMeasurementsNotifications(String deviceManagedObjectId) {
+        if (managedObjectIdIsValid(deviceManagedObjectId)) {
+            NotificationListener listener = new NotificationListener();
+            cepConnector.addListener(listener);
+            cepConnector.subscribe("/measurements/" + deviceManagedObjectId);
+            if (!cepConnector.isConnected()) {
+                cepConnector.connect();
+            }
+        }
+    }
+
+    public void unsubscribeFromMeasurementsNotifications(String deviceManagedObjectId) {
+        if (cepConnector.isConnected()) {
+            cepConnector.unsubscribe("/measurements/" + deviceManagedObjectId);
+        }
+    }
+
+    public void subscribeToManagedObjectNotifications(String managedObjectId) {
+        if (managedObjectIdIsValid(managedObjectId)) {
+            NotificationListener listener = new NotificationListener();
+            cepConnector.addListener(listener);
+            cepConnector.subscribe("/managedobjects/" + managedObjectId);
+            if (!cepConnector.isConnected()) {
+                cepConnector.connect();
+            }
+        }
+    }
+
+    public void unsubscribeFromManagedObjectNotifications(String managedObjectId) {
+        if (cepConnector.isConnected()) {
+            cepConnector.unsubscribe("/managedobjects/" + managedObjectId);
+        }
+    }
+
+    public ArrayList<String> getNotifications() {
+        return notifications;
+    }
+
+    private boolean managedObjectIdIsValid(String managedObjectId) {
+        if (managedObjectId == null || managedObjectId.contains("*")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private class NotificationListener implements SubscriptionListener {
+
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        @Override
+        public void onNotification(String channel, Notification notification) {
+            String notificationData = gson.toJson(notification.getData());
+            System.out.println("New notification on channel " + channel + ":\n");
+            System.out.println(notificationData);
+            notifications.add(notificationData);
+        }
+
+        @Override
+        public void onError(String channel, Throwable error) {
+            System.out.println("There was an error on channel " + channel + ": " + error);
+        }
     }
 }
