@@ -25,6 +25,7 @@ public class InventoryApi {
     private static final String ACCEPT_MANAGEDOBJECTREF = "application/vnd.com.nsn.cumulocity.managedObjectReference+json;charset=UTF-8;ver=0.9";
     private static final String RELATIVE_API_URL = "inventory/managedObjects/";
     private static final String SUPPORTED_MEASUREMENTS = "c8y_SupportedMeasurements";
+    private static final String BASE_QUERY_API_URL = "inventory/managedObjects?query=";
     private static final List<FilterBy> acceptedFilters = Arrays.asList(FilterBy.BYTYPE, FilterBy.BYFRAGMENTTYPE, FilterBy.BYLISTOFIDs, FilterBy.BYTEXT, FilterBy.BYAGENTID);
 
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
@@ -216,5 +217,22 @@ public class InventoryApi {
         JsonParser jsonParser = new JsonParser();
         JsonArray responseJsonArray = jsonParser.parse(response).getAsJsonObject().getAsJsonArray(SUPPORTED_MEASUREMENTS);
         return gson.fromJson(responseJsonArray, new TypeToken<List<String>>(){}.getType());
+    }
+
+    /**
+     * Retrieves Managed Objects by query.
+     *
+     * @param query query to be applied
+     * @param pageSize size of the results (Max. 2000)
+     * @return the found Managed Objects.
+     * @since 0.3.0
+     */
+    public ManagedObjectCollection getManagedObjectsByQuery(String query, int pageSize) {
+        return new ManagedObjectCollection(
+                cloudOfThingsRestClient,
+                BASE_QUERY_API_URL + query,
+                gson,
+                null,
+                pageSize);
     }
 }
