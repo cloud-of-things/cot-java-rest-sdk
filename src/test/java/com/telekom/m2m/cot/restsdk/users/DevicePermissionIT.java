@@ -34,7 +34,7 @@ public class DevicePermissionIT {
     private final UserApi userApi = ownOfThingsPlatform.getUserApi();
 
     // This has to be a tenant, for which the account from TestHelper has the necessary permissions!
-    // Be carefully by using of delete functionality to avoid a deletion of the "main" user configured in TestHelper.TEST_USERNAME
+    // Be careful when using deleting functionality in order to avoid a deletion of the "main" user configured in TestHelper.TEST_USERNAME
     private String tenant = TestHelper.TEST_TENANT;
 
     private List<Group> groupsToDelete = new ArrayList<>();
