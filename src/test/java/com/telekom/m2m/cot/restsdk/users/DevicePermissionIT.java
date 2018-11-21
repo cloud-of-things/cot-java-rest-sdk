@@ -50,13 +50,13 @@ public class DevicePermissionIT {
     public void testUserCanReadMeasurements() {
         // create own managed object having some measurements and attempt to read those for further comparision
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
-        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
+        List<Measurement> measurementCollection1 = readAndAssertMeasurements(ownOfThingsPlatform.getMeasurementApi(), 1);
 
         // create other user with permissions to read own managed objects measurements
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:READ");
 
         // attempt by other user to read own managed objects measurements
-        readAndAssertMeasurements(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi(), measurementCollection1.size(), measurementCollection1.get(0));
+        readAndAssertMeasurements(othersCloudOfThingsPlatform.getMeasurementApi(), measurementCollection1.size(), measurementCollection1.get(0));
     }
 
     @Test
@@ -71,7 +71,7 @@ public class DevicePermissionIT {
 
         // attempt by other user to read own managed objects measurements, expected to fail
         try {
-            readAndAssertMeasurements(testManagedObject, usersCloudOfThingsPlatform.getMeasurementApi(), -1);
+            readAndAssertMeasurements(usersCloudOfThingsPlatform.getMeasurementApi(), -1);
             fail("must not succeed to read measurements w/o access right");
         } catch (CotSdkException ex) {
             assertEquals(403, ex.getHttpStatus());
@@ -82,7 +82,7 @@ public class DevicePermissionIT {
     public void testUserCanCreateMeasurements() {
         // create own managed object having some measurements and attempt to read those for further comparision
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
-        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
+        List<Measurement> measurementCollection1 = readAndAssertMeasurements(ownOfThingsPlatform.getMeasurementApi(), 1);
 
         // create other user with permissions to write own managed objects measurements
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:ADMIN");
@@ -91,14 +91,14 @@ public class DevicePermissionIT {
         Measurement measurement = createMeasurement(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi());
 
         // as of today (running againt Cot9) get measurements succeeds but returns empty result if permission READ is not given, so we use tenant to check if creation succeeded
-        readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
+        readAndAssertMeasurements(ownOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
     }
 
     @Test
     public void testUserCanCreateAndReadMeasurements() {
         // create own managed object having some measurements and attempt to read those for further comparision
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
-        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
+        List<Measurement> measurementCollection1 = readAndAssertMeasurements(ownOfThingsPlatform.getMeasurementApi(), 1);
 
         // create other user with permissions to read and write own managed objects measurements
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:ADMIN", "MEASUREMENT:*:READ");
@@ -107,7 +107,7 @@ public class DevicePermissionIT {
         Measurement measurement = createMeasurement(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi());
 
         // attempt by other user to read own managed objects measurements
-        readAndAssertMeasurements(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
+        readAndAssertMeasurements(othersCloudOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
     }
 
     @Test
@@ -174,7 +174,7 @@ public class DevicePermissionIT {
         return measurementApi.createMeasurement(testMeasurement);
     }
 
-    private List<Measurement> readAndAssertMeasurements(ManagedObject managedObject, MeasurementApi measurementApi, int expectedSize, Measurement... expectedMeasurementsToContain) {
+    private List<Measurement> readAndAssertMeasurements(MeasurementApi measurementApi, int expectedSize, Measurement... expectedMeasurementsToContain) {
         List<Measurement> measurements = Arrays.asList(measurementApi.getMeasurements(Filter.build().byType(DEVICE_TYPE), Integer.MAX_VALUE).getMeasurements());
 
         assertEquals(measurements.size(), expectedSize);
