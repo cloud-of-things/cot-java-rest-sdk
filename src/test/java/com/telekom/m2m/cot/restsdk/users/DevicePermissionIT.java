@@ -28,7 +28,7 @@ public class DevicePermissionIT {
 
     private final CloudOfThingsPlatform ownOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
-    // A second instance of CloudOfThingsPlatform is needed because it represents the session of the other user accessing own device
+    // A second instance of CloudOfThingsPlatform is needed because it represents the session of the other user accessing own managed object
     private final CloudOfThingsPlatform othersCloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, USERNAME, PASSWORD);
 
     private final UserApi userApi = ownOfThingsPlatform.getUserApi();
@@ -48,22 +48,28 @@ public class DevicePermissionIT {
 
     @Test
     public void testUserCanReadMeasurements() {
+        // create own managed object having some measurements and attempt to read those for further comparision
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
         List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
 
+        // create other user with permissions to read own managed objects measurements
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:READ");
 
+        // attempt by other user to read own managed objects measurements
         readAndAssertMeasurements(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi(), measurementCollection1.size(), measurementCollection1.get(0));
     }
 
     @Test
     public void testUserMustNotReadMeasurements() {
+        // create own managed object having some measurements
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
 
+        // create other user without any permissions
         createUser();
 
         final CloudOfThingsPlatform usersCloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, USERNAME, PASSWORD);
 
+        // attempt by other user to read own managed objects measurements, expected to fail
         try {
             readAndAssertMeasurements(testManagedObject, usersCloudOfThingsPlatform.getMeasurementApi(), -1);
             fail("must not succeed to read measurements w/o access right");
@@ -74,11 +80,14 @@ public class DevicePermissionIT {
 
     @Test
     public void testUserCanCreateMeasurements() {
+        // create own managed object having some measurements and attempt to read those for further comparision
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
         List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
 
+        // create other user with permissions to write own managed objects measurements
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:ADMIN");
 
+        // attempt by other user to write own managed objects measurements
         Measurement measurement = createMeasurement(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi());
 
         // as of today (running againt Cot9) get measurements succeeds but returns empty result if permission READ is not given, so we use tenant to check if creation succeeded
@@ -87,25 +96,31 @@ public class DevicePermissionIT {
 
     @Test
     public void testUserCanCreateAndReadMeasurements() {
+        // create own managed object having some measurements and attempt to read those for further comparision
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
         List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
 
+        // create other user with permissions to read and write own managed objects measurements
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:ADMIN", "MEASUREMENT:*:READ");
 
+        // attempt by other user to write own managed objects measurements
         Measurement measurement = createMeasurement(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi());
+
+        // attempt by other user to read own managed objects measurements
         readAndAssertMeasurements(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
     }
 
     @Test
     public void testUserMustNotCreateMeasurements() {
+        // create own managed object having some measurements
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
 
+        // create other user with permissions only to read own managed objects measurements
         createUserWithPermissions(testManagedObject,"MEASUREMENT:*:READ");
 
-        final CloudOfThingsPlatform usersCloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, USERNAME, PASSWORD);
-
+        // attempt by other user to write own managed objects measurements, expected to fail
         try {
-            createMeasurement(testManagedObject, usersCloudOfThingsPlatform.getMeasurementApi());
+            createMeasurement(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi());
             fail("must not succeed to create measurements w/o access right");
         } catch (CotSdkException ex) {
             assertEquals(403, ex.getHttpStatus());
