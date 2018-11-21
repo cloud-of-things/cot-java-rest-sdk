@@ -26,8 +26,12 @@ public class DevicePermissionIT {
     private static final String DEVICE_ID = "fake_device_10111";
     private static final String DEVICE_TYPE = "fake_device_type_" + System.currentTimeMillis();
 
-    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private final UserApi userApi = cloudOfThingsPlatform.getUserApi();
+    private final CloudOfThingsPlatform ownOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
+    // A second instance of CloudOfThingsPlatform is needed because it represents the session of the other user accessing own device
+    private final CloudOfThingsPlatform othersCloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, USERNAME, PASSWORD);
+
+    private final UserApi userApi = ownOfThingsPlatform.getUserApi();
 
     // This has to be a tenant, for which the account from TestHelper has the necessary permissions!
     // Be carefully by using of delete functionality to avoid a deletion of the "main" user configured in TestHelper.TEST_USERNAME
@@ -45,13 +49,11 @@ public class DevicePermissionIT {
     @Test
     public void testUserCanReadMeasurements() {
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
-        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, cloudOfThingsPlatform.getMeasurementApi(), 1);
+        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
 
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:READ");
 
-        final CloudOfThingsPlatform usersCloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, USERNAME, PASSWORD);
-
-        readAndAssertMeasurements(testManagedObject, usersCloudOfThingsPlatform.getMeasurementApi(), measurementCollection1.size(), measurementCollection1.get(0));
+        readAndAssertMeasurements(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi(), measurementCollection1.size(), measurementCollection1.get(0));
     }
 
     @Test
@@ -73,29 +75,25 @@ public class DevicePermissionIT {
     @Test
     public void testUserCanCreateMeasurements() {
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
-        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, cloudOfThingsPlatform.getMeasurementApi(), 1);
+        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
 
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:ADMIN");
 
-        final CloudOfThingsPlatform usersCloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, USERNAME, PASSWORD);
-
-        Measurement measurement = createMeasurement(testManagedObject, usersCloudOfThingsPlatform.getMeasurementApi());
+        Measurement measurement = createMeasurement(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi());
 
         // as of today (running againt Cot9) get measurements succeeds but returns empty result if permission READ is not given, so we use tenant to check if creation succeeded
-        readAndAssertMeasurements(testManagedObject, cloudOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
+        readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
     }
 
     @Test
     public void testUserCanCreateAndReadMeasurements() {
         ManagedObject testManagedObject = createManagedObjectWithMeasurements();
-        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, cloudOfThingsPlatform.getMeasurementApi(), 1);
+        List<Measurement> measurementCollection1 = readAndAssertMeasurements(testManagedObject, ownOfThingsPlatform.getMeasurementApi(), 1);
 
         createUserWithPermissions(testManagedObject, "MEASUREMENT:*:ADMIN", "MEASUREMENT:*:READ");
 
-        final CloudOfThingsPlatform usersCloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, USERNAME, PASSWORD);
-
-        Measurement measurement = createMeasurement(testManagedObject, usersCloudOfThingsPlatform.getMeasurementApi());
-        readAndAssertMeasurements(testManagedObject, usersCloudOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
+        Measurement measurement = createMeasurement(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi());
+        readAndAssertMeasurements(testManagedObject, othersCloudOfThingsPlatform.getMeasurementApi(), 2, measurement, measurementCollection1.get(0));
     }
 
     @Test
@@ -115,10 +113,10 @@ public class DevicePermissionIT {
     }
 
     private ManagedObject createManagedObjectWithMeasurements() {
-        ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cloudOfThingsPlatform, DEVICE_ID);
+        ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(ownOfThingsPlatform, DEVICE_ID);
         managedObjectsToDelete.add(testManagedObject);
 
-        createMeasurement(testManagedObject, cloudOfThingsPlatform.getMeasurementApi());
+        createMeasurement(testManagedObject, ownOfThingsPlatform.getMeasurementApi());
 
         return testManagedObject;
     }
@@ -196,7 +194,7 @@ public class DevicePermissionIT {
         for (ManagedObject managedObject : managedObjectsToDelete) {
             try {
                 if (managedObject.getId() != null) {
-                    cloudOfThingsPlatform.getInventoryApi().delete(managedObject.getId());
+                    ownOfThingsPlatform.getInventoryApi().delete(managedObject.getId());
                 }
             } catch (CotSdkException ex) {
                 // This exception is ok, because then the test method managed to delete its own group (should be the norm):
