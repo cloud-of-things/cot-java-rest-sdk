@@ -179,7 +179,8 @@ public class MeasurementApi {
         }
     }
 
-    public List<String> getNotifications(String managedObjectId) {
+    // execution of this method is restricted to be performed by only one thread
+    public synchronized List<String> pullNotifications(String managedObjectId) {
         List<String> notificationsForManagedObject = notifications.get(managedObjectId);
         notifications.remove(managedObjectId);
         return notificationsForManagedObject;

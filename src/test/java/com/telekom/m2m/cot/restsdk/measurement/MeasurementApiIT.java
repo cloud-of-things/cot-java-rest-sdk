@@ -99,7 +99,7 @@ public class MeasurementApiIT {
 
         Thread.sleep(1000);
 
-        List<String> notifications = measurementApi.getNotifications(testManagedObject.getId());
+        List<String> notifications = measurementApi.pullNotifications(testManagedObject.getId());
         assertNotNull(notifications);
         assertEquals(notifications.size(), 1, "It should be exactly one notification returned");
 

@@ -245,7 +245,7 @@ public class InventoryApiExtendedIT {
 
         Thread.sleep(1000);
 
-        List<String> notifications = inventoryApi.getNotifications(managedObject.getId());
+        List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
         assertNotNull(notifications);
         assertTrue(notifications.size() > 0);
 
