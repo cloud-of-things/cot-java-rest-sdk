@@ -231,27 +231,6 @@ public class InventoryApiExtendedIT {
         assertEquals(supportedMeasurementsFromCloud, supportedMeasurements);
     }
 
-
-    @Test
-    public void testMeasurementsNotifications() throws InterruptedException {
-        ManagedObject managedObject = createManagedObjectInCot("device");
-        managedObjectsToDelete.add(managedObject);
-
-        inventoryApi.subscribeToMeasurementsNotifications(managedObject.getId());
-
-        createMeasurement(managedObject);
-        Thread.sleep(1000);
-
-        ArrayList<String> notifications = inventoryApi.getNotifications();
-        assertTrue(notifications.size() > 0);
-        String lastNotification = notifications.get(notifications.size()-1);
-
-        assertTrue(lastNotification.contains("\"realtimeAction\": \"CREATE\""));
-        assertTrue(lastNotification.contains("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor"));
-
-        inventoryApi.unsubscribeFromMeasurementsNotifications(managedObject.getId());
-    }
-
     @Test
     public void testManagedObjectNotifications() throws InterruptedException {
         ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
@@ -266,8 +245,10 @@ public class InventoryApiExtendedIT {
 
         Thread.sleep(1000);
 
-        ArrayList<String> notifications = inventoryApi.getNotifications();
+        List<String> notifications = inventoryApi.getNotifications(managedObject.getId());
+        assertNotNull(notifications);
         assertTrue(notifications.size() > 0);
+
         String lastNotification = notifications.get(notifications.size()-1);
 
         assertTrue(lastNotification.contains("\"realtimeAction\": \"UPDATE\""));

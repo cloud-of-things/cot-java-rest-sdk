@@ -1,15 +1,13 @@
 package com.telekom.m2m.cot.restsdk.measurement;
 
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import com.google.gson.*;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
+import com.telekom.m2m.cot.restsdk.realtime.Notification;
+import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 import com.telekom.m2m.cot.restsdk.util.*;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * The API object to operate with Measurements in the platform.
@@ -30,6 +28,8 @@ public class MeasurementApi {
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private Gson gson = GsonUtils.createGson();
+    private final CepConnector cepConnector;
+    private HashMap<String, List<String>> notifications = new HashMap<>();
 
     /**
      * Internal Constructor.
@@ -38,6 +38,7 @@ public class MeasurementApi {
      */
     public MeasurementApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
+        cepConnector = new CepConnector(cloudOfThingsRestClient, "cep/realtime");
     }
 
 
@@ -156,4 +157,66 @@ public class MeasurementApi {
         return jsonParser.parse(gson.toJson(measurements)).getAsJsonArray();
     }
 
+    public void subscribeToMeasurementsNotifications(String deviceManagedObjectId) {
+        if (managedObjectIdIsValid(deviceManagedObjectId)) {
+            NotificationListener listener = new NotificationListener();
+            cepConnector.addListener(listener);
+            cepConnector.subscribe("/measurements/" + deviceManagedObjectId);
+            if (!cepConnector.isConnected()) {
+                cepConnector.connect();
+            }
+        }
+    }
+
+    public void unsubscribeFromMeasurementsNotifications(String deviceManagedObjectId) {
+        if (cepConnector.isConnected()) {
+            cepConnector.unsubscribe("/measurements/" + deviceManagedObjectId);
+        }
+    }
+
+    public List<String> getNotifications(String managedObjectId) {
+        List<String> notificationsForManagedObject = notifications.get(managedObjectId);
+        notifications.remove(managedObjectId);
+        return notificationsForManagedObject;
+    }
+
+    private boolean managedObjectIdIsValid(String managedObjectId) {
+        if (managedObjectId == null || managedObjectId.contains("*")) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+    private class NotificationListener implements SubscriptionListener {
+
+        final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+
+        @Override
+        public void onNotification(String channel, Notification notification) {
+            String notificationData = gson.toJson(notification.getData());
+            System.out.println("New notification on channel " + channel + ":\n");
+            System.out.println(notificationData);
+            addNotificationToHashMap(channel, notificationData);
+        }
+
+        @Override
+        public void onError(String channel, Throwable error) {
+            System.out.println("There was an error on channel " + channel + ": " + error);
+        }
+    }
+
+    private synchronized void addNotificationToHashMap(String channel, String notificationData) {
+        String managedObjectId = channel.replace("/measurements/", "");
+        List<String> notificationsList = notifications.get(managedObjectId);
+
+        if(notificationsList == null) {
+            notificationsList = new ArrayList<>();
+            notificationsList.add(notificationData);
+            notifications.put(managedObjectId, notificationsList);
+        } else {
+            notifications.get(managedObjectId).add(notificationData);
+        }
+    }
 }

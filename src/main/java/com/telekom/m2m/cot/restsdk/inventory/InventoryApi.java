@@ -8,10 +8,7 @@ import com.telekom.m2m.cot.restsdk.realtime.Notification;
 import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 import com.telekom.m2m.cot.restsdk.util.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * Represents the API to retrieve and manipulate ManagedObjects.
@@ -31,7 +28,7 @@ public class InventoryApi {
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private final CepConnector cepConnector;
-    private ArrayList<String> notifications = new ArrayList<>();
+    private HashMap<String, List<String>> notifications = new HashMap<>();
 
     public InventoryApi(CloudOfThingsRestClient cloudOfThingsRestClient) {
         this.cloudOfThingsRestClient = cloudOfThingsRestClient;
@@ -227,23 +224,6 @@ public class InventoryApi {
         return new ArrayList<>();
     }
 
-    public void subscribeToMeasurementsNotifications(String deviceManagedObjectId) {
-        if (managedObjectIdIsValid(deviceManagedObjectId)) {
-            NotificationListener listener = new NotificationListener();
-            cepConnector.addListener(listener);
-            cepConnector.subscribe("/measurements/" + deviceManagedObjectId);
-            if (!cepConnector.isConnected()) {
-                cepConnector.connect();
-            }
-        }
-    }
-
-    public void unsubscribeFromMeasurementsNotifications(String deviceManagedObjectId) {
-        if (cepConnector.isConnected()) {
-            cepConnector.unsubscribe("/measurements/" + deviceManagedObjectId);
-        }
-    }
-
     public void subscribeToManagedObjectNotifications(String managedObjectId) {
         if (managedObjectIdIsValid(managedObjectId)) {
             NotificationListener listener = new NotificationListener();
@@ -261,8 +241,10 @@ public class InventoryApi {
         }
     }
 
-    public ArrayList<String> getNotifications() {
-        return notifications;
+    public List<String> getNotifications(String managedObjectId) {
+        List<String> notificationsForManagedObject = notifications.get(managedObjectId);
+        notifications.remove(managedObjectId);
+        return notificationsForManagedObject;
     }
 
     private boolean managedObjectIdIsValid(String managedObjectId) {
@@ -282,12 +264,25 @@ public class InventoryApi {
             String notificationData = gson.toJson(notification.getData());
             System.out.println("New notification on channel " + channel + ":\n");
             System.out.println(notificationData);
-            notifications.add(notificationData);
+            addNotificationToHashMap(channel, notificationData);
         }
 
         @Override
         public void onError(String channel, Throwable error) {
             System.out.println("There was an error on channel " + channel + ": " + error);
+        }
+    }
+
+    private synchronized void addNotificationToHashMap(String channel, String notificationData) {
+        String managedObjectId = channel.replace("/managedobjects/", "");
+        List<String> notificationsList = notifications.get(managedObjectId);
+
+        if(notificationsList == null) {
+            notificationsList = new ArrayList<>();
+            notificationsList.add(notificationData);
+            notifications.put(managedObjectId, notificationsList);
+        } else {
+            notifications.get(managedObjectId).add(notificationData);
         }
     }
 }
