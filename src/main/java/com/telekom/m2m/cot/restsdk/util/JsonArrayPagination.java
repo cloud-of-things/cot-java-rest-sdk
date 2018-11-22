@@ -109,8 +109,9 @@ public class JsonArrayPagination {
 
     @Nonnull
     private JsonObject getJsonObject(final int page) {
+        char delimiter = relativeApiUrl.contains("?") ? '&' : '?';
         String url = relativeApiUrl +
-                "?currentPage=" + page +
+                delimiter + "currentPage=" + page +
                 "&pageSize=" + pageSize;
         //hint: it is possible to change the sort order by adding query parameter "revert=true"
 
