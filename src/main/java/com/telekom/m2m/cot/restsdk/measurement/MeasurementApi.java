@@ -7,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.realtime.Notification;
 import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 import com.telekom.m2m.cot.restsdk.util.*;
 
+import javax.annotation.Nullable;
 import java.util.*;
 
 /**
@@ -139,11 +140,15 @@ public class MeasurementApi {
      *
      * @param filters filters of measurement attributes.
      */
-    public void deleteMeasurements(Filter.FilterBuilder filters) {
+    public void deleteMeasurements(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.delete("", MEASUREMENTS_API + "?" + filters.buildFilter() + "&x=");
+        final String filterParams = Optional.ofNullable(filters)
+            .map(filterBuilder -> filterBuilder.buildFilter() + "&")
+            .orElse("");
+        // The x query parameter is a workaround. Without, it seems as if there are cases where deletion does not work.
+        cloudOfThingsRestClient.delete("", MEASUREMENTS_API + "?" + filterParams + "x=");
     }
 
     private JsonObject createJsonObject(final List<Measurement> measurements) {

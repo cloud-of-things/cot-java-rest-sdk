@@ -200,8 +200,14 @@ public class UserApiIT {
         GroupReference groupReference2 = groupReferenceArray[1];
         Group groupRetrievedFromCot1 = groupReference1.getGroup();
         Group groupRetrievedFromCot2 = groupReference2.getGroup();
-        assertEquals(groupRetrievedFromCot1.getId(), returnedGroup1.getId(), "The group ID that the user is added to in the cloud should match to the group that is created locally.");
-        assertEquals(groupRetrievedFromCot2.getId(), returnedGroup2.getId(), "The group ID that the user is added to in the cloud should match to the group that is created locally.");
+
+        // Order of the group IDs that are returned from the CLoud of Things does not seem to be guaranteed.
+        // We check that all expected groups are referenced, regardless of the order.
+        assertEqualsNoOrder(
+            new Long[]{groupRetrievedFromCot1.getId(), groupRetrievedFromCot2.getId()},
+            new Long[]{returnedGroup1.getId(),returnedGroup2.getId()},
+            "The group IDs that the user is added to in the cloud should match to the group IDs that are created locally."
+        );
     }
 
     @Test
