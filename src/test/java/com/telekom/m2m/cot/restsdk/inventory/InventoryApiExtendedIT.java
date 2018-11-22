@@ -188,9 +188,10 @@ public class InventoryApiExtendedIT {
         }
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test
     public void testSupportedMeasurementsNullDeviceId() {
-        inventoryApi.getSupportedMeasurements(null);
+        ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(null);
+        assertTrue(supportedMeasurements.isEmpty());
     }
 
     @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*inventory/Not Found.*")
@@ -220,14 +221,7 @@ public class InventoryApiExtendedIT {
         ManagedObject managedObject = createManagedObjectInCot("device");
         managedObjectsToDelete.add(managedObject);
 
-        SampleTemperatureSensor sampleTemperatureSensor = new SampleTemperatureSensor();
-        sampleTemperatureSensor.setTemperature(100);
-        Measurement testMeasurement = new Measurement();
-        testMeasurement.setSource(managedObject);
-        testMeasurement.setTime(new Date());
-        testMeasurement.setType("Temperature");
-        testMeasurement.set(sampleTemperatureSensor);
-        measurementApi.createMeasurement(testMeasurement);
+        createMeasurement(managedObject);
 
         ArrayList<String> supportedMeasurements = new ArrayList<>();
         supportedMeasurements.add("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor");
@@ -237,10 +231,47 @@ public class InventoryApiExtendedIT {
         assertEquals(supportedMeasurementsFromCloud, supportedMeasurements);
     }
 
+    @Test
+    public void testManagedObjectNotifications() throws InterruptedException {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(managedObject);
+        inventoryApi.subscribeToManagedObjectNotifications(managedObject.getId());
+
+        Thread.sleep(1000);
+
+        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        retrievedMo.setName("some_other_name");
+        inventoryApi.update(retrievedMo);
+
+        Thread.sleep(1000);
+
+        List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
+        assertNotNull(notifications);
+        assertTrue(notifications.size() > 0);
+
+        String lastNotification = notifications.get(notifications.size()-1);
+
+        assertTrue(lastNotification.contains("\"realtimeAction\": \"UPDATE\""));
+        assertTrue(lastNotification.contains("\"name\": \"some_other_name\""));
+
+        inventoryApi.unsubscribeFromManagedObjectNotifications(managedObject.getId());
+    }
+
     private ManagedObject createManagedObjectInCot(String name) {
         ManagedObject mo = new ManagedObject();
         mo.setName(name);
 
         return inventoryApi.create(mo);
+    }
+
+    private void createMeasurement(ManagedObject managedObject) {
+        SampleTemperatureSensor sampleTemperatureSensor = new SampleTemperatureSensor();
+        sampleTemperatureSensor.setTemperature(100);
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(managedObject);
+        testMeasurement.setTime(new Date());
+        testMeasurement.setType("Temperature");
+        testMeasurement.set(sampleTemperatureSensor);
+        measurementApi.createMeasurement(testMeasurement);
     }
 }
