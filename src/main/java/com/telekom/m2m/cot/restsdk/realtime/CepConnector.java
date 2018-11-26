@@ -174,7 +174,7 @@ public class CepConnector implements Runnable {
 
     /**
      * Set the read timeout for the polling connect request.
-     * Default is {@value DEFAULT_READ_TIMEOUT_MILLIS}.
+     * Default is {@link #DEFAULT_READ_TIMEOUT_MILLIS}.
      *
      * @param timeout the timeout in milliseconds
      */
@@ -193,7 +193,7 @@ public class CepConnector implements Runnable {
 
     /**
      * Set the time that the polling thread waits before it reconnects, after receiving a response.
-     * Default is {@value DEFAULT_RECONNECT_INTERVAL_MILLIS}.
+     * Default is {@link #DEFAULT_RECONNECT_INTERVAL_MILLIS}.
      *
      * @param interval the waiting interval in milliseconds
      */

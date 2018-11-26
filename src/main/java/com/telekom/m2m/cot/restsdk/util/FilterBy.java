@@ -1,8 +1,10 @@
 package com.telekom.m2m.cot.restsdk.util;
 
+import javax.annotation.Nonnull;
+
 public enum FilterBy {
     /**
-     * perrmitted filters from all apis
+     * permitted filters from all apis
      */
     BYSOURCE ("source"),
     BYSTATUS ("status"),
@@ -12,29 +14,32 @@ public enum FilterBy {
     BYDATETO ("dateTo"),
     BYFRAGMENTTYPE ("fragmentType"),
     BYDEVICEID ("deviceId"),
-    BYTEXT ("Text"),
+    BYTEXT ("text"),
     BYLISTOFIDs ("ids"),
-    BYUSER ("User"),
+    BYUSER ("user"),
     BYAPPLICATION ("application");
 
+    @Nonnull
     private String filterKey;
-    FilterBy(String filterKey) {
+
+    FilterBy(@Nonnull final String filterKey) {
         this.filterKey = filterKey;
     }
 
+    @Nonnull
     public String getFilterKey() {
         return filterKey;
     }
 
-    public static FilterBy getFilterBy(String filter) {
+    @Nonnull
+    public static FilterBy getFilterBy(@Nonnull final String filterKey) {
 
-      for(FilterBy b : values()) {
-          if(b.getFilterKey().equalsIgnoreCase(filter)) {
-              return b;
+      for(final FilterBy filter : values()) {
+          if(filter.getFilterKey().equalsIgnoreCase(filterKey)) {
+              return filter;
           }
       }
-      throw new IllegalArgumentException(String.format("Couldn't find an enum for requested filter: [%s]", filter));
-
+      throw new IllegalArgumentException(String.format("Couldn't find an enum for requested filter: [%s]", filterKey));
     }
 
 }
