@@ -607,6 +607,9 @@ public class CloudOfThingsRestClient {
 
 
     public void delete(String id, String api) {
+        if(id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Parameter 'id' cannot be null or empty.");
+        }
         Request request = new Request.Builder()
                 .addHeader("Authorization", "Basic " + encodedAuthString)
                 .url(host + "/" + trimSlashes(api) + "/" + id)
