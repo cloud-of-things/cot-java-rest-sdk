@@ -113,15 +113,15 @@ public class AlarmApi {
      * Deletes a collection of Alarms by criteria.
      *
      * @param filters filters of Alarm attributes.
+     *                Pass null or empty FilterBuilder if all alarms should be deleted.
      */
     public void deleteAlarms(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
         final String filterParams = Optional.ofNullable(filters)
-            .map(filterBuilder -> filterBuilder.buildFilter() + "&")
+            .map(filterBuilder -> filterBuilder.buildFilter())
             .orElse("");
-        // The x query parameter is a workaround. Without, it seems as if there are cases where deletion does not work.
-        cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filterParams + "x=");
+        cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_API_URL);
     }
 }

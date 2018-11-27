@@ -139,16 +139,16 @@ public class MeasurementApi {
      * Deletes a collection of Measurements by criteria.
      *
      * @param filters filters of measurement attributes.
+     *                Pass null or empty FilterBuilder if all measurements should be deleted.
      */
     public void deleteMeasurements(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
         final String filterParams = Optional.ofNullable(filters)
-            .map(filterBuilder -> filterBuilder.buildFilter() + "&")
+            .map(filterBuilder -> filterBuilder.buildFilter())
             .orElse("");
-        // The x query parameter is a workaround. Without, it seems as if there are cases where deletion does not work.
-        cloudOfThingsRestClient.delete("", MEASUREMENTS_API + "?" + filterParams + "x=");
+        cloudOfThingsRestClient.deleteBy(filterParams, MEASUREMENTS_API);
     }
 
     private JsonObject createJsonObject(final List<Measurement> measurements) {

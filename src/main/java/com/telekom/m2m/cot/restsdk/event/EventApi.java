@@ -7,8 +7,10 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Use the Event to work with Events.
@@ -108,11 +110,15 @@ public class EventApi {
      * Deletes a collection of Events by criteria.
      *
      * @param filters filters of Event attributes.
+     *                Pass null or empty FilterBuilder if all events should be deleted.
      */
-    public void deleteEvents(Filter.FilterBuilder filters) {
+    public void deleteEvents(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filters.buildFilter() + "&x=");
+        final String filterParams = Optional.ofNullable(filters)
+                .map(filterBuilder -> filterBuilder.buildFilter())
+                .orElse("");
+        cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_API_URL);
     }
 }
