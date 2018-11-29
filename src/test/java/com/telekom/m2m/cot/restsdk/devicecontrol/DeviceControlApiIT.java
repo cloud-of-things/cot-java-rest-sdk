@@ -11,6 +11,7 @@ import com.telekom.m2m.cot.restsdk.realtime.Notification;
 import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import org.junit.Ignore;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -273,6 +274,21 @@ public class DeviceControlApiIT {
 
         assertTrue(notedOperations.get(0).contains("first_operation_attribute"));
         assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
+    }
+
+    @Ignore
+    @Test
+    public void testInjectionWithQuotes(){
+        Operation operation = createOperation("name");
+        Operation createdOperation = deviceControlApi.create(operation);
+
+        createdOperation.setStatus(OperationStatus.FAILED);
+        createdOperation.setFailureReason("\"HAHAHA!!!\"");
+        //createdOperation.setFailureReason("AN ERROR HAS OCCURED");
+
+       Operation testOperation = deviceControlApi.update(createdOperation);
+
+       System.out.println(testOperation);
     }
 
     private ManagedObject createDeviceGroup() {
