@@ -278,17 +278,16 @@ public class DeviceControlApiIT {
 
     @Ignore
     @Test
-    public void testInjectionWithQuotes(){
+    public void testInjectionWithQuotes() {
         Operation operation = createOperation("name");
         Operation createdOperation = deviceControlApi.create(operation);
 
         createdOperation.setStatus(OperationStatus.FAILED);
-        createdOperation.setFailureReason("\"HAHAHA!!!\"");
-        //createdOperation.setFailureReason("AN ERROR HAS OCCURED");
+        createdOperation.setFailureReason("\"badInjection\"");
 
-       Operation testOperation = deviceControlApi.update(createdOperation);
+        Operation testOperation = deviceControlApi.update(createdOperation);
 
-       System.out.println(testOperation);
+        System.out.println(testOperation);
     }
 
     private ManagedObject createDeviceGroup() {
