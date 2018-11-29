@@ -276,14 +276,14 @@ public class DeviceControlApiIT {
         assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
     }
 
-    @Ignore
     @Test
     public void testInjectionWithQuotes() {
         Operation operation = createOperation("name");
         Operation createdOperation = deviceControlApi.create(operation);
 
         createdOperation.setStatus(OperationStatus.FAILED);
-        createdOperation.setFailureReason("\"badInjection\"");
+        createdOperation.setFailureReason("\"AN ERROR HAS OCCURED\"");
+
 
         Operation testOperation = deviceControlApi.update(createdOperation);
 
