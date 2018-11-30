@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * This class represents a collection of {@link Module}s.
@@ -12,7 +12,7 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  * Created by Ozan Arslan on 14.08.2017.
  *
  */
-public class ModuleCollection extends JsonArrayPagination {
+public class ModuleCollection extends IterableObjectPagination<Module> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.cepModuleCollection+json;ver=0.9";
 
@@ -27,11 +27,21 @@ public class ModuleCollection extends JsonArrayPagination {
      * @param gson                    the necessary json De-/serializer.
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      */
-    ModuleCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-                     final String relativeApiUrl,
-                     final Gson gson,
-                     final Filter.FilterBuilder filterBuilder) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME, filterBuilder);
+    ModuleCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder
+    ) {
+        super(
+            moduleJson -> gson.fromJson(moduleJson, Module.class),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder
+        );
     }
 
     /**
@@ -45,7 +55,7 @@ public class ModuleCollection extends JsonArrayPagination {
         if (jsonModules != null) {
             final Module[] arrayOfModules = new Module[jsonModules.size()];
             for (int i = 0; i < arrayOfModules.length; i++) {
-                arrayOfModules[i] = gson.fromJson(jsonModules.get(i), Module.class);
+                arrayOfModules[i] = objectMapper.apply(jsonModules.get(i));
             }
             return arrayOfModules;
         } else {

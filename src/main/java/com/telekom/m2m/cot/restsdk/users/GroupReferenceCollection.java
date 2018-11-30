@@ -6,13 +6,13 @@ import com.google.gson.JsonElement;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * The class that defines the methods on a collection of group references.
  * Created by Ozan Arslan on 27.07.2017
  */
-public class GroupReferenceCollection extends JsonArrayPagination {
+public class GroupReferenceCollection extends IterableObjectPagination<GroupReference> {
 
     private static final String COLLECTION_CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.groupReferenceCollection+json;ver=0.9";
     private static final String COLLECTION_ELEMENT_NAME = "references";
@@ -29,10 +29,21 @@ public class GroupReferenceCollection extends JsonArrayPagination {
      * @param filterBuilder
      *            the build criteria or null if all items should be retrieved.
      */
-    GroupReferenceCollection(final CloudOfThingsRestClient cloudOfThingsRestClient, final String relativeApiUrl,
-            final Gson gson, final Filter.FilterBuilder filterBuilder) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, COLLECTION_CONTENT_TYPE, COLLECTION_ELEMENT_NAME,
-                filterBuilder);
+    GroupReferenceCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder
+    ) {
+        super(
+            groupReferenceJson -> new GroupReference(gson.fromJson(groupReferenceJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            COLLECTION_CONTENT_TYPE,
+            COLLECTION_ELEMENT_NAME,
+            filterBuilder
+        );
     }
 
     /**
@@ -46,9 +57,8 @@ public class GroupReferenceCollection extends JsonArrayPagination {
         if (jsonGroupReferences != null) {
             final GroupReference[] arrayOfGroupReferences = new GroupReference[jsonGroupReferences.size()];
             for (int i = 0; i < jsonGroupReferences.size(); i++) {
-                JsonElement jsonGroup = jsonGroupReferences.get(i).getAsJsonObject();
-                final GroupReference groupReference = new GroupReference(
-                        gson.fromJson(jsonGroup, ExtensibleObject.class));
+                JsonElement jsonGroup = jsonGroupReferences.get(i);
+                final GroupReference groupReference = objectMapper.apply(jsonGroup);
                 arrayOfGroupReferences[i] = groupReference;
             }
             return arrayOfGroupReferences;

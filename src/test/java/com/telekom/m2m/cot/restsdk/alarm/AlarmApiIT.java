@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class AlarmApiIT {
 
-    CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeClass
@@ -44,7 +44,7 @@ public class AlarmApiIT {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
         Alarm createdAlarm = alarmApi.create(alarm);
-        Assert.assertNotNull("Should now have an Id", createdAlarm.getId());
+        Assert.assertNotNull(createdAlarm.getId(), "Should now have an Id");
     }
 
     @Test
@@ -63,7 +63,7 @@ public class AlarmApiIT {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
         Alarm createdAlarm = alarmApi.create(alarm);
-        Assert.assertNotNull("Should now have an Id", createdAlarm.getId());
+        Assert.assertNotNull(createdAlarm.getId(), "Should now have an Id");
 
         Alarm retrievedAlarm = alarmApi.getAlarm(createdAlarm.getId());
         Assert.assertEquals(retrievedAlarm.getId(), createdAlarm.getId());
@@ -91,7 +91,7 @@ public class AlarmApiIT {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
         Alarm createdAlarm = alarmApi.create(alarm);
-        Assert.assertNotNull("Should now have an Id", createdAlarm.getId());
+        Assert.assertNotNull(createdAlarm.getId(), "Should now have an Id");
 
         Alarm retrievedAlarm = alarmApi.getAlarm(createdAlarm.getId());
         Assert.assertEquals(retrievedAlarm.getId(), createdAlarm.getId());

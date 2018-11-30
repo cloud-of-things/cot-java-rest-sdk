@@ -1,0 +1,9 @@
+{
+  "operations": [],
+  "statistics": {
+    "currentPage": 1,
+    "pageSize": 1,
+    "totalPages": 0
+  },
+  "self": "https://mytenant.int2-ram.m2m.telekom.com/devicecontrol/operations?pageSize=1&currentPage=1"
+}

@@ -7,7 +7,7 @@ import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
-import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
+import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
 
 /**
  * Represents a pageable BulkOperation collection.
@@ -18,7 +18,7 @@ import com.telekom.m2m.cot.restsdk.util.JsonArrayPagination;
  * @since 0.6.0
  * Created by Andreas Dyck on 04.09.17.
  */
-public class BulkOperationCollection extends JsonArrayPagination {
+public class BulkOperationCollection extends IterableObjectPagination<BulkOperation> {
 
     private static final String CONTENT_TYPE_BULK_OPERATION_COLLECTION = "application/vnd.com.nsn.cumulocity.bulkOperationCollection+json;charset=UTF-8;ver=0.9";
     private static final String BULK_OPERATION_COLLECTION_ELEMENT_NAME = "bulkOperations";
@@ -33,12 +33,23 @@ public class BulkOperationCollection extends JsonArrayPagination {
      * @param filterBuilder           the build criteria or null if all items should be retrieved.
      * @param pageSize                max number of retrieved elements per page.
      */
-    BulkOperationCollection(final CloudOfThingsRestClient cloudOfThingsRestClient,
-                            final String relativeApiUrl,
-                            final Gson gson,
-                            final Filter.FilterBuilder filterBuilder,
-                            final int pageSize) {
-        super(cloudOfThingsRestClient, relativeApiUrl, gson, CONTENT_TYPE_BULK_OPERATION_COLLECTION, BULK_OPERATION_COLLECTION_ELEMENT_NAME, filterBuilder, pageSize);
+    BulkOperationCollection(
+        final CloudOfThingsRestClient cloudOfThingsRestClient,
+        final String relativeApiUrl,
+        final Gson gson,
+        final Filter.FilterBuilder filterBuilder,
+        final int pageSize
+    ) {
+        super(
+            bulkOperationJson -> new BulkOperation(gson.fromJson(bulkOperationJson, ExtensibleObject.class)),
+            cloudOfThingsRestClient,
+            relativeApiUrl,
+            gson,
+            CONTENT_TYPE_BULK_OPERATION_COLLECTION,
+            BULK_OPERATION_COLLECTION_ELEMENT_NAME,
+            filterBuilder,
+            pageSize
+        );
     }
 
     /**
@@ -52,7 +63,7 @@ public class BulkOperationCollection extends JsonArrayPagination {
         final JsonArray jsonBulkOperations = getJsonArray();
 
         return (jsonBulkOperations == null) ? new BulkOperation[0] : StreamSupport.stream(jsonBulkOperations.spliterator(), false).
-                map(bulkOperation -> new BulkOperation(gson.fromJson(bulkOperation.getAsJsonObject(), ExtensibleObject.class))).
+                map(objectMapper).
                 toArray(BulkOperation[]::new);
     }
 }
