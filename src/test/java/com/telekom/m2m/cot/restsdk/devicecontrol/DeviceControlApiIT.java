@@ -284,7 +284,6 @@ public class DeviceControlApiIT {
         createdOperation.setStatus(OperationStatus.FAILED);
         createdOperation.setFailureReason("\"AN ERROR HAS OCCURED\"");
 
-
         Operation testOperation = deviceControlApi.update(createdOperation);
 
         System.out.println(testOperation);
