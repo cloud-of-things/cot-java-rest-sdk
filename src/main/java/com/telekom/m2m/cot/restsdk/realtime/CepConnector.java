@@ -39,10 +39,10 @@ public class CepConnector implements Runnable {
     private String notificationPath;
     private CloudOfThingsRestClient cloudOfThingsRestClient;
 
-    private boolean connected = false;
-    private boolean shallDisconnect = false;
+    private volatile boolean connected = false;
+    private volatile boolean shallDisconnect = false;
 
-    private String clientId;
+    private volatile String clientId;
 
     // Read timeout in milliseconds for the connect request:
     private int timeout = DEFAULT_READ_TIMEOUT_MILLIS;
@@ -50,8 +50,8 @@ public class CepConnector implements Runnable {
     // Interval in milliseconds between connect requests:
     private int interval = DEFAULT_RECONNECT_INTERVAL_MILLIS;
 
-    private Set<String> channels = new CopyOnWriteArraySet<>();
-    private Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
+    private final Set<String> channels = new CopyOnWriteArraySet<>();
+    private final Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
 
     private Gson gson = GsonUtils.createGson();
 

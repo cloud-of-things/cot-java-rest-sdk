@@ -5,15 +5,13 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import java.util.ArrayList;
+import java.util.List;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
 import static org.testng.Assert.fail;
 
@@ -79,6 +77,10 @@ public class BinariesApiIT {
         byte[] data = api.getData(bin);
         assertEquals(data, replaceData);
         assertEquals(id, bin.getId()); // Replacing the content changes the id!
+
+        //if the id is new when the content is replaced, we should remove the new id to not accumulate test data.
+        //methods like testGetCollection() depends on find the file within 1000 registers
+        binaryIds.add(id);
     }
 
 
