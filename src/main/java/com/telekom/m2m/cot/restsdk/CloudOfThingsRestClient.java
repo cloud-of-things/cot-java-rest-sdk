@@ -607,47 +607,14 @@ public class CloudOfThingsRestClient {
 
 
     public void delete(String id, String api) {
-        Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + trimSlashes(api) + "/" + id)
-                .delete()
-                .build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Error in delete with ID '" + id + "' (see https://http.cat/" + response.code() + ")");
-            }
-        } catch( CotSdkException e) {
-            // We need to rethrow this in order to not loose the status code.
-            throw e;
-        } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
-        } finally {
-            closeResponseBodyIfResponseAndBodyNotNull(response);
+        if(id == null || id.isEmpty()) {
+            throw new IllegalArgumentException("Parameter 'id' cannot be null or empty.");
         }
+        delete(host + "/" + trimSlashes(api) + "/" + id);
     }
 
     public void deleteBy(final String filter, final String api) {
-        final Request request = new Request.Builder()
-                .addHeader("Authorization", "Basic " + encodedAuthString)
-                .url(host + "/" + trimSlashes(api) + "?" + filter)
-                .delete()
-                .build();
-        Response response = null;
-        try {
-            response = client.newCall(request).execute();
-            if (!response.isSuccessful()) {
-                throw new CotSdkException(response.code(), "Error in delete by criteria '" + filter + "'");
-            }
-        } catch (CotSdkException e) {
-            // We need to rethrow this in order to not loose the status code.
-            throw e;
-        } catch (Exception e) {
-            throw new CotSdkException("Error in request: " + e.getMessage(), e);
-        } finally {
-            closeResponseBodyIfResponseAndBodyNotNull(response);
-        }
+        delete(host + "/" + trimSlashes(api) + "?" + filter);
     }
 
     public void delete(String url) {
@@ -662,8 +629,11 @@ public class CloudOfThingsRestClient {
             if (!response.isSuccessful()) {
                 throw new CotSdkException(response.code(), "Error in delete with URL '" + url + "' (see https://http.cat/" + response.code() + ")");
             }
+        } catch( CotSdkException e) {
+            // We need to rethrow this in order to not loose the status code.
+            throw e;
         } catch (Exception e) {
-            throw new CotSdkException("Error in request", e);
+            throw new CotSdkException("Error in request: " + e.getMessage(), e);
         } finally {
             closeResponseBodyIfResponseAndBodyNotNull(response);
         }
