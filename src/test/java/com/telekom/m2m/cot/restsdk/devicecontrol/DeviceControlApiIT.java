@@ -281,7 +281,7 @@ public class DeviceControlApiIT {
 
         Operation testOperation = deviceControlApi.update(createdOperation);
 
-        System.out.println(testOperation);
+        assertNotNull(testOperation);
     }
 
     private ManagedObject createDeviceGroup() {
