@@ -44,9 +44,6 @@ public class EventTest {
         sts.setLat(50.722607);
         sts.setLon(7.144011);
 
-        Gson gs = new Gson();
-        String foo = gs.toJson(sts);
-
         Event event= new Event();
         event.setId("300001");
         event.setTime(date);
@@ -64,6 +61,5 @@ public class EventTest {
         Assert.assertEquals(ret.get("alt").getAsDouble(), 1000.0);
         Assert.assertEquals(ret.get("lat").getAsDouble(), 50.722607);
         Assert.assertEquals(ret.get("lon").getAsDouble(), 7.144011);
-
     }
 }

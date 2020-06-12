@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk.alarm;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import org.mockito.Mockito;
 import org.testng.Assert;
@@ -8,6 +9,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import javax.annotation.Nonnull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
@@ -27,7 +29,7 @@ public class AlarmApiTest {
         "  \"status\" : \"ACTIVE\",\n" +
         "  \"severity\" : \"MAJOR\",\n" +
         "  \"source\" : { \"id\" : \"12345\", \"self\" : \"...\" },\n" +
-        "  \"com_mycorp_MyProp\" : {  },\n" +
+        "  \"com_mycorp_MyProp\" : { \"prop1\": 123 },\n" +
         "  \"history\" : {\n" +
         "    \"self\" : \"...\",\n" +
         "    \"auditRecords\" : [ ]\n" +
@@ -55,7 +57,7 @@ public class AlarmApiTest {
         Assert.assertEquals(alarm.getCreationTime().compareTo(new Date(1315310607927L)), 0);
         Assert.assertEquals(alarm.getTime().compareTo(new Date(1315310607845L)), 0);
 
-        Assert.assertNotNull(alarm.get("com_mycorp_MyProp"));
+        Assert.assertEquals(((ExtensibleObject)alarm.get("com_mycorp_MyProp")).get("prop1"), new BigDecimal("123"));
     }
 
     @Test
