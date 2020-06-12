@@ -33,6 +33,23 @@ You can find the Java Doc of the latest release here: http://cloud-of-things.git
 
 Short information about what has changed between releases.
 
+### Release 2.0.0
+
+* Fix erroneously wrapped number values in deserialized ExtensibleObjects, e.g.:
+    serialized Object: temperature=ExtensibleObject{anyObject={unit=°C, value=100.0}} will be deserialized into:
+    OLD:
+    "temperature":{
+        "value":{
+            "value":"100.0"
+        },
+        "unit":"°C"
+    }
+    FIXED:
+    "temperature":{
+        "value":100.0,
+        "unit":"°C"
+    }
+
 ### Release 1.1.0
 
 * Includes [Pull Request #73](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/73): Efficiently iterate over all objects in a collection via Java 8 Stream (accessible via `stream()`): pagination is automatically performed in the background
