@@ -121,5 +121,4 @@ public class AlarmApiIT {
         Assert.assertEquals(updatedAlarm.getStatus(), Alarm.STATE_ACKNOWLEDGED);
         Assert.assertEquals(updatedAlarm.getSeverity(), Alarm.SEVERITY_MINOR);
     }
-
 }

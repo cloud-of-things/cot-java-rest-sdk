@@ -10,7 +10,7 @@ import static org.testng.Assert.assertTrue;
 public class DeviceCredentialsTest {
 
     @Test
-    public void testToString() {
+    public void testPasswordIsNotPrintedInToString() {
 
         final DeviceCredentials deviceCredentials = new DeviceCredentials();
 

@@ -19,11 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 
 /**
@@ -273,6 +269,19 @@ public class DeviceControlApiIT {
 
         assertTrue(notedOperations.get(0).contains("first_operation_attribute"));
         assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
+    }
+
+    @Test
+    public void testInjectionWithQuotes() {
+        Operation operation = createOperation("name");
+        Operation createdOperation = deviceControlApi.create(operation);
+
+        createdOperation.setStatus(OperationStatus.FAILED);
+        createdOperation.setFailureReason("\"AN ERROR HAS OCCURED\"");
+
+        Operation testOperation = deviceControlApi.update(createdOperation);
+
+        assertNotNull(testOperation);
     }
 
     private ManagedObject createDeviceGroup() {

@@ -1,6 +1,7 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
@@ -143,20 +144,22 @@ public class DeviceControlApi {
      * @since 0.1.0
      */
     public Operation update(Operation operation) {
-        String json;
-        if(operation.getStatus() == OperationStatus.FAILED) {
-            if(operation.getFailureReason() != null) {
-                json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"" + operation.getFailureReason() + "\"}";
+        JsonObject jsonObject = new JsonObject();
+        if (operation.getStatus() == OperationStatus.FAILED) {
+            if (operation.getFailureReason() != null) {
+                jsonObject.addProperty("status", operation.getStatus().toString());
+                jsonObject.addProperty("failureReason", operation.getFailureReason());
             } else {
                 // when failure reason was set to null it will be handled as an empty string
                 // because cot ignores null values for failure reason
-                json = "{\"status\" : \"" + operation.getStatus() + "\", \"failureReason\" : \"\"}";
+                jsonObject.addProperty("status", operation.getStatus().toString());
+                jsonObject.addProperty("failureReason", "");
             }
         } else {
-            json = "{\"status\" : \"" + operation.getStatus() + "\"}";
+            jsonObject.addProperty("status", operation.getStatus().toString());
         }
-
-        cloudOfThingsRestClient.doPutRequest(json, RELATIVE_OPERATION_API_URL + operation.getId(), CONTENT_TYPE_OPERATION);
+        String jsonAsString = jsonObject.toString();
+        cloudOfThingsRestClient.doPutRequest(jsonAsString, RELATIVE_OPERATION_API_URL + operation.getId(), CONTENT_TYPE_OPERATION);
         return operation;
     }
 
