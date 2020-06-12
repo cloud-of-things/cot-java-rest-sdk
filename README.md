@@ -35,6 +35,8 @@ Short information about what has changed between releases.
 
 ### Release 2.0.0
 
+* Prevent injection in update method
+* More robust deserialization catching IllegalArgumentException being thrown by Spring Boot Class Loader for properties like "A+:1" in ThreePhaseElectricityMeasurement.
 * Fix erroneously wrapped number values in deserialized ExtensibleObjects, e.g.:
     serialized Object: temperature=ExtensibleObject{anyObject={unit=°C, value=100.0}} will be deserialized into:
     OLD:
