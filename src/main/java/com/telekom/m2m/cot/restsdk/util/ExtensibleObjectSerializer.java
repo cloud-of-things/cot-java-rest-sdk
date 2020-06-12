@@ -85,12 +85,14 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
             JsonElement value = element.getValue();
 
             try {
-                Class foundClass = Class.forName(key.replace('_', '.'));
+                Class<?> foundClass = Class.forName(key.replace('_', '.'));
                 if (foundClass != null) {
                     mo.set(key, jsonDeserializationContext.deserialize(value, foundClass));
                     continue;
                 }
-            } catch (ClassNotFoundException e) {
+            } catch (ClassNotFoundException | IllegalArgumentException e) {
+                // IllegalArgumentException migh happen here in case the code is executed with URLClassLoader
+                // for example Spring Boot application.
             }
 
             JsonPrimitive tmp;
@@ -105,7 +107,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                         String tmpString = tmp.getAsString();
                         ZonedDateTime zonedDateTime = null;
                         // in the CoT plattform the stored date time objects has different formatted time zones
-                        switch(tmpString.length()) {
+                        switch (tmpString.length()) {
                             case 24:
                                 // e.g. 2017-09-05T17:19:32.601Z
                             case 26:
@@ -137,7 +139,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
             } else if (value.isJsonObject()) {
                 // Special case for User to avoid crappy nested ExtensibleObjects...
                 if (key.equals("devicePermissions")) {
-                    mo.set(key, deserializeDevicePermissions((JsonObject)value));
+                    mo.set(key, deserializeDevicePermissions((JsonObject) value));
                 } else {
                     mo.set(key, jsonDeserializationContext.deserialize(value, type));
                 }
