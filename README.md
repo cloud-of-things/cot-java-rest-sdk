@@ -56,7 +56,7 @@ Short information about what has changed between releases.
         "unit":"°C"
     }
     ```
-* Includes [Pull Request #93](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/93):
+* Includes [Pull Request #94](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/94):
     - Usage of newest dependencies
     - Cleanup and improvements according to code inspection
 
