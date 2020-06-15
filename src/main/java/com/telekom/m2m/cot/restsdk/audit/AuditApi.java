@@ -6,8 +6,11 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 /**
  * Use the AuditApi to work with audit records.
  * <p>
@@ -103,6 +106,9 @@ public class AuditApi {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_API_URL);
+        final String filterParams = Optional.ofNullable(filters)
+                .map(Filter.FilterBuilder::buildFilter)
+                .orElse("");
+        cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_API_URL);
     }
 }

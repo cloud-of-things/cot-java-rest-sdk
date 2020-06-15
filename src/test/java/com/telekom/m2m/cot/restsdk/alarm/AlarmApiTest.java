@@ -12,7 +12,8 @@ import javax.annotation.Nonnull;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
+
 
 /**
  * Created by Patrick Steinert on 03.02.16.

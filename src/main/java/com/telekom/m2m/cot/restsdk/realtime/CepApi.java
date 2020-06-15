@@ -1,10 +1,10 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
-import java.util.Arrays;
-
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Arrays;
 
 /**
  * The class that defines the CepApi. CEP stands for Complex-Event-Processing.

@@ -1,9 +1,11 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import java.util.*;
-
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**

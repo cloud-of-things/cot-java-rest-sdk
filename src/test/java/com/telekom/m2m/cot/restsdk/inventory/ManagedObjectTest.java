@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 import java.util.Date;
 import java.util.Iterator;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Created by Patrick Steinert on 29.08.16.
@@ -17,7 +17,7 @@ import static org.mockito.Matchers.any;
 public class ManagedObjectTest {
 
     @Test
-    public void testManagedObject() throws Exception {
+    public void testManagedObject() {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -58,7 +58,7 @@ public class ManagedObjectTest {
     }
 
     @Test
-    public void testEmptyChildAssets() throws Exception {
+    public void testEmptyChildAssets() {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -81,11 +81,11 @@ public class ManagedObjectTest {
 
         ManagedObjectReferenceCollection morc = mo.getChildAssets();
         Iterable<ManagedObjectReference> cMOs = morc.get();
-        Assert.assertEquals(cMOs.iterator().hasNext(), false);
+        Assert.assertFalse(cMOs.iterator().hasNext());
     }
 
     @Test
-    public void testEmptyParentDevices() throws Exception {
+    public void testEmptyParentDevices() {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -108,11 +108,11 @@ public class ManagedObjectTest {
 
         ManagedObjectReferenceCollection morc = mo.getParentDevices();
         Iterable<ManagedObjectReference> cMOs = morc.get();
-        Assert.assertEquals(cMOs.iterator().hasNext(), false);
+        Assert.assertFalse(cMOs.iterator().hasNext());
     }
 
     @Test
-    public void testChildDevices() throws Exception {
+    public void testChildDevices() {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -148,7 +148,7 @@ public class ManagedObjectTest {
         ManagedObjectReferenceCollection morc = mo.getChildDevices();
         Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
-        Assert.assertEquals(iter.hasNext(), true);
+        Assert.assertTrue(iter.hasNext());
         ManagedObjectReference mor = iter.next();
         ManagedObject cMo = mor.getManagedObject();
         Assert.assertEquals(cMo.getId(), "1");
@@ -156,7 +156,7 @@ public class ManagedObjectTest {
     }
 
     @Test
-    public void testChildAssets() throws Exception {
+    public void testChildAssets() {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -192,7 +192,7 @@ public class ManagedObjectTest {
         ManagedObjectReferenceCollection morc = mo.getChildAssets();
         Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
-        Assert.assertEquals(iter.hasNext(), true);
+        Assert.assertTrue(iter.hasNext());
         ManagedObjectReference mor = iter.next();
         ManagedObject cMo = mor.getManagedObject();
         Assert.assertEquals(cMo.getId(), "1");
@@ -200,7 +200,7 @@ public class ManagedObjectTest {
     }
 
     @Test
-    public void testParentDevices() throws Exception {
+    public void testParentDevices() {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -236,7 +236,7 @@ public class ManagedObjectTest {
         ManagedObjectReferenceCollection morc = mo.getParentDevices();
         Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
-        Assert.assertEquals(iter.hasNext(), true);
+        Assert.assertTrue(iter.hasNext());
         ManagedObjectReference mor = iter.next();
         ManagedObject cMo = mor.getManagedObject();
         Assert.assertEquals(cMo.getId(), "1");
@@ -245,7 +245,7 @@ public class ManagedObjectTest {
 
 
     @Test
-    public void testParentAssets() throws Exception {
+    public void testParentAssets() {
 
         String inventoryJsonExample = "{\n" +
                 "  \"id\" : \"42\",\n" +
@@ -281,7 +281,7 @@ public class ManagedObjectTest {
         ManagedObjectReferenceCollection morc = mo.getParentAssets();
         Iterable<ManagedObjectReference> cMOs = morc.get();
         Iterator<ManagedObjectReference> iter = cMOs.iterator();
-        Assert.assertEquals(iter.hasNext(), true);
+        Assert.assertTrue(iter.hasNext());
         ManagedObjectReference mor = iter.next();
         ManagedObject cMo = mor.getManagedObject();
         Assert.assertEquals(cMo.getId(), "1");

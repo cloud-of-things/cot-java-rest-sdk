@@ -1,8 +1,5 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,6 +7,9 @@ import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -36,8 +36,8 @@ public class CepConnector implements Runnable {
 
     private static final int THREAD_JOIN_GRACE_MILLIS = 1000;
 
-    private String notificationPath;
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
+    private final String notificationPath;
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
     private volatile boolean connected = false;
     private volatile boolean shallDisconnect = false;
@@ -53,7 +53,7 @@ public class CepConnector implements Runnable {
     private final Set<String> channels = new CopyOnWriteArraySet<>();
     private final Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
 
-    private Gson gson = GsonUtils.createGson();
+    private final Gson gson = GsonUtils.createGson();
 
     private Thread pollingThread;
 
@@ -236,8 +236,7 @@ public class CepConnector implements Runnable {
         obj.addProperty("clientId", clientId);
         obj.addProperty("connectionType", "long-polling");
         body.add(obj);
-        String result = cloudOfThingsRestClient.doRealTimePollingRequest(body.toString(), notificationPath, CONTENT_TYPE, timeout);
-        return result;
+        return cloudOfThingsRestClient.doRealTimePollingRequest(body.toString(), notificationPath, CONTENT_TYPE, timeout);
     }
 
 
@@ -303,7 +302,7 @@ public class CepConnector implements Runnable {
 
     /**
      * Subscribe to a given channel remotely
-     * @param channel
+     * @param channel to be subscribed
      */
     private void doSubscribe(String channel) {
         JsonArray body = new JsonArray();
@@ -317,7 +316,7 @@ public class CepConnector implements Runnable {
 
     /**
      * Unsubscribe to a given channel remotely.
-     * @param channel
+     * @param channel to be unsubscribed
      */
     private void doUnsubscribe(String channel) {
         JsonArray body = new JsonArray();

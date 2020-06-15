@@ -1,14 +1,13 @@
 package com.telekom.m2m.cot.restsdk.audit;
 
-import org.mockito.Mockito;
-import org.testng.Assert;
-import org.testng.annotations.Test;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import org.mockito.Mockito;
+import org.testng.Assert;
+import org.testng.annotations.Test;
 
 /**
  * Created by Andreas Dyck on 26.07.17.

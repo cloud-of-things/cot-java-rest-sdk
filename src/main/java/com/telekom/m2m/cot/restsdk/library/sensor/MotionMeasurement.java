@@ -9,9 +9,9 @@ public class MotionMeasurement implements Fragment {
     private static final String MOTION_VALUE_TYPE ="BOOLEAN";
     private static final String NO_MOTION_UNIT = "";
 
-    private boolean detectedMotionValue;
-    private float motionSpeedValue;
-    private String motionSpeedUnit;
+    private final boolean detectedMotionValue;
+    private final float motionSpeedValue;
+    private final String motionSpeedUnit;
 
     
     public MotionMeasurement(boolean detectedMotionValue, float motionSpeedValue, String motionSpeedUnit) {

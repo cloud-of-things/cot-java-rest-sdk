@@ -3,8 +3,8 @@ package com.telekom.m2m.cot.restsdk.util;
 import java.math.BigDecimal;
 
 public class MeasurementValue {
-    private BigDecimal value;
-    private String unit;
+    private final BigDecimal value;
+    private final String unit;
 
     public MeasurementValue(BigDecimal value, String unit) {
         this.value = value;

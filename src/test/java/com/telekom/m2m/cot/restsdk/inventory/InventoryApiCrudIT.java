@@ -8,11 +8,11 @@ import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.*;
-
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
+import static org.testng.Assert.*;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -22,8 +22,8 @@ public class InventoryApiCrudIT {
     private static final String PARENT_MANAGED_OBJECT_NAME = "managedObjectName";
     private static final String CHILD_MANAGED_OBJECT_NAME = "RaspPi 8fef9ec2 Sensor BMP180";
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
 
     private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
 

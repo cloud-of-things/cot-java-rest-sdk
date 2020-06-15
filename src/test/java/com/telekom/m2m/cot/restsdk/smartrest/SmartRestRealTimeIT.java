@@ -9,16 +9,9 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 
 public class SmartRestRealTimeIT {
@@ -27,10 +20,10 @@ public class SmartRestRealTimeIT {
     // but of course cannot be 100% reliable for a real integration test:
     private static final int DELAY_MILLIS = 250;
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
-    private SmartRestApi smartRestApi = cotPlat.getSmartRestApi();
-    private AlarmApi alarmApi = cotPlat.getAlarmApi();
+    private final SmartRestApi smartRestApi = cotPlat.getSmartRestApi();
+    private final AlarmApi alarmApi = cotPlat.getAlarmApi();
 
     private ManagedObject alarmSource1;
     private ManagedObject alarmSource2;

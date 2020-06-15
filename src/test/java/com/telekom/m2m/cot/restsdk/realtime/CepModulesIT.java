@@ -1,23 +1,22 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
+import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.Test;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.Test;
-
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 
 
 public class CepModulesIT {
 
-    private CepApi cepApi = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT + "/" + TestHelper.TEST_USERNAME,
+    private final CepApi cepApi = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT + "/" + TestHelper.TEST_USERNAME,
             TestHelper.TEST_PASSWORD).getCepApi();
 
     private String moduleId;

@@ -1,12 +1,5 @@
 package com.telekom.m2m.cot.restsdk.library.sensor;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.Test;
-
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
@@ -14,11 +7,15 @@ import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 public class SensorLibraryIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cotPlat.getInventoryApi();
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
     private ManagedObject testManagedObject;
 
@@ -28,7 +25,7 @@ public class SensorLibraryIT {
     }
     
     @Test
-    public void testSensorsAndMeasurements() throws Exception {
+    public void testSensorsAndMeasurements() {
         testManagedObject = new ManagedObject();
         testManagedObject.setName("TestObjectForSensorsAndMeasurements");
         Fragment[] ff = SensorLibraryTest.getFragments();
@@ -161,7 +158,7 @@ public class SensorLibraryIT {
         assertTrue(moOut.has("c8y_Relay"));
         assertEquals(((JsonObject)moOut.get("c8y_Relay")).get("relayState").getAsString(), "OPEN");
         assertTrue(moOut.has("c8y_RelayArray"));
-        assertTrue(((JsonArray)moOut.get("c8y_RelayArray")).toString().contains("OPEN"));
+        assertTrue((moOut.get("c8y_RelayArray")).toString().contains("OPEN"));
 
         
     }    

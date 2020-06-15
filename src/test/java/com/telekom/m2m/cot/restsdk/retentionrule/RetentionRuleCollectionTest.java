@@ -8,8 +8,7 @@ import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.eq;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.testng.Assert.assertEquals;
 
 
@@ -17,9 +16,9 @@ public class RetentionRuleCollectionTest {
 
     private RetentionRuleCollection retentionRuleCollection;
 
-    private CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
+    private final CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
 
-    private String collectionJson = "{\n" +
+    private final String collectionJson = "{\n" +
             "\"statistics\": {\n" +
             "    \"currentPage\": 1,\n" +
             "    \"pageSize\": 5,\n" +
@@ -64,7 +63,7 @@ public class RetentionRuleCollectionTest {
                 rc,
                 "retention/retentions",
                 GsonUtils.createGson(),
-                (Filter.FilterBuilder)null);
+                null);
         retentionRuleCollection.setPageSize(5); // Not important, but the test should not rely on default values.
 
         Mockito.when(rc.getResponse(eq("retention/retentions?currentPage=1&pageSize=5"))).thenReturn(collectionJson);

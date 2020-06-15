@@ -11,120 +11,120 @@ public class ThreePhaseElectricityMeasurement implements Fragment {
      */
 
     // Total active energy summed across phases, incoming:
-    private float aPlusValue;
-    private String aPlusUnit;
+    private final float aPlusValue;
+    private final String aPlusUnit;
 
     // Total active energy summed across phases, outgoing:
-    private float aMinusValue;
-    private String aMinusUnit;
+    private final float aMinusValue;
+    private final String aMinusUnit;
 
     // Active energy in for phase 1, incoming
-    private float aPlusOneValue;
-    private String aPlusOneUnit;
+    private final float aPlusOneValue;
+    private final String aPlusOneUnit;
 
     // Active energy in for phase 1, outgoing
-    private float aMinusOneValue;
-    private String aMinusOneUnit;
+    private final float aMinusOneValue;
+    private final String aMinusOneUnit;
 
     // Active energy in for phase 2, incoming
-    private float aPlusTwoValue;
-    private String aPlusTwoUnit;
+    private final float aPlusTwoValue;
+    private final String aPlusTwoUnit;
 
     // Active energy in for phase 2, outgoing
-    private float aMinusTwoValue;
-    private String aMinusTwoUnit;
+    private final float aMinusTwoValue;
+    private final String aMinusTwoUnit;
 
     // Active energy in for phase 3, incoming
-    private float aPlusThreeValue;
-    private String aPlusThreeUnit;
+    private final float aPlusThreeValue;
+    private final String aPlusThreeUnit;
 
     // Active energy in for phase 3, outgoing
-    private float aMinusThreeValue;
-    private String aMinusThreeUnit;
+    private final float aMinusThreeValue;
+    private final String aMinusThreeUnit;
 
     /*
      * Power Variables:
      */
 
     // Total active power, incoming:
-    private float pPlusValue;
-    private String pPlusUnit;
+    private final float pPlusValue;
+    private final String pPlusUnit;
 
     // Total active power, outgoing:
-    private float pMinusValue;
-    private String pMinusUnit;
+    private final float pMinusValue;
+    private final String pMinusUnit;
 
     // Active power in for phase 1, incoming
-    private float pPlusOneValue;
-    private String pPlusOneUnit;
+    private final float pPlusOneValue;
+    private final String pPlusOneUnit;
 
     // Active power in for phase 1, outgoing
-    private float pMinusOneValue;
-    private String pMinusOneUnit;
+    private final float pMinusOneValue;
+    private final String pMinusOneUnit;
 
     // Active power in for phase 2, incoming
-    private float pPlusTwoValue;
-    private String pPlusTwoUnit;
+    private final float pPlusTwoValue;
+    private final String pPlusTwoUnit;
 
     // Active power in for phase 2, outgoing
-    private float pMinusTwoValue;
-    private String pMinusTwoUnit;
+    private final float pMinusTwoValue;
+    private final String pMinusTwoUnit;
 
     // Active power in for phase 3, incoming
-    private float pPlusThreeValue;
-    private String pPlusThreeUnit;
+    private final float pPlusThreeValue;
+    private final String pPlusThreeUnit;
 
     // Active power in for phase 3, outgoing
-    private float pMinusThreeValue;
-    private String pMinusThreeUnit;
+    private final float pMinusThreeValue;
+    private final String pMinusThreeUnit;
 
     /*
      * Reactive Inductive Energy Variables:
      */
 
     // Total reactive inductive energy, incoming:
-    private float riPlusValue;
-    private String riPlusUnit;
+    private final float riPlusValue;
+    private final String riPlusUnit;
 
     // Total reactive inductive energy, outgoing:
-    private float riMinusValue;
-    private String riMinusUnit;
+    private final float riMinusValue;
+    private final String riMinusUnit;
 
     /*
      * Reactive Capacitive Energy Variables:
      */
 
     // Total capacitive inductive energy, incoming:
-    private float rcPlusValue;
-    private String rcPlusUnit;
+    private final float rcPlusValue;
+    private final String rcPlusUnit;
 
     // Total capacitive inductive energy, outgoing:
-    private float rcMinusValue;
-    private String rcMinusUnit;
+    private final float rcMinusValue;
+    private final String rcMinusUnit;
 
     /*
      * Reactive Inductive Power Variables:
      */
 
     // Total reactive inductive power, incoming:
-    private float piPlusValue;
-    private String piPlusUnit;
+    private final float piPlusValue;
+    private final String piPlusUnit;
 
     // Total reactive inductive power, outgoing:
-    private float piMinusValue;
-    private String piMinusUnit;
+    private final float piMinusValue;
+    private final String piMinusUnit;
 
     /*
      * Reactive Capacitive Power Variables:
      */
 
     // Total capacitive inductive power, incoming:
-    private float pcPlusValue;
-    private String pcPlusUnit;
+    private final float pcPlusValue;
+    private final String pcPlusUnit;
 
     // Total capacitive inductive power, outgoing:
-    private float pcMinusValue;
-    private String pcMinusUnit;
+    private final float pcMinusValue;
+    private final String pcMinusUnit;
 
 
     public ThreePhaseElectricityMeasurement(

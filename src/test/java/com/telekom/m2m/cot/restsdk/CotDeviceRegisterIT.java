@@ -3,7 +3,6 @@ package com.telekom.m2m.cot.restsdk;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentials;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceCredentialsApi;
-import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
 import com.telekom.m2m.cot.restsdk.identity.ExternalId;
 import com.telekom.m2m.cot.restsdk.identity.IdentityApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
@@ -21,10 +20,8 @@ import static org.testng.Assert.fail;
  */
 public class CotDeviceRegisterIT {
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-
     @Test
-    public void testDeviceRegister() throws Exception {
+    public void testDeviceRegister() {
 
         String deviceId = "mydevice-name_" + System.currentTimeMillis();
 
@@ -33,8 +30,7 @@ public class CotDeviceRegisterIT {
         DeviceCredentialsApi unregDevCred = CloudOfThingsPlatform.getPlatformToRegisterDevice(TestHelper.TEST_HOST).getDeviceCredentialsApi();
 
         // Step 1: (devicemanager) Register Device
-        Operation operation = new Operation(deviceId);
-        deviceControlApi.createNewDevice(operation);
+        deviceControlApi.createNewDevice(deviceId);
 
         // Step 2: (device) Device request
         try {
@@ -81,8 +77,10 @@ public class CotDeviceRegisterIT {
 
     }
 
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+
     @Test
-    public void testDeviceRegisterWithIdentity() throws Exception {
+    public void testDeviceRegisterWithIdentity() {
         String deviceId = "mydevice-name_" + System.currentTimeMillis();
 
         DeviceControlApi deviceControlApi = cloudOfThingsPlatform.getDeviceControlApi();
@@ -127,7 +125,7 @@ public class CotDeviceRegisterIT {
         String idString = "fantasy-" + TestHelper.getRandom(10);
         IdentityApi devIdentityApi = platformForDevice.getIdentityApi();
         ExternalId externalId = new ExternalId();
-        externalId.setExternalId(new String(idString));
+        externalId.setExternalId(idString);
         externalId.setType("com_telekom_SerialNumber");
         externalId.setManagedObject(newMo);
 

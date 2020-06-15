@@ -1,13 +1,13 @@
 package com.telekom.m2m.cot.restsdk.devicecontrol;
 
-import java.util.stream.StreamSupport;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.IterableObjectPagination;
+
+import java.util.stream.StreamSupport;
 
 /**
  * Represents a pageable Operation collection.

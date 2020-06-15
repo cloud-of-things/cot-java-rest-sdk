@@ -117,7 +117,7 @@ public class EventApi {
             filters.validateSupportedFilters(acceptedFilters);
         }
         final String filterParams = Optional.ofNullable(filters)
-                .map(filterBuilder -> filterBuilder.buildFilter())
+                .map(Filter.FilterBuilder::buildFilter)
                 .orElse("");
         cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_API_URL);
     }

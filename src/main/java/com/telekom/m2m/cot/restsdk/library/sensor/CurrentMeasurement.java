@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class CurrentMeasurement implements Fragment {
 
-    private float currentValue;
-    private String currentUnit;
+    private final float currentValue;
+    private final String currentUnit;
 
 
     public CurrentMeasurement(float currentValue, String currentUnit) {

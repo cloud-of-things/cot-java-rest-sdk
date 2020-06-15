@@ -3,12 +3,9 @@ package com.telekom.m2m.cot.restsdk.retentionrule;
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-
 import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 public class RetentionRuleTest {
 

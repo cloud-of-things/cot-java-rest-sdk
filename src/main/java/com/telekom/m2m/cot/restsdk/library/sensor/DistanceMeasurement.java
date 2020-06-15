@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class DistanceMeasurement implements Fragment {
 
-    private float distanceValue;
-    private String distanceUnit;
+    private final float distanceValue;
+    private final String distanceUnit;
 
 
     public DistanceMeasurement(float distanceValue, String distanceUnit) {

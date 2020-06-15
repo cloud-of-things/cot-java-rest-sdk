@@ -11,11 +11,11 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
  */
 public class SignalStrength implements Fragment {
 
-    private float rssiValue;
-    private String rssiUnit;
+    private final float rssiValue;
+    private final String rssiUnit;
 
-    private Float berValue;
-    private String berUnit;
+    private final Float berValue;
+    private final String berUnit;
 
     // This flag differentiates between the simple version (sensor lib; false) and the
     // complete, verbose version (device management lib; true).

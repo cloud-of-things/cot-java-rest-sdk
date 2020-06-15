@@ -4,7 +4,7 @@ public enum HttpStatus {
 
     NOT_FOUND(404);
 
-    private int code;
+    private final int code;
 
     HttpStatus(final int code) {
         this.code = code;

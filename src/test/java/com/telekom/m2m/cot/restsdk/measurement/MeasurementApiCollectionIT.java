@@ -19,7 +19,7 @@ import java.util.Date;
  * @author Patrick Steinert
  */
 public class MeasurementApiCollectionIT {
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
     private MeasurementApi measurementApi;
 
@@ -38,7 +38,7 @@ public class MeasurementApiCollectionIT {
 
 
     @Test
-    public void testMultipleMeasurements() throws Exception {
+    public void testMultipleMeasurements() {
         final Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date());
@@ -55,18 +55,18 @@ public class MeasurementApiCollectionIT {
 
         Measurement measurement = measurements[0];
 
-        Assert.assertTrue(measurement.getId() != null);
+        Assert.assertNotNull(measurement.getId());
         Assert.assertTrue(measurement.getId().length() > 0);
 
-        Assert.assertTrue(measurement.getTime() != null);
+        Assert.assertNotNull(measurement.getTime());
         Assert.assertTrue(measurement.getTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(measurement.getType() != null);
+        Assert.assertNotNull(measurement.getType());
         Assert.assertTrue(measurement.getType().length() > 0);
     }
 
     @Test
-    public void testMultipleMeasurementsWithPaging() throws Exception {
+    public void testMultipleMeasurementsWithPaging() {
         for (int i = 0; i < 6; i++) {
             Measurement testMeasurement = new Measurement();
             testMeasurement.setSource(testManagedObject);
@@ -110,7 +110,7 @@ public class MeasurementApiCollectionIT {
     }
 
     @Test
-    public void testDeleteMultipleMeasurementsBySource() throws Exception {
+    public void testDeleteMultipleMeasurementsBySource() {
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date());
@@ -131,7 +131,7 @@ public class MeasurementApiCollectionIT {
     }
 
     @Test
-    public void testMultipleMeasurementsBySource() throws Exception {
+    public void testMultipleMeasurementsBySource() {
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date());
@@ -172,7 +172,7 @@ public class MeasurementApiCollectionIT {
     }
 
     @Test
-    public void testMultipleMeasurementsByType() throws Exception {
+    public void testMultipleMeasurementsByType() {
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date());
@@ -205,7 +205,7 @@ public class MeasurementApiCollectionIT {
     }
 
     @Test
-    public void testMultipleMeasurementsByDate() throws Exception {
+    public void testMultipleMeasurementsByDate() {
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
@@ -228,7 +228,7 @@ public class MeasurementApiCollectionIT {
 
 
     @Test
-    public void testMultipleMeasurementsByDateAndBySource() throws Exception {
+    public void testMultipleMeasurementsByDateAndBySource() {
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
@@ -257,7 +257,7 @@ public class MeasurementApiCollectionIT {
 
 
     @Test
-    public void testMultipleMeasurementsByTypeAndBySource() throws Exception {
+    public void testMultipleMeasurementsByTypeAndBySource() {
         SampleTemperatureSensor sts = new SampleTemperatureSensor(100);
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
@@ -286,7 +286,7 @@ public class MeasurementApiCollectionIT {
 
 
     @Test
-    public void testMultipleMeasurementsByFragmentTypeAndBySource() throws Exception {
+    public void testMultipleMeasurementsByFragmentTypeAndBySource() {
         SampleTemperatureSensor sts = new SampleTemperatureSensor(100);
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);

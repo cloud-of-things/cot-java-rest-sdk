@@ -28,7 +28,7 @@ public class MeasurementApi {
     private static final String MEASUREMENTS_API = "measurement/measurements/";
 
     private final CloudOfThingsRestClient cloudOfThingsRestClient;
-    private Gson gson = GsonUtils.createGson();
+    private final Gson gson = GsonUtils.createGson();
     private final CepConnector cepConnector;
     private HashMap<String, List<String>> notifications = new HashMap<>();
 
@@ -146,7 +146,7 @@ public class MeasurementApi {
             filters.validateSupportedFilters(acceptedFilters);
         }
         final String filterParams = Optional.ofNullable(filters)
-            .map(filterBuilder -> filterBuilder.buildFilter())
+            .map(Filter.FilterBuilder::buildFilter)
             .orElse("");
         cloudOfThingsRestClient.deleteBy(filterParams, MEASUREMENTS_API);
     }
@@ -158,8 +158,7 @@ public class MeasurementApi {
     }
 
     private JsonArray listToJsonArray(final List<Measurement> measurements) {
-        final JsonParser jsonParser = new JsonParser();
-        return jsonParser.parse(gson.toJson(measurements)).getAsJsonArray();
+        return JsonParser.parseString(gson.toJson(measurements)).getAsJsonArray();
     }
 
     public void subscribeToMeasurementsNotifications(String deviceManagedObjectId) {
@@ -187,11 +186,7 @@ public class MeasurementApi {
     }
 
     private boolean managedObjectIdIsValid(String managedObjectId) {
-        if (managedObjectId == null || managedObjectId.contains("*")) {
-            return false;
-        } else {
-            return true;
-        }
+        return managedObjectId != null && !managedObjectId.contains("*");
     }
 
 

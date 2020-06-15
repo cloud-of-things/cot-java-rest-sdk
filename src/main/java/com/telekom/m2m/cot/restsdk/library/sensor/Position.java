@@ -6,11 +6,11 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class Position implements Fragment {
 
-    private float altitude;
-    private float longitude;
-    private float latitude;
-    private String trackingProtocol;
-    private String reportReason;
+    private final float altitude;
+    private final float longitude;
+    private final float latitude;
+    private final String trackingProtocol;
+    private final String reportReason;
 
 
     public Position(float altitude, float longitude, float latitude, String trackingProtocol, String reportReason) {

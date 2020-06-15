@@ -9,9 +9,9 @@ package com.telekom.m2m.cot.restsdk.smartrest;
  */
 public class SmartNotification {
 
-    private int messageId;
-    private String data;
-    private String xId;
+    private final int messageId;
+    private final String data;
+    private final String xId;
 
     public SmartNotification(String line, String xId) {
         String[] parts = line.split(",", 2);

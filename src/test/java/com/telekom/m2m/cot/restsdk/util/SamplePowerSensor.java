@@ -2,7 +2,7 @@ package com.telekom.m2m.cot.restsdk.util;
 
 public class SamplePowerSensor {
 
-    private MeasurementValue solar;
+    private final MeasurementValue solar;
 
     public SamplePowerSensor(MeasurementValue solar) {
         this.solar = solar;

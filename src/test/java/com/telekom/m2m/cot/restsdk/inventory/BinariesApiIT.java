@@ -5,23 +5,21 @@ import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import java.util.ArrayList;
-import java.util.List;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 public class BinariesApiIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
-    private BinariesApi api = cotPlat.getBinariesApi();
+    private final BinariesApi api = cotPlat.getBinariesApi();
 
-    private List<String> binaryIds = new ArrayList<>();
+    private final List<String> binaryIds = new ArrayList<>();
 
 
     @AfterMethod

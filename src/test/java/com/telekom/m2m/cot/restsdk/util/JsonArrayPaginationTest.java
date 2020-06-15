@@ -58,7 +58,7 @@ public class JsonArrayPaginationTest {
         Assert.assertEquals(jsonArray.size(), 1);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
         Assert.assertTrue(jsonArray.get(0).getAsJsonObject().has("id"));
-        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("234"));
+        Assert.assertEquals(jsonArray.get(0).getAsJsonObject().get("id").getAsString(), "234");
         Assert.assertFalse(jsonArrayPaginationWithFilter.hasPrevious());
     }
 
@@ -81,7 +81,7 @@ public class JsonArrayPaginationTest {
         Assert.assertEquals(jsonArray.size(), 1);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
         Assert.assertTrue(jsonArray.get(0).getAsJsonObject().has("id"));
-        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("234"));
+        Assert.assertEquals(jsonArray.get(0).getAsJsonObject().get("id").getAsString(), "234");
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
     }
 
@@ -156,7 +156,7 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 2);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
-        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("1"));
+        Assert.assertEquals(jsonArray.get(0).getAsJsonObject().get("id").getAsString(), "1");
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
         Assert.assertTrue(jsonArrayPagination.hasNext());
 
@@ -168,7 +168,7 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 1);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
-        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("3"));
+        Assert.assertEquals(jsonArray.get(0).getAsJsonObject().get("id").getAsString(), "3");
         Assert.assertTrue(jsonArrayPagination.hasPrevious());
         Assert.assertFalse(jsonArrayPagination.hasNext());
 
@@ -180,7 +180,7 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 2);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
-        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("1"));
+        Assert.assertEquals(jsonArray.get(0).getAsJsonObject().get("id").getAsString(), "1");
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
         Assert.assertTrue(jsonArrayPagination.hasNext());
 
@@ -192,7 +192,7 @@ public class JsonArrayPaginationTest {
         Assert.assertNotNull(jsonArray);
         Assert.assertEquals(jsonArray.size(), 2);
         Assert.assertNotNull(jsonArray.get(0).getAsJsonObject());
-        Assert.assertTrue(jsonArray.get(0).getAsJsonObject().get("id").getAsString().equals("1"));
+        Assert.assertEquals(jsonArray.get(0).getAsJsonObject().get("id").getAsString(), "1");
         Assert.assertFalse(jsonArrayPagination.hasPrevious());
         Assert.assertTrue(jsonArrayPagination.hasNext());
     }

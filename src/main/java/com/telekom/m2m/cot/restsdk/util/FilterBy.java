@@ -20,7 +20,7 @@ public enum FilterBy {
     BYAPPLICATION ("application");
 
     @Nonnull
-    private String filterKey;
+    private final String filterKey;
 
     FilterBy(@Nonnull final String filterKey) {
         this.filterKey = filterKey;

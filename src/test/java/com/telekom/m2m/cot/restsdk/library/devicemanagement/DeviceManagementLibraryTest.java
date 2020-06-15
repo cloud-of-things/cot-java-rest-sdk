@@ -9,11 +9,7 @@ import org.testng.annotations.Test;
 
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 
 public class DeviceManagementLibraryTest {
@@ -225,7 +221,7 @@ public class DeviceManagementLibraryTest {
         }
 
         try {
-        cellInfo = new CellInfo("gsm", new CellInfo.CellTower("gsm", 49, 10, 20, 32, 2, 10, 12345678L, 1),
+            new CellInfo("gsm", new CellInfo.CellTower("gsm", 49, 10, 20, 32, 2, 10, 12345678L, 1),
                                        new CellInfo.CellTower(null, 49, 10, 20, 32, 2, 10, 12345678L, 1),
                                        new CellInfo.CellTower("umts", 49, 10, 20, 32, 2, 10, 12345678L, 1));
             fail("CellInfo with mismatching radioTypes cannot be constructed.");

@@ -20,8 +20,8 @@ import static org.testng.Assert.fail;
  */
 public class InventoryManagedObjectCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private SoftAssert softAssert = new SoftAssert();
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final SoftAssert softAssert = new SoftAssert();
 
     private List<ManagedObject> toBeDeleted = new ArrayList<>();
 

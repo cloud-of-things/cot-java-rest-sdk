@@ -1,19 +1,13 @@
 package com.telekom.m2m.cot.restsdk.util;
 
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.testng.Assert.assertEquals;
 
 public class FilterByTest {
 
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
-
-    @Test
+    @Test(expectedExceptions = IllegalArgumentException.class)
     public void getFilterByThrowsExceptionIfFilterDoesNotExist() {
-        exception.expect(IllegalArgumentException.class);
         FilterBy.getFilterBy("this-is-missing");
     }
 

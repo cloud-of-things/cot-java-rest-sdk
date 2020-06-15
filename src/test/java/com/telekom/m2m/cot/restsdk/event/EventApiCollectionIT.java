@@ -17,10 +17,10 @@ import java.util.Date;
  */
 public class EventApiCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
-    private EventApi eventApi = cotPlat.getEventApi();
+    private final EventApi eventApi = cotPlat.getEventApi();
 
     @BeforeMethod
     public void setUp() {
@@ -35,7 +35,7 @@ public class EventApiCollectionIT {
 
 
     @Test
-    public void testMultipleEvents() throws Exception {
+    public void testMultipleEvents() {
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
@@ -52,18 +52,18 @@ public class EventApiCollectionIT {
 
         Event event = events[0];
 
-        Assert.assertTrue(event.getId() != null);
+        Assert.assertNotNull(event.getId());
         Assert.assertTrue(event.getId().length() > 0);
 
-        Assert.assertTrue(event.getTime() != null);
+        Assert.assertNotNull(event.getTime());
         Assert.assertTrue(event.getTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(event.getType() != null);
+        Assert.assertNotNull(event.getType());
         Assert.assertTrue(event.getType().length() > 0);
     }
 
     @Test
-    public void testMultipleEventsWithPaging() throws Exception {
+    public void testMultipleEventsWithPaging() {
         // !!! Important !!!
         // Test assumes pageSize default is 5.
 
@@ -110,7 +110,7 @@ public class EventApiCollectionIT {
     }
 
     @Test
-    public void testDeleteMultipleEventsBySource() throws Exception {
+    public void testDeleteMultipleEventsBySource() {
         for (int i = 0; i < 6; i++) {
             Event testEvent = new Event();
             testEvent.setSource(testManagedObject);
@@ -132,7 +132,7 @@ public class EventApiCollectionIT {
     }
 
     @Test
-    public void testMultipleEventsBySource() throws Exception {
+    public void testMultipleEventsBySource() {
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
@@ -165,7 +165,7 @@ public class EventApiCollectionIT {
     }
 
     @Test
-    public void testMultipleEventsByType() throws Exception {
+    public void testMultipleEventsByType() {
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date());
@@ -198,7 +198,7 @@ public class EventApiCollectionIT {
     }
 
     @Test
-    public void testMultipleEventByDate() throws Exception {
+    public void testMultipleEventByDate() {
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
@@ -223,7 +223,7 @@ public class EventApiCollectionIT {
 
 
     @Test
-    public void testMultipleEventsByDateAndBySource() throws Exception {
+    public void testMultipleEventsByDateAndBySource() {
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
@@ -254,7 +254,7 @@ public class EventApiCollectionIT {
 
 
     @Test
-    public void testMultipleEventsByTypeAndBySource() throws Exception {
+    public void testMultipleEventsByTypeAndBySource() {
         Position sts = new Position();
         sts.setAlt(1000.0);
         sts.setLat(50.722607);
@@ -289,7 +289,7 @@ public class EventApiCollectionIT {
 
 
     @Test
-    public void testMultipleEventsByFragmentTypeAndBySource() throws Exception {
+    public void testMultipleEventsByFragmentTypeAndBySource() {
         Position sts = new Position();
         sts.setAlt(1000.0);
         sts.setLat(50.722607);

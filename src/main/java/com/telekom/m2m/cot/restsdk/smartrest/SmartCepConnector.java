@@ -11,13 +11,7 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArraySet;
 
-import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.LINE_BREAK_PATTERN;
-import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_ADVICE;
-import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_HANDSHAKE;
-import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_SUBSCRIBE;
-import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_UNSUBSCRIBE;
-import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_CONNECT;
-import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.MSG_REALTIME_XID;
+import static com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi.*;
 
 
 /**
@@ -48,9 +42,9 @@ public class SmartCepConnector implements Runnable {
     private static final int THREAD_JOIN_GRACE_MILLIS = 1000;
 
 
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
-    private String xId;
+    private final String xId;
 
     private String clientId;
 
@@ -291,7 +285,7 @@ public class SmartCepConnector implements Runnable {
         try {
             postInitialSubscriptions();
             do {
-                String response[] = doConnect();
+                String[] response = doConnect();
                 String activeXId = xId;
                 int alternativeXIdCounter = 0;
                 for (String line : response) {

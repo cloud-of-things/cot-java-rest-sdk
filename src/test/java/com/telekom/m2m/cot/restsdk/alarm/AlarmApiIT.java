@@ -15,7 +15,7 @@ import java.util.Date;
  */
 public class AlarmApiIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeClass
@@ -30,7 +30,7 @@ public class AlarmApiIT {
 
 
     @Test
-    public void testCreateAlarm() throws Exception {
+    public void testCreateAlarm() {
 
         Alarm alarm = new Alarm();
         alarm.setText("Strange thing happend!");
@@ -48,7 +48,7 @@ public class AlarmApiIT {
     }
 
     @Test
-    public void testCreateAndRead() throws Exception {
+    public void testCreateAndRead() {
         Date timeOfEventHappening = new Date();
 
         Alarm alarm = new Alarm();
@@ -76,7 +76,7 @@ public class AlarmApiIT {
     }
 
     @Test
-    public void testCreateAndUpdate() throws Exception {
+    public void testCreateAndUpdate() {
         Date timeOfEventHappening = new Date();
 
         Alarm alarm = new Alarm();

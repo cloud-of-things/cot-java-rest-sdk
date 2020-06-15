@@ -21,13 +21,13 @@ import static org.testng.Assert.*;
  */
 public class OperationCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
     private ManagedObject testManagedObjectParent;
     private ManagedObject testManagedObject;
 
-    final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-    private static JsonObject jsonObject = new JsonObject();
+    private final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+    private static final JsonObject jsonObject = new JsonObject();
 
     static {
         JsonObject parameters = new JsonObject();
@@ -62,7 +62,7 @@ public class OperationCollectionIT {
     }
 
     @Test
-    public void testOperationCollection() throws Exception {
+    public void testOperationCollection() {
         // given at least one created operation entry
         final Operation operation = new Operation();
         operation.setDeviceId(testManagedObject.getId());
@@ -84,19 +84,19 @@ public class OperationCollectionIT {
         final Operation retrievedOperation = operations[0];
         final JsonObject jsonObject = operationCollection.getJsonArray().get(0).getAsJsonObject();
 
-        assertTrue(retrievedOperation.getId() != null);
+        assertNotNull(retrievedOperation.getId());
         assertFalse(retrievedOperation.getId().isEmpty());
-        assertTrue(retrievedOperation.getId().equals(jsonObject.get("id").getAsString()));
+        assertEquals(jsonObject.get("id").getAsString(), retrievedOperation.getId());
 
-        assertTrue(retrievedOperation.getCreationTime() != null);
+        assertNotNull(retrievedOperation.getCreationTime());
         assertTrue(retrievedOperation.getCreationTime().compareTo(new Date()) < 0);
 
-        assertTrue(retrievedOperation.getStatus() != null);
-        assertTrue(retrievedOperation.getStatus().toString().equals(jsonObject.get("status").getAsString()));
+        assertNotNull(retrievedOperation.getStatus());
+        assertEquals(jsonObject.get("status").getAsString(), retrievedOperation.getStatus().toString());
     }
 
     @Test
-    public void testDeleteMultipleOperationsByDeviceId() throws Exception {
+    public void testDeleteMultipleOperationsByDeviceId() {
         for (int i = 0; i < 6; i++) {
             Operation testOperation = new Operation();
             testOperation.setDeviceId(testManagedObject.getId());
@@ -116,7 +116,7 @@ public class OperationCollectionIT {
     }
 
     @Test
-    public void testMultipleOperationsByDeviceId() throws Exception {
+    public void testMultipleOperationsByDeviceId() {
         Operation testOperation = new Operation();
         testOperation.setDeviceId(testManagedObject.getId());
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
@@ -132,12 +132,12 @@ public class OperationCollectionIT {
         OperationCollection operations = deviceControlApi.getOperationCollection(5);
         Operation[] os = operations.getOperations();
         assertTrue(os.length > 0);
-        assertTrue(Arrays.stream(os).filter(operation -> !operation.getDeviceId().equals(testManagedObject.getId())).count() > 0);
+        assertTrue(Arrays.stream(os).anyMatch(operation -> !operation.getDeviceId().equals(testManagedObject.getId())));
 
         operations = deviceControlApi.getOperationCollection(Filter.build().byDeviceId(testManagedObject.getId()), 20);
         os = operations.getOperations();
         assertTrue(os.length > 0);
-        assertTrue(Arrays.stream(os).filter(operation -> !operation.getDeviceId().equals(testManagedObject.getId())).count() == 0);
+        assertTrue(Arrays.stream(os).allMatch(operation -> operation.getDeviceId().equals(testManagedObject.getId())));
 
         // cleanup
         deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject2.getId()));
@@ -145,7 +145,7 @@ public class OperationCollectionIT {
     }
 
     @Test
-    public void testMultipleOperationByStatus() throws Exception {
+    public void testMultipleOperationByStatus() {
         Operation testOperation = new Operation();
         testOperation.setDeviceId(testManagedObject.getId());
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
@@ -160,7 +160,7 @@ public class OperationCollectionIT {
     }
 
     @Test
-    public void testMultipleOperationsByDateAndByDeviceId() throws Exception {
+    public void testMultipleOperationsByDateAndByDeviceId() {
         Operation testOperation = new Operation();
         testOperation.setDeviceId(testManagedObject.getId());
         testOperation.set("com_telekom_m2m_cotcommand", jsonObject);

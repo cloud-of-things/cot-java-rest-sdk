@@ -17,7 +17,7 @@ import java.util.Arrays;
  */
 public class SupportedOperations implements Fragment {
 
-    private String[] operations;
+    private final String[] operations;
 
 
     public SupportedOperations(String... operations) {

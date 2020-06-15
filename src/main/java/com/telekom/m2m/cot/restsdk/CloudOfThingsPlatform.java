@@ -1,10 +1,5 @@
 package com.telekom.m2m.cot.restsdk;
 
-import java.net.InetSocketAddress;
-import java.net.Proxy;
-import java.util.Base64;
-import java.util.concurrent.TimeUnit;
-
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
 import com.telekom.m2m.cot.restsdk.audit.AuditApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.CotCredentials;
@@ -19,8 +14,12 @@ import com.telekom.m2m.cot.restsdk.realtime.CepApi;
 import com.telekom.m2m.cot.restsdk.retentionrule.RetentionRuleApi;
 import com.telekom.m2m.cot.restsdk.smartrest.SmartRestApi;
 import com.telekom.m2m.cot.restsdk.users.UserApi;
-
 import okhttp3.OkHttpClient;
+
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.util.Base64;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The CloudOfThingsPlatform is the starting point to access the Cloud of
@@ -40,7 +39,7 @@ public class CloudOfThingsPlatform {
      * new objects are built with: buildClient.newBuilder().build()
      */
     private static final OkHttpClient buildClient = new OkHttpClient();
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
     /**
      * Get a platform object to register new devices. This should be used for

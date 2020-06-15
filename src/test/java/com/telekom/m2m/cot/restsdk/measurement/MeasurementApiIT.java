@@ -13,9 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -24,8 +22,8 @@ public class MeasurementApiIT {
 
     private static final String MEASUREMENT_TYPE = "com_telekom_TestType";
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
     private ManagedObject testManagedObject;
 
     @BeforeClass

@@ -10,7 +10,7 @@ public class Relay implements Fragment {
         OPEN, CLOSED
     }
 
-    private State relayState;
+    private final State relayState;
 
 
     public Relay(State relayState) {

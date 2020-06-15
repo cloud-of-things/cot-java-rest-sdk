@@ -6,7 +6,6 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.*;
 
 /**

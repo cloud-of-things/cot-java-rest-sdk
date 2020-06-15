@@ -9,14 +9,14 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.*;
+import static org.testng.Assert.assertEquals;
 
 public class InventoryApiQueryIT {
 
     private static final String MANAGED_OBJECT_NAME = "testDevice_" + System.currentTimeMillis();
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
 
     private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
 

@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class TemperatureMeasurement implements Fragment {
 
-    private float temperatureValue;
-    private String temperatureUnit;
+    private final float temperatureValue;
+    private final String temperatureUnit;
     
     
     public TemperatureMeasurement(float temperatureValue, String temperatureUnit) {
