@@ -164,8 +164,7 @@ public class DevicePermissionIT {
     }
 
     private Measurement createMeasurement(ManagedObject managedObject, MeasurementApi measurementApi) {
-        SampleTemperatureSensor sts = new SampleTemperatureSensor();
-        sts.setTemperature(100);
+        SampleTemperatureSensor sts = new SampleTemperatureSensor(100);
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(managedObject);
         testMeasurement.setTime(new Date());

@@ -265,8 +265,7 @@ public class InventoryApiExtendedIT {
     }
 
     private void createMeasurement(ManagedObject managedObject) {
-        SampleTemperatureSensor sampleTemperatureSensor = new SampleTemperatureSensor();
-        sampleTemperatureSensor.setTemperature(100);
+        SampleTemperatureSensor sampleTemperatureSensor = new SampleTemperatureSensor(100);
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(managedObject);
         testMeasurement.setTime(new Date());

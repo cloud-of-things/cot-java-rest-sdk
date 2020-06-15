@@ -133,7 +133,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                     }
 
                 } else if (tmp.isNumber()) {
-                    converted = tmp.getAsNumber();
+                    converted = tmp.getAsBigDecimal();
                 }
                 mo.set(key, converted);
             } else if (value.isJsonObject()) {

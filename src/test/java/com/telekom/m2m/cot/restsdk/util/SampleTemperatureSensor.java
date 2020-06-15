@@ -9,22 +9,11 @@ public class SampleTemperatureSensor {
 
     private MeasurementReading temperature;
 
-    public SampleTemperatureSensor() {
-
-    }
-
-    public SampleTemperatureSensor(MeasurementReading temperature) {
-        this.temperature = temperature;
+    public SampleTemperatureSensor(final float temperature) {
+        this.temperature = new MeasurementReading(temperature, "°C");
     }
 
     public MeasurementReading getTemperature() {
         return temperature;
     }
-
-
-    public void setTemperature(float temperature) {
-        this.temperature = new MeasurementReading("°C");
-        this.temperature.setValue(temperature);
-    }
-
 }

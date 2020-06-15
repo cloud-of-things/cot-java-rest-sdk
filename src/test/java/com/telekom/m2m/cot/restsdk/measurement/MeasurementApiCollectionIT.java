@@ -258,8 +258,7 @@ public class MeasurementApiCollectionIT {
 
     @Test
     public void testMultipleMeasurementsByTypeAndBySource() throws Exception {
-        SampleTemperatureSensor sts = new SampleTemperatureSensor();
-        sts.setTemperature(100);
+        SampleTemperatureSensor sts = new SampleTemperatureSensor(100);
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
@@ -288,8 +287,7 @@ public class MeasurementApiCollectionIT {
 
     @Test
     public void testMultipleMeasurementsByFragmentTypeAndBySource() throws Exception {
-        SampleTemperatureSensor sts = new SampleTemperatureSensor();
-        sts.setTemperature(100);
+        SampleTemperatureSensor sts = new SampleTemperatureSensor(100);
         Measurement testMeasurement = new Measurement();
         testMeasurement.setSource(testManagedObject);
         testMeasurement.setTime(new Date(new Date().getTime() - (1000 * 60)));
