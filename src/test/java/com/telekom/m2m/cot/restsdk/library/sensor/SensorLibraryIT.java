@@ -1,6 +1,5 @@
 package com.telekom.m2m.cot.restsdk.library.sensor;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;

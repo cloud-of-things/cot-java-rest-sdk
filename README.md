@@ -60,6 +60,10 @@ Short information about what has changed between releases.
     - Usage of newest dependencies
     - Cleanup and improvements according to code inspection
 
+* EventApi provides the update of events as well now. ([Pull Request #95](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/95))
+* Fixed cast in getSource() method of Alarm and Event
+* Added the getter as counterpart of set(Object) in ExtendedObject
+
 
 ### Release 1.1.0
 

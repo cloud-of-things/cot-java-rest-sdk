@@ -255,10 +255,7 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByTypeAndBySource() {
-        Position sts = new Position();
-        sts.setAlt(1000.0);
-        sts.setLat(50.722607);
-        sts.setLon(7.144011);
+        Position position = new Position(50.722607, 7.144011, 1000.0);
 
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
@@ -266,7 +263,7 @@ public class EventApiCollectionIT {
         testEvent.setType("mysuperspecialtype");
         testEvent.setText("Test");
 
-        testEvent.set(sts);
+        testEvent.set(position);
         eventApi.createEvent(testEvent);
 
         EventCollection events = eventApi.getEvents(
@@ -290,17 +287,14 @@ public class EventApiCollectionIT {
 
     @Test
     public void testMultipleEventsByFragmentTypeAndBySource() {
-        Position sts = new Position();
-        sts.setAlt(1000.0);
-        sts.setLat(50.722607);
-        sts.setLon(7.144011);
+        Position position = new Position(50.722607, 7.144011, 1000.0);
 
         Event testEvent = new Event();
         testEvent.setSource(testManagedObject);
         testEvent.setTime(new Date(new Date().getTime() - (1000 * 60)));
         testEvent.setType("mysuperspecialtype");
         testEvent.setText("Test");
-        testEvent.set(sts);
+        testEvent.set(position);
         eventApi.createEvent(testEvent);
 
         EventCollection events = eventApi.getEvents(

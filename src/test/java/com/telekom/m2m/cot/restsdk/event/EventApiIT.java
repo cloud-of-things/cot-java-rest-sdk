@@ -2,6 +2,7 @@ package com.telekom.m2m.cot.restsdk.event;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.Position;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
@@ -32,7 +33,6 @@ public class EventApiIT {
 
     @Test
     public void testCreateEvent() {
-
         Event event = new Event();
         event.setText("Sample Text");
         event.setType("com_telekom_TestType");
@@ -96,13 +96,51 @@ public class EventApiIT {
 
         Event createdEvent = eventApi.createEvent(event);
                 
-        String id= createdEvent.getId();
+        String id = createdEvent.getId();
         
         //The event that exist in the cloud should be gettable:        
         Assert.assertNotNull(eventApi.getEvent(id));
         
         //Now lets try to "get" an event that does not exist in the cloud, get method should return a null:
         Assert.assertNull(eventApi.getEvent("theIdThatDoesNotExist"));
+    }
+
+    @Test
+    public void testCreateAndUpdate() {
+        // given
+        Calendar timeOfEventHappening = Calendar.getInstance();
+
+        Event event = new Event();
+        event.setText("Sample Text");
+        event.setType("com_telekom_TestType");
+        event.setTime(timeOfEventHappening.getTime());
+        event.setSource(testManagedObject);
+        event.setText("Door sensor was triggered.");
+        Position position = new Position(50.722607, 7.144011, 1000.0);
+        event.set(position);
+
+        EventApi eventApi = cotPlat.getEventApi();
+
+        //when
+        Event createdEvent = eventApi.createEvent(event);
+
+        Assert.assertNotNull(createdEvent.getId(), "Should now have an Id");
+
+        Event retrievedEvent = eventApi.getEvent(createdEvent.getId());
+        Assert.assertEquals(retrievedEvent.getText(), "Door sensor was triggered.");
+        Assert.assertEquals(retrievedEvent.get(Position.class).toString(), position.toString());
+
+        retrievedEvent.setText("Window sensor was triggered.");
+        position.setLat(77.0);
+        retrievedEvent.set(position);
+
+        eventApi.update(retrievedEvent);
+        retrievedEvent = eventApi.getEvent(createdEvent.getId());
+
+        // then
+        Assert.assertEquals(retrievedEvent.getText(), "Window sensor was triggered.");
+        Assert.assertEquals(retrievedEvent.get(Position.class).toString(), position.toString());
+        Assert.assertEquals(((Position)retrievedEvent.get(Position.class)).getLat(), 77.0);
     }
 
 }

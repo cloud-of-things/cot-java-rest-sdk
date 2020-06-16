@@ -2,7 +2,6 @@ package com.telekom.m2m.cot.restsdk.retentionrule;
 
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import org.mockito.Mockito;
 import org.testng.annotations.BeforeMethod;
