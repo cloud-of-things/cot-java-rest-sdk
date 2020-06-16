@@ -18,10 +18,7 @@ public class EventTest {
     @Test
     public void testEventSerialization() {
 
-        Position p = new Position();
-        p.setAlt(6);
-        p.setLat(8);
-        p.setLon(2);
+        Position p = new Position(8, 2, 6);
 
         Event e = new Event();
         e.setId("1234");
@@ -39,16 +36,13 @@ public class EventTest {
     public void testEventFragmentSerialization() {
         Date date = new Date();
 
-        Position sts = new Position();
-        sts.setAlt(1000.0);
-        sts.setLat(50.722607);
-        sts.setLon(7.144011);
+        Position position = new Position(50.722607, 7.144011, 1000.0);
 
         Event event= new Event();
         event.setId("300001");
         event.setTime(date);
         event.setType("com_telekom_locationupdateevent");
-        event.set(sts);
+        event.set(position);
 
         Gson gson = GsonUtils.createGson();
         String json = gson.toJson(event);

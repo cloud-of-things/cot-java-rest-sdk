@@ -146,7 +146,7 @@ public class ExtensibleObjectTest {
         eo.set("test1", "String");
         eo.set("test2", 4711);
         eo.set("test3", null);
-        eo.set("test4", new Position());
+        eo.set("test4", new Position(1, 2, 3));
         eo.set("test5", new Date());
 
         Map<String, Object> attributesBefore = eo.getAttributes();

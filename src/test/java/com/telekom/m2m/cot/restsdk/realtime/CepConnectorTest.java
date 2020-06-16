@@ -1,7 +1,6 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;

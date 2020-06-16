@@ -10,6 +10,7 @@ import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -104,6 +105,26 @@ public class EventApi {
                 RELATIVE_API_URL,
                 gson,
                 filters);
+    }
+
+    /**
+     * Updates an Event. It is just possible to update the text and user defined fragments.
+     * Any further attributes like type, time or source.id will be ignored.
+     *
+     * @param event the event to update.
+     * @since 2.0.0
+     */
+    public void update(Event event) {
+        Map attributes = event.getAttributes();
+        attributes.remove("time");
+        attributes.remove("creationTime");
+        attributes.remove("type");
+        attributes.remove("source");
+        Event eventToUpdate = new Event();
+        eventToUpdate.setAttributes(attributes);
+
+        String json = gson.toJson(eventToUpdate);
+        cloudOfThingsRestClient.doPutRequest(json, RELATIVE_API_URL + event.getId(), CONTENT_TYPE);
     }
 
     /**

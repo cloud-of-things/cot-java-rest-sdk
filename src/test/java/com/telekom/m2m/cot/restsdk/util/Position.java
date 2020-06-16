@@ -5,24 +5,22 @@ package com.telekom.m2m.cot.restsdk.util;
  */
 public class Position  {
 
-    double lon;
     double lat;
+    double lon;
     double alt;
+
+    public Position(double lat, double lon, double alt) {
+        this.lat = lat;
+        this.lon = lon;
+        this.alt = alt;
+    }
 
     public double getAlt() {
         return alt;
     }
 
-    public void setAlt(double alt) {
-        this.alt = alt;
-    }
-
     public double getLon() {
         return lon;
-    }
-
-    public void setLon(double lon) {
-        this.lon = lon;
     }
 
     public double getLat() {
@@ -33,5 +31,12 @@ public class Position  {
         this.lat = lat;
     }
 
-
+    @Override
+    public String toString() {
+        return "Position{" +
+                "lat=" + lat +
+                ", lon=" + lon +
+                ", alt=" + alt +
+                '}';
+    }
 }

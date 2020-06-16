@@ -132,7 +132,14 @@ public class Alarm extends ExtensibleObject {
      * @return the originating {@link ManagedObject}
      */
     public ManagedObject getSource() {
-        return (ManagedObject) anyObject.get("source");
+        Object source = anyObject.get("source");
+        // since source value can be set as ManagedObject via setter in regular way
+        // and as ExtensibleObject via gson ExtensibleObjectSerializer.
+        // At first we need to check the type to avoid an unnecessary wrap into ManagedObject
+        if(source instanceof ManagedObject) {
+            return (ManagedObject)source;
+        }
+        return new ManagedObject((ExtensibleObject) source);
     }
 
     /**
