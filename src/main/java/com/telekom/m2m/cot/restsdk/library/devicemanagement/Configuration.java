@@ -7,7 +7,7 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class Configuration implements Fragment {
 
-    private String config;
+    private final String config;
 
 
     public Configuration(String config) {

@@ -18,7 +18,7 @@ import java.util.Map;
 public class ExtensibleObjectTest {
 
     @Test
-    public void testSerializationOfExtensibleObjects() throws Exception {
+    public void testSerializationOfExtensibleObjects() {
         ManagedObject mo = new ManagedObject();
         mo.setId("1");
         mo.setName("Foo");
@@ -41,7 +41,7 @@ public class ExtensibleObjectTest {
     }
 
     @Test
-    public void testSerializationOfExtensibleObjectsWithObjects() throws Exception {
+    public void testSerializationOfExtensibleObjectsWithObjects() {
         ManagedObject mo = new ManagedObject();
         mo.setId("1");
         mo.setName("Foo");
@@ -63,7 +63,7 @@ public class ExtensibleObjectTest {
     }
 
     @Test
-    public void testSerializationOfExtensibleObjectsWithEmptyObjects() throws Exception {
+    public void testSerializationOfExtensibleObjectsWithEmptyObjects() {
         ManagedObject mo = new ManagedObject();
         mo.setId("1");
         mo.setName("Foo");
@@ -85,7 +85,7 @@ public class ExtensibleObjectTest {
     }
 
     @Test
-    public void testDeserializationOfExtensibleObjects() throws Exception {
+    public void testDeserializationOfExtensibleObjects() {
         InputStream in = this.getClass().getClassLoader()
                 .getResourceAsStream("mo-test.json");
         InputStreamReader br = new InputStreamReader(in);
@@ -100,7 +100,7 @@ public class ExtensibleObjectTest {
     }
 
     @Test
-    public void testDeserializationOfExtensibleObjectsWithObjects() throws Exception {
+    public void testDeserializationOfExtensibleObjectsWithObjects() {
         InputStream in = this.getClass().getClassLoader()
                 .getResourceAsStream("mo-test.json");
         InputStreamReader br = new InputStreamReader(in);
@@ -122,7 +122,7 @@ public class ExtensibleObjectTest {
 
 
     @Test
-    public void testDeserializationOfExtensibleObjectsWithEmptyObjects() throws Exception {
+    public void testDeserializationOfExtensibleObjectsWithEmptyObjects() {
         InputStream in = this.getClass().getClassLoader()
                 .getResourceAsStream("mo-test.json");
         InputStreamReader br = new InputStreamReader(in);
@@ -141,7 +141,7 @@ public class ExtensibleObjectTest {
     }
 
     @Test
-    public void testSetAttributesNull() throws Exception {
+    public void testSetAttributesNull() {
         ExtensibleObject eo = new ExtensibleObject();
         eo.set("test1", "String");
         eo.set("test2", 4711);
@@ -153,7 +153,7 @@ public class ExtensibleObjectTest {
 
         Assert.assertEquals(attributesBefore.get("test1"), "String");
         Assert.assertEquals(attributesBefore.get("test2"), 4711);
-        Assert.assertEquals(attributesBefore.get("test3"), null);
+        Assert.assertNull(attributesBefore.get("test3"));
 
         eo.setAttributes(null);
 
@@ -161,13 +161,13 @@ public class ExtensibleObjectTest {
 
         Assert.assertEquals(attributesAfter.get("test1"), "String");
         Assert.assertEquals(attributesAfter.get("test2"), 4711);
-        Assert.assertEquals(attributesAfter.get("test3"), null);
+        Assert.assertNull(attributesAfter.get("test3"));
         Assert.assertEquals(attributesAfter, attributesBefore);
 
     }
 
     @Test
-    public void testShallowCopyAttributes() throws Exception {
+    public void testShallowCopyAttributes() {
         ExtensibleObject eo = new ExtensibleObject();
         Map<String, Object> attr = eo.getAttributes();
 
@@ -179,7 +179,7 @@ public class ExtensibleObjectTest {
     }
 
     @Test
-    public void testGetSetAttributes() throws Exception {
+    public void testGetSetAttributes() {
         ExtensibleObject eo = new ExtensibleObject();
         Map<String, Object> attr = eo.getAttributes();
 

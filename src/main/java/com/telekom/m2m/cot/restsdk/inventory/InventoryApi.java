@@ -1,14 +1,23 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
-import com.google.gson.*;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.realtime.CepConnector;
 import com.telekom.m2m.cot.restsdk.realtime.Notification;
 import com.telekom.m2m.cot.restsdk.realtime.SubscriptionListener;
-import com.telekom.m2m.cot.restsdk.util.*;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * Represents the API to retrieve and manipulate ManagedObjects.
@@ -78,7 +87,7 @@ public class InventoryApi {
      * @return the found {@link ManagedObject} (or null if not found)
      */
     public ManagedObject get(String id, boolean withParents) {
-        String response = cloudOfThingsRestClient.getResponse(id + "?withParents=" + Boolean.toString(withParents), RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
+        String response = cloudOfThingsRestClient.getResponse(id + "?withParents=" + withParents, RELATIVE_API_URL, CONTENT_TYPE_MANAGEDOBJECT);
         ExtensibleObject extensibleObject = gson.fromJson(response, ManagedObject.class);
         if (extensibleObject != null) {
             return new ManagedObject(extensibleObject);
@@ -218,8 +227,7 @@ public class InventoryApi {
         if (managedObjectIdIsValid(managedObjectId)) {
             String supportedMeasurementsApi = RELATIVE_API_URL + managedObjectId + "/supportedMeasurements";
             String response = cloudOfThingsRestClient.getResponse(supportedMeasurementsApi);
-            JsonParser jsonParser = new JsonParser();
-            JsonArray responseJsonArray = jsonParser.parse(response).getAsJsonObject().getAsJsonArray(SUPPORTED_MEASUREMENTS);
+            JsonArray responseJsonArray = JsonParser.parseString(response).getAsJsonObject().getAsJsonArray(SUPPORTED_MEASUREMENTS);
             return gson.fromJson(responseJsonArray, new TypeToken<List<String>>() {}.getType());
         }
         return new ArrayList<>();
@@ -250,11 +258,7 @@ public class InventoryApi {
     }
 
     private boolean managedObjectIdIsValid(String managedObjectId) {
-        if (managedObjectId == null || managedObjectId.contains("*")) {
-            return false;
-        } else {
-            return true;
-        }
+        return managedObjectId != null && !managedObjectId.contains("*");
     }
 
     private class NotificationListener implements SubscriptionListener {

@@ -37,9 +37,7 @@ public class ManagedObjectReferenceCollectionSerializer implements
             }
         }
 
-        ManagedObjectReferenceCollection morc = new ManagedObjectReferenceCollection(mos, selfRef);
-
-        return morc;
+        return new ManagedObjectReferenceCollection(mos, selfRef);
     }
 
     public JsonElement serialize(ManagedObjectReferenceCollection src, Type typeOfSrc, JsonSerializationContext context) {

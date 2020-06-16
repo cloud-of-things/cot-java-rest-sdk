@@ -2,30 +2,17 @@ package com.telekom.m2m.cot.restsdk.retentionrule;
 
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.event.Event;
-import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
-import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import java.util.Date;
-
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 public class RetentionRuleApiIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
-    private RetentionRuleApi retentionRuleApi = cotPlat.getRetentionRuleApi();
+    private final RetentionRuleApi retentionRuleApi = cotPlat.getRetentionRuleApi();
 
 
     @Test
@@ -140,7 +127,7 @@ public class RetentionRuleApiIT {
 
 
     @Test
-    public void testCreateReadUpdateDeleteRule() throws Exception {
+    public void testCreateReadUpdateDeleteRule() {
         // given
         RetentionRule ruleIn = new RetentionRule();
         String source = "source-" + (Math.random() * Integer.MAX_VALUE);
@@ -155,7 +142,7 @@ public class RetentionRuleApiIT {
 
         // then
         assertNotNull(r.getId(), "Should now have an Id");
-        assertTrue(r == ruleIn);
+        assertSame(r, ruleIn);
 
         // when
         RetentionRule ruleOut = retentionRuleApi.getRule(ruleIn.getId());

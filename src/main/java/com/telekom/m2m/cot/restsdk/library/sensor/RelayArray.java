@@ -9,10 +9,10 @@ import java.util.Arrays;
 
 public class RelayArray implements Fragment {
 
-    private Relay arrayOfRelays[];
+    private final Relay[] arrayOfRelays;
 
     
-    public RelayArray(Relay arrayOfRelays[]) {
+    public RelayArray(Relay[] arrayOfRelays) {
         
         this.arrayOfRelays = Arrays.copyOf(arrayOfRelays, arrayOfRelays.length);
     }

@@ -1,11 +1,11 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import java.util.Map;
-
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Map;
 
 /**
  * Use the UserApi to work with users. Created by Ozan Arslan on 13.07.2017
@@ -196,8 +196,7 @@ public class UserApi {
 
     public Role getRoleByName(String name) {
         String result = cloudOfThingsRestClient.getResponse(name, "user/roles", CONTENT_TYPE_ROLE);
-        Role returnedrole = new Role(gson.fromJson(result, ExtensibleObject.class));
-        return returnedrole;
+        return new Role(gson.fromJson(result, ExtensibleObject.class));
     }
 
     public void assignRoleToUser(User user, Role role, String tenant) {

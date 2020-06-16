@@ -16,7 +16,7 @@ import java.util.Date;
  */
 public class AuditApiIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeClass
@@ -30,7 +30,7 @@ public class AuditApiIT {
     }
 
     @Test
-    public void testAuditApi() throws Exception {
+    public void testAuditApi() {
         // given
         final String text = "new audit record created";
         final String type = "com_telekom_audit_TestType_" + System.currentTimeMillis();

@@ -8,7 +8,6 @@ import org.testng.annotations.Test;
 import java.util.Date;
 
 import static org.testng.Assert.*;
-import static org.testng.Assert.assertTrue;
 
 /**
  * Created by Patrick Steinert on 02.01.17.

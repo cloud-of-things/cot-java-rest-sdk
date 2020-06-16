@@ -1,9 +1,7 @@
 package com.telekom.m2m.cot.restsdk.util;
 
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.ExpectedException;
+import org.testng.annotations.Test;
 
 import java.time.Instant;
 import java.time.LocalDate;
@@ -12,14 +10,10 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 
-import static org.hamcrest.CoreMatchers.not;
-import static org.junit.Assert.assertThat;
-import static org.junit.matchers.JUnitMatchers.containsString;
+import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertTrue;
 
 public class FilterTest {
-
-    @Rule
-    public final ExpectedException exception = ExpectedException.none();
 
     @Test
     public void bySourceAddsValueToFilterString() {
@@ -27,7 +21,7 @@ public class FilterTest {
             .byAgentId("42")
             .buildFilter();
 
-        assertThat(filter, containsString("42"));
+        assertTrue(filter.contains("42"));
     }
 
     @Test
@@ -36,7 +30,7 @@ public class FilterTest {
             .byType("mqtt")
             .buildFilter();
 
-        assertThat(filter, containsString("mqtt"));
+        assertTrue(filter.contains("mqtt"));
     }
 
     @Test
@@ -52,8 +46,8 @@ public class FilterTest {
             .byDate(Date.from(start), Date.from(end))
             .buildFilter();
 
-        assertThat(filter, containsString("2016"));
-        assertThat(filter, containsString("2017"));
+        assertTrue(filter.contains("2016"));
+        assertTrue(filter.contains("2017"));
     }
 
     @Test
@@ -62,7 +56,7 @@ public class FilterTest {
             .byFragmentType("test")
             .buildFilter();
 
-        assertThat(filter, containsString("test"));
+        assertTrue(filter.contains("test"));
     }
 
     @Test
@@ -71,7 +65,7 @@ public class FilterTest {
             .byDeviceId("42")
             .buildFilter();
 
-        assertThat(filter, containsString("42"));
+        assertTrue(filter.contains("42"));
     }
 
     @Test
@@ -80,7 +74,7 @@ public class FilterTest {
             .byStatus("EXECUTING")
             .buildFilter();
 
-        assertThat(filter, containsString("EXECUTING"));
+        assertTrue(filter.contains("EXECUTING"));
     }
 
     @Test
@@ -89,7 +83,7 @@ public class FilterTest {
             .byStatus(OperationStatus.PENDING)
             .buildFilter();
 
-        assertThat(filter, containsString(OperationStatus.PENDING.toString()));
+        assertTrue(filter.contains(OperationStatus.PENDING.toString()));
     }
 
     @Test
@@ -98,7 +92,7 @@ public class FilterTest {
             .byText("test")
             .buildFilter();
 
-        assertThat(filter, containsString("test"));
+        assertTrue(filter.contains("test"));
     }
 
     @Test
@@ -107,7 +101,7 @@ public class FilterTest {
             .byListOfIds("1,2,3")
             .buildFilter();
 
-        assertThat(filter, containsString("1,2,3"));
+        assertTrue(filter.contains("1,2,3"));
     }
 
     @Test
@@ -116,7 +110,7 @@ public class FilterTest {
             .byAgentId("42")
             .buildFilter();
 
-        assertThat(filter, containsString("42"));
+        assertTrue(filter.contains("42"));
     }
 
     @Test
@@ -125,7 +119,7 @@ public class FilterTest {
             .byUser("matthias")
             .buildFilter();
 
-        assertThat(filter, containsString("matthias"));
+        assertTrue(filter.contains("matthias"));
     }
 
     @Test
@@ -134,7 +128,7 @@ public class FilterTest {
             .byApplication("unicorn")
             .buildFilter();
 
-        assertThat(filter, containsString("unicorn"));
+        assertTrue(filter.contains("unicorn"));
     }
 
     @Test
@@ -144,8 +138,8 @@ public class FilterTest {
             .byUser("matthias")
             .buildFilter();
 
-        assertThat(filter, containsString("42"));
-        assertThat(filter, containsString("matthias"));
+        assertTrue(filter.contains("42"));
+        assertTrue(filter.contains("matthias"));
     }
 
     @Test
@@ -155,8 +149,8 @@ public class FilterTest {
             .byUser("harry")
             .buildFilter();
 
-        assertThat(filter, not(containsString("matthias")));
-        assertThat(filter, containsString("harry"));
+        assertFalse(filter.contains("matthias"));
+        assertTrue(filter.contains("harry"));
     }
 
     @Test
@@ -165,7 +159,7 @@ public class FilterTest {
             .setFilter(FilterBy.BYTEXT, "test")
             .buildFilter();
 
-        assertThat(filter, containsString("test"));
+        assertTrue(filter.contains("test"));
     }
 
     @Test
@@ -178,8 +172,8 @@ public class FilterTest {
             .setFilters(filters)
             .buildFilter();
 
-        assertThat(filter, containsString("test"));
-        assertThat(filter, containsString("matthias"));
+        assertTrue(filter.contains("test"));
+        assertTrue(filter.contains("matthias"));
     }
 
     @Test
@@ -188,7 +182,7 @@ public class FilterTest {
             .byDeviceId("42")
             .buildFilter();
 
-        assertThat(filter, containsString(FilterBy.BYDEVICEID.getFilterKey()));
+        assertTrue(filter.contains(FilterBy.BYDEVICEID.getFilterKey()));
     }
 
     @Test
@@ -209,12 +203,11 @@ public class FilterTest {
         builder.validateSupportedFilters(Collections.singletonList(FilterBy.BYAGENTID));
     }
 
-    @Test
+    @Test(expectedExceptions = CotSdkException.class)
     public void validateSupportedFiltersThrowsExceptionIfNotAcceptedFilterHasBeenAdded() {
         final Filter.FilterBuilder builder = Filter.build()
             .byAgentId("42");
 
-        exception.expect(CotSdkException.class);
         builder.validateSupportedFilters(Collections.singletonList(FilterBy.BYDEVICEID));
     }
 }

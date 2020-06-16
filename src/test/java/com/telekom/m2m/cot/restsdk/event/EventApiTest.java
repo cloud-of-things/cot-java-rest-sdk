@@ -10,14 +10,14 @@ import org.testng.annotations.Test;
 
 import java.util.Date;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Created by Patrick Steinert on 03.02.16.
  */
 public class EventApiTest {
     @Test(expectedExceptions = CotSdkException.class)
-    public void testGetEventWithFailure() throws Exception {
+    public void testGetEventWithFailure() {
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
         Mockito.when(platform.getEventApi()).thenReturn(new EventApi(rc));
@@ -28,7 +28,7 @@ public class EventApiTest {
     }
 
     @Test
-    public void testGetEvent() throws Exception {
+    public void testGetEvent() {
 
         String eventJsonExample = "{\n" +
                 "  \"id\" : \"10\",\n" +

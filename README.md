@@ -35,10 +35,13 @@ Short information about what has changed between releases.
 
 ### Release 2.0.0
 
-* Prevent injection in update method
-* More robust deserialization catching IllegalArgumentException being thrown by Spring Boot Class Loader for properties like "A+:1" in ThreePhaseElectricityMeasurement.
-* Fix erroneously wrapped number values in deserialized ExtensibleObjects, e.g.:
+* Prevent injection in update method ([Pull Request #90](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/90)). 
+* More robust deserialization catching IllegalArgumentException being thrown by Spring Boot Class Loader for properties like "A+:1" in ThreePhaseElectricityMeasurement
+([Pull Request #91](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/91)).
+    
+* Fix erroneously wrapped numeric values in deserialized ExtensibleObjects ([Pull Request #92](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/92)), e.g.:
     serialized Object: temperature=ExtensibleObject{anyObject={unit=°C, value=100.0}} will be deserialized into:
+    ```
     OLD:
     "temperature":{
         "value":{
@@ -46,11 +49,17 @@ Short information about what has changed between releases.
         },
         "unit":"°C"
     }
+    
     FIXED:
     "temperature":{
         "value":100.0,
         "unit":"°C"
     }
+    ```
+* Includes [Pull Request #94](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/94):
+    - Usage of newest dependencies
+    - Cleanup and improvements according to code inspection
+
 
 ### Release 1.1.0
 

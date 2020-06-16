@@ -98,13 +98,13 @@ public class JsonArrayPaginationIT {
 
         AuditRecord retrievedAuditRecord = auditRecords[0];
 
-        Assert.assertTrue(retrievedAuditRecord.getId() != null);
+        Assert.assertNotNull(retrievedAuditRecord.getId());
         Assert.assertTrue(retrievedAuditRecord.getId().length() > 0);
 
-        Assert.assertTrue(retrievedAuditRecord.getTime() != null);
+        Assert.assertNotNull(retrievedAuditRecord.getTime());
         Assert.assertTrue(retrievedAuditRecord.getTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(retrievedAuditRecord.getType() != null);
+        Assert.assertNotNull(retrievedAuditRecord.getType());
         Assert.assertTrue(retrievedAuditRecord.getType().length() > 0);
     }
 

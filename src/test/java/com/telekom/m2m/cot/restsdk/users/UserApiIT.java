@@ -1,18 +1,13 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.util.CotSdkException;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import java.util.*;
 
 import static org.testng.Assert.*;
 
@@ -36,7 +31,7 @@ public class UserApiIT {
 
     // This has to be a tenant, for which the account from TestHelper has the necessary permissions!
     // Be careful when using delete functionality in order to avoid a deletion of the "main" user configured in TestHelper.TEST_USERNAME
-    private String tenant = TestHelper.TEST_TENANT;
+    private final String tenant = TestHelper.TEST_TENANT;
 
     private List<Group> groupsToDelete = new ArrayList<>();
     private List<User> usersToDelete = new ArrayList<>();

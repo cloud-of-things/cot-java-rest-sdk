@@ -23,9 +23,9 @@ public class InventoryApiExtendedIT {
     private static final String PARENT_MANAGED_OBJECT_NAME = "parentTestManagedObject";
     private static final String CHILD_MANAGED_OBJECT_NAME = "childTestManagedObject";
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
-    private MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
+    private final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
     private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
 
@@ -69,7 +69,7 @@ public class InventoryApiExtendedIT {
         childDevicesIterator = reloadedParentMoFromCloud.getChildDevices().get().iterator();
         assertFalse(childDevicesIterator.hasNext());
         try {
-            next = childDevicesIterator.next();
+            childDevicesIterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
@@ -108,7 +108,7 @@ public class InventoryApiExtendedIT {
         parentDevicesIterator = childMoFromCloud.getParentDevices().get().iterator();
         assertFalse(parentDevicesIterator.hasNext());
         try {
-            next = parentDevicesIterator.next();
+            parentDevicesIterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
@@ -147,7 +147,7 @@ public class InventoryApiExtendedIT {
         iterator = childMo.getParentAssets().get().iterator();
         assertFalse(iterator.hasNext());
         try {
-            next = iterator.next();
+            iterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
@@ -181,7 +181,7 @@ public class InventoryApiExtendedIT {
         iterator = reloadedMo.getChildAssets().get().iterator();
         assertFalse(iterator.hasNext());
         try {
-            next = iterator.next();
+            iterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 

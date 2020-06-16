@@ -15,19 +15,19 @@ import static org.testng.Assert.assertNotNull;
 public class CloudOfThingsPlatformTestIT {
 
     @Test(enabled = false) // Enable if you have a proxy to test with
-    public void testProxyConnection() throws Exception {
+    public void testProxyConnection() {
 
     }
 
     @Test(expectedExceptions = CotSdkException.class)
-    public void testBadProxyConnection() throws Exception {
+    public void testBadProxyConnection() {
         CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD, "127.99.88.77", 1111);
         InventoryApi inventoryApi = cotPlatform.getInventoryApi();
         inventoryApi.get("test");
     }
 
     @Test
-    public void testWithCredentials() throws Exception {
+    public void testWithCredentials() {
         CotCredentials cotCredentials = new CotCredentials(TestHelper.TEST_TENANT, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
         CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, cotCredentials);
 
@@ -38,7 +38,7 @@ public class CloudOfThingsPlatformTestIT {
     }
 
     @Test
-    public void testCredentialsWithTenantUsername() throws Exception {
+    public void testCredentialsWithTenantUsername() {
         CotCredentials cotCredentials = new CotCredentials(TestHelper.TEST_TENANT,
                 TestHelper.TEST_TENANT + "/" + TestHelper.TEST_USERNAME,
                 TestHelper.TEST_PASSWORD);

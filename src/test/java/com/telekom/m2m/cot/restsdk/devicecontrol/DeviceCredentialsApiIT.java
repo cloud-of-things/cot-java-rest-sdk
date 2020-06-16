@@ -20,7 +20,7 @@ import static org.testng.Assert.assertNotNull;
  */
 public class DeviceCredentialsApiIT {
 
-    private List<String> newDeviceRequestsToBeDeletedIds = new ArrayList<String>();
+    private final List<String> newDeviceRequestsToBeDeletedIds = new ArrayList<>();
 
     private CloudOfThingsPlatform platform;
 
@@ -37,7 +37,7 @@ public class DeviceCredentialsApiIT {
     }
 
     @Test
-    public void testDeviceRegister() throws Exception {
+    public void testDeviceRegister() {
         String deviceId = "mydevice-name_" + new Date().getTime();
 
         DeviceControlApi deviceControlApi = platform.getDeviceControlApi();
@@ -58,8 +58,7 @@ public class DeviceCredentialsApiIT {
         NewDeviceRequest[] requests = result.getNewDeviceRequests();
         Assert.assertTrue(requests.length > 0, "Should be greater than null, because we added a create new device.");
         boolean foundId = false;
-        for (int i = 0; i < requests.length; i++) {
-            NewDeviceRequest request = requests[i];
+        for (NewDeviceRequest request : requests) {
             if (request.get("id").equals(deviceId)) {
                 foundId = true;
             }
@@ -71,8 +70,7 @@ public class DeviceCredentialsApiIT {
         result = deviceCredentialsApi.getNewDeviceRequests(100);
         requests = result.getNewDeviceRequests();
         foundId = false;
-        for (int i = 0; i < requests.length; i++) {
-            NewDeviceRequest request = requests[i];
+        for (NewDeviceRequest request : requests) {
             if (request.get("id").equals(deviceId)) {
                 foundId = true;
             }
@@ -144,8 +142,7 @@ public class DeviceCredentialsApiIT {
     }
 
     private void registerDeviceAndAddDeviceToDeletionList(final String deviceId, final CloudOfThingsPlatform platform) {
-        final Operation operation = new Operation(deviceId);
-        platform.getDeviceControlApi().createNewDevice(operation);
+        platform.getDeviceControlApi().createNewDevice(deviceId);
         newDeviceRequestsToBeDeletedIds.add(deviceId);
     }
 

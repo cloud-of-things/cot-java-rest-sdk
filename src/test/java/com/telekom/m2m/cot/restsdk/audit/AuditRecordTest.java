@@ -6,6 +6,7 @@ import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
 import java.util.Date;
 
 /**

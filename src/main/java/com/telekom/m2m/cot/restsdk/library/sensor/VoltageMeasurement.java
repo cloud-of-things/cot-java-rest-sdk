@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class VoltageMeasurement implements Fragment {
 
-    private float voltageValue;
-    private String voltageUnit;
+    private final float voltageValue;
+    private final String voltageUnit;
     
     public VoltageMeasurement(float voltageValue, String voltageUnit) {
         

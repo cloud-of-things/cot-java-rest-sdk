@@ -1,16 +1,15 @@
 package com.telekom.m2m.cot.restsdk.event;
 
-import java.util.Calendar;
-import java.util.Date;
-
+import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -32,7 +31,7 @@ public class EventApiIT {
 
 
     @Test
-    public void testCreateEvent() throws Exception {
+    public void testCreateEvent() {
 
         Event event = new Event();
         event.setText("Sample Text");
@@ -48,7 +47,7 @@ public class EventApiIT {
     }
 
     @Test
-    public void testCreateAndRead() throws Exception {
+    public void testCreateAndRead() {
         Calendar timeOfEventHappening = Calendar.getInstance();
         timeOfEventHappening.add(Calendar.SECOND, -10); // To adjust for smallish clock-mismatch between local machine and CoT.
 
@@ -62,7 +61,7 @@ public class EventApiIT {
 
         Event createdEvent = eventApi.createEvent(event);
             
-        Assert.assertNotNull("Should now have an Id", createdEvent.getId());
+        Assert.assertNotNull(createdEvent.getId(), "Should now have an Id");
 
         Event retrievedEvent = eventApi.getEvent(createdEvent.getId());
         Assert.assertEquals(retrievedEvent.getId(), createdEvent.getId());
@@ -82,7 +81,7 @@ public class EventApiIT {
 
     }
     @Test
-    public void testGetEventReturnNull() throws Exception {
+    public void testGetEventReturnNull() {
         // This test checks whether the getEvent() method returns a null when the event does not exist in the cloud.
 
         Calendar timeOfEventHappening = Calendar.getInstance();

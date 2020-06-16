@@ -9,7 +9,7 @@ import java.util.stream.Collectors;
 public class ManagedObjectReferenceCollection {
 
     private final List<ManagedObjectReference> mos;
-    private String self;
+    private final String self;
 
     public ManagedObjectReferenceCollection(List<ManagedObjectReference> mos, String self) {
         this.mos = mos;

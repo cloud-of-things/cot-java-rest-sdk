@@ -7,7 +7,7 @@ import com.telekom.m2m.cot.restsdk.measurement.MeasurementReading;
  */
 public class SampleTemperatureSensor {
 
-    private MeasurementReading temperature;
+    private final MeasurementReading temperature;
 
     public SampleTemperatureSensor(final float temperature) {
         this.temperature = new MeasurementReading(temperature, "°C");

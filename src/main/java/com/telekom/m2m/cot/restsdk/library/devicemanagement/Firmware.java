@@ -7,9 +7,9 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class Firmware implements Fragment {
 
-    private String name;
-    private String version;
-    private String url;
+    private final String name;
+    private final String version;
+    private final String url;
 
 
     public Firmware(String name, String version, String url) {

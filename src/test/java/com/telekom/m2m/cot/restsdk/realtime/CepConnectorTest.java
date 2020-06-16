@@ -10,13 +10,10 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 
 public class CepConnectorTest {
@@ -33,7 +30,7 @@ public class CepConnectorTest {
     }
 
     @AfterMethod
-    public void tearDown() throws InterruptedException {
+    public void tearDown() {
         if (connector != null) {
             connector.disconnect();
         }
@@ -45,24 +42,18 @@ public class CepConnectorTest {
     public void testDisconnect() throws InterruptedException {
         when(cloudOfThingsRestClient.doPostRequest(anyString(), anyString(), anyString(), anyString())).
                 thenReturn("[{\"clientId\":\"My-Client-Id\"}]");
+        // First answer, will keep the connect waiting.
+        // Second answer, will let the connect finish, so we go to the poll-wait-sleep.
         when(cloudOfThingsRestClient.doRealTimePollingRequest(anyString(), anyString(), anyString(), anyInt())).
-                thenAnswer(new Answer<String>() { // First answer, will keep the connect waiting.
-                    @Override
-                    public String answer(InvocationOnMock invocation) {
-                        try {
-                            Thread.sleep(1000); // We just delay the mock server response, until the test finishes.
-                        } catch (InterruptedException ex) {
-                            // That's ok, we interrupted it ourselves here.
-                        }
-                        return "[]";
+                thenAnswer((Answer<String>) invocation -> { // First answer, will keep the connect waiting.
+                    try {
+                        Thread.sleep(1000); // We just delay the mock server response, until the test finishes.
+                    } catch (InterruptedException ex) {
+                        // That's ok, we interrupted it ourselves here.
                     }
+                    return "[]";
                 }).
-                thenAnswer(new Answer<String>() { // Second answer, will let the connect finish, so we go to the poll-wait-sleep.
-                    @Override
-                    public String answer(InvocationOnMock invocation) {
-                        return "[]";
-                    }
-                });
+                thenAnswer((Answer<String>) invocation -> "[]"); // Second answer, will let the connect finish, so we go to the poll-wait-sleep.
 
         connector = new CepConnector(cloudOfThingsRestClient, CepApi.NOTIFICATION_PATH);
 
@@ -144,7 +135,7 @@ public class CepConnectorTest {
         Thread.sleep(20);
 
         assertTrue(notedError);
-
+        assertEquals(notedOperations.size(), 0);
     }
 
     @Test
@@ -193,7 +184,7 @@ public class CepConnectorTest {
         Thread.sleep(20);
 
         assertTrue(notedError);
-
+        assertEquals(notedOperations.size(), 0);
     }
 
 }

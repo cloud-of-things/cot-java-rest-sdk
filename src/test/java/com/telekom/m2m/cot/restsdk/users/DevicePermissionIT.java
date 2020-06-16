@@ -35,7 +35,7 @@ public class DevicePermissionIT {
 
     // This has to be a tenant, for which the account from TestHelper has the necessary permissions!
     // Be careful when using deleting functionality in order to avoid a deletion of the "main" user configured in TestHelper.TEST_USERNAME
-    private String tenant = TestHelper.TEST_TENANT;
+    private final String tenant = TestHelper.TEST_TENANT;
 
     private List<Group> groupsToDelete = new ArrayList<>();
     private List<User> usersToDelete = new ArrayList<>();

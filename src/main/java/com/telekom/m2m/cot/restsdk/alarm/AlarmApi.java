@@ -2,7 +2,10 @@ package com.telekom.m2m.cot.restsdk.alarm;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.*;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
 import javax.annotation.Nullable;
 import java.util.Arrays;
@@ -120,7 +123,7 @@ public class AlarmApi {
             filters.validateSupportedFilters(acceptedFilters);
         }
         final String filterParams = Optional.ofNullable(filters)
-            .map(filterBuilder -> filterBuilder.buildFilter())
+            .map(Filter.FilterBuilder::buildFilter)
             .orElse("");
         cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_API_URL);
     }

@@ -51,7 +51,7 @@ public class AuditRecordCollectionIT {
         auditRecord1.setApplication(application1);
         auditRecord1.setText(text);
         timeOfAuditRecording1 = new Date();
-        timeOfAuditRecording1.setTime(System.currentTimeMillis() - 1000*60*60*1);
+        timeOfAuditRecording1.setTime(System.currentTimeMillis() - 1000 * 60 * 60);
         auditRecord1.setTime(timeOfAuditRecording1);
         auditRecord1.setSource(testManagedObject);
         auditRecord1.setActivity(activity);
@@ -117,7 +117,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollection() throws Exception {
+    public void testAuditRecordCollection() {
         // given: four created audit records in setUp()-method
 
         // when
@@ -134,20 +134,20 @@ public class AuditRecordCollectionIT {
         final AuditRecord retrievedAuditRecord = auditRecords[0];
         final JsonObject jsonObject = auditRecordCollection.getJsonArray().get(0).getAsJsonObject();
 
-        Assert.assertTrue(retrievedAuditRecord.getId() != null);
+        Assert.assertNotNull(retrievedAuditRecord.getId());
         Assert.assertFalse(retrievedAuditRecord.getId().isEmpty());
-        Assert.assertTrue(retrievedAuditRecord.getId().equals(jsonObject.get("id").getAsString()));
+        Assert.assertEquals(jsonObject.get("id").getAsString(), retrievedAuditRecord.getId());
 
-        Assert.assertTrue(retrievedAuditRecord.getCreationTime() != null);
+        Assert.assertNotNull(retrievedAuditRecord.getCreationTime());
         Assert.assertTrue(retrievedAuditRecord.getCreationTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(retrievedAuditRecord.getType() != null);
+        Assert.assertNotNull(retrievedAuditRecord.getType());
         Assert.assertFalse(retrievedAuditRecord.getType().isEmpty());
-        Assert.assertTrue(retrievedAuditRecord.getType().equals(jsonObject.get("type").getAsString()));
+        Assert.assertEquals(jsonObject.get("type").getAsString(), retrievedAuditRecord.getType());
     }
 
     @Test
-    public void testAuditRecordCollectionWithUserAndTypeAndApplicationFilter() throws Exception {
+    public void testAuditRecordCollectionWithUserAndTypeAndApplicationFilter() {
         // given: four created audit records in setUp()-method
         Filter.FilterBuilder filterBuilder = Filter.build().byUser(user1).byType(type1).byApplication(application1);
 
@@ -196,7 +196,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollectionWithUserFilter() throws Exception {
+    public void testAuditRecordCollectionWithUserFilter() {
         // given: four created audit records in setUp()-method
         Filter.FilterBuilder filterBuilder = Filter.build().byUser(user1);
 
@@ -229,7 +229,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollectionWithTypeFilter() throws Exception {
+    public void testAuditRecordCollectionWithTypeFilter() {
         // given: four created audit records in setUp()-method
         Filter.FilterBuilder filterBuilder = Filter.build().byType(type1);
 
@@ -262,7 +262,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollectionWithApplicationFilter() throws Exception {
+    public void testAuditRecordCollectionWithApplicationFilter() {
         // given: four created audit records in setUp()-method
         Filter.FilterBuilder filterBuilder = Filter.build().byApplication(application1);
 
@@ -295,7 +295,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollectionWithUserAndTypeFilter() throws Exception {
+    public void testAuditRecordCollectionWithUserAndTypeFilter() {
         // given: four created audit records in setUp()-method
         Filter.FilterBuilder filterBuilder = Filter.build().byUser(user1).byType(type1);
 
@@ -336,7 +336,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollectionWithUserAndApplicationFilter() throws Exception {
+    public void testAuditRecordCollectionWithUserAndApplicationFilter() {
         // given: four created audit records in setUp()-method
         Filter.FilterBuilder filterBuilder = Filter.build().byUser(user1).byApplication(application1);
 
@@ -377,7 +377,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollectionWithTypeAndApplicationFilter() throws Exception {
+    public void testAuditRecordCollectionWithTypeAndApplicationFilter() {
         // given: four created audit records in setUp()-method
         Filter.FilterBuilder filterBuilder = Filter.build().byType(type1).byApplication(application1);
 
@@ -418,7 +418,7 @@ public class AuditRecordCollectionIT {
     }
 
     @Test
-    public void testAuditRecordCollectionWithDateFilter() throws Exception {
+    public void testAuditRecordCollectionWithDateFilter() {
         // given: four created audit records in setUp()-method
         Date timeOfAuditRecording1To = new Date();
         timeOfAuditRecording1To.setTime(timeOfAuditRecording1.getTime()+1); // dateTo is exclusive, so we add a millisecond

@@ -15,6 +15,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * DeviceControl API is used to work with operations.
@@ -208,7 +209,10 @@ public class DeviceControlApi {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.deleteBy(filters.buildFilter(), RELATIVE_OPERATION_API_URL);
+        final String filterParams = Optional.ofNullable(filters)
+                .map(Filter.FilterBuilder::buildFilter)
+                .orElse("");
+        cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_OPERATION_API_URL);
     }
 
 

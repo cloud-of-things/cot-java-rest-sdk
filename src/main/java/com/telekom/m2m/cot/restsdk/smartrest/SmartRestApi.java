@@ -10,10 +10,10 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
 
 /**
@@ -92,9 +92,7 @@ public class SmartRestApi {
      * @return a SmartResponse object with the response body as a String with newline-separated lines.
      */
     public SmartResponse execute(SmartRequest smartRequest) {
-        SmartResponse response = cloudOfThingsRestClient.doSmartRequest(smartRequest);
-
-        return response;
+        return cloudOfThingsRestClient.doSmartRequest(smartRequest);
     }
 
 

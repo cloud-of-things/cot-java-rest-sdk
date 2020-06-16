@@ -10,14 +10,12 @@ import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.*;
 
 public class DeviceManagementLibraryIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cotPlat.getInventoryApi();
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final InventoryApi inventoryApi = cotPlat.getInventoryApi();
 
     private ManagedObject testManagedObject;
 
@@ -29,7 +27,7 @@ public class DeviceManagementLibraryIT {
 
 
     @Test
-    public void testManagedObjectWithWholeDeviceManagementLibrary() throws Exception {
+    public void testManagedObjectWithWholeDeviceManagementLibrary() {
         testManagedObject = new ManagedObject();
         testManagedObject.setName("Hello!");
 

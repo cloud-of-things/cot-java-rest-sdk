@@ -13,7 +13,7 @@ public class CloudOfThingsPlatformTest {
     private final static String TEST_PASSWORD = "anything-goes";
 
     @Test
-    public void testGetInventoryApi() throws Exception {
+    public void testGetInventoryApi() {
         CloudOfThingsPlatform cotPlatform = new CloudOfThingsPlatform(TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
         InventoryApi inventoryApi = cotPlatform.getInventoryApi();
         Assert.assertNotNull(inventoryApi);

@@ -6,14 +6,14 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class AccelerationMeasurement  implements Fragment {
 
-    private float accelerationValue;
-    private String accelerationUnit;
+    private final float accelerationValue;
+    private final String accelerationUnit;
 
 
     public AccelerationMeasurement(float accelerationValue, String accelerationUnit) {
         
-        this.accelerationUnit=accelerationUnit;
-        this.accelerationValue=accelerationValue;
+        this.accelerationUnit = accelerationUnit;
+        this.accelerationValue = accelerationValue;
     }
     
     
