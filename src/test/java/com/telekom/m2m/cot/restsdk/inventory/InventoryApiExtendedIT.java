@@ -23,7 +23,7 @@ public class InventoryApiExtendedIT {
     private static final String PARENT_MANAGED_OBJECT_NAME = "parentTestManagedObject";
     private static final String CHILD_MANAGED_OBJECT_NAME = "childTestManagedObject";
 
-    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT + "/" + TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private final InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
     private final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
@@ -247,11 +247,36 @@ public class InventoryApiExtendedIT {
 
         List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
         assertNotNull(notifications);
-        assertTrue(notifications.size() > 0);
+        assertEquals(notifications.size(), 1);
 
         String lastNotification = notifications.get(notifications.size()-1);
 
         assertTrue(lastNotification.contains("\"realtimeAction\": \"UPDATE\""));
+        assertTrue(lastNotification.contains("\"name\": \"some_other_name\""));
+
+        inventoryApi.unsubscribeFromManagedObjectNotifications(managedObject.getId());
+    }
+
+    @Test
+    public void testManagedObjectDeleteNotifications() throws InterruptedException {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(managedObject);
+        inventoryApi.subscribeToManagedObjectNotifications(managedObject.getId());
+
+        Thread.sleep(1000);
+
+        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        inventoryApi.delete(retrievedMo.getId());
+
+        Thread.sleep(1000);
+
+        List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
+        assertNotNull(notifications);
+        assertEquals(notifications.size(), 1);
+
+        String lastNotification = notifications.get(notifications.size()-1);
+
+        assertTrue(lastNotification.contains("\"realtimeAction\": \"DELETE\""));
         assertTrue(lastNotification.contains("\"name\": \"some_other_name\""));
 
         inventoryApi.unsubscribeFromManagedObjectNotifications(managedObject.getId());
