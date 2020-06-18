@@ -35,6 +35,7 @@ Short information about what has changed between releases.
 
 ### Release 2.0.0
 
+* Measurement real time notification functionality was moved from InventoryApi to MeasurementApi
 * Prevent injection in update method ([Pull Request #90](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/90)). 
 * More robust deserialization catching IllegalArgumentException being thrown by Spring Boot Class Loader for properties like "A+:1" in ThreePhaseElectricityMeasurement
 ([Pull Request #91](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/91)).
