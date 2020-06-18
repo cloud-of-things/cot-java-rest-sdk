@@ -7,8 +7,8 @@ import org.mockito.Mockito;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.times;
 
 /**
@@ -16,7 +16,7 @@ import static org.mockito.Mockito.times;
  */
 public class InventoryApiTest {
     @Test(expectedExceptions = CotSdkException.class)
-    public void testExceptionHandlingGetManagedObjects() throws Exception {
+    public void testExceptionHandlingGetManagedObjects() {
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
         Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));
@@ -27,7 +27,7 @@ public class InventoryApiTest {
     }
 
     @Test(expectedExceptions = CotSdkException.class)
-    public void testHttpExceptionHandlingGetManagedObjects() throws Exception {
+    public void testHttpExceptionHandlingGetManagedObjects() {
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
         Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));
@@ -39,7 +39,7 @@ public class InventoryApiTest {
     }
 
     @Test
-    public void testUpdateManageObjects() throws Exception {
+    public void testUpdateManageObjects() {
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         CloudOfThingsPlatform platform = Mockito.mock(CloudOfThingsPlatform.class);
         Mockito.when(platform.getInventoryApi()).thenReturn(new InventoryApi(rc));

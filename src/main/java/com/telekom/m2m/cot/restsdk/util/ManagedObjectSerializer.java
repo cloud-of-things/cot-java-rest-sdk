@@ -8,7 +8,6 @@ import java.lang.reflect.Type;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.Map;
 
 
@@ -18,7 +17,7 @@ import java.util.Map;
 public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>, JsonDeserializer<ExtensibleObject> {
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-    private static ArrayList<String> blacklist = new ArrayList<String>() {{
+    private static final ArrayList<String> blacklist = new ArrayList<String>() {{
         add("id");
         add("self");
         add("lastUpdated");
@@ -55,10 +54,7 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
         JsonObject object = jsonElement.getAsJsonObject();
         ManagedObject mo = new ManagedObject();
 
-        Iterator<Map.Entry<String, JsonElement>> objectElementIterator = object.entrySet().iterator();
-        while (objectElementIterator.hasNext()) {
-            Map.Entry<String, JsonElement> element = objectElementIterator.next();
-
+        for (Map.Entry<String, JsonElement> element : object.entrySet()) {
             JsonPrimitive tmp;
             if (element.getValue().isJsonPrimitive()) {
                 tmp = (JsonPrimitive) element.getValue();
@@ -79,15 +75,15 @@ public class ManagedObjectSerializer implements JsonSerializer<ExtensibleObject>
             } else if (element.getValue().isJsonObject()) {
                 String key = element.getKey();
                 switch (key) {
-                    case "childDevices" :
-                    case "childAssets" :
-                    case "deviceParents" :
-                    case "assetParents" :
-                    case "additionParents" :
-                    case "childAdditions" :
+                    case "childDevices":
+                    case "childAssets":
+                    case "deviceParents":
+                    case "assetParents":
+                    case "additionParents":
+                    case "childAdditions":
                         mo.set(key, jsonDeserializationContext.deserialize(element.getValue(), ManagedObjectReferenceCollection.class));
                         break;
-                    default :
+                    default:
                         mo.set(element.getKey(), jsonDeserializationContext.deserialize(element.getValue(), JsonObject.class));
                 }
             } else if (element.getValue().isJsonArray()) {

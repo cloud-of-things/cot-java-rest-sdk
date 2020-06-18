@@ -10,10 +10,9 @@ import org.testng.annotations.Test;
 
 import java.util.Date;
 
-import static org.mockito.Matchers.*;
+import static org.mockito.ArgumentMatchers.*;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
 
 /**
  * Created by Patrick Steinert on 03.02.16.
@@ -105,7 +104,7 @@ public class DeviceControlApiTest {
     }
 
     @Test(expectedExceptions = CotSdkException.class)
-    public void testAcceptDeviceWithFailure() throws Exception {
+    public void testAcceptDeviceWithFailure() {
         // given
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         DeviceControlApi deviceControlApi = new DeviceControlApi(rc);
@@ -117,7 +116,7 @@ public class DeviceControlApiTest {
     }
 
     @Test(expectedExceptions = CotSdkException.class)
-    public void testGetOperationWithFailure() throws Exception {
+    public void testGetOperationWithFailure() {
         // given
         CloudOfThingsRestClient rc = Mockito.mock(CloudOfThingsRestClient.class);
         DeviceControlApi deviceControlApi = new DeviceControlApi(rc);
@@ -129,7 +128,7 @@ public class DeviceControlApiTest {
     }
 
     @Test
-    public void testGetOperation() throws Exception {
+    public void testGetOperation() {
         // given
         String operationId = "123";
 
@@ -191,7 +190,7 @@ public class DeviceControlApiTest {
     }
 
     @Test
-    public void testDeleteOperations() throws Exception {
+    public void testDeleteOperations() {
         final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
 
         final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
@@ -204,23 +203,20 @@ public class DeviceControlApiTest {
     }
 
     @Test
-    public void testCreateNewDevice() throws Exception {
+    public void testCreateNewDevice() {
         final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
 
         final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
 
         final String deviceId = "dev123";
 
-        final Operation testOperation = new Operation();
-        testOperation.setDeviceId(deviceId);
-
-        deviceControlApi.createNewDevice(testOperation);
+        deviceControlApi.createNewDevice(deviceId);
 
         Mockito.verify(cotRestClientMock, Mockito.times(1)).doPostRequest(contains(deviceId), any(String.class), any(String.class), any(String.class));
     }
 
     @Test
-    public void testCreateNewDeviceWithDeviceId() throws Exception {
+    public void testCreateNewDeviceWithDeviceId() {
         final CloudOfThingsRestClient cotRestClientMock = Mockito.mock(CloudOfThingsRestClient.class);
 
         final DeviceControlApi deviceControlApi = new DeviceControlApi(cotRestClientMock);
@@ -233,7 +229,7 @@ public class DeviceControlApiTest {
     }
 
     @Test
-    public void testGetBulkOperation() throws Exception {
+    public void testGetBulkOperation() {
 
         // given
         String bulkOperationId = "123";

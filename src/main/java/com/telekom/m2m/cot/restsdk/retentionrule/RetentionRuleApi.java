@@ -1,12 +1,12 @@
 package com.telekom.m2m.cot.restsdk.retentionrule;
 
-import java.util.Map;
-
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Map;
 
 
 /**
@@ -146,9 +146,7 @@ public class RetentionRuleApi {
 
         switch (rule.getDataType()) {
             case "*":
-                break;
             case RetentionRule.DATA_TYPE_EVENT :
-                break;
             case RetentionRule.DATA_TYPE_MEASUREMENT :
                 break;
             case RetentionRule.DATA_TYPE_ALARM :

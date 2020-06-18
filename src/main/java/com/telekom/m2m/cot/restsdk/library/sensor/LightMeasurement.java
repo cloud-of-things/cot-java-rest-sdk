@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class LightMeasurement implements Fragment {
 
-    private float lightValue;
-    private String lightUnit;
+    private final float lightValue;
+    private final String lightUnit;
 
 
     public LightMeasurement(float lightValue, String lightUnit) {

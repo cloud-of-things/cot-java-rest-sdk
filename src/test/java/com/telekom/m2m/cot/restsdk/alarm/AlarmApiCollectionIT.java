@@ -7,25 +7,22 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
-import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+
+import static org.testng.Assert.*;
 
 /**
  * @author chuhlich
  */
 public class AlarmApiCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
 
     @BeforeMethod
@@ -40,7 +37,7 @@ public class AlarmApiCollectionIT {
     }
 
     @Test
-    public void testAlarmCollection() throws Exception {
+    public void testAlarmCollection() {
         // given at least one created alarm entry
         final String text = "new alarm created";
         final String type = "com_telekom_alarm_TestType";
@@ -61,26 +58,26 @@ public class AlarmApiCollectionIT {
         final AlarmCollection alarmCollection = alarmApi.getAlarms(5);
 
         // then
-        Assert.assertNotNull(alarmCollection);
+        assertNotNull(alarmCollection);
 
         final Alarm[] alarms = alarmCollection.getAlarms();
 
-        Assert.assertTrue(alarms.length > 0);
-        Assert.assertEquals(alarms.length, alarmCollection.getJsonArray().size());
+        assertTrue(alarms.length > 0);
+        assertEquals(alarms.length, alarmCollection.getJsonArray().size());
 
         final Alarm retrievedAlarm = alarms[0];
         final JsonObject jsonObject = alarmCollection.getJsonArray().get(0).getAsJsonObject();
 
-        Assert.assertTrue(retrievedAlarm.getId() != null);
-        Assert.assertFalse(retrievedAlarm.getId().isEmpty());
-        Assert.assertTrue(retrievedAlarm.getId().equals(jsonObject.get("id").getAsString()));
+        assertNotNull(retrievedAlarm.getId());
+        assertFalse(retrievedAlarm.getId().isEmpty());
+        assertEquals(jsonObject.get("id").getAsString(), retrievedAlarm.getId());
 
-        Assert.assertTrue(retrievedAlarm.getTime() != null);
-        Assert.assertTrue(retrievedAlarm.getTime().compareTo(new Date()) < 0);
+        assertNotNull(retrievedAlarm.getTime());
+        assertTrue(retrievedAlarm.getTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(retrievedAlarm.getType() != null);
-        Assert.assertFalse(retrievedAlarm.getType().isEmpty());
-        Assert.assertTrue(retrievedAlarm.getType().equals(jsonObject.get("type").getAsString()));
+        assertNotNull(retrievedAlarm.getType());
+        assertFalse(retrievedAlarm.getType().isEmpty());
+        assertEquals(jsonObject.get("type").getAsString(), retrievedAlarm.getType());
     }
 
     
@@ -111,11 +108,11 @@ public class AlarmApiCollectionIT {
 		// Since the id of the alarm is unique, the alarm collection array should have a
 		// length of 1:
 
-		Assert.assertEquals(alarms.getAlarms().length, 1);
+		assertEquals(alarms.getAlarms().length, 1);
 
 		// Now let's make sure that it is indeed the alarm that we have just created:
 		Alarm[] alarmarray = alarms.getAlarms();
-		Assert.assertEquals(alarmarray[0].getType(), type);
+		assertEquals(alarmarray[0].getType(), type);
 
 		// Now let's try to get an alarm that is create in a given date range by using
 		// filters:
@@ -212,7 +209,7 @@ public class AlarmApiCollectionIT {
     
     
     @Test
-    public void testAlarmCollectionWithFilter() throws Exception {
+    public void testAlarmCollectionWithFilter() {
         // given
         final String text = "new alarm created";
         final String type = "com_telekom_alarm_TestType";
@@ -234,30 +231,30 @@ public class AlarmApiCollectionIT {
         final AlarmCollection alarmCollection = alarmApi.getAlarms(filterBuilder, 5);
 
         // then
-        Assert.assertNotNull(alarmCollection);
+        assertNotNull(alarmCollection);
 
         final Alarm[] alarms = alarmCollection.getAlarms();
 
-        Assert.assertEquals(alarms.length, 1);
-        Assert.assertEquals(alarms.length, alarmCollection.getJsonArray().size());
+        assertEquals(alarms.length, 1);
+        assertEquals(alarms.length, alarmCollection.getJsonArray().size());
 
         final Alarm retrievedAlarm = alarms[0];
         final JsonObject jsonObject = alarmCollection.getJsonArray().get(0).getAsJsonObject();
 
-        Assert.assertTrue(retrievedAlarm.getId() != null);
-        Assert.assertFalse(retrievedAlarm.getId().isEmpty());
-        Assert.assertTrue(retrievedAlarm.getId().equals(jsonObject.get("id").getAsString()));
+        assertNotNull(retrievedAlarm.getId());
+        assertFalse(retrievedAlarm.getId().isEmpty());
+        assertEquals(jsonObject.get("id").getAsString(), retrievedAlarm.getId());
 
-        Assert.assertTrue(retrievedAlarm.getTime() != null);
-        Assert.assertTrue(retrievedAlarm.getTime().compareTo(new Date()) < 0);
+        assertNotNull(retrievedAlarm.getTime());
+        assertTrue(retrievedAlarm.getTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(retrievedAlarm.getType() != null);
-        Assert.assertFalse(retrievedAlarm.getType().isEmpty());
-        Assert.assertTrue(retrievedAlarm.getType().equals(jsonObject.get("type").getAsString()));
+        assertNotNull(retrievedAlarm.getType());
+        assertFalse(retrievedAlarm.getType().isEmpty());
+        assertEquals(jsonObject.get("type").getAsString(), retrievedAlarm.getType());
     }
 
     @Test
-    public void testDeleteMultipleAlarmsBySource() throws Exception {
+    public void testDeleteMultipleAlarmsBySource() {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
         for (int i = 0; i < 6; i++) {
@@ -274,16 +271,16 @@ public class AlarmApiCollectionIT {
 
         AlarmCollection alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
         Alarm[] as = alarms.getAlarms();
-        Assert.assertEquals(as.length, 5);
+        assertEquals(as.length, 5);
 
         alarmApi.deleteAlarms(Filter.build().bySource(testManagedObject.getId()));
         alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
         as = alarms.getAlarms();
-        Assert.assertEquals(as.length, 0);
+        assertEquals(as.length, 0);
     }
 
     @Test
-    public void testMultipleAlarmsByStatus() throws Exception {
+    public void testMultipleAlarmsByStatus() {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
         Alarm testAlarm1 = new Alarm();
@@ -308,7 +305,7 @@ public class AlarmApiCollectionIT {
 
         AlarmCollection alarms = alarmApi.getAlarms(Filter.build().bySource(testManagedObject.getId()), 5);
         Alarm[] as = alarms.getAlarms();
-        Assert.assertTrue(as.length > 0);
+        assertTrue(as.length > 0);
         boolean allAlarmsFromSameStatus = true;
 
         // The alarms have a different type, otherwise they would be deduplicated and counted (same source and severity).
@@ -318,18 +315,18 @@ public class AlarmApiCollectionIT {
                 allAlarmsFromSameStatus = false;
             }
         }
-        Assert.assertFalse(allAlarmsFromSameStatus);
+        assertFalse(allAlarmsFromSameStatus);
 
         alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACTIVE), 5);
         as = alarms.getAlarms();
-        Assert.assertTrue(as.length > 0);
+        assertTrue(as.length > 0);
         for (Alarm a : as) {
-            Assert.assertEquals(a.getStatus(), Alarm.STATE_ACTIVE);
+            assertEquals(a.getStatus(), Alarm.STATE_ACTIVE);
         }
     }
 
     @Test
-    public void testMultipleAlarmsBySourceAndStatus() throws Exception {
+    public void testMultipleAlarmsBySourceAndStatus() {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
         Alarm testAlarm = new Alarm();
@@ -345,13 +342,13 @@ public class AlarmApiCollectionIT {
                 .bySource(testManagedObject.getId()), 5);
 
         Alarm[] as = alarms.getAlarms();
-        Assert.assertEquals(as.length, 1);
+        assertEquals(as.length, 1);
 
         alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACKNOWLEDGED)
                 .bySource(testManagedObject.getId()), 5);
 
         as = alarms.getAlarms();
-        Assert.assertEquals(as.length, 0);
+        assertEquals(as.length, 0);
     }
 
     /**
@@ -364,7 +361,7 @@ public class AlarmApiCollectionIT {
     }
 
     @Test
-    public void testAlarmCollectionWithFilterSetFilter() throws Exception {
+    public void testAlarmCollectionWithFilterSetFilter() {
         // given
         final String text = "new alarm created";
         final String type = "com_telekom_alarm_TestType";
@@ -386,30 +383,30 @@ public class AlarmApiCollectionIT {
         final AlarmCollection alarmCollection = alarmApi.getAlarms(filterBuilder, 5);
 
         // then
-        Assert.assertNotNull(alarmCollection);
+        assertNotNull(alarmCollection);
 
         final Alarm[] alarms = alarmCollection.getAlarms();
 
-        Assert.assertEquals(alarms.length, 1);
-        Assert.assertEquals(alarms.length, alarmCollection.getJsonArray().size());
+        assertEquals(alarms.length, 1);
+        assertEquals(alarms.length, alarmCollection.getJsonArray().size());
 
         final Alarm retrievedAlarm = alarms[0];
         final JsonObject jsonObject = alarmCollection.getJsonArray().get(0).getAsJsonObject();
 
-        Assert.assertTrue(retrievedAlarm.getId() != null);
-        Assert.assertFalse(retrievedAlarm.getId().isEmpty());
-        Assert.assertTrue(retrievedAlarm.getId().equals(jsonObject.get("id").getAsString()));
+        assertNotNull(retrievedAlarm.getId());
+        assertFalse(retrievedAlarm.getId().isEmpty());
+        assertEquals(jsonObject.get("id").getAsString(), retrievedAlarm.getId());
 
-        Assert.assertTrue(retrievedAlarm.getTime() != null);
-        Assert.assertTrue(retrievedAlarm.getTime().compareTo(new Date()) < 0);
+        assertNotNull(retrievedAlarm.getTime());
+        assertTrue(retrievedAlarm.getTime().compareTo(new Date()) < 0);
 
-        Assert.assertTrue(retrievedAlarm.getType() != null);
-        Assert.assertFalse(retrievedAlarm.getType().isEmpty());
-        Assert.assertTrue(retrievedAlarm.getType().equals(jsonObject.get("type").getAsString()));
+        assertNotNull(retrievedAlarm.getType());
+        assertFalse(retrievedAlarm.getType().isEmpty());
+        assertEquals(jsonObject.get("type").getAsString(), retrievedAlarm.getType());
     }
 
     @Test
-    public void testMultipleAlarmsBySourceAndStatusSetFilters() throws Exception {
+    public void testMultipleAlarmsBySourceAndStatusSetFilters() {
         AlarmApi alarmApi = cotPlat.getAlarmApi();
 
         Alarm testAlarm = new Alarm();
@@ -426,12 +423,12 @@ public class AlarmApiCollectionIT {
         AlarmCollection alarms = alarmApi.getAlarms(Filter.build().setFilters(filters), 5);
 
         Alarm[] as = alarms.getAlarms();
-        Assert.assertEquals(as.length, 1);
+        assertEquals(as.length, 1);
 
         alarms = alarmApi.getAlarms(Filter.build().byStatus(Alarm.STATE_ACKNOWLEDGED)
                 .bySource(testManagedObject.getId()), 5);
 
         as = alarms.getAlarms();
-        Assert.assertEquals(as.length, 0);
+        assertEquals(as.length, 0);
     }
 }

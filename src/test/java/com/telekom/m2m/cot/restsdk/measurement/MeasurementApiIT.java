@@ -13,8 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.*;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -23,8 +22,8 @@ public class MeasurementApiIT {
 
     private static final String MEASUREMENT_TYPE = "com_telekom_TestType";
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
     private ManagedObject testManagedObject;
 
     @BeforeClass
@@ -85,6 +84,27 @@ public class MeasurementApiIT {
 
         assertNotNull(createdMeasurements);
         assertEquals(measurements.size(), createdMeasurements.size());
+    }
+
+    @Test
+    public void testMeasurementsNotifications() throws InterruptedException {
+        measurementApi.subscribeToMeasurementsNotifications(testManagedObject.getId());
+
+        Thread.sleep(1000);
+
+        Measurement measurement = createMeasurement();
+        measurementApi.createMeasurement(measurement);
+
+        Thread.sleep(1000);
+
+        List<String> notifications = measurementApi.pullNotifications(testManagedObject.getId());
+        assertNotNull(notifications);
+        assertEquals(notifications.size(), 1, "It should be exactly one notification returned");
+
+        assertTrue(notifications.get(0).contains("\"realtimeAction\": \"CREATE\""));
+        assertTrue(notifications.get(0).contains(MEASUREMENT_TYPE));
+
+        measurementApi.unsubscribeFromMeasurementsNotifications(testManagedObject.getId());
     }
 
     private Measurement createMeasurement() {

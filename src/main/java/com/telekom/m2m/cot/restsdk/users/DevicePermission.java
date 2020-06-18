@@ -36,7 +36,7 @@ public class DevicePermission {
         MEASUREMENT("MEASUREMENT"),
         ALL("*");
 
-        private String value;
+        private final String value;
 
         Api(final String value) {
             this.value = value;
@@ -65,7 +65,7 @@ public class DevicePermission {
         READ("READ"),
         ALL("*");
 
-        private String value;
+        private final String value;
 
         Permission(final String value) {
             this.value = value;
@@ -89,9 +89,9 @@ public class DevicePermission {
     private static final String SEPARATOR = ":";
     public static final String ALL_FRAGMENTS = "*";
 
-    private Api api;
-    private String fragmentName;
-    private Permission permission;
+    private final Api api;
+    private final String fragmentName;
+    private final Permission permission;
 
     /**
      * Constructor to set all values provided by the CoT device permission structure.

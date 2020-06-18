@@ -8,7 +8,7 @@ import com.telekom.m2m.cot.restsdk.util.CotSdkException;
  */
 public  class Notification {
 
-    private JsonObject data;
+    private final JsonObject data;
 
     public Notification(JsonObject data) {
         this.data = data;

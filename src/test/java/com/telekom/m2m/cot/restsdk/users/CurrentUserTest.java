@@ -1,10 +1,9 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import org.testng.Assert;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class CurrentUserTest {

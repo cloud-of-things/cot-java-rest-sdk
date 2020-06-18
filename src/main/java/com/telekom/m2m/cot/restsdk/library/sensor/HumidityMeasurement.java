@@ -6,8 +6,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class HumidityMeasurement implements Fragment {
 
-    private float humidityValue;
-    private String humidityUnit;
+    private final float humidityValue;
+    private final String humidityUnit;
 
 
     public HumidityMeasurement(float humidityValue, String humidityUnit) {

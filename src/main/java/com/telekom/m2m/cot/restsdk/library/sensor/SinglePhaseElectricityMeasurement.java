@@ -7,20 +7,20 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 public class SinglePhaseElectricityMeasurement implements Fragment {
 
     // Total active energy, incoming:
-    private float aPlusValue;
-    private String aPlusUnit;
+    private final float aPlusValue;
+    private final String aPlusUnit;
 
     // Total active energy, outgoing:
-    private float aMinusValue;
-    private String aMinusUnit;
+    private final float aMinusValue;
+    private final String aMinusUnit;
 
     // Total active power, incoming:
-    private float pPlusValue;
-    private String pPlusUnit;
+    private final float pPlusValue;
+    private final String pPlusUnit;
 
     // Total active power, outgoing:
-    private float pMinusValue;
-    private String pMinusUnit;
+    private final float pMinusValue;
+    private final String pMinusUnit;
 
     public SinglePhaseElectricityMeasurement(float aPlusValue, String aPlusUnit, float aMinusValue, String aMinusUnit,
             float pPlusValue, String pPlusUnit, float pMinusValue, String pMinusUnit) {

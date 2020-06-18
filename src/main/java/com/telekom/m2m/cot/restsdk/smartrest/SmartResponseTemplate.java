@@ -3,9 +3,6 @@ package com.telekom.m2m.cot.restsdk.smartrest;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
-
 /**
  * A SmartResponseTemplate is used server side to transform a REST response into one line of a SmartREST response.
  *

@@ -78,6 +78,17 @@ public class ExtensibleObject {
     }
 
     /**
+     * Get a custom attribute with its name derived from class package and name.
+     * <p>
+     * E.g. a class com.telekom.SpecialObject will get the identifier com_telekom_SpecialObject.
+     *
+     * @param attribute the value of the custom attribute.
+     */
+    public Object get(Class attribute) {
+        return anyObject.get(attribute.getCanonicalName().replace('.', '_'));
+    }
+
+    /**
      * Adds all attributes from argument to this object. Attributes with the existing attribute identifiers will be
      * overridden.
      *
@@ -103,12 +114,12 @@ public class ExtensibleObject {
 
         ExtensibleObject that = (ExtensibleObject) o;
 
-        return anyObject != null ? anyObject.equals(that.anyObject) : that.anyObject == null;
+        return anyObject.equals(that.anyObject);
     }
 
     @Override
     public int hashCode() {
-        return anyObject != null ? anyObject.hashCode() : 0;
+        return anyObject.hashCode();
     }
 
 }

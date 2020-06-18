@@ -1,11 +1,10 @@
 package com.telekom.m2m.cot.restsdk.users;
 
-import org.testng.Assert;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;
@@ -13,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.junit.Assert.assertNull;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 
@@ -64,7 +62,7 @@ public class UserTest {
         permissionsIn = user.getDevicePermissions();
         assertTrue(permissionsIn.isEmpty());
 
-        permissionsIn = new HashMap<String, List<DevicePermission>>();
+        permissionsIn = new HashMap<>();
         permissionsIn.put("Device-A", Arrays.asList(new DevicePermission("EVENT:c8y_Restart:READ"), new DevicePermission("ALARM:*:ADMIN")));
         permissionsIn.put("Device-B", Arrays.asList(new DevicePermission(DevicePermission.Api.ALL, null, DevicePermission.Permission.ALL)));
         user.setDevicePermissions(permissionsIn);

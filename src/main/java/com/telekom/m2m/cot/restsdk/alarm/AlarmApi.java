@@ -2,10 +2,15 @@ package com.telekom.m2m.cot.restsdk.alarm;
 
 import com.google.gson.Gson;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
-import com.telekom.m2m.cot.restsdk.util.*;
+import com.telekom.m2m.cot.restsdk.util.ExtensibleObject;
+import com.telekom.m2m.cot.restsdk.util.Filter;
+import com.telekom.m2m.cot.restsdk.util.FilterBy;
+import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Use AlarmApi to work with Alarms.
@@ -39,8 +44,7 @@ public class AlarmApi {
      */
     public Alarm getAlarm(String alarmId) {
         String response = cloudOfThingsRestClient.getResponse(alarmId, RELATIVE_API_URL, CONTENT_TYPE);
-        Alarm alarm = new Alarm(gson.fromJson(response, ExtensibleObject.class));
-        return alarm;
+        return new Alarm(gson.fromJson(response, ExtensibleObject.class));
     }
 
     /**
@@ -96,7 +100,7 @@ public class AlarmApi {
      * @return the found Alarms in a pageable collection.
      * @since 0.3.0
      */
-    public AlarmCollection getAlarms(Filter.FilterBuilder filters, int resultSize) {
+    public AlarmCollection getAlarms(@Nullable Filter.FilterBuilder filters, int resultSize) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
@@ -112,11 +116,15 @@ public class AlarmApi {
      * Deletes a collection of Alarms by criteria.
      *
      * @param filters filters of Alarm attributes.
+     *                Pass null or empty FilterBuilder if all alarms should be deleted.
      */
-    public void deleteAlarms(Filter.FilterBuilder filters) {
+    public void deleteAlarms(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.delete("", RELATIVE_API_URL+ "?" + filters.buildFilter() + "&x=");
+        final String filterParams = Optional.ofNullable(filters)
+            .map(Filter.FilterBuilder::buildFilter)
+            .orElse("");
+        cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_API_URL);
     }
 }

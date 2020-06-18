@@ -21,13 +21,13 @@ import static org.testng.Assert.*;
  */
 public class BulkOperationCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
     private ManagedObject testManagedObject;
     private ManagedObject deviceGroup;
 
     final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-    private static JsonObject jsonObject = new JsonObject();
+    private static final JsonObject jsonObject = new JsonObject();
 
     static {
         JsonObject parameters = new JsonObject();
@@ -51,7 +51,7 @@ public class BulkOperationCollectionIT {
     }
 
     @Test
-    public void testBulkOperationCollection() throws Exception {
+    public void testBulkOperationCollection() {
         // given at least one created operation entry
         final BulkOperation bulkOperation = createBulkOperation();
 
@@ -71,15 +71,15 @@ public class BulkOperationCollectionIT {
         final BulkOperation retrievedBulkOperation = bulkOperations[0];
         final JsonObject jsonObject = bulkOperationCollection.getJsonArray().get(0).getAsJsonObject();
 
-        assertTrue(retrievedBulkOperation.getId() != null);
+        assertNotNull(retrievedBulkOperation.getId());
         assertFalse(retrievedBulkOperation.getId().isEmpty());
-        assertTrue(retrievedBulkOperation.getId().equals(jsonObject.get("id").getAsString()));
+        assertEquals(jsonObject.get("id").getAsString(), retrievedBulkOperation.getId());
 
-        assertTrue(retrievedBulkOperation.getGroupId() != null);
-        assertTrue(retrievedBulkOperation.getGroupId().equals(jsonObject.get("groupId").getAsString()));
+        assertNotNull(retrievedBulkOperation.getGroupId());
+        assertEquals(jsonObject.get("groupId").getAsString(), retrievedBulkOperation.getGroupId());
 
-        assertTrue(retrievedBulkOperation.getStatus() != null);
-        assertTrue(retrievedBulkOperation.getStatus().toString().equals(jsonObject.get("status").getAsString()));
+        assertNotNull(retrievedBulkOperation.getStatus());
+        assertEquals(jsonObject.get("status").getAsString(), retrievedBulkOperation.getStatus());
     }
 
     private ManagedObject createDeviceGroup() {

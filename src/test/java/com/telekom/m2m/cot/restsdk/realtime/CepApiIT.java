@@ -1,20 +1,5 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
-
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonPrimitive;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
@@ -22,6 +7,7 @@ import com.telekom.m2m.cot.restsdk.alarm.Alarm;
 import com.telekom.m2m.cot.restsdk.alarm.AlarmApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.DeviceControlApi;
 import com.telekom.m2m.cot.restsdk.devicecontrol.Operation;
+import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
 import com.telekom.m2m.cot.restsdk.event.Event;
 import com.telekom.m2m.cot.restsdk.event.EventApi;
 import com.telekom.m2m.cot.restsdk.inventory.InventoryApi;
@@ -29,19 +15,29 @@ import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
 import com.telekom.m2m.cot.restsdk.measurement.Measurement;
 import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import static org.testng.Assert.*;
 
 
 public class CepApiIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME,
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME,
             TestHelper.TEST_PASSWORD);
 
-    private CepApi cepApi = cotPlat.getCepApi();
-    private AlarmApi alarmApi = cotPlat.getAlarmApi();
-    private EventApi eventApi = cotPlat.getEventApi();
-    private MeasurementApi meaApi = cotPlat.getMeasurementApi();
-    private DeviceControlApi devApi = cotPlat.getDeviceControlApi();
-    private InventoryApi invApi = cotPlat.getInventoryApi();
+    private final CepApi cepApi = cotPlat.getCepApi();
+    private final AlarmApi alarmApi = cotPlat.getAlarmApi();
+    private final EventApi eventApi = cotPlat.getEventApi();
+    private final MeasurementApi meaApi = cotPlat.getMeasurementApi();
+    private final DeviceControlApi devApi = cotPlat.getDeviceControlApi();
+    private final InventoryApi invApi = cotPlat.getInventoryApi();
 
     private ManagedObject testObjectForOperation;
     private ManagedObject testObjectForEvent;
@@ -53,11 +49,11 @@ public class CepApiIT {
     private ManagedObject testObjectForInventory1;
     private ManagedObject testObjectForInventory2;
     private ManagedObject testObjectForCreateUpdateDelete;
+    private ManagedObject testObjectForConnectAndDisconnect;
 
-    private static final int DELAY_MILLIS = 250;
+    private static final int DELAY_MILLIS = 300;
 
     CepConnector connector;
-
 
     @AfterMethod
     public void tearDown() {
@@ -78,6 +74,7 @@ public class CepApiIT {
         testObjectForInventory1 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name1");
         testObjectForInventory2 = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_name2");
         testObjectForCreateUpdateDelete = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_for_createUpdateDelete");
+        testObjectForConnectAndDisconnect = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "fake_object_for_ConnectAndDisconnect");
     }
 
     @AfterClass
@@ -557,7 +554,7 @@ public class CepApiIT {
 
             @Override
             public void onError(String channel, Throwable error) {
-                fail("There should have been no errors.");
+                fail("There should have been no errors." + error);
             }
         });
 
@@ -583,12 +580,85 @@ public class CepApiIT {
         
         Thread.sleep(DELAY_MILLIS);
 
-        assertEquals(notedInventoryObjects.size(), 2);
+        // Actually we expecting exactly 2 notifications at all but c8y is mostly sending two identical DELETE-notifications with different notification IDs at once.
+        // Therefore we are checking for more than 1 notification. At least there should be two.
+        assertTrue(notedInventoryObjects.size() > 1);
         assertTrue(notedInventoryObjects.get(1).contains("DELETE"));
         
     }
-    
-    
+
+    //This will test the connection and disconnection of the cepApi. The changes were made to support a connection and
+    //immediately a disconnection and should be possible to connect again.
+    @Test
+    public void testConnectionAndDisconnection() throws InterruptedException {
+
+        final List<String> notedInventoryObjects = new ArrayList<>();
+
+        connector = cepApi.getCepConnector();
+
+       //we check that the connector is not connected before to start
+        assertFalse(connector.isConnected(), "the cep connector should be disconnected before to start the test");
+
+        connector.connect();
+        assertTrue(connector.isConnected());
+
+        connector.disconnect();
+        assertFalse(connector.isConnected());
+
+        //till here, we already verified that in case of connection or disconnection the flag is properly set
+
+        //so now we subscribe to the channel of our managed object
+        connector.subscribe("/managedobjects/" + testObjectForConnectAndDisconnect.getId());
+
+        connector.addListener(new SubscriptionListener() {
+            @Override
+            public void onNotification(String channel, Notification notification) {
+                notedInventoryObjects.add(notification.getData().toString());
+            }
+
+            @Override
+            public void onError(String channel, Throwable error) {
+                fail("There should have been no errors.");
+            }
+        });
+
+        //after defined the subscriptions and the listener, we connect to it....
+        connector.connect();
+        assertTrue(connector.isConnected());
+
+        // Now let's update the managed object and see if we will get notified
+        Thread.sleep(DELAY_MILLIS);
+        invApi.update(prepareForUpdate("a_test_object", "cot_managed_object", testObjectForConnectAndDisconnect));
+        Thread.sleep(DELAY_MILLIS);
+
+        // we check if we received a notification for it
+        assertEquals(notedInventoryObjects.size(), 1);
+        assertTrue(notedInventoryObjects.get(0).contains("UPDATE"));
+
+        //now we disconnect, to test the reconnection to the channel
+        connector.disconnect();
+        assertFalse(connector.isConnected());
+
+        //we reconnect....
+        connector.connect();
+        assertTrue(connector.isConnected());
+
+        // Now let's delete the managed object and see what happens, we should receive the notification of delete due to the
+        // reconnection
+        Thread.sleep(DELAY_MILLIS);
+        invApi.delete(testObjectForConnectAndDisconnect.getId());
+        Thread.sleep(DELAY_MILLIS);
+
+        // The second notification should be a delete one
+        // Actually we expecting exactly 2 notifications at all but c8y is mostly sending two identical DELETE-notifications with different notification IDs at once.
+        // Therefore we are checking for more than 1 notification. At least there should be two.
+        assertTrue(notedInventoryObjects.size() > 1);
+        assertTrue(notedInventoryObjects.get(1).contains("DELETE"));
+
+        //and ... we disconnect to test again :)
+        connector.disconnect();
+        assertFalse(connector.isConnected());
+    }
 
 
     private Alarm makeAlarm(String type, String severity, ManagedObject source) {
@@ -638,6 +708,5 @@ public class CepApiIT {
         obj.setName(name);
         obj.setType(type);
         return obj;
-
     }
 }

@@ -1,14 +1,12 @@
 package com.telekom.m2m.cot.restsdk.library.sensor;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertFalse;
-
 import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import org.testng.annotations.Test;
-
 import com.telekom.m2m.cot.restsdk.library.Fragment;
 import com.telekom.m2m.cot.restsdk.library.sensor.Relay.State;
+import org.testng.annotations.Test;
+
+import static org.testng.Assert.*;
 
 public class SensorLibraryTest {
 
@@ -53,7 +51,7 @@ public class SensorLibraryTest {
         assertEquals(mtm.getMotionSpeedUnit(), "m/s");
         assertEquals(mtm.getMotionSpeedValue(), 13.37f);
         assertEquals(mtm.getDetectedMotionUnit(), "");
-        assertEquals(mtm.getDetectedMotionValue(), true);
+        assertTrue(mtm.getDetectedMotionValue());
 
         SinglePhaseElectricityMeasurement sim = new SinglePhaseElectricityMeasurement(1.1f, "kWh", 1.2f, "kWh", 1.3f,
                 "W", 1.4f, "W");
@@ -238,9 +236,8 @@ public class SensorLibraryTest {
         Relay r1 = new Relay(State.OPEN);
         Relay r2 = new Relay(State.CLOSED);
         Relay r3 = new Relay(State.OPEN);
-        Relay[] arrayOfRelays = { r1, r2, r3 };
 
-        return arrayOfRelays;
+        return new Relay[]{ r1, r2, r3 };
     }
     
 }

@@ -19,15 +19,15 @@ public class UserCollection {
     private static final String CONTENT_TYPE = "application/vnd.com.nsn.cumulocity.userCollection+json;ver=0.9";
     private static final int  defaultPageSize=5;
     
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
     private int pageCursor = 1;
     
-    private Gson gson = GsonUtils.createGson();
+    private final Gson gson = GsonUtils.createGson();
 
     private boolean nextAvailable = false;
     private boolean previousAvailable = false;
     private int pageSize = defaultPageSize;
-    private String tenant;
+    private final String tenant;
 
 
     /**
@@ -124,11 +124,7 @@ public class UserCollection {
      *            the new page size as positive integer.
      */
     public void setPageSize(int pageSize) {
-        if (pageSize > 0) {
-            this.pageSize = pageSize;
-        } else {
-            this.pageSize = 0;
-        }
+        this.pageSize = Math.max(pageSize, 0);
     }
 
 }

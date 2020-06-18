@@ -1,7 +1,14 @@
 package com.telekom.m2m.cot.restsdk.util;
 
 import com.telekom.m2m.cot.restsdk.devicecontrol.OperationStatus;
-import java.util.*;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Filter to build as criteria for collection queries.
@@ -11,8 +18,6 @@ import java.util.*;
  */
 public class Filter {
 
-    private HashMap<String, String> arguments = new HashMap<>();
-
     private Filter() {
     }
 
@@ -21,6 +26,7 @@ public class Filter {
      *
      * @return FilterBuilder.
      */
+    @Nonnull
     public static FilterBuilder build() {
         return new FilterBuilder();
     }
@@ -40,21 +46,20 @@ public class Filter {
      * </pre>
      */
     public static class FilterBuilder {
-        private Filter instance = new Filter();
+
+        @Nonnull
+        private final HashMap<FilterBy, String> filters = new HashMap<>();
 
         /**
          * Creates a parameter string.
          *
          * @return a string in pattern <code>arg1=val1&amp;arg2=val2</code>
          */
+        @Nonnull
         public String buildFilter() {
-            String qs = "";
-            Set<Map.Entry<String, String>> set = instance.arguments.entrySet();
-
-            for (Map.Entry<String, String> entry : set) {
-                qs += entry.getKey() + "=" + entry.getValue() + "&";
-            }
-            return qs.substring(0, qs.length() - 1);
+            return filters.entrySet().stream()
+                .map(filter -> filter.getKey().getFilterKey() + "=" + filter.getValue())
+                .collect(Collectors.joining("&"));
         }
 
         /**
@@ -63,9 +68,9 @@ public class Filter {
          * @param id ID of the source ({@link com.telekom.m2m.cot.restsdk.inventory.ManagedObject}) to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder bySource(String id) {
-            instance.arguments.put("source", id);
+            filters.put(FilterBy.BYSOURCE, id);
             return this;
         }
 
@@ -75,10 +80,9 @@ public class Filter {
          * @param type type to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byType(String type) {
-            //instance.type = type;
-            instance.arguments.put("type", type);
+            filters.put(FilterBy.BYTYPE, type);
             return this;
         }
 
@@ -89,12 +93,10 @@ public class Filter {
          * @param to   end of the date range (more in the future).
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byDate(Date from, Date to) {
-            //instance.dateFrom = from;
-            //instance.dateTo = to;
-            instance.arguments.put("dateFrom", CotUtils.convertDateToTimestring(from));
-            instance.arguments.put("dateTo", CotUtils.convertDateToTimestring(to));
+            filters.put(FilterBy.BYDATEFROM, CotUtils.convertDateToTimestring(from));
+            filters.put(FilterBy.BYDATETO, CotUtils.convertDateToTimestring(to));
             return this;
         }
 
@@ -104,9 +106,9 @@ public class Filter {
          * @param fragmentType to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byFragmentType(String fragmentType) {
-            instance.arguments.put("fragmentType", fragmentType);
+            filters.put(FilterBy.BYFRAGMENTTYPE, fragmentType);
             return this;
         }
 
@@ -116,9 +118,9 @@ public class Filter {
          * @param deviceId to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byDeviceId(String deviceId) {
-            instance.arguments.put("deviceId", deviceId);
+            filters.put(FilterBy.BYDEVICEID, deviceId);
             return this;
         }
 
@@ -128,9 +130,9 @@ public class Filter {
          * @param operationStatus to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byStatus(OperationStatus operationStatus) {
-            instance.arguments.put("status", operationStatus.toString());
+            filters.put(FilterBy.BYSTATUS, operationStatus.toString());
             return this;
         }
 
@@ -140,9 +142,9 @@ public class Filter {
          * @param text to build for.
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byText(String text) {
-            instance.arguments.put("text", text);
+            filters.put(FilterBy.BYTEXT, text);
             return this;
         }
 
@@ -152,9 +154,9 @@ public class Filter {
          * @param listOfIds to build for (comma separated).
          * @return an appropriate build Object.
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byListOfIds(String listOfIds) {
-            instance.arguments.put("ids", listOfIds);
+            filters.put(FilterBy.BYLISTOFIDs, listOfIds);
             return this;
         }
 
@@ -165,9 +167,9 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.3.0
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byStatus(String status) {
-            instance.arguments.put("status", status);
+            filters.put(FilterBy.BYSTATUS, status);
             return this;
         }
 
@@ -178,9 +180,9 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.3.1
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byAgentId(String agentId) {
-            instance.arguments.put("agentId", agentId);
+            filters.put(FilterBy.BYAGENTID, agentId);
             return this;
         }
 
@@ -191,9 +193,9 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.6.0
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byUser(String user) {
-            instance.arguments.put("user", user);
+            filters.put(FilterBy.BYUSER, user);
             return this;
         }
         
@@ -204,9 +206,9 @@ public class Filter {
          * @return an appropriate build Object.
          * @since 0.6.0
          */
-        @Deprecated
+        @Nonnull
         public FilterBuilder byApplication(String application) {
-            instance.arguments.put("application", application);
+            filters.put(FilterBy.BYAPPLICATION, application);
             return this;
         }
 
@@ -217,40 +219,40 @@ public class Filter {
          * @param value value for filter, which should be added
          * @return an appropriate build Object
          */
-        public FilterBuilder setFilter(FilterBy filterBy, String value) {
-           instance.arguments.put(filterBy.getFilterKey(), value);
+        @Nonnull
+        public FilterBuilder setFilter(@Nonnull final FilterBy filterBy, @Nonnull final String value) {
+           filters.put(filterBy, value);
            return this;
         }
 
         /**
-         * adds a build for a hashmap of filters
+         * adds a build for a map of filters
          *
-         * @param hashmap contains enum values and vaslues for filter builds
+         * @param filtersToAdd contains enum values and values for filter builds
          * @return an appropriate build Object
          */
-        public FilterBuilder setFilters(HashMap<FilterBy, String> hashmap){
-            for ( Map.Entry e : hashmap.entrySet() ){
-                instance.arguments.put(((FilterBy)e.getKey()).getFilterKey(), (String) e.getValue());
-            }
+        @Nonnull
+        public FilterBuilder setFilters(@Nonnull final Map<FilterBy, String> filtersToAdd){
+            filters.putAll(filtersToAdd);
             return this;
         }
 
         /**
          * validate all set filters allowed by the api
          *
-         * @param filters list of filters, which have to be checked
+         * @param acceptedFilters list of filters, which are allowed. Pass null if all filters are allowed.
+         * @throws CotSdkException If a filter that is not allowed is detected.
          */
-        public void validateSupportedFilters(List filters) {
-            //do nothing, when filters is null
-            if (filters != null) {
-                for (Map.Entry e : instance.arguments.entrySet()) {
-                    if (!filters.contains(FilterBy.getFilterBy((String) e.getKey()))) {
-                        throw new CotSdkException(String.format("This filter is not avaible in used api [%s]", e.getKey()));
+        public void validateSupportedFilters(@Nullable final List<FilterBy> acceptedFilters) {
+            // Do nothing, when all filters are accepted.
+            if (acceptedFilters != null) {
+                for (final Map.Entry<FilterBy, String> definedFilter : filters.entrySet()) {
+                    if (!acceptedFilters.contains(definedFilter.getKey())) {
+                        throw new CotSdkException(String.format("This filter is not available in used api [%s]", definedFilter.getKey()));
                     }
                 }
             }
         }
-
     }
 
 }

@@ -20,8 +20,8 @@ import static org.testng.Assert.fail;
  */
 public class InventoryManagedObjectCollectionIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private SoftAssert softAssert = new SoftAssert();
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final SoftAssert softAssert = new SoftAssert();
 
     private List<ManagedObject> toBeDeleted = new ArrayList<>();
 
@@ -42,7 +42,7 @@ public class InventoryManagedObjectCollectionIT {
     }
 
     @Test
-    public void testMultipleManagedObjects() throws Exception {
+    public void testMultipleManagedObjects() {
         // Expects a tenant with already multiple measurements
 
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
@@ -56,14 +56,14 @@ public class InventoryManagedObjectCollectionIT {
 
         ManagedObject managedObject = managedObjects[0];
 
-        Assert.assertTrue(managedObject.getId() != null);
+        Assert.assertNotNull(managedObject.getId());
         Assert.assertTrue(managedObject.getId().length() > 0);
 
 
     }
 
     @Test
-    public void testMultipleManagedObjectsWithPaging() throws Exception {
+    public void testMultipleManagedObjectsWithPaging() {
         // Expects a tenant with already multiple measurements
 
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
@@ -111,30 +111,8 @@ public class InventoryManagedObjectCollectionIT {
         softAssert.assertAll();
     }
 
-//    @Test
-//    public void testDeleteMultipleOperationsBySource() throws Exception {
-//        DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
-//
-//        for (int i = 0; i < 6; i++) {
-//            Operation testOperation = new Operation();
-//            testOperation.setDeviceId(testManagedObject.getId());
-//            testOperation.set("com_telekom_m2m_cotcommand", jsonObject);
-//
-//            deviceControlApi.create(testOperation);
-//        }
-//
-//        OperationCollection operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
-//        Operation[] os = operations.getOperations();
-//        Assert.assertEquals(os.length, 5);
-//
-//        deviceControlApi.deleteOperations(Filter.build().byDeviceId(testManagedObject.getId()));
-//        operations = deviceControlApi.getOperations(Filter.build().byDeviceId(testManagedObject.getId()), 5);
-//        os = operations.getOperations();
-//        Assert.assertEquals(os.length, 0);
-//    }
-
     @Test
-    public void testMultipleManagedObjectsByText() throws Exception {
+    public void testMultipleManagedObjectsByText() {
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
         ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "my_specialxxyyzz_name");
 
@@ -153,7 +131,7 @@ public class InventoryManagedObjectCollectionIT {
     }
 
     @Test
-    public void testMultipleManagedObjectsByListOfIDs() throws Exception {
+    public void testMultipleManagedObjectsByListOfIDs() {
         InventoryApi inventoryApi = cotPlat.getInventoryApi();
         ManagedObject testManagedObject = TestHelper.createRandomManagedObjectInPlatform(cotPlat, "my_specialxxyyzz_name");
 
@@ -166,44 +144,6 @@ public class InventoryManagedObjectCollectionIT {
         inventoryApi.delete(testManagedObject.getId());
         softAssert.assertAll();
     }
-
-//    @Test
-//    public void testMultipleManagedObjectsByFragment() throws Exception {
-//        InventoryApi inventoryApi = cotPlat.getInventoryApi();
-//        ManagedObject testManagedObject  = TestHelper.createManagedObject("IT-Test-MO_DELETE");
-//        testManagedObject = inventoryApi.create(testManagedObject);
-//
-//        SampleTemperatureSensor sts = new SampleTemperatureSensor();
-//        sts.setTemperature(10);
-//
-//        Measurement measurement = new Measurement();
-//        measurement.setTime(new Date());
-//        measurement.setType("com_telekom_TestType");
-//        measurement.setSource(testManagedObject);
-//        measurement.set(sts);
-//
-//        MeasurementApi measurementApi = cotPlat.getMeasurementApi();
-//        Measurement createdMeasurements = measurementApi.createMeasurement(measurement);
-//
-//        testManagedObject = inventoryApi.get(testManagedObject.getId());
-//
-//        ManagedObjectCollection managedObjects = inventoryApi.getManagedObjects(Filter.build().byFragmentType("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor"), 5);
-//        ManagedObject[] mos = managedObjects.getManagedObjects();
-//        Assert.assertTrue(mos.length > 0);
-//        boolean allOperationWithSameStatus = true;
-//        for (ManagedObject o : mos) {
-//            if (!o.getName().equals("IT-Test-MO_DELETE")) {
-//                allOperationWithSameStatus = false;
-//            }
-//        }
-//        softAssert.assertFalse(allOperationWithSameStatus, "Don't got the wanted MOs");
-//
-//        inventoryApi.delete(testManagedObject.getId());
-//
-//        softAssert.assertAll();
-//
-//    }
-
 
     @Test
     public void testRegisterAsChildDevice() {

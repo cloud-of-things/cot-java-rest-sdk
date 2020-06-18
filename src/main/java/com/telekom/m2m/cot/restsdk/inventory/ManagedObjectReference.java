@@ -16,7 +16,7 @@ package com.telekom.m2m.cot.restsdk.inventory;
  */
 public class ManagedObjectReference {
 
-    private ManagedObject managedObject;
+    private final ManagedObject managedObject;
     private String selfRef = null;
 
     /**

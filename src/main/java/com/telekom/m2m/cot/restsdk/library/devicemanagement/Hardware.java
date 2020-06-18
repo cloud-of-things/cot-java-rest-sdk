@@ -6,9 +6,9 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class Hardware implements Fragment {
 
-    private String model;
-    private String revision;
-    private String serialNumber;
+    private final String model;
+    private final String revision;
+    private final String serialNumber;
 
 
     public Hardware(String model, String revision, String serialNumber) {

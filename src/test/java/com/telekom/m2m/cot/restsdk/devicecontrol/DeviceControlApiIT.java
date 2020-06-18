@@ -19,11 +19,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 
 /**
@@ -35,7 +31,7 @@ public class DeviceControlApiIT {
 
     CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private ManagedObject testManagedObject;
-    private DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
+    private final DeviceControlApi deviceControlApi = cotPlat.getDeviceControlApi();
 
     CepConnector connector;
 
@@ -55,7 +51,7 @@ public class DeviceControlApiIT {
     }
 
     @Test
-    public void testCreateAndGetOperation() throws Exception {
+    public void testCreateAndGetOperation() {
         // given
         Operation operation = createOperation("com_telekom_m2m_cotcommand");
 
@@ -75,7 +71,7 @@ public class DeviceControlApiIT {
     }
 
     @Test
-    public void testCreateAndUpdateOperation() throws Exception {
+    public void testCreateAndUpdateOperation() {
         Operation updatedOperation;
 
         // given
@@ -86,7 +82,7 @@ public class DeviceControlApiIT {
 
         // then
         assertNotNull(createdOperation.getId(), "Should now have an Id");
-        assertEquals(createdOperation.getStatus(), null);
+        assertNull(createdOperation.getStatus());
 
         // when
         createdOperation.setStatus(OperationStatus.EXECUTING);
@@ -191,7 +187,7 @@ public class DeviceControlApiIT {
     }
 
     @Test
-    public void testUpdateAndDeleteActiveBulkOperation() throws Exception {
+    public void testUpdateAndDeleteActiveBulkOperation() {
         // given
         ManagedObject deviceGroup = createDeviceGroup();
         Date startDate = new Date(System.currentTimeMillis() + 500000);
@@ -210,7 +206,7 @@ public class DeviceControlApiIT {
         assertNull(retrievedBulkOperation);
 
         // when we try to get createdBulkOperation with next id
-        retrievedBulkOperation = deviceControlApi.getBulkOperation(String.valueOf(Integer.valueOf(createdBulkOperation.getId())+1));
+        retrievedBulkOperation = deviceControlApi.getBulkOperation(String.valueOf(Integer.parseInt(createdBulkOperation.getId())+1));
 
         // then we could get a bulkOperation but we can not make sure that that's the updated bulkOperation
         assertNotNull(retrievedBulkOperation.getId());
@@ -273,6 +269,19 @@ public class DeviceControlApiIT {
 
         assertTrue(notedOperations.get(0).contains("first_operation_attribute"));
         assertTrue(notedOperations.get(1).contains("second_operation_attribute"));
+    }
+
+    @Test
+    public void testInjectionWithQuotes() {
+        Operation operation = createOperation("name");
+        Operation createdOperation = deviceControlApi.create(operation);
+
+        createdOperation.setStatus(OperationStatus.FAILED);
+        createdOperation.setFailureReason("\"AN ERROR HAS OCCURED\"");
+
+        Operation testOperation = deviceControlApi.update(createdOperation);
+
+        assertNotNull(testOperation);
     }
 
     private ManagedObject createDeviceGroup() {

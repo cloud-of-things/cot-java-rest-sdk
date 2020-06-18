@@ -2,7 +2,7 @@
 
 The [Cloud of Things](https://m2m.telekom.com/our-offering/cloud-of-things/) (German Cloud der Dinge) is a platform for the Internet of Things by T-Systems International GmbH. Inside this repository you will find a Java based SDK to interface with the Cloud of Things API.
 
-_Current version is: 1.1.0_
+_Current version is: 2.0.0_
 
 ## Usage
 
@@ -11,7 +11,7 @@ Add this to your `pom.xml` to include the SDK in your Maven Repo
 <dependency>
     <groupId>com.telekom.m2m.cot</groupId>
     <artifactId>java-rest-client</artifactId>
-    <version>1.1.0</version>
+    <version>2.0.0</version>
 </dependency>
 ```
 
@@ -32,6 +32,41 @@ You can find the Java Doc of the latest release here: http://cloud-of-things.git
 ## Release Notes
 
 Short information about what has changed between releases.
+
+### Release 2.0.0
+
+* Measurement real time notification functionality was moved from InventoryApi to MeasurementApi
+* Prevent injection in update method ([Pull Request #90](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/90)). 
+* More robust deserialization catching IllegalArgumentException being thrown by Spring Boot Class Loader for properties like "A+:1" in ThreePhaseElectricityMeasurement
+([Pull Request #91](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/91)).
+    
+* Fix erroneously wrapped numeric values in deserialized ExtensibleObjects ([Pull Request #92](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/92)), e.g.:
+    serialized Object: temperature=ExtensibleObject{anyObject={unit=°C, value=100.0}} will be deserialized into:
+    ```
+    OLD:
+    "temperature":{
+        "value":{
+            "value":"100.0"
+        },
+        "unit":"°C"
+    }
+    
+    FIXED:
+    "temperature":{
+        "value":100.0,
+        "unit":"°C"
+    }
+    ```
+* Includes [Pull Request #94](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/94):
+    - Usage of newest dependencies
+    - Cleanup and improvements according to code inspection
+
+* EventApi provides the update of events as well now. ([Pull Request #95](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/95))
+* Fixed cast in getSource() method of Alarm and Event
+* Added the getter as counterpart of set(Object) in ExtendedObject
+* Includes ([Pull Request #96](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/96)):
+    - Fixed some unstable integration tests due to maybe changed behavior of the c8y API
+    - Provided more details from the c8y error message in CotSdkException
 
 ### Release 1.1.0
 

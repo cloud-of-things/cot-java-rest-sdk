@@ -11,19 +11,15 @@ import org.testng.annotations.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertNull;
-import static org.testng.Assert.assertTrue;
-import static org.testng.Assert.fail;
+import static org.testng.Assert.*;
 
 public class BinariesApiIT {
 
-    private CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cotPlat = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
 
-    private BinariesApi api = cotPlat.getBinariesApi();
+    private final BinariesApi api = cotPlat.getBinariesApi();
 
-    private List<String> binaryIds = new ArrayList<>();
+    private final List<String> binaryIds = new ArrayList<>();
 
 
     @AfterMethod
@@ -79,6 +75,10 @@ public class BinariesApiIT {
         byte[] data = api.getData(bin);
         assertEquals(data, replaceData);
         assertEquals(id, bin.getId()); // Replacing the content changes the id!
+
+        //if the id is new when the content is replaced, we should remove the new id to not accumulate test data.
+        //methods like testGetCollection() depends on find the file within 1000 registers
+        binaryIds.add(id);
     }
 
 

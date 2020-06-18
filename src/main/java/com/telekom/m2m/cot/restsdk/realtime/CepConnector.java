@@ -1,8 +1,5 @@
 package com.telekom.m2m.cot.restsdk.realtime;
 
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArraySet;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -10,6 +7,9 @@ import com.google.gson.JsonObject;
 import com.telekom.m2m.cot.restsdk.CloudOfThingsRestClient;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
+
+import java.util.Set;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 
 /**
@@ -36,13 +36,13 @@ public class CepConnector implements Runnable {
 
     private static final int THREAD_JOIN_GRACE_MILLIS = 1000;
 
-    private String notificationPath;
-    private CloudOfThingsRestClient cloudOfThingsRestClient;
+    private final String notificationPath;
+    private final CloudOfThingsRestClient cloudOfThingsRestClient;
 
-    private boolean connected = false;
-    private boolean shallDisconnect = false;
+    private volatile boolean connected = false;
+    private volatile boolean shallDisconnect = false;
 
-    private String clientId;
+    private volatile String clientId;
 
     // Read timeout in milliseconds for the connect request:
     private int timeout = DEFAULT_READ_TIMEOUT_MILLIS;
@@ -50,10 +50,10 @@ public class CepConnector implements Runnable {
     // Interval in milliseconds between connect requests:
     private int interval = DEFAULT_RECONNECT_INTERVAL_MILLIS;
 
-    private Set<String> channels = new CopyOnWriteArraySet<>();
-    private Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
+    private final Set<String> channels = new CopyOnWriteArraySet<>();
+    private final Set<SubscriptionListener> listeners = new CopyOnWriteArraySet<>();
 
-    private Gson gson = GsonUtils.createGson();
+    private final Gson gson = GsonUtils.createGson();
 
     private Thread pollingThread;
 
@@ -87,13 +87,7 @@ public class CepConnector implements Runnable {
         channels.add(channel);
 
         if (clientId != null) {
-            JsonArray body = new JsonArray();
-            JsonObject obj = new JsonObject();
-            obj.addProperty("channel", "/meta/subscribe");
-            obj.addProperty("clientId", clientId);
-            obj.addProperty("subscription", channel);
-            body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+            doSubscribe(channel);
         }
     }
 
@@ -106,13 +100,7 @@ public class CepConnector implements Runnable {
      */
     public void unsubscribe(String channel) {
         if (channels.remove(channel)) {
-            JsonArray body = new JsonArray();
-            JsonObject obj = new JsonObject();
-            obj.addProperty("channel", "/meta/unsubscribe");
-            obj.addProperty("clientId", clientId);
-            obj.addProperty("subscription", channel);
-            body.add(obj);
-            cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+            doUnsubscribe(channel);
         }
     }
 
@@ -123,8 +111,6 @@ public class CepConnector implements Runnable {
      * it starts the run cycle.
      */
     public void connect() {
-        shallDisconnect = false;
-
         if (connected) {
             throw new CotSdkException("Already connected. Please disconnect first.");
         }
@@ -137,20 +123,36 @@ public class CepConnector implements Runnable {
             throw new CotSdkException("Handshake failed, could not get clientId.");
         }
 
+        shallDisconnect = false;
+        connected = true;
+        
         pollingThread = new Thread(this);
         pollingThread.setName("CepConnector.pollingThread");
         pollingThread.start();
     }
 
-
+    /**
+     *
+     */
     public void disconnect() {
         shallDisconnect = true;
+        connected = false;
+
         if (pollingThread != null) {
             pollingThread.interrupt();
             try {
                 pollingThread.join(THREAD_JOIN_GRACE_MILLIS); // One second should be more than enough to end the loop.
             } catch (InterruptedException ex) {
                 throw new CotSdkException("Real time polling thread didn't finish properly when asked to disconnect.", ex);
+            }
+            finally {
+                //its necessary to close the opened subscriptions to the channels to allow reconnection,
+                // otherwise it will throw an exception when reconnects. To keep the old functionality we only unsubscribe
+                //remotely
+                for (String channel : channels) {
+                    doUnsubscribe(channel);
+                }
+                clientId = null;
             }
         }
     }
@@ -174,7 +176,7 @@ public class CepConnector implements Runnable {
 
     /**
      * Set the read timeout for the polling connect request.
-     * Default is {@value DEFAULT_READ_TIMEOUT_MILLIS}.
+     * Default is {@link #DEFAULT_READ_TIMEOUT_MILLIS}.
      *
      * @param timeout the timeout in milliseconds
      */
@@ -193,7 +195,7 @@ public class CepConnector implements Runnable {
 
     /**
      * Set the time that the polling thread waits before it reconnects, after receiving a response.
-     * Default is {@value DEFAULT_RECONNECT_INTERVAL_MILLIS}.
+     * Default is {@link #DEFAULT_RECONNECT_INTERVAL_MILLIS}.
      *
      * @param interval the waiting interval in milliseconds
      */
@@ -234,8 +236,7 @@ public class CepConnector implements Runnable {
         obj.addProperty("clientId", clientId);
         obj.addProperty("connectionType", "long-polling");
         body.add(obj);
-        String result = cloudOfThingsRestClient.doRealTimePollingRequest(body.toString(), notificationPath, CONTENT_TYPE, timeout);
-        return result;
+        return cloudOfThingsRestClient.doRealTimePollingRequest(body.toString(), notificationPath, CONTENT_TYPE, timeout);
     }
 
 
@@ -300,16 +301,43 @@ public class CepConnector implements Runnable {
     }
 
     /**
+     * Subscribe to a given channel remotely
+     * @param channel to be subscribed
+     */
+    private void doSubscribe(String channel) {
+        JsonArray body = new JsonArray();
+        JsonObject obj = new JsonObject();
+        obj.addProperty("channel", "/meta/subscribe");
+        obj.addProperty("clientId", clientId);
+        obj.addProperty("subscription", channel);
+        body.add(obj);
+        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+    }
+
+    /**
+     * Unsubscribe to a given channel remotely.
+     * @param channel to be unsubscribed
+     */
+    private void doUnsubscribe(String channel) {
+        JsonArray body = new JsonArray();
+        JsonObject obj = new JsonObject();
+        obj.addProperty("channel", "/meta/unsubscribe");
+        obj.addProperty("clientId", clientId);
+        obj.addProperty("subscription", channel);
+        body.add(obj);
+        cloudOfThingsRestClient.doPostRequest(body.toString(), notificationPath, CONTENT_TYPE, ACCEPT);
+    }
+
+    /**
      * Starts the connector in a separate thread. Not meant to be called directly,
      * please use {@link #connect()} to start the connector.
      */
     @Override
     public void run() {
-        connected = true;
         try {
             doInitialSubscriptions();
 
-            do {
+            while (!shallDisconnect) {
                 String responseString = doConnect();
                 if (responseString != null) {
                     JsonArray response = gson.fromJson(responseString, JsonArray.class);
@@ -349,13 +377,11 @@ public class CepConnector implements Runnable {
                 }
 
                 try {
-                    if (!shallDisconnect) {
-                        Thread.sleep(interval);
-                    }
+                    Thread.sleep(interval);
                 } catch (InterruptedException e) {
                     shallDisconnect = true;
                 }
-            } while (!shallDisconnect);
+            }
         } finally {
             clientId = null;
             connected = false;

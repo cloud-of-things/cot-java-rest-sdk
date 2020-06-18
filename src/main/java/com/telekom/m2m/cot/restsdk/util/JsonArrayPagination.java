@@ -24,7 +24,7 @@ public class JsonArrayPagination {
     private int pageCursor = 1;
     private int pageSize = DEFAULT_PAGE_SIZE;
 
-    private Filter.FilterBuilder criteria = null;
+    private final Filter.FilterBuilder criteria;
 
     protected final Gson gson;
 
@@ -109,8 +109,9 @@ public class JsonArrayPagination {
 
     @Nonnull
     private JsonObject getJsonObject(final int page) {
+        char delimiter = relativeApiUrl.contains("?") ? '&' : '?';
         String url = relativeApiUrl +
-                "?currentPage=" + page +
+                delimiter + "currentPage=" + page +
                 "&pageSize=" + pageSize;
         //hint: it is possible to change the sort order by adding query parameter "revert=true"
 

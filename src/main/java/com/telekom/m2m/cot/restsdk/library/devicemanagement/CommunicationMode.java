@@ -11,7 +11,7 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 public class CommunicationMode implements Fragment {
 
     // e.g. 'SMS'
-    private String mode;
+    private final String mode;
 
     /**
      * Constructor with communication mode as argument

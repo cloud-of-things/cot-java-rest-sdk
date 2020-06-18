@@ -1,36 +1,27 @@
 package com.telekom.m2m.cot.restsdk.util;
 
+import com.google.gson.*;
+import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
+import com.telekom.m2m.cot.restsdk.users.DevicePermission;
+
 import java.lang.reflect.Type;
 import java.sql.Date;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.time.ZonedDateTime;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.google.gson.JsonPrimitive;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-import com.telekom.m2m.cot.restsdk.inventory.ManagedObject;
-import com.telekom.m2m.cot.restsdk.users.DevicePermission;
 
 /**
  * Created by Patrick Steinert on 31.01.16.
  */
 public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObject>, JsonDeserializer<ExtensibleObject> {
 
-    private DateTimeFormatter oneLetterISO8601TimeZoneDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
-    private DateTimeFormatter twoLetterISO8601TimeZoneDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX");
-    private DateTimeFormatter threeLetterISO8601TimeZoneDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+    private final DateTimeFormatter oneLetterISO8601TimeZoneDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+    private final DateTimeFormatter twoLetterISO8601TimeZoneDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXX");
+    private final DateTimeFormatter threeLetterISO8601TimeZoneDTF = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
 
     @Override
     public JsonElement serialize(ExtensibleObject src, Type typeOfSrc,
@@ -78,19 +69,17 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
         JsonObject object = jsonElement.getAsJsonObject();
         ExtensibleObject mo = new ExtensibleObject();
 
-        Iterator<Map.Entry<String, JsonElement>> objectElementIterator = object.entrySet().iterator();
-        while (objectElementIterator.hasNext()) {
-            Map.Entry<String, JsonElement> element = objectElementIterator.next();
+        for (Map.Entry<String, JsonElement> element : object.entrySet()) {
             String key = element.getKey();
             JsonElement value = element.getValue();
 
             try {
-                Class foundClass = Class.forName(key.replace('_', '.'));
-                if (foundClass != null) {
-                    mo.set(key, jsonDeserializationContext.deserialize(value, foundClass));
-                    continue;
-                }
-            } catch (ClassNotFoundException e) {
+                Class<?> foundClass = Class.forName(key.replace('_', '.'));
+                mo.set(key, jsonDeserializationContext.deserialize(value, foundClass));
+                continue;
+            } catch (ClassNotFoundException | IllegalArgumentException e) {
+                // IllegalArgumentException migh happen here in case the code is executed with URLClassLoader
+                // for example Spring Boot application.
             }
 
             JsonPrimitive tmp;
@@ -105,7 +94,7 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                         String tmpString = tmp.getAsString();
                         ZonedDateTime zonedDateTime = null;
                         // in the CoT plattform the stored date time objects has different formatted time zones
-                        switch(tmpString.length()) {
+                        switch (tmpString.length()) {
                             case 24:
                                 // e.g. 2017-09-05T17:19:32.601Z
                             case 26:
@@ -131,13 +120,13 @@ public class ExtensibleObjectSerializer implements JsonSerializer<ExtensibleObje
                     }
 
                 } else if (tmp.isNumber()) {
-                    converted = tmp.getAsNumber();
+                    converted = tmp.getAsBigDecimal();
                 }
                 mo.set(key, converted);
             } else if (value.isJsonObject()) {
                 // Special case for User to avoid crappy nested ExtensibleObjects...
                 if (key.equals("devicePermissions")) {
-                    mo.set(key, deserializeDevicePermissions((JsonObject)value));
+                    mo.set(key, deserializeDevicePermissions((JsonObject) value));
                 } else {
                     mo.set(key, jsonDeserializationContext.deserialize(value, type));
                 }

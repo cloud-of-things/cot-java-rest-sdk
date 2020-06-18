@@ -7,7 +7,7 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class RequiredAvailability implements Fragment {
 
-    private int responseInterval;
+    private final int responseInterval;
 
 
     public RequiredAvailability(int responseInterval) {

@@ -16,8 +16,8 @@ public class CellInfo implements Fragment {
 
     private static final Gson gson = GsonUtils.createGson();
 
-    private String radioType;
-    private List<CellTower> cellTowers = new ArrayList<>();
+    private final String radioType;
+    private final List<CellTower> cellTowers = new ArrayList<>();
 
 
     public CellInfo() {

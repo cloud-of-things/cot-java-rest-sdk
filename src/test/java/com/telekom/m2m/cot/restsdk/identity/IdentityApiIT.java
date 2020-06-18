@@ -26,7 +26,7 @@ public class IdentityApiIT {
     }
 
     @Test
-    public void testNotFoundGet() throws Exception {
+    public void testNotFoundGet() {
         IdentityApi idApi = cotPlat.getIdentityApi();
         ExternalId externalId = new ExternalId();
         externalId.setExternalId("456789");
@@ -35,7 +35,7 @@ public class IdentityApiIT {
     }
 
     @Test
-    public void testCreateAndGetAndDelete() throws Exception {
+    public void testCreateAndGetAndDelete() {
         IdentityApi idApi = cotPlat.getIdentityApi();
         ExternalId externalId = new ExternalId();
         externalId.setExternalId("456789");
@@ -56,7 +56,7 @@ public class IdentityApiIT {
 
 
     @Test
-    public void testGetMultipleGlobalIds() throws Exception {
+    public void testGetMultipleGlobalIds() {
         IdentityApi idApi = cotPlat.getIdentityApi();
         String extId = "extId-" + (Math.random() * Integer.MAX_VALUE);
 

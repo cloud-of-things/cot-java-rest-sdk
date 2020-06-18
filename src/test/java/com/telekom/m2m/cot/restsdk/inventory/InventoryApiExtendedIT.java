@@ -1,15 +1,15 @@
 package com.telekom.m2m.cot.restsdk.inventory;
 
 import com.telekom.m2m.cot.restsdk.CloudOfThingsPlatform;
+import com.telekom.m2m.cot.restsdk.measurement.Measurement;
+import com.telekom.m2m.cot.restsdk.measurement.MeasurementApi;
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
+import com.telekom.m2m.cot.restsdk.util.SampleTemperatureSensor;
 import com.telekom.m2m.cot.restsdk.util.TestHelper;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 import static org.testng.Assert.*;
 
@@ -22,11 +22,10 @@ public class InventoryApiExtendedIT {
 
     private static final String PARENT_MANAGED_OBJECT_NAME = "parentTestManagedObject";
     private static final String CHILD_MANAGED_OBJECT_NAME = "childTestManagedObject";
-    private static final String DEVICE_ID_WITH_SUPPORTED_MEASUREMENTS = "38345";
-    private static final String DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS = "10575";
 
-    private CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
-    private InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT + "/" + TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
+    private final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
     private List<ManagedObject> managedObjectsToDelete = new ArrayList<>();
 
@@ -70,7 +69,7 @@ public class InventoryApiExtendedIT {
         childDevicesIterator = reloadedParentMoFromCloud.getChildDevices().get().iterator();
         assertFalse(childDevicesIterator.hasNext());
         try {
-            next = childDevicesIterator.next();
+            childDevicesIterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
@@ -109,7 +108,7 @@ public class InventoryApiExtendedIT {
         parentDevicesIterator = childMoFromCloud.getParentDevices().get().iterator();
         assertFalse(parentDevicesIterator.hasNext());
         try {
-            next = parentDevicesIterator.next();
+            parentDevicesIterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
@@ -148,7 +147,7 @@ public class InventoryApiExtendedIT {
         iterator = childMo.getParentAssets().get().iterator();
         assertFalse(iterator.hasNext());
         try {
-            next = iterator.next();
+            iterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
@@ -182,16 +181,17 @@ public class InventoryApiExtendedIT {
         iterator = reloadedMo.getChildAssets().get().iterator();
         assertFalse(iterator.hasNext());
         try {
-            next = iterator.next();
+            iterator.next();
             fail("Needs to throw an NSEE b/c no ref anymore.");
         } catch (NoSuchElementException e) {
 
         }
     }
 
-    @Test(expectedExceptions = NullPointerException.class)
+    @Test
     public void testSupportedMeasurementsNullDeviceId() {
-        inventoryApi.getSupportedMeasurements(null);
+        ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(null);
+        assertTrue(supportedMeasurements.isEmpty());
     }
 
     @Test(expectedExceptions = CotSdkException.class, expectedExceptionsMessageRegExp = ".*inventory/Not Found.*")
@@ -207,18 +207,82 @@ public class InventoryApiExtendedIT {
 
     @Test
     public void testNoSupportedMeasurements() {
-        ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS);
+        ManagedObject managedObject = createManagedObjectInCot("device");
+        managedObjectsToDelete.add(managedObject);
 
-        assertTrue(supportedMeasurements.isEmpty(), String.format("List of supported measurements for device with ID %s should be empty", DEVICE_ID_WITHOUT_SUPPORTED_MEASUREMENTS));
+        ArrayList<String> supportedMeasurements = inventoryApi.getSupportedMeasurements(managedObject.getId());
+
+        assertTrue(supportedMeasurements.isEmpty(), String.format("List of supported measurements for device with ID %s should be empty", managedObject.getId()));
     }
+
 
     @Test
     public void testGetSupportedMeasurements() {
+        ManagedObject managedObject = createManagedObjectInCot("device");
+        managedObjectsToDelete.add(managedObject);
+
+        createMeasurement(managedObject);
+
         ArrayList<String> supportedMeasurements = new ArrayList<>();
-        supportedMeasurements.add("Spannung");
-        ArrayList<String> supportedMeasurementsFromCloud = inventoryApi.getSupportedMeasurements(DEVICE_ID_WITH_SUPPORTED_MEASUREMENTS);
+        supportedMeasurements.add("com_telekom_m2m_cot_restsdk_util_SampleTemperatureSensor");
+
+        ArrayList<String> supportedMeasurementsFromCloud = inventoryApi.getSupportedMeasurements(managedObject.getId());
 
         assertEquals(supportedMeasurementsFromCloud, supportedMeasurements);
+    }
+
+    @Test
+    public void testManagedObjectNotifications() throws InterruptedException {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(managedObject);
+        inventoryApi.subscribeToManagedObjectNotifications(managedObject.getId());
+
+        Thread.sleep(1000);
+
+        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        retrievedMo.setName("some_other_name");
+        inventoryApi.update(retrievedMo);
+
+        Thread.sleep(1000);
+
+        List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
+        assertNotNull(notifications);
+        // Actually we expecting exactly one notification at all but c8y is sometimes sending two identical notifications with different notification IDs at once.
+        // Therefore we are checking for more than 0 notification. At least there should be one.
+        assertTrue(notifications.size() > 0);
+
+        String lastNotification = notifications.get(notifications.size()-1);
+
+        assertTrue(lastNotification.contains("\"realtimeAction\": \"UPDATE\""));
+        assertTrue(lastNotification.contains("\"name\": \"some_other_name\""));
+
+        inventoryApi.unsubscribeFromManagedObjectNotifications(managedObject.getId());
+    }
+
+    @Test
+    public void testDeleteManagedObjectNotifications() throws InterruptedException {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(managedObject);
+        inventoryApi.subscribeToManagedObjectNotifications(managedObject.getId());
+
+        Thread.sleep(1000);
+
+        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        inventoryApi.delete(retrievedMo.getId());
+
+        Thread.sleep(1000);
+
+        List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
+        assertNotNull(notifications);
+        // Actually we expecting exactly 2 notifications at all but c8y is mostly sending two identical DELETE-notifications with different notification IDs at once.
+        // Therefore we are checking for more than 1 notification. At least there should be two.
+        assertTrue(notifications.size() > 0);
+
+        String lastNotification = notifications.get(notifications.size()-1);
+
+        assertTrue(lastNotification.contains("\"realtimeAction\": \"DELETE\""));
+
+        inventoryApi.unsubscribeFromManagedObjectNotifications(managedObject.getId());
     }
 
     private ManagedObject createManagedObjectInCot(String name) {
@@ -226,5 +290,15 @@ public class InventoryApiExtendedIT {
         mo.setName(name);
 
         return inventoryApi.create(mo);
+    }
+
+    private void createMeasurement(ManagedObject managedObject) {
+        SampleTemperatureSensor sampleTemperatureSensor = new SampleTemperatureSensor(100);
+        Measurement testMeasurement = new Measurement();
+        testMeasurement.setSource(managedObject);
+        testMeasurement.setTime(new Date());
+        testMeasurement.setType("Temperature");
+        testMeasurement.set(sampleTemperatureSensor);
+        measurementApi.createMeasurement(testMeasurement);
     }
 }

@@ -2,7 +2,10 @@ package com.telekom.m2m.cot.restsdk;
 
 
 import com.telekom.m2m.cot.restsdk.util.CotSdkException;
-import okhttp3.*;
+import okhttp3.Call;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockTestCase;
@@ -10,7 +13,7 @@ import org.testng.annotations.Test;
 
 import java.io.IOException;
 
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 
 /**
  * Created by Patrick Steinert on 30.01.16.
@@ -65,7 +68,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
     }
 
     @Test
-    public void testConnection() throws Exception {
+    public void testConnection() {
         OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
         CloudOfThingsRestClient cotRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
     }
@@ -91,7 +94,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.delete("", "");
+        cloudOfThingsRestClient.delete("id", "api");
     }
 
     @Test(expectedExceptions = CotSdkException.class)
@@ -111,7 +114,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.delete("", "");
+        cloudOfThingsRestClient.delete("id", "api");
     }
 
     @Test(expectedExceptions = CotSdkException.class)
@@ -149,7 +152,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.delete("", "");
+        cloudOfThingsRestClient.delete("id", "api");
     }
 
     @Test(expectedExceptions = { CotSdkException.class }, expectedExceptionsMessageRegExp = "Error in request:.*")
@@ -161,10 +164,10 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.deleteBy("", "");
+        cloudOfThingsRestClient.deleteBy("id", "api");
     }
 
-    @Test(expectedExceptions = { CotSdkException.class }, expectedExceptionsMessageRegExp = "Error in delete by criteria.*")
+    @Test(expectedExceptions = { CotSdkException.class }, expectedExceptionsMessageRegExp = "Error in delete with URL .*")
     public void testDeleteByWithReturningError() throws Exception {
 
         OkHttpClient clientMock = PowerMockito.mock(OkHttpClient.class);
@@ -181,7 +184,7 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.deleteBy("", "");
+        cloudOfThingsRestClient.deleteBy("id", "api");
     }
 
     @Test
@@ -201,6 +204,6 @@ public class CloudOfThingsRestClientTest extends PowerMockTestCase {
 
         CloudOfThingsRestClient cloudOfThingsRestClient = new CloudOfThingsRestClient(clientMock, TEST_HOST, TEST_USERNAME, TEST_PASSWORD);
 
-        cloudOfThingsRestClient.deleteBy("", "");
+        cloudOfThingsRestClient.deleteBy("id", "api");
     }
 }

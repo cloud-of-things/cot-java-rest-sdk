@@ -7,8 +7,11 @@ import com.telekom.m2m.cot.restsdk.util.Filter;
 import com.telekom.m2m.cot.restsdk.util.FilterBy;
 import com.telekom.m2m.cot.restsdk.util.GsonUtils;
 
+import javax.annotation.Nullable;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Use the Event to work with Events.
@@ -105,14 +108,38 @@ public class EventApi {
     }
 
     /**
+     * Updates an Event. It is just possible to update the text and user defined fragments.
+     * Any further attributes like type, time or source.id will be ignored.
+     *
+     * @param event the event to update.
+     * @since 2.0.0
+     */
+    public void update(Event event) {
+        Map attributes = event.getAttributes();
+        attributes.remove("time");
+        attributes.remove("creationTime");
+        attributes.remove("type");
+        attributes.remove("source");
+        Event eventToUpdate = new Event();
+        eventToUpdate.setAttributes(attributes);
+
+        String json = gson.toJson(eventToUpdate);
+        cloudOfThingsRestClient.doPutRequest(json, RELATIVE_API_URL + event.getId(), CONTENT_TYPE);
+    }
+
+    /**
      * Deletes a collection of Events by criteria.
      *
      * @param filters filters of Event attributes.
+     *                Pass null or empty FilterBuilder if all events should be deleted.
      */
-    public void deleteEvents(Filter.FilterBuilder filters) {
+    public void deleteEvents(@Nullable final Filter.FilterBuilder filters) {
         if(filters != null) {
             filters.validateSupportedFilters(acceptedFilters);
         }
-        cloudOfThingsRestClient.delete("", RELATIVE_API_URL + "?" + filters.buildFilter() + "&x=");
+        final String filterParams = Optional.ofNullable(filters)
+                .map(Filter.FilterBuilder::buildFilter)
+                .orElse("");
+        cloudOfThingsRestClient.deleteBy(filterParams, RELATIVE_API_URL);
     }
 }

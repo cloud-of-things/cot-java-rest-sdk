@@ -7,8 +7,8 @@ import com.telekom.m2m.cot.restsdk.library.Fragment;
 
 public class Battery implements Fragment {
 
-    private float value;
-    private String unit;
+    private final float value;
+    private final String unit;
 
 
     public Battery(float value, String unit) {
