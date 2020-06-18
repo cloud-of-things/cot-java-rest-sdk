@@ -580,7 +580,9 @@ public class CepApiIT {
         
         Thread.sleep(DELAY_MILLIS);
 
-        assertEquals(notedInventoryObjects.size(), 2);
+        // Actually we expecting exactly 2 notifications at all but c8y is mostly sending two identical DELETE-notifications with different notification IDs at once.
+        // Therefore we are checking for more than 1 notification. At least there should be two.
+        assertTrue(notedInventoryObjects.size() > 1);
         assertTrue(notedInventoryObjects.get(1).contains("DELETE"));
         
     }
@@ -597,11 +599,11 @@ public class CepApiIT {
        //we check that the connector is not connected before to start
         assertFalse(connector.isConnected(), "the cep connector should be disconnected before to start the test");
 
-//        connector.connect();
-//        assertTrue(connector.isConnected());
-//
-//        connector.disconnect();
-//        assertFalse(connector.isConnected());
+        connector.connect();
+        assertTrue(connector.isConnected());
+
+        connector.disconnect();
+        assertFalse(connector.isConnected());
 
         //till here, we already verified that in case of connection or disconnection the flag is properly set
 
@@ -611,10 +613,6 @@ public class CepApiIT {
         connector.addListener(new SubscriptionListener() {
             @Override
             public void onNotification(String channel, Notification notification) {
-                System.out.println(channel + ": " + notification.toString());
-//                System.out.println(channel + ": " + notification.getPayload());
-//                System.out.println(channel + ": " + notification.getRealtimeAction());
-                System.out.println(channel + ": " + notification.getData().toString());
                 notedInventoryObjects.add(notification.getData().toString());
             }
 
@@ -637,13 +635,13 @@ public class CepApiIT {
         assertEquals(notedInventoryObjects.size(), 1);
         assertTrue(notedInventoryObjects.get(0).contains("UPDATE"));
 
-//        //now we disconnect, to test the reconnection to the channel
-//        connector.disconnect();
-//        assertFalse(connector.isConnected());
-//
-//        //we reconnect....
-//        connector.connect();
-//        assertTrue(connector.isConnected());
+        //now we disconnect, to test the reconnection to the channel
+        connector.disconnect();
+        assertFalse(connector.isConnected());
+
+        //we reconnect....
+        connector.connect();
+        assertTrue(connector.isConnected());
 
         // Now let's delete the managed object and see what happens, we should receive the notification of delete due to the
         // reconnection
@@ -651,8 +649,10 @@ public class CepApiIT {
         invApi.delete(testObjectForConnectAndDisconnect.getId());
         Thread.sleep(DELAY_MILLIS);
 
-        //the second notification should be a delete one
-        assertEquals(notedInventoryObjects.size(), 2);
+        // The second notification should be a delete one
+        // Actually we expecting exactly 2 notifications at all but c8y is mostly sending two identical DELETE-notifications with different notification IDs at once.
+        // Therefore we are checking for more than 1 notification. At least there should be two.
+        assertTrue(notedInventoryObjects.size() > 1);
         assertTrue(notedInventoryObjects.get(1).contains("DELETE"));
 
         //and ... we disconnect to test again :)

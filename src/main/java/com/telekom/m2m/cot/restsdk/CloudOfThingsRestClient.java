@@ -632,7 +632,13 @@ public class CloudOfThingsRestClient {
             if (e instanceof JsonObject) {
                 JsonObject o = (JsonObject) e;
                 if (o.has("error")) {
-                    errorMessage += " Platform provided details: '" + o.get("error") + "'";
+                    errorMessage += " Platform provided details: " + o.get("error") + "; ";
+                }
+                if (o.has("message")) {
+                    errorMessage += "message: " + o.get("message") + "; ";
+                }
+                if (o.has("info")) {
+                    errorMessage += "info: " + o.get("info");
                 }
             } else if (e instanceof JsonPrimitive) {
                 JsonPrimitive p = (JsonPrimitive) e;

@@ -63,7 +63,9 @@ Short information about what has changed between releases.
 * EventApi provides the update of events as well now. ([Pull Request #95](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/95))
 * Fixed cast in getSource() method of Alarm and Event
 * Added the getter as counterpart of set(Object) in ExtendedObject
-
+* Includes ([Pull Request #96](https://github.com/cloud-of-things/cot-java-rest-sdk/pull/96)):
+    - Fixed some unstable integration tests due to maybe changed behavior of the c8y API
+    - Provided more details from the c8y error message in CotSdkException
 
 ### Release 1.1.0
 

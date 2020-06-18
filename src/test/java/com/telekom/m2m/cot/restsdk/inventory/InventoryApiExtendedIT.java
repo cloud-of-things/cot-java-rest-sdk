@@ -23,7 +23,7 @@ public class InventoryApiExtendedIT {
     private static final String PARENT_MANAGED_OBJECT_NAME = "parentTestManagedObject";
     private static final String CHILD_MANAGED_OBJECT_NAME = "childTestManagedObject";
 
-    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
+    private final CloudOfThingsPlatform cloudOfThingsPlatform = new CloudOfThingsPlatform(TestHelper.TEST_HOST, TestHelper.TEST_TENANT + "/" + TestHelper.TEST_USERNAME, TestHelper.TEST_PASSWORD);
     private final InventoryApi inventoryApi = cloudOfThingsPlatform.getInventoryApi();
     private final MeasurementApi measurementApi = cloudOfThingsPlatform.getMeasurementApi();
 
@@ -247,12 +247,40 @@ public class InventoryApiExtendedIT {
 
         List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
         assertNotNull(notifications);
+        // Actually we expecting exactly one notification at all but c8y is sometimes sending two identical notifications with different notification IDs at once.
+        // Therefore we are checking for more than 0 notification. At least there should be one.
         assertTrue(notifications.size() > 0);
 
         String lastNotification = notifications.get(notifications.size()-1);
 
         assertTrue(lastNotification.contains("\"realtimeAction\": \"UPDATE\""));
         assertTrue(lastNotification.contains("\"name\": \"some_other_name\""));
+
+        inventoryApi.unsubscribeFromManagedObjectNotifications(managedObject.getId());
+    }
+
+    @Test
+    public void testDeleteManagedObjectNotifications() throws InterruptedException {
+        ManagedObject managedObject = createManagedObjectInCot(PARENT_MANAGED_OBJECT_NAME);
+        managedObjectsToDelete.add(managedObject);
+        inventoryApi.subscribeToManagedObjectNotifications(managedObject.getId());
+
+        Thread.sleep(1000);
+
+        ManagedObject retrievedMo = inventoryApi.get(managedObject.getId());
+        inventoryApi.delete(retrievedMo.getId());
+
+        Thread.sleep(1000);
+
+        List<String> notifications = inventoryApi.pullNotifications(managedObject.getId());
+        assertNotNull(notifications);
+        // Actually we expecting exactly 2 notifications at all but c8y is mostly sending two identical DELETE-notifications with different notification IDs at once.
+        // Therefore we are checking for more than 1 notification. At least there should be two.
+        assertTrue(notifications.size() > 0);
+
+        String lastNotification = notifications.get(notifications.size()-1);
+
+        assertTrue(lastNotification.contains("\"realtimeAction\": \"DELETE\""));
 
         inventoryApi.unsubscribeFromManagedObjectNotifications(managedObject.getId());
     }
