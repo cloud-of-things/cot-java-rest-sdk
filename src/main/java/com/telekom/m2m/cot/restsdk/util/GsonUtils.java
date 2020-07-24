@@ -30,23 +30,27 @@ public class GsonUtils {
     }
 
     public static Gson createGson(boolean pretty) {
-        GsonBuilder builder = new GsonBuilder().registerTypeAdapter(ManagedObject.class, new ManagedObjectSerializer())
-                .registerTypeAdapter(Event.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(Alarm.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(AuditRecord.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(Operation.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(NewDeviceRequest.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(Measurement.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(ExtensibleObject.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(ManagedObjectReferenceCollection.class, new ManagedObjectReferenceCollectionSerializer())
+        final ExtensibleObjectSerializer extensibleObjectSerializer = new ExtensibleObjectSerializer();
+        GsonBuilder builder =
+            new GsonBuilder()
+                .registerTypeAdapter(ManagedObject.class, new ManagedObjectSerializer())
+                .registerTypeAdapter(Event.class, extensibleObjectSerializer)
+                .registerTypeAdapter(Alarm.class, extensibleObjectSerializer)
+                .registerTypeAdapter(AuditRecord.class, extensibleObjectSerializer)
+                .registerTypeAdapter(Operation.class, extensibleObjectSerializer)
+                .registerTypeAdapter(NewDeviceRequest.class, extensibleObjectSerializer)
+                .registerTypeAdapter(Measurement.class, extensibleObjectSerializer)
+                .registerTypeAdapter(ExtensibleObject.class, extensibleObjectSerializer)
+                .registerTypeAdapter(ManagedObjectReferenceCollection.class,
+                                     new ManagedObjectReferenceCollectionSerializer())
                 .registerTypeAdapter(ManagedObjectReference.class, new ManagedObjectReferenceSerializer())
-                .registerTypeAdapter(User.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(Group.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(CurrentUser.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(Role.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(RetentionRule.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(BulkOperation.class, new ExtensibleObjectSerializer())
-                .registerTypeAdapter(Progress.class, new ExtensibleObjectSerializer())
+                .registerTypeAdapter(User.class, extensibleObjectSerializer)
+                .registerTypeAdapter(Group.class, extensibleObjectSerializer)
+                .registerTypeAdapter(CurrentUser.class, extensibleObjectSerializer)
+                .registerTypeAdapter(Role.class, extensibleObjectSerializer)
+                .registerTypeAdapter(RetentionRule.class, extensibleObjectSerializer)
+                .registerTypeAdapter(BulkOperation.class, extensibleObjectSerializer)
+                .registerTypeAdapter(Progress.class, extensibleObjectSerializer)
                 .registerTypeAdapter(Binary.class, new BinarySerializer())
 
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
